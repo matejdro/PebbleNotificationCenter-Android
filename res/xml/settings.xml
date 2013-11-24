@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:key="showSystem"
+        android:summary="Restart app after changing this setting"
+        android:title="Show system applications" />
+
+    <PreferenceCategory android:title="Notification filtering" >
+        <CheckBoxPreference
+            android:key="enableOngoing"
+            android:summary="Send notifications that are not just one time event, but something ongoing (for example ongoing file download or app instalation)"
+            android:title="Send ongoing notifications" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="enableCustom"
+            android:summary="Send notifications from 3rd party apps"
+            android:title="Enable custom notifications" />
+        <CheckBoxPreference
+            android:key="sendBlank"
+            android:summary="Send notifications without text and title"
+            android:title="Send blank notifications" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="New notification popup" >
+        <CheckBoxPreference
+            android:key="noNotifications"
+            android:summary="Disable new notifications popping up. You can still see them by launching app manually."
+            android:title="Disable popup entirely" />
+        <CheckBoxPreference
+            android:key="noNotificationsScreenOn"
+            android:summary="Disable new notifications popping up when screen is on."
+            android:title="Disable notify with screen on" />
+        <CheckBoxPreference
+            android:key="noNotificationsNoPebble"
+            android:summary="When unchecked, Notification Center will still collect notifications and send them after Pebble reconnects."
+            android:title="Disable notify when Pebble is disconnected" />
+        <CheckBoxPreference
+            android:key="enableQuietTime"
+            android:title="Enable quiet time" />
+
+        <Preference
+            android:key="quietTimeStart"
+            android:title="Quiet from" />
+        <Preference
+            android:key="quietTimeEnd"
+            android:title="Quiet to" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Watchapp" >
+        <CheckBoxPreference
+            android:key="autoSwitch"
+            android:summary="Automatically switch to most recent notification instead of just queing it"
+            android:title="Switch to most recent notification" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/fontSizeText"
+            android:entryValues="@array/fontSizeValues"
+            android:key="textSize"
+            android:title="Text Size" />
+
+        <CheckBoxPreference
+            android:key="launchGlance"
+            android:title="Launch glance after closing" />
+        <CheckBoxPreference
+            android:key="vibratePeriodically"
+            android:defaultValue="true"
+            android:summary="When checked, Pebble will vibrate every 10 seconds when you have unread notifications. You can stop this by pressing any button."
+            android:title="Vibrate periodically" />
+        <EditTextPreference 
+            android:key="watchappTimeout"
+            android:title="Auto-Close timeout"
+            android:summary="After this amount of seconds being idle, watchapp will close automaticaly. You can press any button on watch to stop this timer. Enter 0 to disable."
+            android:defaultValue="0"/>
+         <CheckBoxPreference 
+            android:enabled="@bool/supportsNotificationCenter"
+            android:key="syncDismissUp"
+            android:title="Dismiss upwards"
+            android:summary="When checked, all notifications dismissed on phone will also be automatically dismissed on Pebble."
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="About" >
+        <Preference
+            android:key="notifierLicense"
+            android:title="Pebble Notifier License" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

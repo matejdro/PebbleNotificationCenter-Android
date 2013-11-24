@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_action_action_settings"
+        android:title="Settings"
+        android:orderInCategory="3"
+        yourapp:showAsAction="ifRoom"
+       	/>
+    <item
+        android:id="@+id/action_installapp"
+        android:icon="@drawable/ic_action_pebble"
+        android:title="Install Watchapp"
+        android:orderInCategory="4"
+        yourapp:showAsAction="ifRoom" />
+
+</menu>

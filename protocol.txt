@@ -1,0 +1,88 @@
+First byte (dictionary entry 0) is always uint8 representing packet id
+
+Pebble --> Phone
+
+	Packet 0 - Init packet
+	Sent from Pebble when app is opened. After that, phone will send either packet 0 or packet 2.
+	No additional data
+	
+	Packet 1 - Request additional notification text
+	Additional data:
+		1 = unique id of notification - int32.
+		2 = text chunk to send - uint16
+		
+	Packet 2 - Notification fully received
+	Notifies phone that it can start sending new notification if there is any
+	No additional data
+	
+	Packet 3 - Dismiss notification
+	Additional data:
+		1 = Unique id of notification - int32
+		2 = Close app after receiving this packet. If this key is present, pebble app will be closed (also see Packet 7) - uint8
+		
+
+	Packet 4 - Request notification at list index
+	Additional data:
+		1 = list position of entry - uint16
+
+	Packet 5 - List entry selected
+	Additional data:
+		1 = list position of entry - uint16
+
+	Packet 6 - Menu picked
+	Sent when user picks entry in main menu
+	Additional data:
+		1 = Picked entry (0 = Current, 1 = History) - uint8
+				
+	Packet 7 - Close app
+	Informs android app that it should close Pebble app (useful as it closes to watchface instead of to menu)
+	No additional data
+	
+	Packet 8 - Send next notification
+	Sent some time after packet 5. Phone will send next or previous notification
+	Additional data:
+		1 = Next or previous (1 = Next, -1 = Previous) - int8
+	
+				
+Phone --> Pebble
+
+	Packet 0 - New notification packet
+	Phone sends it to display notification.
+	Additional data:
+		1 = Unique notification id (int32)
+		2 = Config bytes - byte[3]
+			[0] = Font size (0-2)
+			[1] = Flags - uint8
+				First bit (0x01) = Is notification dismissable
+				Second bit (0x02) = Notification type (1 = from history, 0 = live)
+				Third bit (0x03) = Repeatedly vibrate until user interacts (1 = enabled, 0 = disabled)
+		3 = Closing timeout - uint16
+		4 = Amount of chunks text is split into - uint8
+		5 = Title (max 30 bytes) - cstring
+		6 = Subtitle (max 30 bytes) - cstring
+		
+	Packet 1 - More notification text packet
+	Send additional text (after Packet 1 from Pebble)
+	Additional data:
+		1 = Unique notification id (int32)
+		2 = chunk index - uint8
+		3 = Text (up to 80 bytes) - cstring
+
+	Packet 2 - Notification list data
+	Send either after app was launched (in case of Android < 4.3), when option is picked in main menu or when populating list.
+	Additional data:
+		1 = Offset of this list entry - uint16
+		2 = Number of all entries in this menu - uint16
+		3 - Type of this notification (1 = ongoing, 2 = normal) - uint8
+		4 - Title of this noification (up to 20 bytes) - cstring
+		5 - Subtitle of this notification (up to 20 bytes) - cstring
+		6 - Date string (up to 20 bytes) - cstring
+
+	Packet 3 - Display menu
+	Packet instructs Pebble to display main menu
+	No additional data.
+	
+	Packet 4 - Dismiss notification
+	Removes notification from Pebble
+	Additional data:
+		1 = Unique notification id (int32)	
