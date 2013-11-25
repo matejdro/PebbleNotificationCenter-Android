@@ -11,53 +11,55 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.matejdro.pebblenotificationcenter.Preferences;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
+
+import timber.log.Timber;
 
 /**
  * Created by jbergler on 25/11/2013.
  */
 public class OptionsFragment extends Fragment {
-    private static SharedPreferences preferences;
-    private static SharedPreferences.Editor editor;
+	private static SharedPreferences preferences;
+	private static SharedPreferences.Editor editor;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        editor = preferences.edit();
+		preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		editor = preferences.edit();
 
-        return inflater.inflate(R.layout.fragment_options, null);
-    }
+		return inflater.inflate(R.layout.fragment_options, null);
+	}
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
 
-        Spinner appModeSpinner = (Spinner) getActivity().findViewById(R.id.appModePickerSpinner);
-        ArrayAdapter<CharSequence> appModeAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.appModePickerModes, android.R.layout.simple_spinner_item);
-        appModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        appModeSpinner.setAdapter(appModeAdapter);
+		Spinner appModeSpinner = (Spinner) getActivity().findViewById(R.id.appModePickerSpinner);
+		ArrayAdapter<CharSequence> appModeAdapter = ArrayAdapter.createFromResource(getActivity(),
+				R.array.appModePickerModes, android.R.layout.simple_spinner_item);
+		appModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		appModeSpinner.setAdapter(appModeAdapter);
 
-        boolean appMode = preferences.getBoolean(Preferences.APP_INCLUSION_MODE, false);
-        appModeSpinner.setSelection(appMode ? 1 : 0);
+		boolean appMode = preferences.getBoolean(PebbleNotificationCenter.APP_INCLUSION_MODE, false);
+		appModeSpinner.setSelection(appMode ? 1 : 0);
 
-        appModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		appModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                boolean appMode = position == 1;
+				boolean appMode = position == 1;
+				Timber.d("Configuring %s to %b", PebbleNotificationCenter.APP_INCLUSION_MODE, appMode);
+				editor.putBoolean(PebbleNotificationCenter.APP_INCLUSION_MODE, appMode);
+				editor.apply();
+			}
 
-                editor.putBoolean(Preferences.APP_INCLUSION_MODE, appMode);
-                editor.apply();
-            }
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+			}
+		});
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
-            }
-        });
-
-        super.onActivityCreated(savedInstanceState);
-    }
+		super.onActivityCreated(savedInstanceState);
+	}
 }

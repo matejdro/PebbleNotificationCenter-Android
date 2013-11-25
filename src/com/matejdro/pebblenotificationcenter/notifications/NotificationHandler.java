@@ -12,29 +12,34 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.util.ListSerialization;
+
+import timber.log.Timber;
 
 public class NotificationHandler {
 	public static boolean active = false;
 
-	public static void newNotification(Context context, String pack, Notification notification, Integer id, String tag, boolean isDismissable)
+	public static void newNotification(Context context, String pack, Notification notification, Integer id, String tag, boolean isDismissible)
 	{
+		Timber.i("Processing notification from package %s", pack);
+
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		
 		boolean enableOngoing = preferences.getBoolean("enableOngoing", false);
-
 		boolean isOngoing = (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0;
 		
-		if (isOngoing && !enableOngoing)
+		if (isOngoing && !enableOngoing) {
+			Timber.d("Discarding notification from %s because FLAG_ONGOING_EVENT is set.", pack);
 			return;
+		}
 
+		boolean includingMode = preferences.getBoolean(PebbleNotificationCenter.APP_INCLUSION_MODE, false);
+		boolean notificationExist = ListSerialization.listContains(preferences, PebbleNotificationCenter.SELECTED_PACKAGES, pack);
 
-		boolean includingMode = preferences.getBoolean("includingMode", false);
-		boolean notificationExist = ListSerialization.listContains(preferences, "CheckedApps", pack);
-
-		if (includingMode != notificationExist)
-		{
+		if (includingMode != notificationExist) {
+			Timber.d("Discarding notification from %s because package is not selected", pack);
 			return;
 		}
 
@@ -45,30 +50,29 @@ public class NotificationHandler {
 		String secondaryTitle = parser.title;
 		String text = parser.text.trim();
 		
-		if (notification.tickerText != null && (text == null || text.trim().length() == 0))
-		{
+		if (notification.tickerText != null && (text == null || text.trim().length() == 0)) {
 			text = notification.tickerText.toString();
 		}
 		
-		if (!preferences.getBoolean("sendBlank", false))
-		{
-			if (text.length() == 0 && (secondaryTitle == null || secondaryTitle.length() == 0))
-				return;
-		}
-		
-		Iterator<String> blacklistRegexes = ListSerialization.getDirectIterator(preferences, "BlacklistRegexes");
-		while (blacklistRegexes.hasNext())
-		{
-			String regex = blacklistRegexes.next();
-			Pattern pattern = Pattern.compile(regex);
-			
-			if (pattern.matcher(title).find() || (secondaryTitle != null && pattern.matcher(secondaryTitle).find()) || pattern.matcher(text).find())
-			{
+		if (!preferences.getBoolean("sendBlank", false)) {
+			if (text.length() == 0 && (secondaryTitle == null || secondaryTitle.length() == 0)) {
+				Timber.d("Discarding notification from %s because it is empty", pack);
 				return;
 			}
 		}
 		
-		if (isDismissable)
+		Iterator<String> blacklistRegexes = ListSerialization.getDirectIterator(preferences, "BlacklistRegexes");
+		while (blacklistRegexes.hasNext()) {
+			String regex = blacklistRegexes.next();
+			Pattern pattern = Pattern.compile(regex);
+			
+			if (pattern.matcher(title).find() || (secondaryTitle != null && pattern.matcher(secondaryTitle).find()) || (pattern.matcher(text).find())) {
+				Timber.d("Discarding notification from %s because it has matched '%s'", pack, pattern.toString());
+				return;
+			}
+		}
+		
+		if (isDismissible)
 			PebbleTalkerService.notify(context, id, pack, tag, title, secondaryTitle, text, !isOngoing);
 		else
 			PebbleTalkerService.notify(context, title, secondaryTitle, text);

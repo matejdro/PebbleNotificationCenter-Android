@@ -17,7 +17,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.matejdro.pebblenotificationcenter.Preferences;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.util.ListSerialization;
 
@@ -55,13 +55,13 @@ public class RegexFragment extends Fragment {
         regexModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         regexModeSpinner.setAdapter(regexModeAdapter);
 
-        boolean regexMode = preferences.getBoolean(Preferences.REGEX_INCLUSION_MODE, false);
+        boolean regexMode = preferences.getBoolean(PebbleNotificationCenter.REGEX_INCLUSION_MODE, false);
         regexModeSpinner.setSelection(regexMode ? 1 : 0);
 
         regexModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                editor.putBoolean(Preferences.REGEX_INCLUSION_MODE, position == 1); //Only two items, 1 => true
+                editor.putBoolean(PebbleNotificationCenter.REGEX_INCLUSION_MODE, position == 1); //Only two items, 1 => true
                 editor.apply();
             }
 
