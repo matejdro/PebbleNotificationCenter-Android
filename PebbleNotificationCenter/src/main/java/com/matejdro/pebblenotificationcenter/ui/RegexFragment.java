@@ -24,6 +24,8 @@ import com.matejdro.pebblenotificationcenter.util.ListSerialization;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Created by jbergler on 25/11/2013.
  */
@@ -43,7 +45,7 @@ public class RegexFragment extends Fragment {
         editor = preferences.edit();
 
         regexList = new ArrayList<String>();
-        ListSerialization.loadCollection(preferences, regexList, "BlacklistRegexes");
+        ListSerialization.loadCollection(preferences, regexList, PebbleNotificationCenter.REGEX_LIST);
 
         return inflater.inflate(R.layout.fragment_regex_list, null);
     }
@@ -61,7 +63,9 @@ public class RegexFragment extends Fragment {
         regexModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                editor.putBoolean(PebbleNotificationCenter.REGEX_INCLUSION_MODE, position == 1); //Only two items, 1 => true
+                boolean regexMode = position == 1;
+                Timber.d("Configuring %s to %b", PebbleNotificationCenter.REGEX_INCLUSION_MODE, regexMode);
+                editor.putBoolean(PebbleNotificationCenter.REGEX_INCLUSION_MODE, regexMode);
                 editor.apply();
             }
 
@@ -100,7 +104,7 @@ public class RegexFragment extends Fragment {
 
     private void saveList()
     {
-        ListSerialization.saveCollection(editor, regexList, "BlacklistRegexes");
+        ListSerialization.saveCollection(editor, regexList, PebbleNotificationCenter.REGEX_LIST);
         regexAdapter.notifyDataSetChanged();
     }
 

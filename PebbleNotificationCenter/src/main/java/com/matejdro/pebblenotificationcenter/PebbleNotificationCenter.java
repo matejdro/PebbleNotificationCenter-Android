@@ -11,6 +11,7 @@ public class PebbleNotificationCenter extends android.app.Application {
     public static final String APP_INCLUSION_MODE = "includeMode";
     public static final String SELECTED_PACKAGES = "CheckedApps";
     public static final String REGEX_INCLUSION_MODE = "regexMode";
+    public static final String REGEX_LIST = "BlacklistRegexes";
 
     @Override public void onCreate() {
         super.onCreate();
