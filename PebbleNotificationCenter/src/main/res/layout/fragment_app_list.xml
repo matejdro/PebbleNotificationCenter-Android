@@ -1,43 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="10dp"
-    android:orientation="vertical"
-    tools:context=".MainActivity$DummySectionFragment" >
-
-    <LinearLayout
-        android:id="@+id/modePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/modePickerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="Select mode:"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <Spinner
-            android:id="@+id/modePickerSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/regexIntroductionTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pick apps you don&apos;t want to receive notifications from:" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:layout_marginTop="10dp" />
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/loadingBar"
@@ -68,4 +33,5 @@
         android:visibility="gone" >
     </ListView>
 
-</LinearLayout>
+</FrameLayout>
+

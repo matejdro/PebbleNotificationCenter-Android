@@ -2,36 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="10dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
+    android:padding="4dp"
     android:gravity="center_vertical"
     android:orientation="horizontal" >
 
     <ImageView
         android:id="@+id/appImage"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:scaleType="fitXY"
-        android:src="@android:drawable/alert_dark_frame" />
+        android:src="@android:drawable/alert_dark_frame"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true" />
 
     <TextView
         android:id="@+id/appName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"       
         android:gravity="center"
         android:text="App"
-        android:textSize="15sp" />
+        android:textSize="13sp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <CheckBox
         android:id="@+id/appChecked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="" />
+        android:text=""
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

@@ -57,7 +57,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.matejdro.pebblenotificationcenter.ui.SettingsActivity" >
+        <activity android:name=".ui.SettingsActivity" >
         </activity>
 
         <receiver android:name="com.matejdro.pebblenotificationcenter.CustomNotificationCatcher"
@@ -67,8 +67,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.matejdro.pebblenotificationcenter.ui.LicenseActivity" >
+        <activity android:name=".ui.LicenseActivity" >
         </activity>
+
         <activity
             android:name="com.matejdro.pebblenotificationcenter.tasker.TaskerSetupActivity"
             android:label="@string/title_activity_main"

@@ -3,13 +3,13 @@
 
     <string name="app_name">Notification Center for Pebble</string>
     <string name="title_activity_main">Notification Center</string>
-    <string name="notifierLicense">&lt;p&gt;Copyright (c) 2013 Dattas Moonchaser&lt;/p&gt;
+    <string name="notifierLicense"><![CDATA[<p>Copyright © 2013 Dattas Moonchaser</p>
 
-&lt;p&gt;Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:&lt;/p&gt;
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
 
-&lt;p&gt;The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.&lt;/p&gt;
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
 
-&lt;p&gt;THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.&lt;/p&gt;</string>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>]]></string>
 
     <string-array name="app_modes">
         <item>Excluding mode</item>
@@ -38,6 +38,18 @@
     
     <string name="title_activity_tasker_setup">TaskerSetupActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
 
+    <string name="appModePickerLabel">App Selection:</string>
+    <string name="appModePickerDescription">In <b>including</b> mode only notifications from the apps that are selected will sent to Pebble. In <b>excluding</b> mode all notifications will be sent to Pebble except those from applications selected.</string>
+    <string-array name="appModePickerModes">
+        <item>Exclude</item>
+        <item>Include</item>
+    </string-array>
+
+    <string name="regexModePickerLabel">Regex Filters:</string>
+    <string name="regexModePickerDescription">Global filter by keywords/regular expressions for notifications that should be excluded from displaying.</string>
+    <string-array name="regexModePickerModes">
+        <item>Exclude</item>
+        <!--<item>Include</item> !-->
+    </string-array>
 </resources>
