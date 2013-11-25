@@ -60,16 +60,32 @@ public class NotificationHandler {
 				return;
 			}
 		}
-		
-		Iterator<String> blacklistRegexes = ListSerialization.getDirectIterator(preferences, "BlacklistRegexes");
+
+		String patternMatched = null;
+		Iterator<String> blacklistRegexes = ListSerialization.getDirectIterator(preferences, PebbleNotificationCenter.REGEX_LIST);
 		while (blacklistRegexes.hasNext()) {
 			String regex = blacklistRegexes.next();
 			Pattern pattern = Pattern.compile(regex);
 			
 			if (pattern.matcher(title).find() || (secondaryTitle != null && pattern.matcher(secondaryTitle).find()) || (pattern.matcher(text).find())) {
-				Timber.d("Discarding notification from %s because it has matched '%s'", pack, pattern.toString());
-				return;
+				patternMatched = pattern.toString();
+				break;
 			}
+		}
+
+		/**
+		 * Logic for regex matching is as follows:
+		 * regexMode == false    patternMatched == null       exclude, no match, send
+		 * regexMode == false    patternMatched != null       exclude, matched, don't send
+		 * regexMode == true     patternMatched == null       include, no match, don't send
+		 * regexMode == true     patternMatched != null       include, matched, send
+		 */
+		boolean regexMode = preferences.getBoolean(PebbleNotificationCenter.REGEX_INCLUSION_MODE, false);
+		if (regexMode == (patternMatched == null))
+		{
+			if (regexMode) Timber.d("Discarding notification from %s because it hasn't matched and regex mode is exclude.", pack);
+			else           Timber.d("Discarding notification from %s because it has matched '%s' and regex mode is include.", pack, patternMatched);
+			return;
 		}
 		
 		if (isDismissible)

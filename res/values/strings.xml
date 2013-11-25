@@ -47,9 +47,9 @@
     </string-array>
 
     <string name="regexModePickerLabel">Regex Filters:</string>
-    <string name="regexModePickerDescription">Global filter by keywords/regular expressions for notifications that should be excluded from displaying.</string>
+    <string name="regexModePickerDescription">Global filter by keywords/regular expressions for notifications that should be included/excluded from displaying.</string>
     <string-array name="regexModePickerModes">
         <item>Exclude</item>
-        <!--<item>Include</item> !-->
+        <item>Include</item>
     </string-array>
 </resources>
