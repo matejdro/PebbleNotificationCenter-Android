@@ -35,7 +35,7 @@ Pebble --> Phone
 		1 = Picked entry (0 = Current, 1 = History) - uint8
 				
 	Packet 7 - Close app
-	Informs android app that it should close Pebble app (useful as it closes to watchface instead of to menu)
+	Informs android app that it should close watchapp or switch to glance depending on settings.
 	No additional data
 	
 	Packet 8 - Send next notification
@@ -43,6 +43,8 @@ Pebble --> Phone
 	Additional data:
 		1 = Next or previous (1 = Next, -1 = Previous) - int8
 	
+	Packet 9 - Dismiss ACK (ACK for Phone->Pebble packet 4)
+		 2 = Close app after receiving this packet. If this key is present, pebble app will be closed (also see Packet 7) - uint8
 				
 Phone --> Pebble
 
@@ -55,7 +57,9 @@ Phone --> Pebble
 			[1] = Flags - uint8
 				First bit (0x01) = Is notification dismissable
 				Second bit (0x02) = Notification type (1 = from history, 0 = live)
-				Third bit (0x03) = Repeatedly vibrate until user interacts (1 = enabled, 0 = disabled)
+				Third bit (0x04) = Switch to new notification instead of staying at current one (1 = enabled, 0 = disabled)
+				Fourth bit (0x08) = Repeatedly vibrate until user interacts (1 = enabled, 0 = disabled)
+				Fifth bit (0x10) = Long vibrate on first notification
 		3 = Closing timeout - uint16
 		4 = Amount of chunks text is split into - uint8
 		5 = Title (max 30 bytes) - cstring
