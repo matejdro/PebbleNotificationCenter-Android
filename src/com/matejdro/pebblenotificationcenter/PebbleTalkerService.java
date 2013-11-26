@@ -99,7 +99,8 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (settings.getBoolean("autoSwitch", false) ? 0x4 : 0);
 		flags |= (byte) (settings.getBoolean("vibratePeriodically", true) ? 0x8 : 0);
 		flags |= (byte) (settings.getBoolean("vibrateLonger", true) ? 0x10 : 0);
-
+		flags |= (byte) (settings.getBoolean("launchGlance", true) ? 0x20 : 0);
+		
 		Timber.d("test " + Integer.toBinaryString(flags));
 		
 		configBytes[0] = Byte.parseByte(settings.getString("textSize", "0")); //Text size

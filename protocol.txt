@@ -60,6 +60,7 @@ Phone --> Pebble
 				Third bit (0x04) = Switch to new notification instead of staying at current one (1 = enabled, 0 = disabled)
 				Fourth bit (0x08) = Repeatedly vibrate until user interacts (1 = enabled, 0 = disabled)
 				Fifth bit (0x10) = Long vibrate on first notification
+				Sixth bit (0x20) = Display closing screen (needed for Glance switch)
 		3 = Closing timeout - uint16
 		4 = Amount of chunks text is split into - uint8
 		5 = Title (max 30 bytes) - cstring
