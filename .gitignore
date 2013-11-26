@@ -5,6 +5,11 @@
 .gradle/
 local.properties
 
+bin/
+.classpath
+.project
+.settings*
+
 */build/
 *.apk
 
