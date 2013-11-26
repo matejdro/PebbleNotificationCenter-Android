@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <PreferenceCategory android:title="Notification filtering" >
         <CheckBoxPreference
             android:key="enableOngoing"
@@ -56,21 +57,27 @@
             android:key="launchGlance"
             android:title="Launch glance after closing" />
         <CheckBoxPreference
-            android:key="vibratePeriodically"
             android:defaultValue="true"
+            android:key="vibratePeriodically"
             android:summary="When checked, Pebble will vibrate every 10 seconds when you have unread notifications. You can stop this by pressing any button."
             android:title="Vibrate periodically" />
-        <EditTextPreference 
+
+        <EditTextPreference
+            android:defaultValue="0"
             android:key="watchappTimeout"
-            android:title="Auto-Close timeout"
             android:summary="After this amount of seconds being idle, watchapp will close automaticaly. You can press any button on watch to stop this timer. Enter 0 to disable."
-            android:defaultValue="0"/>
-         <CheckBoxPreference 
+            android:title="Auto-Close timeout" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="vibrateLonger"
+            android:title="Vibrate longer on first notification" />
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:enabled="@bool/supportsNotificationCenter"
             android:key="syncDismissUp"
-            android:title="Dismiss upwards"
             android:summary="When checked, all notifications dismissed on phone will also be automatically dismissed on Pebble."
-            android:defaultValue="true"/>
+            android:title="Dismiss upwards" />
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference

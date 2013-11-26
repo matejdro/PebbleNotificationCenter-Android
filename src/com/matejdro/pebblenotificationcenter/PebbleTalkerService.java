@@ -1,11 +1,12 @@
 package com.matejdro.pebblenotificationcenter;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
+
+import timber.log.Timber;
 
 import android.app.Service;
 import android.content.Context;
@@ -20,8 +21,8 @@ import android.util.SparseArray;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
-import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
+import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 
 public class PebbleTalkerService extends Service {
@@ -97,7 +98,10 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (notification.isListNotification ? 0x2 : 0);
 		flags |= (byte) (settings.getBoolean("autoSwitch", false) ? 0x4 : 0);
 		flags |= (byte) (settings.getBoolean("vibratePeriodically", true) ? 0x8 : 0);
+		flags |= (byte) (settings.getBoolean("vibrateLonger", true) ? 0x10 : 0);
 
+		Timber.d("test " + Integer.toBinaryString(flags));
+		
 		configBytes[0] = Byte.parseByte(settings.getString("textSize", "0")); //Text size
 		configBytes[1] = flags; //Flags
 		
@@ -150,7 +154,7 @@ public class PebbleTalkerService extends Service {
 		{
 			PendingNotification notification = sentNotifications.valueAt(i);
 			
-			if (!notification.isListNotification && notification.androidID != null && notification.androidID.intValue() == androidId.intValue() && notification.pkg != null && notification.pkg.equals(pkg) && (notification.tag == null || notification.tag.equals(tag)))
+			if (!notification.isListNotification && notification.androidID != null && notification.androidID == androidId && notification.pkg != null && notification.pkg.equals(pkg) && (notification.tag == null || notification.tag.equals(tag)))
 			{
 				if (removingNotifications || sendingQueue.size() > 0)
 				{
