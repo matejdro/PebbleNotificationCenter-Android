@@ -36,7 +36,7 @@ public class PebbleTalkerService extends Service {
 
 	private long lastCommunicationTime = 0;
 	
-	private boolean removingNotifications = false;
+	private boolean commBusy = false;
 	private Queue<Integer> notificationRemovalQueue = new ArrayDeque<Integer>();
 	
 	PendingNotification curSendingNotification;
@@ -126,6 +126,7 @@ public class PebbleTalkerService extends Service {
 		lastCommunicationTime = System.currentTimeMillis();
 
 		PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
+		commBusy = true;
 	}
 
 	private void dismissOnPebble(Integer id, boolean dontClose)
@@ -140,6 +141,7 @@ public class PebbleTalkerService extends Service {
 			data.addUint8(2, (byte) 1);
 
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
+		commBusy = true;
 	}
 	private void dismissOnPebbleInternal(Integer androidId, String pkg, String tag, boolean dontClose)
 	{		
@@ -155,51 +157,31 @@ public class PebbleTalkerService extends Service {
 						
 			if (!notification.isListNotification && notification.androidID != null && notification.androidID.intValue() == androidId.intValue() && notification.pkg != null && notification.pkg.equals(pkg) && (notification.tag == null || notification.tag.equals(tag)))
 			{
-				if (removingNotifications || sendingQueue.size() > 0)
+				Timber.tag("NC Upwards debug");
+				Timber.d("	rem notifications check: %b %d", commBusy, sendingQueue.size());
+				if (commBusy)
 				{
 					notificationRemovalQueue.add(notification.id);
-					return;
+					continue;
 				}
-				dismissOnPebble(notification.id, dontClose);
 				
-				removingNotifications = true;
-				
-				break;
+				dismissOnPebble(notification.id, dontClose);				
 			}
 		}
 	}
 	
 	private void dismissOnPebbleSucceeded(PebbleDictionary data)
 	{
+		Timber.tag("NC Upwards debug");
+		Timber.d("	dismiss success: %b %d", data.contains(2), notificationRemovalQueue.size());
+
 		if (data.contains(2))
 		{
 			closeApp();
 			return;
 		}
 
-		Integer nextDismiss = notificationRemovalQueue.poll();
-		if (nextDismiss == null)
-		{
-			removingNotifications = false;
-			
-			if (curSendingNotification != null)
-			{
-				send(curSendingNotification);
-				return;
-			}
-
-			PendingNotification next = sendingQueue.poll();
-			if (next != null)
-			{
-				send(next);
-			}
-			
-			return;
-		}
-		else
-		{
-			dismissOnPebble(nextDismiss, sendingQueue.size() > 0);
-		}
+		commWentIdle();
 	}
 	
 	private void notifyInternal(Integer androidID, String pkg, String tag, String title, String subtitle, String text, boolean dismissable, boolean noHistory, boolean isListNotification)
@@ -296,9 +278,9 @@ public class PebbleTalkerService extends Service {
 			curSendingNotification = null;
 		}
 
-		Log.d("PebbleNotifier", "not sending flags:" + (curSendingNotification != null) + " " + removingNotifications);
+		Log.d("PebbleNotifier", "not sending flags:" + (curSendingNotification != null) + " " + commBusy);
 		
-		if (curSendingNotification != null || removingNotifications )
+		if (commBusy)
 		{
 			sendingQueue.add(notification);
 			PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
@@ -309,6 +291,8 @@ public class PebbleTalkerService extends Service {
 
 	private void closeApp()
 	{
+		commBusy = false;
+
 		//Launch glance
 		if (settings.getBoolean("launchGlance", false))
 			PebbleKit.startAppOnPebble(this, UUID.fromString("4B760064-1488-4044-967A-1B1D3AB30574"));
@@ -324,18 +308,8 @@ public class PebbleTalkerService extends Service {
 
 	private void appOpened()
 	{
-		if (curSendingNotification != null)
-		{
-			send(curSendingNotification);
+		if (commWentIdle())
 			return;
-		}
-
-		PendingNotification next = sendingQueue.poll();
-		if (next != null)
-		{
-			send(next);
-			return;
-		}
 
 		Log.i("Notification Center", "Sending notification list");
 
@@ -351,6 +325,44 @@ public class PebbleTalkerService extends Service {
 			listHandler = new RecentNotificationsAdapter(this, historyDb);
 			listHandler.sendNotification(0);
 		}
+	}
+	
+	/**
+	 * Called when communication becomes idle and something else can be sent
+	 * @return true if that function did anything, false if communication is still idle after calling.
+	 */
+	private boolean commWentIdle()
+	{
+		if (curSendingNotification != null)
+		{
+			send(curSendingNotification);
+			return true;
+		}
+
+		PendingNotification next = sendingQueue.poll();
+		if (next != null)
+		{
+			send(next);
+			return true;
+		}
+		
+		if (notificationRemovalQueue.size() > 0)
+		{
+			Integer nextRemovalNotifiaction = notificationRemovalQueue.poll();
+			dismissOnPebble(nextRemovalNotifiaction, false);
+			return true;
+		}
+		
+		//Clean up excess history entries every day
+		long lastDbCleanup = settings.getLong("lastCleanup", 0);
+		if (System.currentTimeMillis() - lastDbCleanup > 1000 * 3600 * 24)
+		{
+			historyDb.cleanDatabase();
+		}
+
+		commBusy = false;
+		
+		return false;
 	}
 
 	private void menuPicked(PebbleDictionary data)
@@ -403,23 +415,9 @@ public class PebbleTalkerService extends Service {
 	private void notificationTransferCompleted()
 	{
 		curSendingNotification = null;
-		PendingNotification next = sendingQueue.poll();
-		if (next != null)
-			send(next);	
-		else
-		{
-			if (notificationRemovalQueue.size() > 0)
-			{
-				Integer nextRemovalNotifiaction = notificationRemovalQueue.poll();
-				dismissOnPebble(nextRemovalNotifiaction, false);
-			}
-			//Clean up excess history entries every day
-			long lastDbCleanup = settings.getLong("lastCleanup", 0);
-			if (System.currentTimeMillis() - lastDbCleanup > 1000 * 3600 * 24)
-			{
-				historyDb.cleanDatabase();
-			}
-		}
+		
+		if (commWentIdle())
+			return;		
 	}
 
 	private void dismissRequested(PebbleDictionary data)
