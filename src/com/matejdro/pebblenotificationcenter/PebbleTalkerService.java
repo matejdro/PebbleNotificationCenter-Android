@@ -100,9 +100,7 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (settings.getBoolean("vibratePeriodically", true) ? 0x8 : 0);
 		flags |= (byte) (settings.getBoolean("vibrateLonger", true) ? 0x10 : 0);
 		flags |= (byte) (settings.getBoolean("launchGlance", true) ? 0x20 : 0);
-		
-		Timber.d("test " + Integer.toBinaryString(flags));
-		
+				
 		configBytes[0] = Byte.parseByte(settings.getString("textSize", "0")); //Text size
 		configBytes[1] = flags; //Flags
 		
@@ -154,8 +152,8 @@ public class PebbleTalkerService extends Service {
 		for (int i = 0; i < sentNotifications.size(); i++)
 		{
 			PendingNotification notification = sentNotifications.valueAt(i);
-			
-			if (!notification.isListNotification && notification.androidID != null && notification.androidID == androidId && notification.pkg != null && notification.pkg.equals(pkg) && (notification.tag == null || notification.tag.equals(tag)))
+						
+			if (!notification.isListNotification && notification.androidID != null && notification.androidID.intValue() == androidId.intValue() && notification.pkg != null && notification.pkg.equals(pkg) && (notification.tag == null || notification.tag.equals(tag)))
 			{
 				if (removingNotifications || sendingQueue.size() > 0)
 				{

@@ -1,11 +1,7 @@
 package com.matejdro.pebblenotificationcenter;
 
-import android.app.Application;
-import android.util.Log;
-
 import timber.log.Timber;
-
-import static timber.log.Timber.DebugTree;
+import timber.log.Timber.DebugTree;
 
 public class PebbleNotificationCenter extends android.app.Application {
     public static final String APP_INCLUSION_MODE = "includeMode";
