@@ -9,6 +9,7 @@ public class PebbleNotificationCenter extends android.app.Application {
     public static final String REGEX_INCLUSION_MODE = "regexMode";
     public static final String REGEX_LIST = "BlacklistRegexes";
 
+    public static final String CLOSE_TO_LAST_CLOSED = "closeToLastClosed";
     @Override public void onCreate() {
         super.onCreate();
         Timber.plant(new DebugTree());

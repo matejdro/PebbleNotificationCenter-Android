@@ -1,5 +1,7 @@
 package com.matejdro.pebblenotificationcenter;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.Queue;
@@ -7,12 +9,12 @@ import java.util.Random;
 import java.util.UUID;
 
 import timber.log.Timber;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -23,6 +25,7 @@ import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 
 public class PebbleTalkerService extends Service {
@@ -31,7 +34,11 @@ public class PebbleTalkerService extends Service {
 
 	private SharedPreferences settings;
 	private NotificationHistoryStorage historyDb;;
-
+	private Handler handler;
+	
+	private PebbleDeveloperConnection devConn;
+	private UUID previousUUID;
+	
 	private NotificationListAdapter listHandler;
 
 	private long lastCommunicationTime = 0;
@@ -52,15 +59,28 @@ public class PebbleTalkerService extends Service {
 	@Override
 	public void onDestroy() {
 		instance = null;
+		if (devConn != null)
+		{
+			devConn.close();
+		}
 		historyDb.close();
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		handler = new Handler();
 		instance = this;
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
 		historyDb = new NotificationHistoryStorage(this);
-
+		
+		try
+		{
+			devConn = new PebbleDeveloperConnection();
+			devConn.connectBlocking();
+		} catch (InterruptedException e) {
+		} catch (URISyntaxException e) {
+		}
+		
 		if (intent != null && intent.hasExtra("id"))
 		{
 			int id = intent.getIntExtra("id", -1);
@@ -86,6 +106,16 @@ public class PebbleTalkerService extends Service {
 	{
 		Log.d("Notification Center", "Send " + notification.id);
 
+		if (devConn != null)
+		{
+			UUID prev = devConn.getCurrentRunningApp();
+			if (prev != null && !prev.equals(DataReceiver.pebbleAppUUID))
+			{
+				previousUUID = prev;
+			}
+		}
+		
+		
 		curSendingNotification = notification;
 		sentNotifications.put(notification.id, notification);
 
@@ -99,7 +129,7 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (settings.getBoolean("autoSwitch", false) ? 0x4 : 0);
 		flags |= (byte) (settings.getBoolean("vibratePeriodically", true) ? 0x8 : 0);
 		flags |= (byte) (settings.getBoolean("vibrateLonger", true) ? 0x10 : 0);
-		flags |= (byte) (settings.getBoolean("launchGlance", true) ? 0x20 : 0);
+		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_CLOSED, true) ? 0x20 : 0);
 				
 		configBytes[0] = Byte.parseByte(settings.getString("textSize", "0")); //Text size
 		configBytes[1] = flags; //Flags
@@ -126,7 +156,7 @@ public class PebbleTalkerService extends Service {
 		lastCommunicationTime = System.currentTimeMillis();
 
 		PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
-		commBusy = true;
+		commStarted();
 	}
 
 	private void dismissOnPebble(Integer id, boolean dontClose)
@@ -141,7 +171,7 @@ public class PebbleTalkerService extends Service {
 			data.addUint8(2, (byte) 1);
 
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
-		commBusy = true;
+		commStarted();
 	}
 	private void dismissOnPebbleInternal(Integer androidId, String pkg, String tag, boolean dontClose)
 	{		
@@ -283,7 +313,6 @@ public class PebbleTalkerService extends Service {
 		if (commBusy)
 		{
 			sendingQueue.add(notification);
-			PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
 		}
 		else
 			send(notification);
@@ -293,12 +322,11 @@ public class PebbleTalkerService extends Service {
 	{
 		commBusy = false;
 
-		//Launch glance
-		if (settings.getBoolean("launchGlance", false))
-			PebbleKit.startAppOnPebble(this, UUID.fromString("4B760064-1488-4044-967A-1B1D3AB30574"));
+		if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_CLOSED, true) && previousUUID != null)
+			PebbleKit.startAppOnPebble(this, previousUUID);
 		else
 			PebbleKit.closeAppOnPebble(this, DataReceiver.pebbleAppUUID);
-		
+				
 		Editor editor = settings.edit();
 		editor.putLong("lastClose", System.currentTimeMillis());
 		editor.apply();
@@ -333,6 +361,8 @@ public class PebbleTalkerService extends Service {
 	 */
 	private boolean commWentIdle()
 	{
+		handler.removeCallbacks(makeIdle);
+
 		if (curSendingNotification != null)
 		{
 			send(curSendingNotification);
@@ -363,6 +393,21 @@ public class PebbleTalkerService extends Service {
 		commBusy = false;
 		
 		return false;
+	}
+	
+	private final Runnable makeIdle = new Runnable() {
+		public void run() {
+			commWentIdle();
+		}
+	};
+	/**
+	 * Starts timer that will mark communication as idle, if nothing happened in 10 seconds.
+	 */
+	private void commStarted()
+	{
+		commBusy = true;
+		handler.removeCallbacks(makeIdle);
+		handler.postDelayed(makeIdle, 10000);
 	}
 
 	private void menuPicked(PebbleDictionary data)

@@ -162,7 +162,7 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
         public static final int PAGE_APPS_SYSTEM = 2;
 
         public static final String[] TITLES = {
-                "Settings",
+                "General",
                 "User Apps",
                 "System Apps"
         };

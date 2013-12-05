@@ -50,8 +50,8 @@ public class WatchappHandler {
 //		{
 //			context.startActivity(intent);
 //			
-//			editor.putInt("InstalledWatchface", INCLUDED_WATCHFACE);
-//			editor.apply();
+			editor.putInt("InstalledWatchface", INCLUDED_WATCHFACE);
+			editor.apply();
 //		}
 //		catch (ActivityNotFoundException e)
 //		{

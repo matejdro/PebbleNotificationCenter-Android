@@ -52,11 +52,7 @@
             android:entryValues="@array/fontSizeValues"
             android:key="textSize"
             android:title="Text Size" />
-
-        <CheckBoxPreference
-            android:key="launchGlance"
-            android:title="Launch glance after closing" />
-        <CheckBoxPreference
+        <CheckBoxPreference
             android:defaultValue="true"
             android:key="vibratePeriodically"
             android:summary="When checked, Pebble will vibrate every 10 seconds when you have unread notifications. You can stop this by pressing any button."
@@ -78,11 +74,16 @@
             android:key="syncDismissUp"
             android:summary="When checked, all notifications dismissed on phone will also be automatically dismissed on Pebble."
             android:title="Dismiss upwards" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="closeToLastClosed"
+            android:title="Close to previously running app"
+            android:summary="You need to enable Developer Connection inside Pebble app to get this to work." />
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference
             android:key="notifierLicense"
-            android:title="Pebble Notifier License" />
+            android:title="Open source Licenses" />
     </PreferenceCategory>
 
 </PreferenceScreen>
