@@ -1,6 +1,5 @@
 package com.matejdro.pebblenotificationcenter;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayDeque;
 import java.util.Calendar;
@@ -397,7 +396,8 @@ public class PebbleTalkerService extends Service {
 	
 	private final Runnable makeIdle = new Runnable() {
 		public void run() {
-			commWentIdle();
+			commBusy = false;
+			//commWentIdle();
 		}
 	};
 	/**
@@ -430,9 +430,12 @@ public class PebbleTalkerService extends Service {
 	{
 		int id = data.getInteger(1).intValue();
 
+		Timber.d("More text %d" , id);
+		
 		PendingNotification notification = sentNotifications.get(id);
 		if (notification == null)
 		{
+			Timber.d("Transfer completed 1");
 			notificationTransferCompleted();
 			return;
 		}
@@ -441,9 +444,12 @@ public class PebbleTalkerService extends Service {
 
 		if (notification.textChunks.size() <= chunk)
 		{
+			Timber.d("Transfer completed 2" , id);
 			notificationTransferCompleted();
 			return;
 		}
+
+		Timber.d("Chunk: %d" , chunk);
 
 		data = new PebbleDictionary();
 
@@ -453,6 +459,7 @@ public class PebbleTalkerService extends Service {
 		data.addString(3, notification.textChunks.get(chunk));
 		
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
+		Timber.d("Sent text");
 
 		lastCommunicationTime = System.currentTimeMillis();
 	}
@@ -469,18 +476,11 @@ public class PebbleTalkerService extends Service {
 	{
 		int id = data.getInteger(1).intValue();
 
-		Log.d("Notification Center", "dismiss requested " + id);
-
-
 		PendingNotification notification = sentNotifications.get(id);
-		if (notification == null)
+		if (notification != null)
 		{
-			Log.d("Notification Center", "dismiss unknown ");
-
-			return;
+			JellybeanNotificationListener.dismissNotification(notification.pkg, notification.tag, notification.androidID);		
 		}
-
-		JellybeanNotificationListener.dismissNotification(notification.pkg, notification.tag, notification.androidID);
 		
 		if (data.contains(2))
 			closeApp();
@@ -572,7 +572,7 @@ public class PebbleTalkerService extends Service {
 			subtitle = "";
 		if (text == null)
 			text = "";
-
+		
 		Log.d("Notification Center", "notify");
 		PebbleTalkerService service = PebbleTalkerService.instance;
 

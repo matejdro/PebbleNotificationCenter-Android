@@ -1,0 +1,68 @@
+Thanks to Morbyd for this table
+
+U+0401 > Yo
+U+0410 > A
+U+0411 > B
+U+0412 > V
+U+0413 > G
+U+0414 > D
+U+0415 > E
+U+0416 > Zh
+U+0417 > Z
+U+0418 > I
+U+0419 > Y
+U+041A > K
+U+041B > L
+U+041C > M
+U+041D > N
+U+041E > O
+U+041F > P
+U+0420 > R
+U+0421 > S
+U+0422 > T
+U+0423 > U
+U+0424 > F
+U+0425 > Kh
+U+0426 > Is
+U+0427 > Ch
+U+0428 > Sh
+U+0429 > Sch
+U+042A > 
+U+042B > Y
+U+042C > 
+U+042D > E
+U+042E > Yu
+U+042F > Ya
+U+0430 > a
+U+0431 > b
+U+0432 > v
+U+0433 > g
+U+0434 > d
+U+0435 > e
+U+0436 > zh
+U+0437 > z
+U+0438 > i
+U+0439 > y
+U+043A > k
+U+043B > l
+U+043C > m
+U+043D > n
+U+043E > o
+U+043F > p
+U+0440 > r
+U+0441 > s
+U+0442 > t
+U+0443 > u
+U+0444 > f
+U+0445 > kh
+U+0446 > ts
+U+0447 > ch
+U+0448 > sh
+U+0449 > sch
+U+044A > 
+U+044B > y
+U+044C > 
+U+044D > e
+U+044E > yu
+U+044F > ya
+U+0451 > yo

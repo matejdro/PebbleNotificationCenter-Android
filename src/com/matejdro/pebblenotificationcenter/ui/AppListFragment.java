@@ -47,7 +47,7 @@ public class AppListFragment extends Fragment {
 
 	public static AppListFragment newInstance(boolean showSystemApps) {
 		AppListFragment fragment = new AppListFragment();
-
+		
 		Bundle args = new Bundle();
 		args.putBoolean("showSystemApps", showSystemApps);
 		fragment.setArguments(args);
@@ -173,6 +173,7 @@ public class AppListFragment extends Fragment {
 						Timber.d("Removed application %s from checkedApps, checkedApps.size() = %d", appInfo.info.packageName, checkedApps.size());
 					}
 					ListSerialization.saveCollection(editor, checkedApps, PebbleNotificationCenter.SELECTED_PACKAGES);
+					PebbleNotificationCenter.getInMemorySettings().markDirty();
 				}
 			});
 

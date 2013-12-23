@@ -83,4 +83,13 @@
         <item>Include</item>
     </string-array>
 
+    <string name="replacementListTitle">Regex Filters:</string>
+    <string name="replacementListDescription">Global filter by keywords/regular expressions for notifications that should be included/excluded from displaying.</string>
+    <string name="replacement_description">In this window you can define replacement pairs. Notification Center will swap specified characters with specified text. Use that to remove or translate characters that Pebble does not display to readable text.</string>
+    <string name="original_character">Original character:</string>
+    <string name="replacement">Replacement:</string>
+    <string name="enterChracter">You need to enter one character or unicode code for it!</string>
+    <string name="importNoFiles">No dictionary files found.\n\nPlace your replacement dictionary .txt files into NotificationCenter folder on your phone\'s storage and try again.</string>
+    
+    
 </resources>

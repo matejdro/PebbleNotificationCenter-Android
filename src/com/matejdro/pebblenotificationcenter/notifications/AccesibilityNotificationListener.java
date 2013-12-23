@@ -5,10 +5,14 @@ import android.app.Notification;
 import android.os.Parcelable;
 import android.view.accessibility.AccessibilityEvent;
 
-public class AccesibilityNotificationListener extends AccessibilityService {
+import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 
+public class AccesibilityNotificationListener extends AccessibilityService {
+	public static AccesibilityNotificationListener instance;
+	
 	@Override
 	public void onCreate() {
+		instance = this;
 		NotificationHandler.active = true;
 		
 		super.onCreate();
@@ -35,5 +39,4 @@ public class AccesibilityNotificationListener extends AccessibilityService {
 	@Override
 	public void onInterrupt() {
 	}
-
 }

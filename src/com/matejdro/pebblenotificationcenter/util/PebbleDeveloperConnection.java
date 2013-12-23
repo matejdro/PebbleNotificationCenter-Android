@@ -9,12 +9,13 @@ import java.util.concurrent.CountDownLatch;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-import timber.log.Timber;
-
 import android.os.Handler;
 import android.os.HandlerThread;
 
 public class PebbleDeveloperConnection extends WebSocketClient {
+	
+	
+	
 	private UUID receivedUUID;
 	private HandlerThread timeoutThread;
 	private Handler timeoutThreadHandler;
@@ -34,7 +35,7 @@ public class PebbleDeveloperConnection extends WebSocketClient {
 	}
 
 	@Override
-	public void onMessage(ByteBuffer bytes) {
+	public void onMessage(ByteBuffer bytes) {		
 		if (timeoutThread == null || !timeoutThread.isAlive())
 			return;
 		
@@ -95,6 +96,11 @@ public class PebbleDeveloperConnection extends WebSocketClient {
 				}
 			}, 5000);
 
+			//0x01 = CMD (PHONE_TO_WATCH)
+			//0x00 0x01 = Data length (short) - 1
+			//0x17 0x70 = Endpoint (6000 - APP_MANAGER)
+			//0x07 = Data (7)
+			
 			byte[] requestCurrentApp = new byte[] { 0x1,0x0,0x1,0x17,0x70,0x7 };
 			send(requestCurrentApp);			
 			

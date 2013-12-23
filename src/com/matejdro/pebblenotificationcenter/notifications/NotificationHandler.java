@@ -1,8 +1,8 @@
 package com.matejdro.pebblenotificationcenter.notifications;
 
-import java.util.Iterator;
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
 import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,13 +10,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-import android.preference.PreferenceManager;
 
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
-import com.matejdro.pebblenotificationcenter.util.ListSerialization;
-
-import timber.log.Timber;
+import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 
 public class NotificationHandler {
 	public static boolean active = false;
@@ -25,7 +22,8 @@ public class NotificationHandler {
 	{
 		Timber.i("Processing notification from package %s", pack);
 
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		SettingsMemoryStorage settings = PebbleNotificationCenter.getInMemorySettings();
+		SharedPreferences preferences = settings.getSharedPreferences();
 		
 		boolean enableOngoing = preferences.getBoolean("enableOngoing", false);
 		boolean isOngoing = (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0;
@@ -36,7 +34,7 @@ public class NotificationHandler {
 		}
 
 		boolean includingMode = preferences.getBoolean(PebbleNotificationCenter.APP_INCLUSION_MODE, false);
-		boolean notificationExist = ListSerialization.listContains(preferences, PebbleNotificationCenter.SELECTED_PACKAGES, pack);
+		boolean notificationExist = settings.getSelectedPackages().contains(pack);
 
 		if (includingMode != notificationExist) {
 			Timber.d("Discarding notification from %s because package is not selected", pack);
@@ -62,10 +60,7 @@ public class NotificationHandler {
 		}
 
 		String patternMatched = null;
-		Iterator<String> blacklistRegexes = ListSerialization.getDirectIterator(preferences, PebbleNotificationCenter.REGEX_LIST);
-		while (blacklistRegexes.hasNext()) {
-			String regex = blacklistRegexes.next();
-			Pattern pattern = Pattern.compile(regex);
+		for (Pattern pattern : settings.getRegexPatterns()) {	
 			
 			if (pattern.matcher(title).find() || (secondaryTitle != null && pattern.matcher(secondaryTitle).find()) || (pattern.matcher(text).find())) {
 				patternMatched = pattern.toString();
@@ -112,7 +107,7 @@ public class NotificationHandler {
 		return applicationName;
 
 	}
-	
+		
 	public static boolean isNotificationListenerSupported()
 	{
 		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;

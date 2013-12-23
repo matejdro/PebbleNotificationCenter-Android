@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -64,6 +65,7 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
         });
 
         checkServiceRunning();
+        Environment.getExternalStoragePublicDirectory("NotificationCenter");
     }
 
 	@Override
@@ -160,11 +162,14 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
         public static final int PAGE_DEFAULT = 0;
         public static final int PAGE_APPS = 1;
         public static final int PAGE_APPS_SYSTEM = 2;
+        public static final int PAGE_TEXT_REPLACEMENT = 3;
 
         public static final String[] TITLES = {
                 "General",
                 "User Apps",
-                "System Apps"
+                "System Apps",
+                "Character Replacement"
+// 				  Disabled for now - not yet ready
         };
 
         public AppSectionsPagerAdapter(FragmentManager fm) {
@@ -179,11 +184,14 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
                     return new OptionsFragment();
 
                 case PAGE_APPS:
-                    return new AppListFragment().newInstance(false);
+                    return AppListFragment.newInstance(false);
 
                 case PAGE_APPS_SYSTEM:
-                    return new AppListFragment().newInstance(true);
+                    return AppListFragment.newInstance(true);
 
+                case PAGE_TEXT_REPLACEMENT:
+                    return new ReplacerFragment();
+                    
                 default:
                     return new Fragment();
             }

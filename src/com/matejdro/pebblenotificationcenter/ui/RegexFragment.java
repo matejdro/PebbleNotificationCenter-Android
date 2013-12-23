@@ -89,7 +89,7 @@ public class RegexFragment extends Fragment {
         regexListView  = (ListView) getView().findViewById(R.id.regexList);
         regexListView.addHeaderView(regexListViewHeader);
         regexListView.setAdapter(regexAdapter);
-
+        
         //Click handler for list items.
         regexListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -105,6 +105,7 @@ public class RegexFragment extends Fragment {
     private void saveList()
     {
         ListSerialization.saveCollection(editor, regexList, PebbleNotificationCenter.REGEX_LIST);
+		PebbleNotificationCenter.getInMemorySettings().markDirty();
         regexAdapter.notifyDataSetChanged();
     }
 
