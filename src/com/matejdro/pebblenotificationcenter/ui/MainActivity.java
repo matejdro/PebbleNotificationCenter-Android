@@ -169,7 +169,6 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
                 "User Apps",
                 "System Apps",
                 "Character Replacement"
-// 				  Disabled for now - not yet ready
         };
 
         public AppSectionsPagerAdapter(FragmentManager fm) {

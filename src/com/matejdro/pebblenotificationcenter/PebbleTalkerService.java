@@ -429,13 +429,10 @@ public class PebbleTalkerService extends Service {
 	private void moreTextRequested(PebbleDictionary data)
 	{
 		int id = data.getInteger(1).intValue();
-
-		Timber.d("More text %d" , id);
 		
 		PendingNotification notification = sentNotifications.get(id);
 		if (notification == null)
 		{
-			Timber.d("Transfer completed 1");
 			notificationTransferCompleted();
 			return;
 		}
@@ -444,12 +441,9 @@ public class PebbleTalkerService extends Service {
 
 		if (notification.textChunks.size() <= chunk)
 		{
-			Timber.d("Transfer completed 2" , id);
 			notificationTransferCompleted();
 			return;
 		}
-
-		Timber.d("Chunk: %d" , chunk);
 
 		data = new PebbleDictionary();
 
@@ -459,7 +453,6 @@ public class PebbleTalkerService extends Service {
 		data.addString(3, notification.textChunks.get(chunk));
 		
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
-		Timber.d("Sent text");
 
 		lastCommunicationTime = System.currentTimeMillis();
 	}
