@@ -1,6 +1,13 @@
 package com.matejdro.pebblenotificationcenter.util;
 
+import java.io.Console;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import android.support.v4.text.BidiFormatter;
+import android.util.Log;
 
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
@@ -15,9 +22,57 @@ public class TextUtil {
 	public static String prepareString(String text, int length)
 	{
 		text = fixInternationalAndTrim(text, length);
+		text = applyRTL(text);
 		return trimString(text, length, true);
 	}
 
+	public static String applyRTL(String text){	
+		String reversed= new StringBuilder(text).reverse().toString();
+		String rx = "([a-zA-Z0-9]+)";
+		Pattern p = Pattern.compile(rx);
+        Matcher m = p.matcher(reversed);
+        while(m.find()) {
+        	reversed = reverseSubString(reversed, m.start(), m.end());
+        }
+        Log.i("reversed-before", reversed);
+        ArrayList<String> lines = new ArrayList<String>();
+        int start = 0;
+        int max = 15;
+        
+        if (max >= reversed.length() -1) return reversed;
+        
+        int end = max;
+        
+        Log.i("full length", ""+reversed.length());
+        
+        while (start < reversed.length()){
+        	Log.i("start", ""+start);
+        	Log.i("end",""+end);
+        	while (reversed.charAt(end)!=' ' && end !=start){
+        		end--;
+        	}
+        	if (end == start) {
+        		end = start + max >= reversed.length()  ? reversed.length() : start + max;
+        	}
+        	Log.i("new end", ""+end);
+        	lines.add(reversed.substring(start, end));
+        	Log.i("line", reversed.substring(start, end));
+        	start = end + 1;
+        	end = start + max >= reversed.length() ? reversed.length() - 1 : start + max;
+        }
+
+        StringBuilder res = new StringBuilder();
+        for ( int i =lines.size()-1; i >-1 ; i--){
+        	res.append(lines.get(i) + '\n');        	
+        }
+		return res.toString();
+		
+	}
+	
+	public static String reverseSubString(String text, int start, int end){
+		String str = new StringBuilder(text.substring(start, end)).reverse().toString();
+		return text.substring(0,start) + str + text.substring(end);
+	}
 
 	public static String fixInternationalAndTrim(String text, int length)
 	{
@@ -79,4 +134,4 @@ public class TextUtil {
 		return text;
 
 	}
-}
+} 
