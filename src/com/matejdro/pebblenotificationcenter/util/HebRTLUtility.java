@@ -1,4 +1,4 @@
-package com.matejdro.pebblenotificationcenter;
+package com.matejdro.pebblenotificationcenter.util;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

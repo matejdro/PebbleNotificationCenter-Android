@@ -1,6 +1,7 @@
 package com.matejdro.pebblenotificationcenter.util;
 
 import java.io.Console;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -9,7 +10,7 @@ import java.util.regex.Pattern;
 import android.support.v4.text.BidiFormatter;
 import android.util.Log;
 
-import com.matejdro.pebblenotificationcenter.HebRTLUtility;
+import com.matejdro.pebblenotificationcenter.util.HebRTLUtility;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 
