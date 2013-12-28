@@ -15,6 +15,11 @@ public class TextUtil {
 	public static String prepareString(String text, int length)
 	{
 		text = fixInternationalAndTrim(text, length);
+        
+        if (RTLUtility.getInstance().isRTL(text)){            
+            text = RTLUtility.getInstance().format(text, 15);        	
+        }
+        
 		return trimString(text, length, true);
 	}
 
