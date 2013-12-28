@@ -1,61 +1,120 @@
 package com.matejdro.pebblenotificationcenter.util;
 
 import java.util.ArrayList;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.util.Log;
-
-public class HebRTLUtility {
+/**
+ * This class takes care of preparing rtl+non-rtl texts to be shown on the pebble
+ * 
+ * Since pebble OS doesn't support RTL, displaying RTL texts in it is quite problematic, and we are
+ * required to use a somewhat hacky solution, involving manual insertion of line breaks and reordering of 
+ * RTL portions of the text.
+ * This utility will reformat the text in a way that might not look 1-to-1 like it does on the phone, it will be
+ * readable on 90% of the cases.
+ * 
+ * @author arieh
+ *
+ */
+public class RTLUtility {
+	private static RTLUtility ref;
+	protected Pattern rtl_rx;
+	protected String heb_range = "\u05D0-\u05EA";
+	protected String arabic_range = "\u0600-\u06FF"; 
+	protected String rx_str;
+	
+	private RTLUtility(){
+		rx_str = generateRegExp();
+		rtl_rx = Pattern.compile(rx_str);
+	}
+	
+	public static RTLUtility getInstance(){
+		if (ref == null){
+			ref = new RTLUtility();
+		}
+		return ref;
+	}
+	
+	public boolean isRTL(String text){
+		Matcher m = rtl_rx.matcher(text);
+		if (m.find()){
+			return true;
+		}
+		return false;
+	}
+	
 	/**
-	 * If string contains Hebrew characters, method will format it in a way
-	 * that will be readable. 
+	 * Will reverse RTL sections of a string, but will not enter any new lines into text
+	 * @param text
+	 * @return String
+	 */
+	public String format(String text){
+		if (false == isRTL(text)) return text;
+
+        ArrayList<String> fragments = getFragments(text);
+		
+        return reorgRTLString(fragments, 0, false);
+	}
+	
+	/**
+	 * If string contains rtl characters, method will format it in a way
+	 * that will be readable, including separating the text into lines. 
 	 * @param text text to format
 	 * @param max  maximum characters per line 
 	 * @return
 	 */
-	public static String format(String text, int max){
+	public String format(String text, int max){
+		if (false == isRTL(text)) return text;
+		
         Log.d("Reverting string", text);
+       
+        ArrayList<String> fragments = getFragments(text);
         
-        Pattern heb_re = Pattern.compile("([\u05D0-\u05EA][\u05D0-\u05EA\\W]+)");
-        Matcher matcher = heb_re.matcher(text);
-        String str = text;
+        String str = reorgRTLString(fragments, max, true);
+
+        Log.d("String reverted", str);
+        return str;
+    }
+	
+	protected String generateRegExp(){
+		return "(["+heb_range+arabic_range+"]["+heb_range+arabic_range+"\\W]+)";
+	}
+	
+	protected ArrayList<String> getFragments(String text){
+		Matcher matcher = rtl_rx.matcher(text);
         int current = 0;
         int start;
         int end=0;
-        int first_dir = 0;
 
         ArrayList<String> fragments = new ArrayList<String>();
         
+        //Separate text to one-directional fragments.
         while (matcher.find()) {
         	start = matcher.start();
         	end   = matcher.end();
         	if (start > current) {
         		fragments.add(text.substring(current, start));
-        		if (current == 0) first_dir = 1;
         	}
         	fragments.add(reverseSubString(text, matcher.start(),matcher.end()));
             current = end;
         }
-
-        if (end == 0) return text;
         
         if (end != text.length()-1) {
         	fragments.add(text.substring(end));
         }
-        
-        str = reorgRTLString(fragments, max, first_dir);
-
-        Log.d("String reverted", str);
-        return str;
-    }
+		
+        return fragments;
+	}
     
-    protected static String reorgRTLString(ArrayList<String> frags, int max, int first_dir){
+    protected String reorgRTLString(ArrayList<String> frags, int max, boolean format_lines){
     	StringBuilder result = new StringBuilder();
+    	int first_dir = isRTL(frags.get(0)) ? 0 : 1;
     	String line;
     	
     	for (int i=0; i < frags.size(); i++){
-    		if (first_dir % 2 == 0){
+    		if (first_dir % 2 == 0 && format_lines){
         		line = formatLines(frags.get(i), max);    			
     		}else {
     			line = frags.get(i);
@@ -66,7 +125,7 @@ public class HebRTLUtility {
     	return result.toString();
     }
 
-    protected static String reverseSubString(String text, int start, int end){
+    protected String reverseSubString(String text, int start, int end){
         String str = new StringBuilder(text.substring(start, end)).reverse().toString();
         if (str.charAt(0) == ' ') {
             str = str.substring(1) + " ";
@@ -74,7 +133,7 @@ public class HebRTLUtility {
         return str;
     }
 
-    protected static String formatLines(String text, int max) {
+    protected String formatLines(String text, int max) {
         ArrayList<String> lines = new ArrayList<String>();
 
         if (max >= text.length() -1) return text;
@@ -110,6 +169,4 @@ public class HebRTLUtility {
         }
         return res.toString();
     }
-
-
 }

@@ -2,17 +2,12 @@ package com.matejdro.pebblenotificationcenter.util;
 
 import java.io.Console;
 
-import java.util.ArrayList;
+
+
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import android.support.v4.text.BidiFormatter;
-import android.util.Log;
-
-import com.matejdro.pebblenotificationcenter.util.HebRTLUtility;
+import com.matejdro.pebblenotificationcenter.util.RTLUtility;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 
 
 public class TextUtil {
@@ -24,7 +19,11 @@ public class TextUtil {
     public static String prepareString(String text, int length)
     {
         text = fixInternationalAndTrim(text, length);
-        text = HebRTLUtility.format(text, 15);
+        
+        if (RTLUtility.getInstance().isRTL(text)){            
+            text = RTLUtility.getInstance().format(text, 15);        	
+        }
+        
         return trimString(text, length, true);
     }
 
