@@ -3,6 +3,8 @@ package com.matejdro.pebblenotificationcenter.notifications;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Context;
@@ -134,11 +136,13 @@ public class NotificationParser {
 	{
 		try {
 			Class secretClass = views.getClass();
-
+			Class baseActionClass = Class.forName("android.widget.RemoteViews$Action");
+			
 			Field actionsField = secretClass.getDeclaredField("mActions");
 
 			actionsField.setAccessible(true);
 
+			
 			ArrayList<Object> actions = (ArrayList<Object>) actionsField.get(views);
 			for (Object action : actions) {			
 				if (!action.getClass().getName().contains("$ReflectionAction"))
@@ -151,7 +155,7 @@ public class NotificationParser {
 					continue;
 
 
-				Field idField = action.getClass().getSuperclass().getDeclaredField("viewId");
+				Field idField = baseActionClass.getDeclaredField("viewId");
 				idField.setAccessible(true);
 				int viewId = idField.getInt(action);
 
