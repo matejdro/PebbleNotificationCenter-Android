@@ -395,9 +395,11 @@ public class PebbleTalkerService extends Service {
 	}
 	
 	private final Runnable makeIdle = new Runnable() {
-		public void run() {
-			commBusy = false;
-			//commWentIdle();
+		public void run() {			
+			if (PebbleKit.isWatchConnected(PebbleTalkerService.this))
+				commWentIdle();
+			else
+				commBusy = false;
 		}
 	};
 	/**
@@ -407,7 +409,7 @@ public class PebbleTalkerService extends Service {
 	{
 		commBusy = true;
 		handler.removeCallbacks(makeIdle);
-		handler.postDelayed(makeIdle, 10000);
+		handler.postDelayed(makeIdle, 5000);
 	}
 
 	private void menuPicked(PebbleDictionary data)
