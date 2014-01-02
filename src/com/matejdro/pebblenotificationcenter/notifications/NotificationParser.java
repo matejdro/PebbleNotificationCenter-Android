@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter.notifications;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import timber.log.Timber;
 
@@ -142,9 +143,14 @@ public class NotificationParser {
 
 			actionsField.setAccessible(true);
 
-			
 			ArrayList<Object> actions = (ArrayList<Object>) actionsField.get(views);
-			for (Object action : actions) {			
+			for (Object action : actions) {		
+				
+				Timber.d("Class: %s", action.getClass().getName());
+				Timber.d("Super Class: %s", action.getClass().getSuperclass().getName());
+				Timber.d("Super Class Fields: %s", Arrays.toString(action.getClass().getSuperclass().getDeclaredFields()));
+
+				
 				if (!action.getClass().getName().contains("$ReflectionAction"))
 					continue;
 
