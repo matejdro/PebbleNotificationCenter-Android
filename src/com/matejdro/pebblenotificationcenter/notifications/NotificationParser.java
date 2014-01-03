@@ -9,6 +9,7 @@ import timber.log.Timber;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.RemoteViews;
@@ -160,10 +161,16 @@ public class NotificationParser {
 				if (type != 9 && type != 10)
 					continue;
 
-
-				Field idField = baseActionClass.getDeclaredField("viewId");
-				idField.setAccessible(true);
-				int viewId = idField.getInt(action);
+				int viewId = -1;
+				try
+				{
+					Field idField = baseActionClass.getDeclaredField("viewId");
+					idField.setAccessible(true);
+					viewId = idField.getInt(action);
+				}
+				catch (NoSuchFieldException e)
+				{
+				}
 
 				Field valueField = action.getClass().getDeclaredField("value");
 				valueField.setAccessible(true);
