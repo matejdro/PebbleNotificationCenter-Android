@@ -39,8 +39,6 @@ public class PebbleTalkerService extends Service {
 	private UUID previousUUID;
 	
 	private NotificationListAdapter listHandler;
-
-	private long lastCommunicationTime = 0;
 	
 	private boolean commBusy = false;
 	private Queue<Integer> notificationRemovalQueue = new ArrayDeque<Integer>();
@@ -151,8 +149,6 @@ public class PebbleTalkerService extends Service {
 		data.addString(6, notification.subtitle);
 
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
-
-		lastCommunicationTime = System.currentTimeMillis();
 
 		PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
 		commStarted();
@@ -301,12 +297,6 @@ public class PebbleTalkerService extends Service {
 			text = text.substring(chunk.length());
 		}
 
-		if (System.currentTimeMillis() - lastCommunicationTime > 2000 && curSendingNotification != null)
-		{
-			sendingQueue.add(curSendingNotification);
-			curSendingNotification = null;
-		}
-
 		Log.d("PebbleNotifier", "not sending flags:" + (curSendingNotification != null) + " " + commBusy);
 		
 		if (commBusy)
@@ -396,6 +386,13 @@ public class PebbleTalkerService extends Service {
 	
 	private final Runnable makeIdle = new Runnable() {
 		public void run() {			
+			
+			if (curSendingNotification != null)
+			{
+				sendingQueue.add(curSendingNotification);
+				curSendingNotification = null;
+			}
+			
 			if (PebbleKit.isWatchConnected(PebbleTalkerService.this))
 				commWentIdle();
 			else
@@ -455,8 +452,7 @@ public class PebbleTalkerService extends Service {
 		data.addString(3, notification.textChunks.get(chunk));
 		
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
-
-		lastCommunicationTime = System.currentTimeMillis();
+		commStarted();
 	}
 
 	private void notificationTransferCompleted()

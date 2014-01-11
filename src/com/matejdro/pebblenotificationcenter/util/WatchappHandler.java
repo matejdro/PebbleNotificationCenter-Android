@@ -15,7 +15,7 @@ import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 
 public class WatchappHandler {
-	public static final int INCLUDED_WATCHFACE = 6;
+	public static final int INCLUDED_WATCHFACE = 7;
 
 	public static boolean isLatest(SharedPreferences settings)
 	{
