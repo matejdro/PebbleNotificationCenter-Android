@@ -147,10 +147,6 @@ public class NotificationParser {
 			ArrayList<Object> actions = (ArrayList<Object>) actionsField.get(views);
 			for (Object action : actions) {		
 				
-				Timber.d("Class: %s", action.getClass().getName());
-				Timber.d("Super Class: %s", action.getClass().getSuperclass().getName());
-				Timber.d("Super Class Fields: %s", Arrays.toString(action.getClass().getSuperclass().getDeclaredFields()));
-
 				
 				if (!action.getClass().getName().contains("$ReflectionAction"))
 					continue;
