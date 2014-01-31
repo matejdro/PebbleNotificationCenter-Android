@@ -43,7 +43,7 @@ import com.matejdro.pebblenotificationcenter.ui.ReplacerFilePickerDialog.FilePic
 import com.matejdro.pebblenotificationcenter.util.ListSerialization;
 
 public class ReplacerFragment extends Fragment {
-	public static Pattern UNICODE_PATTERN = Pattern.compile("U\\+([0-9a-fA-F]{4-5})"); 
+	public static Pattern UNICODE_PATTERN = Pattern.compile("U\\+([0-9a-fA-F]{4,5})"); 
 	public static DecimalFormat FOUR_DIGIT_FORMAT = new DecimalFormat("0000");
 	private static SharedPreferences preferences;
 	private static SharedPreferences.Editor editor;

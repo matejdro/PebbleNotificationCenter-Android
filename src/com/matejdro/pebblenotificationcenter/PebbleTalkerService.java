@@ -61,10 +61,11 @@ public class PebbleTalkerService extends Service {
 			devConn.close();
 		}
 		historyDb.close();
+		handler.removeCallbacksAndMessages(null);
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+	public void onCreate() {
 		handler = new Handler();
 		instance = this;
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -77,6 +78,12 @@ public class PebbleTalkerService extends Service {
 		} catch (InterruptedException e) {
 		} catch (URISyntaxException e) {
 		}
+
+		super.onCreate();
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		
 		if (intent != null && intent.hasExtra("id"))
 		{
@@ -111,7 +118,6 @@ public class PebbleTalkerService extends Service {
 				previousUUID = prev;
 			}
 		}
-		
 		
 		curSendingNotification = notification;
 		sentNotifications.put(notification.id, notification);
@@ -296,8 +302,6 @@ public class PebbleTalkerService extends Service {
 			notification.textChunks.add(chunk);
 			text = text.substring(chunk.length());
 		}
-
-		Log.d("PebbleNotifier", "not sending flags:" + (curSendingNotification != null) + " " + commBusy);
 		
 		if (commBusy)
 		{
@@ -350,6 +354,8 @@ public class PebbleTalkerService extends Service {
 	 */
 	private boolean commWentIdle()
 	{
+		Log.i("Notification Center", "Went idle");
+
 		handler.removeCallbacks(makeIdle);
 
 		if (curSendingNotification != null)
@@ -386,7 +392,8 @@ public class PebbleTalkerService extends Service {
 	
 	private final Runnable makeIdle = new Runnable() {
 		public void run() {			
-			
+			Log.i("Notification Center", "Idle timeout");
+
 			if (curSendingNotification != null)
 			{
 				sendingQueue.add(curSendingNotification);
@@ -404,6 +411,8 @@ public class PebbleTalkerService extends Service {
 	 */
 	private void commStarted()
 	{
+		Log.i("Notification Center", "Not Idle");
+
 		commBusy = true;
 		handler.removeCallbacks(makeIdle);
 		handler.postDelayed(makeIdle, 5000);
@@ -427,11 +436,15 @@ public class PebbleTalkerService extends Service {
 
 	private void moreTextRequested(PebbleDictionary data)
 	{
+		Log.d("Notification Center", "More text requested...");
+
 		int id = data.getInteger(1).intValue();
 		
 		PendingNotification notification = sentNotifications.get(id);
 		if (notification == null)
 		{
+			Log.d("Notification Center", "Unknown ID!");
+
 			notificationTransferCompleted();
 			return;
 		}
@@ -440,6 +453,8 @@ public class PebbleTalkerService extends Service {
 
 		if (notification.textChunks.size() <= chunk)
 		{
+			Log.d("Notification Center", "Too much chunks!");
+
 			notificationTransferCompleted();
 			return;
 		}
@@ -451,14 +466,21 @@ public class PebbleTalkerService extends Service {
 		data.addUint8(2, (byte) chunk);
 		data.addString(3, notification.textChunks.get(chunk));
 		
+		Log.d("Notification Center", "Sending more text...");
+		
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
 		commStarted();
 	}
 
 	private void notificationTransferCompleted()
 	{
+		Log.d("Notification Center", "Transfer completed...");
+
 		curSendingNotification = null;
 		
+		Log.d("Notification Center", "csn null: " + (curSendingNotification == null));
+		Log.d("Notification Center", "queue size: " + sendingQueue.size());
+
 		if (commWentIdle())
 			return;		
 	}
