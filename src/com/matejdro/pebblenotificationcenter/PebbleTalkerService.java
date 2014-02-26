@@ -525,7 +525,7 @@ public class PebbleTalkerService extends Service {
 		configBytes[2] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.FONT_BODY, "4"));
 		configBytes[3] = (byte) (timeout >>> 0x08);
 		configBytes[4] = (byte) timeout;
-		configBytes[5] = (byte) Math.min(200, Integer.parseInt(settings.getString("vibratePeriodicallyPeriod", "0")));
+		configBytes[5] = (byte) Math.min(200, Integer.parseInt(settings.getString("vibratePeriodicallyPeriod", "20")));
 		configBytes[6] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.VIBRATION_MODE, "4"));;
 
 		byte flags = 0;

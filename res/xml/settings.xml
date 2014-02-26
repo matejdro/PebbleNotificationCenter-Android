@@ -46,7 +46,7 @@
             android:summary="Automatically switch to most recent notification instead of just queing it"
             android:title="Switch to most recent notification" />
         <EditTextPreference
-            android:defaultValue="0"
+            android:defaultValue="20"
             android:key="vibratePeriodicallyPeriod"
             android:summary="After first vibrate, Pebble will also vibrate every X seconds to notify you there are notifications waiting. You can press any button on watch to stop this. Enter 0 to disable."
             android:title="Periodic vibration period" />
