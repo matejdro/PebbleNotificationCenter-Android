@@ -98,6 +98,10 @@
             android:key="lightScreenNotification"
             android:title="Light screen on notification"
             android:summary="Turn on display light when notification arrives" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="noVibrateCharge"
+            android:title="Don't vibrate when charging"/>
         
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >

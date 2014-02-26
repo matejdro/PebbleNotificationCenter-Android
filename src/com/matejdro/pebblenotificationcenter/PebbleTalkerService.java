@@ -534,6 +534,8 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (NotificationHandler.isNotificationListenerSupported() ? 0x04 : 0);
 		flags |= (byte) (notificationWaiting ? 0x08 : 0);
 		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATION, false) ? 0x10 : 0);
+		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.DONT_VIBRATE_WHEN_CHARGING, true) ? 0x20 : 0);
+
 		configBytes[7] = flags;
 
 		configBytes[8] = (byte) (WatchappHandler.INCLUDED_WATCHFACE >>> 0x08);
