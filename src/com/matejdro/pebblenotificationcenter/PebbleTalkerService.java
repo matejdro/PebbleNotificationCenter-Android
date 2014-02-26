@@ -544,8 +544,6 @@ public class PebbleTalkerService extends Service {
 		data.addBytes(1, configBytes);
 
 		Log.d("Notification Center", "Sending config...");
-		Log.d("Notification Center", Arrays.toString(configBytes));
-
 		
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
 	}
