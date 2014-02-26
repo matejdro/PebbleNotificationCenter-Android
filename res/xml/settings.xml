@@ -45,29 +45,25 @@
             android:key="autoSwitch"
             android:summary="Automatically switch to most recent notification instead of just queing it"
             android:title="Switch to most recent notification" />
-
-        <ListPreference
+        <EditTextPreference
             android:defaultValue="0"
-            android:entries="@array/fontSizeText"
-            android:entryValues="@array/fontSizeValues"
-            android:key="textSize"
-            android:title="Text Size" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="vibratePeriodically"
-            android:summary="When checked, Pebble will vibrate every 10 seconds when you have unread notifications. You can stop this by pressing any button."
-            android:title="Vibrate periodically" />
-
+            android:key="vibratePeriodicallyPeriod"
+            android:summary="After first vibrate, Pebble will also vibrate every X seconds to notify you there are notifications waiting. You can press any button on watch to stop this. Enter 0 to disable."
+            android:title="Periodic vibration period" />
+        
         <EditTextPreference
             android:defaultValue="0"
             android:key="watchappTimeout"
             android:summary="After this amount of seconds being idle, watchapp will close automaticaly. You can press any button on watch to stop this timer. Enter 0 to disable."
             android:title="Auto-Close timeout" />
 
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="vibrateLonger"
-            android:title="Vibrate longer on first notification" />
+        <ListPreference
+            android:defaultValue="1"
+            android:key="vibrateMode"
+            android:title="Vibrate mode"
+            android:entries="@array/vibrationModes"
+            android:entryValues="@array/vibrationModeValues"
+             />
         <CheckBoxPreference
             android:defaultValue="true"
             android:enabled="@bool/supportsNotificationCenter"
@@ -75,10 +71,34 @@
             android:summary="When checked, all notifications dismissed on phone will also be automatically dismissed on Pebble."
             android:title="Dismiss upwards" />
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="closeToLastClosed"
             android:title="Close to previously running app"
             android:summary="You need to enable Developer Connection inside Pebble app to get this to work." />
+        <ListPreference
+            android:defaultValue="6"
+            android:entries="@array/pebbleFonts"
+            android:entryValues="@array/fontValues"
+            android:key="fontTitle"
+            android:title="Title font" />
+        <ListPreference
+            android:defaultValue="5"
+            android:entries="@array/pebbleFonts"
+            android:entryValues="@array/fontValues"
+            android:key="fontSubtitle"
+            android:title="Subtitle font" />
+        <ListPreference
+            android:defaultValue="4"
+            android:entries="@array/pebbleFonts"
+            android:entryValues="@array/fontValues"
+            android:key="fontBody"
+            android:title="Body font" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="lightScreenNotification"
+            android:title="Light screen on notification"
+            android:summary="Turn on display light when notification arrives" />
+        
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference

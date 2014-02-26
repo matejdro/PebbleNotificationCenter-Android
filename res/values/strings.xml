@@ -51,10 +51,55 @@
         <item>Medium</item>
         <item>Large</item>
     </string-array>
-    <string-array name="fontSizeValues">
+    <string-array name="vibrationModes">
+        <item>Disabled</item>
+        <item>Vibrate longer on first notification, shorter on all others</item>
+        <item>Allways vibrate shorter</item>
+    </string-array>
+   <string-array name="vibrationModeValues">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+    </string-array>
+    <string-array name="pebbleFonts">
+        <item>Gothic 14</item>
+        <item>Gothic 14 Bold</item>
+        <item>Gothic 18</item>
+        <item>Gothic 18 Bold</item>
+        <item>Gothic 24</item>
+        <item>Gothic 24 Bold</item>
+        <item>Gothic 28</item>
+        <item>Gothic 28 Bold</item>
+        <item>Bitham 30 Black</item>
+        <item>Bitham 42 Bold</item>
+        <item>Bitham 42 Light</item>
+        <item>Bitham 42 Medium Numbers</item>
+        <item>Bitham 34 Medium Numbers</item>
+        <item>Bitham 34 Light Subset</item>
+        <item>Bitham 18 Light Subset</item>
+        <item>Roboto 21 Condensed</item>
+        <item>Roboto 49 Subset</item>
+        <item>Droid Serif 28 Bold</item>
+    </string-array>
+    <string-array name="fontValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
     </string-array>
     <string-array name="tasker_actions">
         <item>Send notification</item>
@@ -90,6 +135,5 @@
     <string name="replacement">Replacement:</string>
     <string name="enterChracter">You need to enter one character or unicode code for it!</string>
     <string name="importNoFiles">No dictionary files found.\n\nPlace your replacement dictionary .txt files into NotificationCenter folder on your phone\'s storage and try again.</string>
-    
-    
+
 </resources>

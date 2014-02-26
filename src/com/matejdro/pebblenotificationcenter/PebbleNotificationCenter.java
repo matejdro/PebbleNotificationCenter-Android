@@ -13,6 +13,11 @@ public class PebbleNotificationCenter extends android.app.Application {
     public static final String REGEX_LIST = "BlacklistRegexes";
     public static final String REPLACING_KEYS_LIST = "ReplacingKeys";
     public static final String REPLACING_VALUES_LIST = "ReplacingValues";
+    public static final String FONT_TITLE = "fontTitle";
+    public static final String FONT_SUBTITLE = "fontSubtitle";
+    public static final String FONT_BODY = "fontBody";
+    public static final String LIGHT_SCREEN_ON_NOTIFICATION = "lightScreenNotification";
+    public static final String VIBRATION_MODE = "vibrateMode";
 
     public static final String CLOSE_TO_LAST_CLOSED = "closeToLastClosed";
     

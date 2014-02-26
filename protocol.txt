@@ -3,7 +3,7 @@ First byte (dictionary entry 0) is always uint8 representing packet id
 Pebble --> Phone
 
 	Packet 0 - Init packet
-	Sent from Pebble when app is opened. After that, phone will send either packet 0 or packet 2.
+	Sent from Pebble when app is opened. After that, phone will send packet 5.
 	No additional data
 	
 	Packet 1 - Request additional notification text
@@ -46,6 +46,9 @@ Pebble --> Phone
 	Packet 9 - Dismiss ACK (ACK for Phone->Pebble packet 4)
 		 2 = Close app after receiving this packet. If this key is present, pebble app will be closed (also see Packet 7) - uint8
 				
+	Packet 10 - Config received
+		Sent after config was received. Phone should send pending notifications or list of recent notifications. 			
+	
 Phone --> Pebble
 
 	Packet 0 - New notification packet
@@ -57,10 +60,6 @@ Phone --> Pebble
 			[1] = Flags - uint8
 				First bit (0x01) = Is notification dismissable
 				Second bit (0x02) = Notification type (1 = from history, 0 = live)
-				Third bit (0x04) = Switch to new notification instead of staying at current one (1 = enabled, 0 = disabled)
-				Fourth bit (0x08) = Repeatedly vibrate until user interacts (1 = enabled, 0 = disabled)
-				Fifth bit (0x10) = Long vibrate on first notification
-				Sixth bit (0x20) = Display closing screen (needed for Glance switch)
 		3 = Closing timeout - uint16
 		4 = Amount of chunks text is split into - uint8
 		5 = Title (max 30 bytes) - cstring
@@ -83,11 +82,31 @@ Phone --> Pebble
 		5 - Subtitle of this notification (up to 20 bytes) - cstring
 		6 - Date string (up to 20 bytes) - cstring
 
-	Packet 3 - Display menu
-	Packet instructs Pebble to display main menu
-	No additional data.
+	Packet 3 - Pebble settings
+	Sends all settings to Pebble
+	Additional data:
+		1 = Config (byte array)
+			[0] = Title font (0-17)
+			[1] = Subtitle font (0-17)
+			[2] = Body font (0-17)
+			[3] = Timeout in seconds (first byte)
+			[4] = Timeout in seconds (second byte)
+			[5] = Vibrating period (0 = disabled)
+			[6] = Vibrating mode (0 = disabled, 1 = vibrate longer for first notification, 2 = always vibrate same)
+			[7] = Flags
+				First bit (0x01) = Switch to new notification instead of staying at current one
+				Second bit (0x02) = Display closing screen (needed for "switch to last app" feature)
+				Third bit (0x04) = Is active notifications menu supported?
+				Fourth bit (0x08) = Is notification waiting to be sent?
+				Fifth bit (0x10) = Enable LCD light when notification arrives
+
+			[8] = Compatible watchapp version (first byte)
+			[9] = Compatible watchapp version (second byte)
+
 	
 	Packet 4 - Dismiss notification
 	Removes notification from Pebble
 	Additional data:
 		1 = Unique notification id (int32)	
+		
+	
