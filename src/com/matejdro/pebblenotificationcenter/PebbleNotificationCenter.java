@@ -2,7 +2,6 @@ package com.matejdro.pebblenotificationcenter;
 
 import timber.log.Timber;
 import timber.log.Timber.DebugTree;
-import android.content.Context;
 
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 

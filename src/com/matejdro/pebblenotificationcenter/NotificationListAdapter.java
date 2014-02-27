@@ -3,7 +3,6 @@ package com.matejdro.pebblenotificationcenter;
 import java.text.DateFormat;
 import java.util.Date;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.getpebble.android.kit.PebbleKit;

@@ -2,12 +2,8 @@ package com.matejdro.pebblenotificationcenter.tasker;
 
 import java.io.IOException;
 
-import net.dinglisch.android.tasker.TaskerPlugin;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import timber.log.Timber;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,8 +35,6 @@ public class TaskerReceiver extends BroadcastReceiver {
 			String title = bundle.getString("title");
 			String subtitle = bundle.getString("subtitle");
 			String body = bundle.getString("body");
-
-			
 			
 			boolean storeInHistory = bundle.getBoolean("storeInHistory");
 						
@@ -48,20 +42,33 @@ public class TaskerReceiver extends BroadcastReceiver {
 		}
 		else if (action == 1)
 		{			
-			boolean enable = bundle.getBoolean("value");
+			Object value = bundle.get("value");
 			String key = bundle.getString("key");
 			
-			if (isSettingCheckBox(context, key))
-			{
-				Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-				editor.putBoolean(key, enable);
-				editor.apply();
-			}
+			int settingType = getSettingType(context, key);
+			if (settingType < 0)
+				return;
+			
+			Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 
+			
+			if (settingType == 0)
+			{
+				if (value instanceof Boolean)
+					editor.putBoolean(key, (Boolean) value);
+				else
+					editor.putBoolean(key, value.equals("1"));
+			}
+			else
+			{
+				editor.putString(key, (String) value);
+			}
+			
+			editor.apply();
 		}
 	}
 	
-	private boolean isSettingCheckBox(Context context, String key)
+	private int getSettingType(Context context, String key)
 	{
 		XmlResourceParser parser = context.getResources().getXml(R.xml.settings);
 		try
@@ -74,15 +81,23 @@ public class TaskerReceiver extends BroadcastReceiver {
 				
 				if (element != XmlPullParser.START_TAG)
 					continue;
-									
-				if (!parser.getName().equals("CheckBoxPreference"))
+						
+				int type = -1;
+				
+				if (parser.getName().equals("CheckBoxPreference"))
+					type = 0;
+				else if (parser.getName().equals("ListPreference"))
+					type = 1;
+				else if (parser.getName().equals("EditTextPreference"))
+					type = 1;
+				else 
 					continue;
 				
 				for (int i = 0; i < parser.getAttributeCount(); i++)
 				{
 					if (parser.getAttributeName(i).equals("key") && parser.getAttributeValue(i).equals(key))
 					{
-						return true;
+						return type;
 					}
 				}
 			}
@@ -94,7 +109,7 @@ public class TaskerReceiver extends BroadcastReceiver {
 		catch (IOException e) {
 		}
 
-		return false;
+		return -1;
 	}
 
 }

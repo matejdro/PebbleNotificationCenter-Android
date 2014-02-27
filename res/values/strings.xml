@@ -115,10 +115,6 @@
         <item>Send notification</item>
         <item>Change setting</item>
     </string-array>
-    <string-array name="setting_value">
-        <item>Enable</item>
-        <item>Disable</item>
-    </string-array>
 
     <string name="title_activity_tasker_setup">TaskerSetupActivity</string>
     <string name="action_settings">Settings</string>

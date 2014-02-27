@@ -268,7 +268,7 @@ public class PebbleTalkerService extends Service {
 					return;
 
 			}
-			
+						
 			if (settings.getBoolean("enableQuietTime", false))
 			{
 				int startHour = settings.getInt("quiteTimeStartHour", 0);

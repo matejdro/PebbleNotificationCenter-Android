@@ -57,12 +57,12 @@
             android:defaultValue="20"
             android:key="vibratePeriodicallyPeriod"
             android:summary="After first vibrate, Pebble will also vibrate every X seconds to remind you there are notifications waiting. You can press any button on watch to stop this. Enter 0 to disable."
-            android:title="Periodic vibration period" />
+            android:title="Periodic vibration period "/>
         <EditTextPreference
             android:defaultValue="0"
             android:key="watchappTimeout"
             android:summary="After this amount of seconds being idle, watchapp will close automaticaly. You can press any button on watch to stop this timer. Enter 0 to disable."
-            android:title="Auto-Close timeout" />
+            android:title="Auto-Close timeout"/>
 
         <ListPreference
             android:defaultValue="1"

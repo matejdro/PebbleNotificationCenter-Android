@@ -23,19 +23,31 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.matejdro.pebblenotificationcenter.R;
 
 public class TaskerSetupActivity extends Activity {
 
-	private SettingListAdapter settingList; 
-
+	private List<String> settingNames = new ArrayList<String>();
+	private List<String> settingKeys = new ArrayList<String>();
+	
+	private List<String[]> settingCaptions = new ArrayList<String[]>();
+	private List<String[]> settingValues = new ArrayList<String[]>();
+	
+	private SettingListAdapter settingAdapter; 
+	private SettingCaptionListAdapter settingCaptionAdapter;
+	
+	private int pickedSetting = 0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_tasker_setup);
 
+		loadSettings();
+		
 		Spinner spinner = (Spinner) findViewById(R.id.taskerActionPickerSpinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
 				R.array.tasker_actions, android.R.layout.simple_spinner_item);
@@ -51,21 +63,32 @@ public class TaskerSetupActivity extends Activity {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
 
 			}
 		});
 
-		settingList = new SettingListAdapter();
+		settingAdapter = new SettingListAdapter();
 		spinner = (Spinner) findViewById(R.id.taskerSettingPickerSpinner);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(settingList);
+		spinner.setAdapter(settingAdapter);
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				pickedSetting = arg2;
+				settingCaptionAdapter.notifyDataSetChanged();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {				
+			}
+		});
+		
+		settingCaptionAdapter = new SettingCaptionListAdapter();
 		spinner = (Spinner) findViewById(R.id.taskerSettingValuePickerSpinner);
-		adapter = ArrayAdapter.createFromResource(this,
-				R.array.setting_value, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
+		spinner.setAdapter(settingCaptionAdapter);
 
 		loadIntent();
 
@@ -100,9 +123,9 @@ public class TaskerSetupActivity extends Activity {
 			((Spinner) findViewById(R.id.taskerSettingValuePickerSpinner)).setSelection(enable ? 0 : 1);
 
 			String settingKey = bundle.getString("key");
-			for (int i = 0; i < settingList.settingKeys.size(); i++)
+			for (int i = 0; i < settingKeys.size(); i++)
 			{
-				if (settingKey.equals(settingList.settingKeys.get(i))){
+				if (settingKey.equals(settingKeys.get(i))){
 					((Spinner) findViewById(R.id.taskerSettingPickerSpinner)).setSelection(i);
 					break;
 				}
@@ -182,31 +205,79 @@ public class TaskerSetupActivity extends Activity {
 
 	public String populateSettingIntent(Bundle bundle)
 	{
-		int selectedSetting = ((Spinner) findViewById(R.id.taskerSettingPickerSpinner)).getSelectedItemPosition();
-		boolean enable = ((Spinner) findViewById(R.id.taskerSettingValuePickerSpinner)).getSelectedItemPosition() == 0;
-
-		String settingName = settingList.settingNames.get(selectedSetting);
-		String settingKey = settingList.settingKeys.get(selectedSetting);
+		int pickedSettingValue = ((Spinner) findViewById(R.id.taskerSettingValuePickerSpinner)).getSelectedItemPosition();
+		
+		String settingName = settingNames.get(pickedSetting);
+		String settingKey = settingKeys.get(pickedSetting);
+		String settingValue = settingValues.get(pickedSetting)[pickedSettingValue];
 
 		bundle.putString("key", settingKey);
-		bundle.putBoolean("value", enable);
+		bundle.putString("value", settingValue);
 
-		String description = enable ? "Enable \"" : "Disable \"";
-		description += settingName;
-		description += "\"";
+		String description = settingName + " - " + settingCaptions.get(pickedSetting)[pickedSettingValue];
 
 		return description;
 	}
 
+	private void loadSettings()
+	{
+		XmlResourceParser parser = getResources().getXml(R.xml.settings);
+		try
+		{
+			while (true)
+			{
+				int element = parser.next();
+				if (element == XmlPullParser.END_DOCUMENT)
+					break;
+
+				if (element != XmlPullParser.START_TAG)
+					continue;
+
+				if (parser.getName().equals("CheckBoxPreference"))
+				{
+					settingCaptions.add(new String[] { "Enabled", "Disabled" });
+					settingValues.add(new String[] { "1", "0" });
+				}
+				else if (!parser.getName().equals("ListPreference"))
+					continue;
+
+				for (int i = 0; i < parser.getAttributeCount(); i++)
+				{
+					if (parser.getAttributeName(i).equals("title"))
+					{
+						settingNames.add(parser.getAttributeValue(i));
+					}
+					else if (parser.getAttributeName(i).equals("key"))
+					{
+						settingKeys.add(parser.getAttributeValue(i));
+					}
+					else if (parser.getAttributeName(i).equals("entries"))
+					{
+						int id = Integer.parseInt(parser.getAttributeValue(i).substring(1));
+						settingCaptions.add(getResources().getStringArray(id));
+					}
+					else if (parser.getAttributeName(i).equals("entryValues"))
+					{
+						int id = Integer.parseInt(parser.getAttributeValue(i).substring(1));
+						settingValues.add(getResources().getStringArray(id));
+					}
+				}
+			}
+
+		}
+		catch (XmlPullParserException e)
+		{
+			e.printStackTrace();
+			return;
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+	}
+	
 	public class SettingListAdapter extends BaseAdapter
 	{
-		protected List<String> settingNames = new ArrayList<String>();
-		protected List<String> settingKeys = new ArrayList<String>();
-
-		public SettingListAdapter()
-		{
-			loadSettings();
-		}
 
 		@Override
 		public int getCount() {
@@ -233,46 +304,33 @@ public class TaskerSetupActivity extends Activity {
 			return convertView;
 		}
 
-		private void loadSettings()
-		{
-			XmlResourceParser parser = getResources().getXml(R.xml.settings);
-			try
-			{
-				while (true)
-				{
-					int element = parser.next();
-					if (element == XmlPullParser.END_DOCUMENT)
-						break;
+	}
+	
+	public class SettingCaptionListAdapter extends BaseAdapter
+	{
+		@Override
+		public int getCount() {
+			return settingCaptions.get(pickedSetting).length;
+		}
 
-					if (element != XmlPullParser.START_TAG)
-						continue;
+		@Override
+		public Object getItem(int position) {
+			return settingCaptions.get(pickedSetting);
+		}
 
-					if (!parser.getName().equals("CheckBoxPreference"))
-						continue;
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
 
-					for (int i = 0; i < parser.getAttributeCount(); i++)
-					{
-						if (parser.getAttributeName(i).equals("title"))
-						{
-							settingNames.add(parser.getAttributeValue(i));
-						}
-						else if (parser.getAttributeName(i).equals("key"))
-						{
-							settingKeys.add(parser.getAttributeValue(i));
-						}
-					}
-				}
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (convertView == null)
+				convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
 
-			}
-			catch (XmlPullParserException e)
-			{
-				e.printStackTrace();
-				return;
-			} 
-			catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
+			((TextView) convertView).setText(settingCaptions.get(pickedSetting)[position]);
+
+			return convertView;
 		}
 
 	}

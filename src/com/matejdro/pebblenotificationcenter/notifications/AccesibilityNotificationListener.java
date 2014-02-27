@@ -5,8 +5,6 @@ import android.app.Notification;
 import android.os.Parcelable;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
-
 public class AccesibilityNotificationListener extends AccessibilityService {
 	public static AccesibilityNotificationListener instance;
 	

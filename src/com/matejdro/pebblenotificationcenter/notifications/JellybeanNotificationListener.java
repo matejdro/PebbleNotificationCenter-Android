@@ -7,8 +7,6 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
-
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class JellybeanNotificationListener extends NotificationListenerService {
 	private Handler handler;

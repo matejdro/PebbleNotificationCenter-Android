@@ -3,7 +3,6 @@ package com.matejdro.pebblenotificationcenter.util;
 import java.util.HashMap;
 
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 
 
 public class TextUtil {	

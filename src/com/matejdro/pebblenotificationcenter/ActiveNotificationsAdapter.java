@@ -5,13 +5,12 @@ import java.util.Comparator;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
-import android.content.Context;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
 
+import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
-import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class ActiveNotificationsAdapter extends NotificationListAdapter {
