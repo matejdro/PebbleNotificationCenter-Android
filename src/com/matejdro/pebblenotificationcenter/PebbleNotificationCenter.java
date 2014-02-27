@@ -20,6 +20,7 @@ public class PebbleNotificationCenter extends android.app.Application {
     public static final String VIBRATION_MODE = "vibrateMode";    
     public static final String CLOSE_TO_LAST_CLOSED = "closeToLastClosed";
     public static final String DONT_VIBRATE_WHEN_CHARGING = "noVibrateCharge";
+    public static final String SHAKE_ACTION = "shakeAction";
 
     private static SettingsMemoryStorage settingsMemoryStorage;
     

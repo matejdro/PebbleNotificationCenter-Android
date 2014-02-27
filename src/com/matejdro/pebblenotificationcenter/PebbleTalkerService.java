@@ -509,7 +509,7 @@ public class PebbleTalkerService extends Service {
 
 		data.addUint8(0, (byte) 3);
 
-		byte[] configBytes = new byte[10];
+		byte[] configBytes = new byte[11];
 
 		int timeout = 0;
 		try
@@ -540,8 +540,7 @@ public class PebbleTalkerService extends Service {
 
 		configBytes[8] = (byte) (WatchappHandler.INCLUDED_WATCHFACE >>> 0x08);
 		configBytes[9] = (byte) WatchappHandler.INCLUDED_WATCHFACE;
-
-		
+		configBytes[10] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.SHAKE_ACTION, "1"));
 
 		data.addBytes(1, configBytes);
 

@@ -56,7 +56,17 @@
         <item>Vibrate longer on first notification, shorter on all others</item>
         <item>Allways vibrate shorter</item>
     </string-array>
-   <string-array name="vibrationModeValues">
+    <string-array name="vibrationModeValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="shakeActions">
+        <item>Nothing</item>
+        <item>Stop periodic vibration</item>
+        <item>Dismiss notification</item>
+    </string-array>
+    <string-array name="shakeActionValues">
         <item>0</item>
         <item>1</item>
         <item>2</item>

@@ -102,6 +102,7 @@ Phone --> Pebble
 				Sixth bit (0x20) = Don't vibrate when charging
 			[8] = Compatible watchapp version (first byte)
 			[9] = Compatible watchapp version (second byte)
+			[10] = Shake action
 
 	
 	Packet 4 - Dismiss notification

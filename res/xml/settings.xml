@@ -48,7 +48,7 @@
         <EditTextPreference
             android:defaultValue="20"
             android:key="vibratePeriodicallyPeriod"
-            android:summary="After first vibrate, Pebble will also vibrate every X seconds to notify you there are notifications waiting. You can press any button on watch to stop this. Enter 0 to disable."
+            android:summary="After first vibrate, Pebble will also vibrate every X seconds to remind you there are notifications waiting. You can press any button on watch to stop this. Enter 0 to disable."
             android:title="Periodic vibration period" />
         
         <EditTextPreference
@@ -102,6 +102,13 @@
             android:defaultValue="true"
             android:key="noVibrateCharge"
             android:title="Don't vibrate when charging"/>
+        <ListPreference
+            android:defaultValue="1"
+            android:key="shakeAction"
+            android:title="Action on shake"
+            android:entries="@array/shakeActions"
+            android:entryValues="@array/shakeActionValues"
+             />
         
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
