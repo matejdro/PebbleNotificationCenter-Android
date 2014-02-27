@@ -21,7 +21,8 @@ public class PebbleNotificationCenter extends android.app.Application {
     public static final String CLOSE_TO_LAST_CLOSED = "closeToLastClosed";
     public static final String DONT_VIBRATE_WHEN_CHARGING = "noVibrateCharge";
     public static final String SHAKE_ACTION = "shakeAction";
-
+    public static final String NO_NOTIFY_VIBRATE = "noNotificationsSilent";
+    
     private static SettingsMemoryStorage settingsMemoryStorage;
     
     @Override public void onCreate() {

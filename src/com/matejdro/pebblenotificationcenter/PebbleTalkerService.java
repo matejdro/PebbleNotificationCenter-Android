@@ -2,7 +2,6 @@ package com.matejdro.pebblenotificationcenter;
 
 import java.net.URISyntaxException;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Queue;
 import java.util.Random;
@@ -14,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -261,6 +261,14 @@ public class PebbleTalkerService extends Service {
 					return;
 			}
 
+			if (settings.getBoolean(PebbleNotificationCenter.NO_NOTIFY_VIBRATE, false))
+			{
+				AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				if (am.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
+					return;
+
+			}
+			
 			if (settings.getBoolean("enableQuietTime", false))
 			{
 				int startHour = settings.getInt("quiteTimeStartHour", 0);

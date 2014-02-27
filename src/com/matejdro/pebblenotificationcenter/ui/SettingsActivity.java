@@ -132,6 +132,7 @@ public class SettingsActivity extends PreferenceActivity {
 		findPreference("noNotificationsNoPebble").setEnabled(popupEnabled);		
 		findPreference("quietTimeStart").setEnabled(popupEnabled && timeEnabled);
 		findPreference("quietTimeEnd").setEnabled(popupEnabled && timeEnabled);
+		findPreference("noNotificationsSilent").setEnabled(popupEnabled);		
 	}
 
 	public String formatTime(int hours, int minutes)
