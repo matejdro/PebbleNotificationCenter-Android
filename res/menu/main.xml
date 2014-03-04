@@ -11,7 +11,12 @@
         android:icon="@drawable/ic_action_pebble"
         android:title="Install Watchapp"
          android:orderInCategory="5"
-        
         />
-
+    <item
+        android:id="@+id/action_test_notification"
+        android:icon="@drawable/ic_action_pebble"
+        android:title="Test Notification"
+         android:orderInCategory="6"
+        />
+    
 </menu>

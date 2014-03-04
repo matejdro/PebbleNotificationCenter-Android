@@ -29,12 +29,11 @@
             android:key="noNotificationsNoPebble"
             android:summary="When unchecked, Notification Center will still collect notifications and send them after Pebble reconnects."
             android:title="Disable notify when Pebble is disconnected" />
-                <CheckBoxPreference
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="noNotificationsSilent"
             android:summary="Disable new notifications popping up when phone is in vibrate or in silent mode"
             android:title="Disable notify when in silent mode" />
-        
         <CheckBoxPreference
             android:key="enableQuietTime"
             android:title="Enable quiet time" />
@@ -45,7 +44,6 @@
         <Preference
             android:key="quietTimeEnd"
             android:title="Quiet to" />
-
     </PreferenceCategory>
     <PreferenceCategory android:title="Watchapp" >
         <CheckBoxPreference
@@ -57,12 +55,12 @@
             android:defaultValue="20"
             android:key="vibratePeriodicallyPeriod"
             android:summary="After first vibrate, Pebble will also vibrate every X seconds to remind you there are notifications waiting. You can press any button on watch to stop this. Enter 0 to disable."
-            android:title="Periodic vibration period "/>
+            android:title="Periodic vibration period " />
         <EditTextPreference
             android:defaultValue="0"
             android:key="watchappTimeout"
             android:summary="After this amount of seconds being idle, watchapp will close automaticaly. You can press any button on watch to stop this timer. Enter 0 to disable."
-            android:title="Auto-Close timeout"/>
+            android:title="Auto-Close timeout" />
 
         <ListPreference
             android:defaultValue="1"
@@ -107,6 +105,11 @@
             android:key="lightScreenNotification"
             android:summary="Turn on display light when notification arrives"
             android:title="Light screen on notification" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="lightScreenSunSetNotification"
+            android:summary="Turn on display light when notification arrives after sunset"
+            android:title="Sunset Light screen" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="noVibrateCharge"
