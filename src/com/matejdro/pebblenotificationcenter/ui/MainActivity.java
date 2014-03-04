@@ -2,6 +2,8 @@ package com.matejdro.pebblenotificationcenter.ui;
 
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.view.ViewPager;
@@ -85,6 +88,17 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
 		case R.id.action_installapp:
 			WatchappHandler.install(MainActivity.this, PreferenceManager.getDefaultSharedPreferences(this).edit());
 			return true;
+		case R.id.action_test_notification:
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			Notification notification = new Notification(R.drawable.icon, "Hello World", System.currentTimeMillis());
+			notification.defaults = Notification.DEFAULT_ALL;
+			NotificationCompat.Builder mBuilder =
+              new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_action_pebble)
+                  .setContentTitle("Test Notification").setContentText("See notifcation on pebble")
+                  .setSubText("Hello World")
+                  .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+          mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
+          return true;
 		}
 
 		return false;

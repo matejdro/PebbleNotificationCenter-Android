@@ -107,6 +107,11 @@
             android:key="lightScreenNotification"
             android:summary="Turn on display light when notification arrives"
             android:title="Light screen on notification" />
+ 		<CheckBoxPreference
+            android:defaultValue="false"
+            android:key="lightScreenSunSetNotification"
+            android:summary="Turn on display light when notification arrives after sunset"
+            android:title="Sunset Light screen" />        
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="noVibrateCharge"
