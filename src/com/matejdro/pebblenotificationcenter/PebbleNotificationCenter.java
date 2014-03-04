@@ -16,11 +16,17 @@ public class PebbleNotificationCenter extends android.app.Application {
     public static final String FONT_SUBTITLE = "fontSubtitle";
     public static final String FONT_BODY = "fontBody";
     public static final String LIGHT_SCREEN_ON_NOTIFICATION = "lightScreenNotification";
+    public static final String LIGHT_SCREEN_ON_SUNSET_NOTIFICATION = "lightScreenSunSetNotification";
     public static final String VIBRATION_MODE = "vibrateMode";    
     public static final String CLOSE_TO_LAST_CLOSED = "closeToLastClosed";
     public static final String DONT_VIBRATE_WHEN_CHARGING = "noVibrateCharge";
     public static final String SHAKE_ACTION = "shakeAction";
     public static final String NO_NOTIFY_VIBRATE = "noNotificationsSilent";
+    
+    public static final String PreferencesLatitude = "latitude";
+    public static final String PreferencesLongitude = "longitude";
+    public static final String PreferencesAltitude = "altitude";
+
     
     private static SettingsMemoryStorage settingsMemoryStorage;
     
