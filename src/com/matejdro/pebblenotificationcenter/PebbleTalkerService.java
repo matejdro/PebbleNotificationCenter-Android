@@ -550,21 +550,25 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_CLOSED, false) ? 0x02 : 0);
 		flags |= (byte) (NotificationHandler.isNotificationListenerSupported() ? 0x04 : 0);
 		flags |= (byte) (notificationWaiting ? 0x08 : 0);
-		boolean backlight = settings.getBoolean(PebbleNotificationCenter.LIGHT_SCREEN_ON_SUNSET_NOTIFICATION, false);
-		if (backlight) 
-		{
-			locationLookup.lookup();
-			double latitude = settings.getFloat(PebbleNotificationCenter.LATITUDE, 0);
-			double longitude = settings.getFloat(PebbleNotificationCenter.LONGITUDE, 0);
-			Location location = new Location(latitude, longitude);
-			SunriseSunsetCalculator sunriseSunsetCalculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
-			boolean betweenSunsetSunrise = TimeUtil.isBetweenTimes(Calendar.getInstance(),
-					sunriseSunsetCalculator.getCivilSunriseCalendarForDate(Calendar.getInstance()),
-					sunriseSunsetCalculator.getCivilSunsetCalendarForDate(Calendar.getInstance()));
-			flags |= (byte) (betweenSunsetSunrise ? 0x10 : 0);
-		} else 
-		{
-			flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATION, false) ? 0x10 : 0);
+		int backlight = settings.getInt(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, 1);
+		switch (backlight){
+			case 1:
+				break;
+			case 2:
+				flags |= (byte) 0x10;
+				break;
+			case 3:
+				locationLookup.lookup();
+				double latitude = settings.getFloat(PebbleNotificationCenter.LATITUDE, 0);
+				double longitude = settings.getFloat(PebbleNotificationCenter.LONGITUDE, 0);
+				Location location = new Location(latitude, longitude);
+				SunriseSunsetCalculator sunriseSunsetCalculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
+				boolean betweenSunsetSunrise = TimeUtil.isBetweenTimes(Calendar.getInstance(),
+						sunriseSunsetCalculator.getCivilSunriseCalendarForDate(Calendar.getInstance()),
+						sunriseSunsetCalculator.getCivilSunsetCalendarForDate(Calendar.getInstance()));
+				flags |= (byte) (betweenSunsetSunrise ? 0x10 : 0);
+				break;
+
 		}
 		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.DONT_VIBRATE_WHEN_CHARGING, true) ? 0x20 : 0);
 
