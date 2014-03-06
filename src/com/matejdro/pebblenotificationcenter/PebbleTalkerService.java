@@ -537,6 +537,20 @@ public class PebbleTalkerService extends Service {
 		{
 		}		
 		
+		boolean backlight = false;
+		int backlightSetting = settings.getInt(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, 1);
+		switch (backlightSetting){
+			case 1:
+				break;
+			case 2:
+				backlight = true;
+				break;
+			case 3:
+				locationLookup.lookup();
+				backlight = SunriseSunsetCalculator.isSunDown(settings);
+				break;
+		}
+		
 		configBytes[0] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.FONT_TITLE, "6"));
 		configBytes[1] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.FONT_SUBTITLE, "5"));
 		configBytes[2] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.FONT_BODY, "4"));
@@ -550,19 +564,7 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_CLOSED, false) ? 0x02 : 0);
 		flags |= (byte) (NotificationHandler.isNotificationListenerSupported() ? 0x04 : 0);
 		flags |= (byte) (notificationWaiting ? 0x08 : 0);
-		int backlight = settings.getInt(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, 1);
-		switch (backlight){
-			case 1:
-				break;
-			case 2:
-				flags |= (byte) 0x10;
-				break;
-			case 3:
-				locationLookup.lookup();
-				flags |= (byte) (SunriseSunsetCalculator.isSunDown(settings) ? 0x10 : 0);
-				break;
-
-		}
+		flags |= (byte) (backlight ? 0x10 : 0);
 		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.DONT_VIBRATE_WHEN_CHARGING, true) ? 0x20 : 0);
 
 		configBytes[7] = flags;
