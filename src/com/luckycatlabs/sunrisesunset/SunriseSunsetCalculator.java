@@ -19,8 +19,12 @@ package com.luckycatlabs.sunrisesunset;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import android.content.SharedPreferences;
+
 import com.luckycatlabs.sunrisesunset.calculator.SolarEventCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+import com.matejdro.pebblenotificationcenter.util.TimeUtil;
 
 /**
  * Public interface for getting the various types of sunrise/sunset.
@@ -308,5 +312,18 @@ public class SunriseSunsetCalculator {
 	 */
 	public Location getLocation() {
 		return location;
+	}
+	
+	public static boolean isSunDown(SharedPreferences settings)
+	{
+		double latitude = settings.getFloat(PebbleNotificationCenter.LATITUDE, 0);
+		double longitude = settings.getFloat(PebbleNotificationCenter.LONGITUDE, 0);
+		Location location = new Location(latitude, longitude);
+		SunriseSunsetCalculator sunriseSunsetCalculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
+		boolean betweenSunsetSunrise = TimeUtil.isBetweenTimes(Calendar.getInstance(),
+				sunriseSunsetCalculator.getCivilSunriseCalendarForDate(Calendar.getInstance()),
+				sunriseSunsetCalculator.getCivilSunsetCalendarForDate(Calendar.getInstance()));
+
+		return betweenSunsetSunrise;
 	}
 }

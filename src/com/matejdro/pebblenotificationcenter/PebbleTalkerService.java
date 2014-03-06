@@ -559,14 +559,7 @@ public class PebbleTalkerService extends Service {
 				break;
 			case 3:
 				locationLookup.lookup();
-				double latitude = settings.getFloat(PebbleNotificationCenter.LATITUDE, 0);
-				double longitude = settings.getFloat(PebbleNotificationCenter.LONGITUDE, 0);
-				Location location = new Location(latitude, longitude);
-				SunriseSunsetCalculator sunriseSunsetCalculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
-				boolean betweenSunsetSunrise = TimeUtil.isBetweenTimes(Calendar.getInstance(),
-						sunriseSunsetCalculator.getCivilSunriseCalendarForDate(Calendar.getInstance()),
-						sunriseSunsetCalculator.getCivilSunsetCalendarForDate(Calendar.getInstance()));
-				flags |= (byte) (betweenSunsetSunrise ? 0x10 : 0);
+				flags |= (byte) (SunriseSunsetCalculator.isSunDown(settings) ? 0x10 : 0);
 				break;
 
 		}
