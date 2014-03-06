@@ -538,7 +538,7 @@ public class PebbleTalkerService extends Service {
 		}		
 		
 		boolean backlight = false;
-		int backlightSetting = settings.getInt(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, 1);
+		int backlightSetting = settings.getInt(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, 2);
 		switch (backlightSetting){
 			case 1:
 				break;

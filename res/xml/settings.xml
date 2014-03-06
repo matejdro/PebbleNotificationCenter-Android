@@ -107,7 +107,8 @@
             android:title="Light screen on notification"
             android:summary="Turn on display light when notification arrives"
             android:entries="@array/lightNotifications"
-            android:entryValues="@array/lightNotificationValues" />
+            android:entryValues="@array/lightNotificationValues"
+            android:defaultValue="2" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="noVibrateCharge"
