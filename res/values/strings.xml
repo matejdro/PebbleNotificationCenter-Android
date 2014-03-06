@@ -71,6 +71,16 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+	<string-array name="lightNotifications">
+	    <item>Nothing</item>
+	    <item>Light screen on notification</item>
+	    <item>Sunset Light screen on notification</item>
+	</string-array>
+	<string-array name="lightNotificationValues">
+	    <item>1</item>
+	    <item>2</item>
+	    <item>3</item>
+	</string-array>         
     <string-array name="pebbleFonts">
         <item>Gothic 14</item>
         <item>Gothic 14 Bold</item>

@@ -102,11 +102,12 @@
             android:key="fontBody"
             android:title="Body font" />
 
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="lightScreenNotification"
+         <ListPreference
+            android:key="lightScreenNotifications"
+            android:title="Light screen on notification"
             android:summary="Turn on display light when notification arrives"
-            android:title="Light screen on notification" />
+            android:entries="@array/lightNotifications"
+            android:entryValues="@array/lightNotificationValues" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="noVibrateCharge"
