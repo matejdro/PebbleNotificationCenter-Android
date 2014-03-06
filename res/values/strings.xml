@@ -72,9 +72,9 @@
         <item>2</item>
     </string-array>
 	<string-array name="lightNotifications">
-	    <item>Nothing</item>
-	    <item>Light screen on notification</item>
-	    <item>Sunset Light screen on notification</item>
+	    <item>Never</item>
+	    <item>Always</item>
+	    <item>After sunset</item>
 	</string-array>
 	<string-array name="lightNotificationValues">
 	    <item>1</item>
