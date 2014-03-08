@@ -550,7 +550,7 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_CLOSED, false) ? 0x02 : 0);
 		flags |= (byte) (NotificationHandler.isNotificationListenerSupported() ? 0x04 : 0);
 		flags |= (byte) (notificationWaiting ? 0x08 : 0);
-		int backlight = settings.getInt(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, 1);
+		int backlight =  Integer.parseInt(settings.getString(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, "1"));
 		switch (backlight){
 			case 1:
 				break;
