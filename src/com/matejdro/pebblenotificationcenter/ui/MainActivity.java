@@ -85,9 +85,6 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			return true;
-		case R.id.action_installapp:
-			WatchappHandler.install(MainActivity.this, PreferenceManager.getDefaultSharedPreferences(this).edit());
-			return true;
 		case R.id.action_test_notification:
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 			Notification notification = new Notification(R.drawable.icon, "Hello World", System.currentTimeMillis());
@@ -152,18 +149,9 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
     private void checkWatchFaceInstalled()
     {
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!WatchappHandler.isLatest(settings))
+        if (!WatchappHandler.isFirstRun(settings))
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setMessage("Do you want to install the latest watchapp?").setNegativeButton(
-                    "No", null).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    WatchappHandler.install(MainActivity.this, settings.edit());
-                }
-            }).show();
+            WatchappHandler.displayNotification(this, settings.edit());
         }
     }
 
