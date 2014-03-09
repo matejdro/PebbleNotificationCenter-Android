@@ -79,8 +79,8 @@
             android:title="Dismiss upwards" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="closeToLastClosed"
-            android:summary="You need to enable Developer Connection inside Pebble app to get this to work."
+            android:key="closeToLastApp"
+            android:summary="You need to ENABLE DEVELOPER CONNECTION inside Pebble app to get this to work."
             android:title="Close to previously running app" />
 
         <ListPreference

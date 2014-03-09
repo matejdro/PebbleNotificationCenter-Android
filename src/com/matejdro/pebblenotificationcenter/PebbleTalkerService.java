@@ -330,7 +330,7 @@ public class PebbleTalkerService extends Service {
 	{
 		commBusy = false;
 
-		if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_CLOSED, true) && previousUUID != null)
+		if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
 			PebbleKit.startAppOnPebble(this, previousUUID);
 		else
 			PebbleKit.closeAppOnPebble(this, DataReceiver.pebbleAppUUID);
@@ -561,7 +561,7 @@ public class PebbleTalkerService extends Service {
 
 		byte flags = 0;
 		flags |= (byte) (settings.getBoolean("autoSwitch", false) ? 0x01 : 0);
-		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_CLOSED, false) ? 0x02 : 0);
+		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) ? 0x02 : 0);
 		flags |= (byte) (NotificationHandler.isNotificationListenerSupported() ? 0x04 : 0);
 		flags |= (byte) (notificationWaiting ? 0x08 : 0);
 		flags |= (byte) (backlight ? 0x10 : 0);
