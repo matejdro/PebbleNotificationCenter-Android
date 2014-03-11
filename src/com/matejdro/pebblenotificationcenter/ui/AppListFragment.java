@@ -10,7 +10,9 @@ import java.util.Set;
 import timber.log.Timber;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -198,21 +200,31 @@ public class AppListFragment extends Fragment {
 			ListSerialization.loadCollection(preferences, checkedApps, PebbleNotificationCenter.SELECTED_PACKAGES);
 
 			final PackageManager pm = getActivity().getPackageManager();
-			List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+			List<PackageInfo> packages = pm.getInstalledPackages(0);
 
-			for (ApplicationInfo packageInfo : packages) {
-				boolean isSystemApp = ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
-				if (isSystemApp == showSystemApps )
+			for (PackageInfo packageInfo : packages) {
+				try
 				{
-					AppInfoStorage storage = new AppInfoStorage();
+					ApplicationInfo appInfo = pm.getApplicationInfo(packageInfo.packageName, 0);
+					
+					boolean isSystemApp = ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
+					if (isSystemApp == showSystemApps )
+					{
+						AppInfoStorage storage = new AppInfoStorage();
 
-					storage.info = packageInfo;
-					storage.icon = pm.getApplicationIcon(packageInfo);
-					storage.label = pm.getApplicationLabel(packageInfo);
+						storage.info = appInfo;
+						storage.icon = pm.getApplicationIcon(appInfo);
+						storage.label = pm.getApplicationLabel(appInfo);
 
-					apps.add(storage);
-					//android.R.drawable.sym_def_app_icon
+						apps.add(storage);
+						//android.R.drawable.sym_def_app_icon
+					}
 				}
+				catch (NameNotFoundException e)
+				{
+					continue;
+				}
+				
 			}
 
 			Collections.sort(apps, new AppInfoComparator());
