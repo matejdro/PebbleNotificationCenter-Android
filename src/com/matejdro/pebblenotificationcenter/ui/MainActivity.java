@@ -92,8 +92,7 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
 			NotificationCompat.Builder mBuilder =
               new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_action_pebble)
                   .setContentTitle("Test Notification").setContentText("See notifcation on pebble")
-                  .setSubText("Hello World")
-                  .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+                  .setSubText("Hello World");
           mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
           return true;
 		}
