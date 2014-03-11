@@ -122,6 +122,9 @@
             android:title="Action on shake" />
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
+        <Preference 
+            android:key="version"
+            android:title="Installed version"/>
         <Preference
             android:key="notifierLicense"
             android:title="Open source Licenses" />

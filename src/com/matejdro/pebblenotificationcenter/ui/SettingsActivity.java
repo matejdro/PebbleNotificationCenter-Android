@@ -4,6 +4,7 @@ import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -121,6 +122,15 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		EditTextPreference periodicVibratePreference = (EditTextPreference) findPreference("vibratePeriodicallyPeriod");
 		periodicVibratePreference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+		
+		try
+		{
+			findPreference("version").setSummary( getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+		}
+		catch (NameNotFoundException e)
+		{
+			
+		}
 
 	}
 
