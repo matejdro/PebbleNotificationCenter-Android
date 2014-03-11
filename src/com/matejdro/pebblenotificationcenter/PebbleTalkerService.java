@@ -5,7 +5,6 @@ import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.Queue;
 import java.util.Random;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -24,17 +23,17 @@ import android.util.SparseArray;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
+import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
+import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
-import com.matejdro.pebblenotificationcenter.util.TimeUtil;
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
-import com.luckycatlabs.sunrisesunset.dto.Location;
-import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 
 public class PebbleTalkerService extends Service {
+	private static final UUID systemAppsUUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
+
 	private static PebbleTalkerService instance;
 
 
@@ -124,12 +123,13 @@ public class PebbleTalkerService extends Service {
 		if (devConn != null)
 		{
 			UUID prev = devConn.getCurrentRunningApp();
-			if (prev != null && !prev.equals(DataReceiver.pebbleAppUUID))
+
+			if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(systemAppsUUID))
 			{
 				previousUUID = prev;
 			}
 		}
-
+		
 		curSendingNotification = notification;
 		sentNotifications.put(notification.id, notification);
 
