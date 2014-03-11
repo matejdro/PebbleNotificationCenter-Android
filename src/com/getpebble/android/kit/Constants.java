@@ -3,9 +3,8 @@ package com.getpebble.android.kit;
 import java.util.UUID;
 
 /**
- * Constant values used by Pebble-enabled kit applications.
+ * Constant values used by PebbleKit-enabled android applications.
  *
- * @author zulak@getpebble.com
  */
 public final class Constants {
 
@@ -33,6 +32,7 @@ public final class Constants {
      * Intent broadcast from pebble.apk containing one-or-more key-value pairs sent from the watch to the phone.
      */
     public static final String INTENT_APP_RECEIVE = "com.getpebble.action.app.RECEIVE";
+
 
     /**
      * Intent broadcast from pebble.apk indicating that a sent message was successfully received by a watch app.
@@ -62,10 +62,30 @@ public final class Constants {
     public static final String INTENT_APP_STOP = "com.getpebble.action.app.STOP";
 
     /**
-     * Intent broadcast to pebble.apk responsible for customzing the name and icon of the 'stock' Sports and Golf
+     * Intent broadcast to pebble.apk responsible for customizing the name and icon of the 'stock' Sports and Golf
      * applications included in the watch's firmware.
      */
     public static final String INTENT_APP_CUSTOMIZE = "com.getpebble.action.app.CONFIGURE";
+
+    /**
+     * Intent broadcast from pebble.apk containing a unit of data from a data log.
+     */
+    public static final String INTENT_DL_RECEIVE_DATA = "com.getpebble.action.dl.RECEIVE_DATA";
+
+    /**
+     * Intent broadcast to pebble.apk implicitly when a unit of data from a data log is received.
+     */
+    public static final String INTENT_DL_ACK_DATA = "com.getpebble.action.dl.ACK_DATA";
+
+    /**
+     * Intent broadcast to pebble.apk to request data logs for a particular app.
+     */
+    public static final String INTENT_DL_REQUEST_DATA = "com.getpebble.action.dl.REQUEST_DATA";
+
+    /**
+     * Intent broadcast from pebble.apk indicating the session has finished.
+     */
+    public static final String INTENT_DL_FINISH_SESSION = "com.getpebble.action.dl.FINISH_SESSION";
 
     /**
      * The UUID corresponding to Pebble's built-in "Sports" application.
@@ -81,26 +101,61 @@ public final class Constants {
      * The bundle-key used to store a message's transaction id.
      */
     public static final String TRANSACTION_ID = "transaction_id";
+
     /**
      * The bundle-key used to store a message's UUID.
      */
     public static final String APP_UUID = "uuid";
+
     /**
      * The bundle-key used to store a message's JSON payload send-to or received-from the watch.
      */
     public static final String MSG_DATA = "msg_data";
+
     /**
      * The bundle-key used to store the type of application being customized in a CUSTOMIZE intent.
      */
     public static final String CUST_APP_TYPE = "app_type";
+
     /**
      * The bundle-key used to store the custom name provided in a CUSTOMIZE intent.
      */
     public static final String CUST_NAME = "name";
+
     /**
      * The bundle-key used to store the custom icon provided in a CUSTOMIZE intent.
      */
     public static final String CUST_ICON = "icon";
+
+    /**
+     * The bundle-key used to store the timestamp of when a data log was first created.
+     */
+    public static final String DATA_LOG_TIMESTAMP = "data_log_timestamp";
+
+    /**
+     * A bundle-key used to store the UUID that uniquely identifies a data log.
+     */
+    public static final String DATA_LOG_UUID = "data_log_uuid";
+
+    /**
+     * A bundle-key used to store the tag for the corresponding data log.
+     */
+    public static final String DATA_LOG_TAG = "data_log_tag";
+
+    /**
+     * A bundle-key used to store the ID of a unit of data in a data log.
+     */
+    public static final String PBL_DATA_ID = "pbl_data_id";
+
+    /**
+     * A bundle-key used to store the data type of the data unit.
+     */
+    public static final String PBL_DATA_TYPE = "pbl_data_type";
+
+    /**
+     * A bundle-key used to store the value of the data unit.
+     */
+    public static final String PBL_DATA_OBJECT = "pbl_data_object";
 
     /**
      * The PebbleDictionary key corresponding to the 'time' field sent to the Sports watch-app.
@@ -111,8 +166,8 @@ public final class Constants {
      */
     public static final int SPORTS_DISTANCE_KEY = 0x01;
     /**
-     * The PebbleDictionary key corresponding to the 'data' field sent to the Sports watch-app.
-     * The data field is paired with a variable label and can be used to display any data.
+     * The PebbleDictionary key corresponding to the 'data' field sent to the Sports watch-app. The data field is paired
+     * with a variable label and can be used to display any data.
      */
     public static final int SPORTS_DATA_KEY = 0x02;
     /**
@@ -126,8 +181,8 @@ public final class Constants {
      */
     public static final int SPORTS_STATE_KEY = 0x04;
     /**
-     * The PebbleDictionary key corresponding to the 'label' field sent to the Sports watch-app.
-     * The label field controls the label above the 'data' field.
+     * The PebbleDictionary key corresponding to the 'label' field sent to the Sports watch-app. The label field
+     * controls the label above the 'data' field.
      */
     public static final int SPORTS_LABEL_KEY = 0x05;
 
@@ -148,16 +203,54 @@ public final class Constants {
      */
     public static final int SPORTS_DATA_PACE = 0x01;
 
+    /**
+     * The Constant SPORTS_STATE_INIT.
+     */
     public static final int SPORTS_STATE_INIT = 0x00;
+
+    /**
+     * The Constant SPORTS_STATE_RUNNING.
+     */
     public static final int SPORTS_STATE_RUNNING = 0x01;
+
+    /**
+     * The Constant SPORTS_STATE_PAUSED.
+     */
     public static final int SPORTS_STATE_PAUSED = 0x02;
+
+    /**
+     * The Constant SPORTS_STATE_END.
+     */
     public static final int SPORTS_STATE_END = 0x03;
 
+    /**
+     * The Constant GOLF_FRONT_KEY.
+     */
     public static final int GOLF_FRONT_KEY = 0x00;
+
+    /**
+     * The Constant GOLF_MID_KEY.
+     */
     public static final int GOLF_MID_KEY = 0x01;
+
+    /**
+     * The Constant GOLF_BACK_KEY.
+     */
     public static final int GOLF_BACK_KEY = 0x02;
+
+    /**
+     * The Constant GOLF_HOLE_KEY.
+     */
     public static final int GOLF_HOLE_KEY = 0x03;
+
+    /**
+     * The Constant GOLF_PAR_KEY.
+     */
     public static final int GOLF_PAR_KEY = 0x04;
+
+    /**
+     * The Constant GOLF_CMD_KEY.
+     */
     public static final int GOLF_CMD_KEY = 0x05;
 
     /**
@@ -170,19 +263,104 @@ public final class Constants {
      */
     public static final int GOLF_CMD_NEXT = 0x02;
 
+
+    public static final int KIT_STATE_COLUMN_CONNECTED = 0;
+    public static final int KIT_STATE_COLUMN_APPMSG_SUPPORT = 1;
+    public static final int KIT_STATE_COLUMN_DATALOGGING_SUPPORT = 2;
+    public static final int KIT_STATE_COLUMN_VERSION_MAJOR = 3;
+    public static final int KIT_STATE_COLUMN_VERSION_MINOR = 4;
+    public static final int KIT_STATE_COLUMN_VERSION_POINT = 5;
+    public static final int KIT_STATE_COLUMN_VERSION_TAG = 6;
+    
+    /**
+     * Instantiates a new constants.
+     */
     private Constants() {
 
     }
 
+    /**
+     * The Enum PebbleAppType.
+     */
     public static enum PebbleAppType {
+
+        /**
+         * The sports.
+         */
         SPORTS(0x00),
+
+        /**
+         * The golf.
+         */
         GOLF(0x01),
+
+        /**
+         * The other.
+         */
         OTHER(0xff);
 
+        /**
+         * The ord.
+         */
         public final int ord;
 
+        /**
+         * Instantiates a new pebble app type.
+         *
+         * @param ord
+         *         the ord
+         */
         private PebbleAppType(final int ord) {
             this.ord = ord;
+        }
+    }
+
+    /**
+     * The Enum PebbleDataType.
+     */
+    public static enum PebbleDataType {
+        /**
+         * The byte[].
+         */
+        BYTES(0x00),
+
+        /**
+         * The UnsignedInteger.
+         */
+        UINT(0x02),
+
+        /**
+         * The Integer.
+         */
+        INT(0x03),
+
+        /**
+         * The Invalid.
+         */
+        INVALID(0xff);
+
+        /**
+         * The ord.
+         */
+        public final byte ord;
+
+        /**
+         * Instantiates a new pebble data type.
+         */
+        private PebbleDataType(int ord) {
+            this.ord = (byte) ord;
+        }
+
+        /**
+         * Instantiates a new pebble data type from a byte.
+         */
+        public static PebbleDataType fromByte(byte b) {
+            for (PebbleDataType type : values()) {
+                if (type.ord == b) {
+                    return type;
+                }
+            }
+            return null;
         }
     }
 }
