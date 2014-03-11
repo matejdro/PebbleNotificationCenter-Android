@@ -192,6 +192,9 @@ public class AppListFragment extends Fragment {
 
 		@Override
 		protected Void doInBackground(Void... params) {
+			if (getActivity() == null)
+				return null;
+			
 			ListSerialization.loadCollection(preferences, checkedApps, PebbleNotificationCenter.SELECTED_PACKAGES);
 
 			final PackageManager pm = getActivity().getPackageManager();
