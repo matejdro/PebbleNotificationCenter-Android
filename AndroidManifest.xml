@@ -17,7 +17,8 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:name=".PebbleNotificationCenter"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:largeHeap="true" >
         <service
             android:name="com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener"
             android:enabled="@bool/supportsNotificationCenter"
