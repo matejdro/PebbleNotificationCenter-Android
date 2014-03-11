@@ -569,8 +569,8 @@ public class PebbleTalkerService extends Service {
 
 		configBytes[7] = flags;
 
-		configBytes[8] = (byte) (WatchappHandler.INCLUDED_WATCHFACE >>> 0x08);
-		configBytes[9] = (byte) WatchappHandler.INCLUDED_WATCHFACE;
+		configBytes[8] = (byte) (WatchappHandler.SUPPORTED_PROTOCOL >>> 0x08);
+		configBytes[9] = (byte) WatchappHandler.SUPPORTED_PROTOCOL;
 		configBytes[10] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.SHAKE_ACTION, "1"));
 
 		data.addBytes(1, configBytes);
