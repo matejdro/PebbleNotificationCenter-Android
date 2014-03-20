@@ -13,11 +13,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +45,9 @@ public class AppListFragment extends Fragment {
 
 	private Set<String> checkedApps;
 	private List<AppInfoStorage> apps;
-
+	private LruCache<String, Bitmap> iconCache;
 	private boolean showOnResume = false;
-
+	
 	public static AppListFragment newInstance(boolean showSystemApps) {
 		AppListFragment fragment = new AppListFragment();
 		
@@ -74,7 +77,17 @@ public class AppListFragment extends Fragment {
 
 		preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		editor = preferences.edit();
+		
+		final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+		iconCache = new LruCache<String, Bitmap>(maxMemory / 16) // 1/16th of device's RAM should be far enough for all icons
+		{
 
+			@Override
+			protected int sizeOf(String key, Bitmap value) {
+				return value.getByteCount() / 1024;
+			} 
+			
+		};
 		new AppLoadingTask().execute();
 
 		return inflater.inflate(R.layout.fragment_app_list, null);
@@ -101,6 +114,7 @@ public class AppListFragment extends Fragment {
 		listViewAdapter = new AppListAdapter();
 		listView.setAdapter(listViewAdapter);
 		listView.setVisibility(View.VISIBLE);
+		listView.setScrollingCacheEnabled(true);
 	}
 
 
@@ -145,8 +159,17 @@ public class AppListFragment extends Fragment {
 
 			final AppInfoStorage appInfo = apps.get(position);
 
+			holder.lastIndex = position;
 			holder.name.setText(appInfo.label);
-			holder.icon.setImageDrawable(appInfo.icon);
+			
+			Bitmap icon = iconCache.get(appInfo.info.packageName);
+			if (icon == null)
+			{
+				new IconLoadingTask().execute(appInfo.info.packageName, holder, position);
+				holder.icon.setImageDrawable(null);
+			}
+			else
+				holder.icon.setImageBitmap(icon);
 
 			convertView.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -213,11 +236,9 @@ public class AppListFragment extends Fragment {
 						AppInfoStorage storage = new AppInfoStorage();
 
 						storage.info = appInfo;
-						storage.icon = pm.getApplicationIcon(appInfo);
 						storage.label = pm.getApplicationLabel(appInfo);
 
 						apps.add(storage);
-						//android.R.drawable.sym_def_app_icon
 					}
 				}
 				catch (NameNotFoundException e)
@@ -237,12 +258,51 @@ public class AppListFragment extends Fragment {
 			showList();
 		}
 	}
+	
+	private class IconLoadingTask extends AsyncTask<Object, Void, IconData>
+	{
+
+		@Override
+		protected void onPostExecute(IconData result) {
+			if (result.holder.lastIndex == result.position)
+				result.holder.icon.setImageBitmap(iconCache.get(result.pkg));
+		}
+
+		@Override
+		protected IconData doInBackground(Object... params) {
+			final PackageManager pm = getActivity().getPackageManager();
+			
+			try {
+				Drawable icon = pm.getApplicationIcon((String) params[0]);
+				if (!(icon instanceof BitmapDrawable))
+					return null;
+				
+				iconCache.put((String) params[0], ((BitmapDrawable) icon).getBitmap());					
+			} catch (NameNotFoundException e) {
+			}
+			
+			return new IconData((String) params[0], (ViewHolder) params[1], (Integer) params[2]);
+		}
+	}
+	
+	private static class IconData
+	{
+		String pkg;
+		ViewHolder holder;
+		int position;
+		
+		public IconData(String pkg, ViewHolder holder, int position)
+		{
+			this.pkg = pkg;
+			this.holder = holder;
+			this.position = position;
+		}
+	}
 
 	private static class AppInfoStorage
 	{
 		ApplicationInfo info;
 		CharSequence label;
-		Drawable icon;
 	}
 
 	private static class AppInfoComparator implements Comparator<AppInfoStorage>
@@ -257,6 +317,7 @@ public class AppListFragment extends Fragment {
 
 	private static class ViewHolder
 	{
+		int lastIndex;
 		ImageView icon;
 		TextView name;
 		CheckBox check;

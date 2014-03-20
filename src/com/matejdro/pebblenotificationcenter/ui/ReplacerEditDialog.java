@@ -1,6 +1,5 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.matejdro.pebblenotificationcenter.R;
+
 
 public class ReplacerEditDialog extends Dialog {
 

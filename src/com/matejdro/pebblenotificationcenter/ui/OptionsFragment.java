@@ -1,9 +1,10 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
+import timber.log.Timber;
+import android.support.v4.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,6 @@ import android.widget.Spinner;
 
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
-
-import timber.log.Timber;
 
 /**
  * Created by jbergler on 25/11/2013.

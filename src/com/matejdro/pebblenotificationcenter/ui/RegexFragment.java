@@ -1,11 +1,15 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import timber.log.Timber;
 import android.app.AlertDialog;
+import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +24,6 @@ import android.widget.TextView;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.util.ListSerialization;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import timber.log.Timber;
 
 /**
  * Created by jbergler on 25/11/2013.

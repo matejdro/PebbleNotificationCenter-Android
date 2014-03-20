@@ -4,6 +4,7 @@
 .idea/
 .gradle/
 local.properties
+out/
 
 bin/
 .classpath
@@ -23,3 +24,4 @@ gen/
 .Trashes
 ehthumbs.db
 Thumbs.db
+

@@ -62,6 +62,7 @@ public class PebbleTalkerService extends Service {
 
 	@Override
 	public void onDestroy() {
+		System.out.println("ON DESTROY!!!");
 		instance = null;
 		if (devConn != null)
 		{
@@ -328,6 +329,7 @@ public class PebbleTalkerService extends Service {
 
 	private void closeApp()
 	{
+		System.out.println("CloseApp");
 		commBusy = false;
 
 		if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)

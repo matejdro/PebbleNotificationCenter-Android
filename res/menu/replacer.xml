@@ -1,12 +1,11 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
     
         <item
         android:id="@+id/action_new"
         android:icon="@drawable/ic_action_content_new"
         android:title="Import"
         android:orderInCategory="1"
-        yourapp:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
        	/>
     
     <item

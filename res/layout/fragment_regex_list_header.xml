@@ -12,6 +12,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="italic"
-        android:text="Add New Filter"
-        android:textColor="@color/abc_search_url_text_holo" />
+        android:text="Add New Filter" />
 </LinearLayout>

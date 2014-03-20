@@ -39,10 +39,9 @@
         <TextView
             android:id="@+id/appModePickerDescription"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="0dip"
             android:layout_weight="1"
-            android:text="@string/appModePickerDescription"
-            android:autoText="false" />
+            android:text="@string/appModePickerDescription" />
     </LinearLayout>
 
     <View
@@ -52,10 +51,12 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
 
+    
+ <!--         Adding android:id to that fragment seems to crash app for some reason -->
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout="@layout/new_fragment_regex_list"
+        tools:layout="@layout/fragment_regex_list"
         class="com.matejdro.pebblenotificationcenter.ui.RegexFragment" />
 
 

@@ -23,7 +23,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.matejdro.pebblenotificationcenter.R;
 
@@ -307,7 +306,7 @@ public class TaskerSetupActivity extends Activity {
 	}
 	
 	public class SettingCaptionListAdapter extends BaseAdapter
-	{
+	{																																																																																														
 		@Override
 		public int getCount() {
 			return settingCaptions.get(pickedSetting).length;
