@@ -6,11 +6,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import android.widget.Toast;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 
 public class SettingsMemoryStorage {
@@ -55,7 +57,15 @@ public class SettingsMemoryStorage {
 		Iterator<String> blacklistRegexes = ListSerialization.getDirectIterator(preferences, PebbleNotificationCenter.REGEX_LIST);
 		while (blacklistRegexes.hasNext())
 		{
-			regexPatterns.add(Pattern.compile(blacklistRegexes.next()));
+            String pattern = blacklistRegexes.next();
+            try
+            {
+                regexPatterns.add(Pattern.compile(pattern));
+            }
+            catch (PatternSyntaxException e)
+            {
+                Toast.makeText(context, "[Notification Center] Invalid regex pattern:" + pattern, Toast.LENGTH_LONG).show();
+            }
 		}
 		
 		Iterator<String> replacingKeys = ListSerialization.getDirectIterator(preferences, PebbleNotificationCenter.REPLACING_KEYS_LIST);
