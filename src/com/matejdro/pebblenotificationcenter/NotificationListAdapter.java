@@ -8,6 +8,7 @@ import android.util.Log;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
+import timber.log.Timber;
 
 public abstract class NotificationListAdapter {
 	protected PebbleTalkerService service;
@@ -86,7 +87,7 @@ public abstract class NotificationListAdapter {
 		data.addString(5, TextUtil.prepareString(meta.subtitle));
 		data.addString(6, getFormattedDate(meta.date));
 
-		Log.i("PebbleNotificationSender", "Sending notification " + index + " " + data.getString(4));
+		Timber.i("Sending notification " + index + " " + data.getString(4));
 		
 		PebbleKit.sendDataToPebble(service, DataReceiver.pebbleAppUUID, data);
 	}

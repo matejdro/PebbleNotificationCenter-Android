@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.util.Log;
+import timber.log.Timber;
+
 /**
  * This class takes care of preparing rtl+non-rtl texts to be shown on the pebble
  * 
@@ -67,14 +69,14 @@ public class RTLUtility {
 	 */
 	public String format(String text, int max){
 		if (false == isRTL(text)) return text;
-		
-        Log.d("Reverting string", text);
+
+        Timber.d("Reverting string %s", text);
        
         ArrayList<String> fragments = getFragments(text);
         
         String str = reorgRTLString(fragments, max, true);
 
-        Log.d("String reverted", str);
+        Timber.d("String reverted %s", str);
         return str;
     }
 	

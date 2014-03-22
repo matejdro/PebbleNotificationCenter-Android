@@ -177,35 +177,35 @@ public final class Timber {
         }
 
         @Override public void d(String message, Object... args) {
-            Log.d(createTag(), String.format(message, args));
+            Log.d("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)));
         }
 
         @Override public void d(Throwable t, String message, Object... args) {
-            Log.d(createTag(), String.format(message, args), t);
+            Log.d("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)), t);
         }
 
         @Override public void i(String message, Object... args) {
-            Log.i(createTag(), String.format(message, args));
+            Log.i("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)));
         }
 
         @Override public void i(Throwable t, String message, Object... args) {
-            Log.i(createTag(), String.format(message, args), t);
+            Log.i("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)), t);
         }
 
         @Override public void w(String message, Object... args) {
-            Log.w(createTag(), String.format(message, args));
+            Log.w("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)));
         }
 
         @Override public void w(Throwable t, String message, Object... args) {
-            Log.w(createTag(), String.format(message, args), t);
+            Log.w("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)), t);
         }
 
         @Override public void e(String message, Object... args) {
-            Log.e(createTag(), String.format(message, args));
+            Log.e("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)));
         }
 
         @Override public void e(Throwable t, String message, Object... args) {
-            Log.e(createTag(), String.format(message, args), t);
+            Log.e("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)), t);
         }
 
         @Override public void tag(String tag) {

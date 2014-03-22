@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
+import timber.log.Timber;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class JellybeanNotificationListener extends NotificationListenerService {
@@ -47,7 +48,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 	public static void dismissNotification(String pkg, String tag, int id)
 	{
-		Log.d("PebbleNotifier", "dismissing");
+        Timber.d("dismissing");
 
 		instance.cancelNotification(pkg, tag, id);
 	}

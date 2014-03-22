@@ -118,7 +118,7 @@ public class PebbleTalkerService extends Service {
 
 	private void send(PendingNotification notification)
 	{
-		Log.d("Notification Center", "Send " + notification.id);
+        Timber.d("Send " + notification.id);
 
 		if (devConn != null)
 		{
@@ -169,7 +169,7 @@ public class PebbleTalkerService extends Service {
 
 	private void dismissOnPebble(Integer id, boolean dontClose)
 	{
-		Log.d("Notification Center", "Dismissing upwards...");
+        Timber.d("Dismissing upwards...");
 
 		PebbleDictionary data = new PebbleDictionary();
 
@@ -182,8 +182,8 @@ public class PebbleTalkerService extends Service {
 		commStarted();
 	}
 	private void dismissOnPebbleInternal(Integer androidId, String pkg, String tag, boolean dontClose)
-	{		
-		Log.d("NC Upwards debug", "got dismiss: " + pkg + " " + androidId + " " + tag);
+	{
+        Timber.d("got dismiss: " + pkg + " " + androidId + " " + tag);
 
 		boolean syncDismissUp = settings.getBoolean("syncDismissUp", true);
 		if (!syncDismissUp)
@@ -224,7 +224,7 @@ public class PebbleTalkerService extends Service {
 
 	private void notifyInternal(Integer androidID, String pkg, String tag, String title, String subtitle, String text, boolean dismissable, boolean noHistory, boolean isListNotification)
 	{
-		Log.d("Notification center", "notify internal");
+        Timber.d("notify internal");
 
 		text = TextUtil.prepareString(text, 1000);
 
@@ -236,9 +236,9 @@ public class PebbleTalkerService extends Service {
 		notification.subtitle = TextUtil.prepareString(subtitle, 30);
 		notification.text = text;
 		notification.dismissable = dismissable;
-		notification.isListNotification = isListNotification;		
+		notification.isListNotification = isListNotification;
 
-		Log.d("NC Upwards debug", "got notify: " + pkg + " " + androidID + " " + tag);
+        Timber.d("got notify: " + pkg + " " + androidID + " " + tag);
 
 		if (!noHistory)
 			historyDb.storeNotification(System.currentTimeMillis(), title, subtitle, text);
@@ -352,7 +352,7 @@ public class PebbleTalkerService extends Service {
 		if (commWentIdle())
 			return;
 
-		Log.i("Notification Center", "Sending notification list");
+		Timber.i("Sending notification list");
 		
 		if (NotificationHandler.isNotificationListenerSupported())
 		{
@@ -375,7 +375,7 @@ public class PebbleTalkerService extends Service {
 	 */
 	private boolean commWentIdle()
 	{
-		Log.i("Notification Center", "Went idle");
+		Timber.i("Went idle");
 
 		handler.removeCallbacks(makeIdle);
 
@@ -412,8 +412,8 @@ public class PebbleTalkerService extends Service {
 	}
 
 	private final Runnable makeIdle = new Runnable() {
-		public void run() {			
-			Log.i("Notification Center", "Idle timeout");
+		public void run() {
+            Timber.i("Idle timeout");
 
 			if (curSendingNotification != null)
 			{
@@ -432,7 +432,7 @@ public class PebbleTalkerService extends Service {
 	 */
 	private void commStarted()
 	{
-		Log.i("Notification Center", "Not Idle");
+		Timber.i("Not Idle");
 
 		commBusy = true;
 		handler.removeCallbacks(makeIdle);
@@ -457,14 +457,14 @@ public class PebbleTalkerService extends Service {
 
 	private void moreTextRequested(PebbleDictionary data)
 	{
-		Log.d("Notification Center", "More text requested...");
+        Timber.d("More text requested...");
 
 		int id = data.getInteger(1).intValue();
 
 		PendingNotification notification = sentNotifications.get(id);
 		if (notification == null)
 		{
-			Log.d("Notification Center", "Unknown ID!");
+            Timber.d("Unknown ID!");
 
 			notificationTransferCompleted();
 			return;
@@ -474,7 +474,7 @@ public class PebbleTalkerService extends Service {
 
 		if (notification.textChunks.size() <= chunk)
 		{
-			Log.d("Notification Center", "Too much chunks!");
+            Timber.d("Too much chunks!");
 
 			notificationTransferCompleted();
 			return;
@@ -487,7 +487,7 @@ public class PebbleTalkerService extends Service {
 		data.addUint8(2, (byte) chunk);
 		data.addString(3, notification.textChunks.get(chunk));
 
-		Log.d("Notification Center", "Sending more text...");
+        Timber.d("Sending more text...");
 
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
 		commStarted();
@@ -495,12 +495,12 @@ public class PebbleTalkerService extends Service {
 
 	private void notificationTransferCompleted()
 	{
-		Log.d("Notification Center", "Transfer completed...");
+        Timber.d("Transfer completed...");
 
 		curSendingNotification = null;
 
-		Log.d("Notification Center", "csn null: " + (curSendingNotification == null));
-		Log.d("Notification Center", "queue size: " + sendingQueue.size());
+        Timber.d("csn null: " + (curSendingNotification == null));
+        Timber.d("queue size: " + sendingQueue.size());
 
 		if (commWentIdle())
 			return;		
@@ -575,7 +575,7 @@ public class PebbleTalkerService extends Service {
 
 		data.addBytes(1, configBytes);
 
-		Log.d("Notification Center", "Sending config...");
+        Timber.d("Sending config...");
 		
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
 	}
@@ -670,7 +670,7 @@ public class PebbleTalkerService extends Service {
 		if (text == null)
 			text = "";
 
-		Log.d("Notification Center", "notify");
+        Timber.d("notify");
 		PebbleTalkerService service = PebbleTalkerService.instance;
 
 		if (service == null)

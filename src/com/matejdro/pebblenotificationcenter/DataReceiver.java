@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
+import timber.log.Timber;
 
 
 public class DataReceiver extends BroadcastReceiver {
@@ -27,7 +28,7 @@ public class DataReceiver extends BroadcastReceiver {
 
 		int id = data.getUnsignedInteger(0).intValue() & 0xFF;
 
-		Log.d("PebbleNotificationListener", "Got packet " + id);
+		Timber.d("Got packet %d", id);
 
 		PebbleTalkerService.gotPacket(context, id, data);
 	}
