@@ -87,8 +87,6 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
 			return true;
 		case R.id.action_test_notification:
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			Notification notification = new Notification(R.drawable.icon, "Hello World", System.currentTimeMillis());
-			notification.defaults = Notification.DEFAULT_ALL;
 			NotificationCompat.Builder mBuilder =
               new NotificationCompat.Builder(this).setSmallIcon(R.drawable.icon)
                   .setContentTitle("Test Notification").setContentText("See notifcation on pebble")

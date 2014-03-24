@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
 
+import com.matejdro.pebblenotificationcenter.util.CrashLogger;
 import timber.log.Timber;
 import android.app.Service;
 import android.content.Context;
@@ -74,6 +75,16 @@ public class PebbleTalkerService extends Service {
 
 	@Override
 	public void onCreate() {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
+        {
+            @Override
+            public void uncaughtException(Thread thread, Throwable throwable)
+            {
+                CrashLogger.report(PebbleTalkerService.this, throwable);
+                System.exit(1);
+            }
+        });
+
 		handler = new Handler();
 		instance = this;
 		settings = PreferenceManager.getDefaultSharedPreferences(this);
