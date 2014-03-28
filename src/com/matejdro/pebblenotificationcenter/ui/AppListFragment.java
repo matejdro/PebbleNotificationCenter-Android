@@ -275,7 +275,7 @@ public class AppListFragment extends Fragment {
 			try {
 				Drawable icon = pm.getApplicationIcon((String) params[0]);
 				if (!(icon instanceof BitmapDrawable))
-					return null;
+					icon = getResources().getDrawable(android.R.drawable.sym_def_app_icon);
 				
 				iconCache.put((String) params[0], ((BitmapDrawable) icon).getBitmap());					
 			} catch (NameNotFoundException e) {
