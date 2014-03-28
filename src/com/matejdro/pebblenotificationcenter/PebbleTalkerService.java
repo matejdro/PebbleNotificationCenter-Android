@@ -311,7 +311,7 @@ public class PebbleTalkerService extends Service {
 				}
 			}
 
-			if (settings.getBoolean("noNotificationsNoPebble", false) && !PebbleKit.isWatchConnected(this))
+			if (settings.getBoolean("noNotificationsNoPebble", false) && !isWatchConnected())
 				return;
 		}
 
@@ -432,7 +432,7 @@ public class PebbleTalkerService extends Service {
 				curSendingNotification = null;
 			}
 
-			if (PebbleKit.isWatchConnected(PebbleTalkerService.this))
+			if (isWatchConnected())
 				commWentIdle();
 			else
 				commBusy = false;
@@ -634,6 +634,18 @@ public class PebbleTalkerService extends Service {
 			break;
 		}
 	}
+
+    private boolean isWatchConnected()
+    {
+        try
+        {
+            return PebbleKit.isWatchConnected(this);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 
 	public static void notify(Context context, String title, String text)
 	{
