@@ -589,6 +589,10 @@ public class PebbleTalkerService extends Service {
         Timber.d("Sending config...");
 		
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
+
+        //Stop timer at config part, so people won't get spam if their NC version is not correct.
+        handler.removeCallbacks(makeIdle);
+        commBusy = false;
 	}
 
 	private void packetInternal(int id, PebbleDictionary data)
