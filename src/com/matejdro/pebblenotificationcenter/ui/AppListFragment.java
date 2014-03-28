@@ -1,13 +1,5 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import timber.log.Timber;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -24,16 +16,13 @@ import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.util.ListSerialization;
+import timber.log.Timber;
+
+import java.util.*;
 
 public class AppListFragment extends Fragment {
 
@@ -264,13 +253,16 @@ public class AppListFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(IconData result) {
-			if (result.holder.lastIndex == result.position)
+			if (result != null && result.holder.lastIndex == result.position)
 				result.holder.icon.setImageBitmap(iconCache.get(result.pkg));
 		}
 
 		@Override
 		protected IconData doInBackground(Object... params) {
-			final PackageManager pm = getActivity().getPackageManager();
+			if (getActivity() == null)
+                return null;
+
+            final PackageManager pm = getActivity().getPackageManager();
 			
 			try {
 				Drawable icon = pm.getApplicationIcon((String) params[0]);
