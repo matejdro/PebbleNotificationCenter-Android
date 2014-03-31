@@ -1,18 +1,12 @@
 package com.matejdro.pebblenotificationcenter.notifications;
 
 import android.annotation.TargetApi;
-import android.app.NotificationManager;
 import android.os.Build;
 import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.util.CrashLogger;
 import timber.log.Timber;
-
-import java.util.Random;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class JellybeanNotificationListener extends NotificationListenerService {
@@ -72,7 +66,8 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 	{
         Timber.d("dismissing");
 
-		instance.cancelNotification(pkg, tag, id);
+        if (instance != null)
+		    instance.cancelNotification(pkg, tag, id);
 	}
 
 	public static StatusBarNotification[] getCurrentNotifications()
