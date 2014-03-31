@@ -1,14 +1,5 @@
 package com.matejdro.pebblenotificationcenter;
 
-import java.net.URISyntaxException;
-import java.util.ArrayDeque;
-import java.util.Calendar;
-import java.util.Queue;
-import java.util.Random;
-import java.util.UUID;
-
-import com.matejdro.pebblenotificationcenter.util.CrashLogger;
-import timber.log.Timber;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -19,18 +10,21 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.SparseArray;
-
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.util.CrashLogger;
 import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
+import timber.log.Timber;
+
+import java.net.URISyntaxException;
+import java.util.*;
 
 public class PebbleTalkerService extends Service {
 	private static final UUID systemAppsUUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
@@ -546,9 +540,18 @@ public class PebbleTalkerService extends Service {
 		}
 		catch (NumberFormatException e)
 		{
-		}		
-		
-		boolean backlight = false;
+		}
+
+        int vibratePeriod = 0;
+        try
+        {
+            vibratePeriod = Math.min(200, Integer.parseInt(settings.getString("vibratePeriodicallyPeriod", "20")));
+        }
+        catch (NumberFormatException e)
+        {
+        }
+
+        boolean backlight = false;
 		int backlightSetting = Integer.parseInt(settings.getString(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, "2"));
 		switch (backlightSetting){
 			case 1:
@@ -567,7 +570,7 @@ public class PebbleTalkerService extends Service {
 		configBytes[2] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.FONT_BODY, "4"));
 		configBytes[3] = (byte) (timeout >>> 0x08);
 		configBytes[4] = (byte) timeout;
-		configBytes[5] = (byte) Math.min(200, Integer.parseInt(settings.getString("vibratePeriodicallyPeriod", "20")));
+		configBytes[5] = (byte) vibratePeriod;
 		configBytes[6] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.VIBRATION_MODE, "4"));;
 
 		byte flags = 0;
