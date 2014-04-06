@@ -42,10 +42,10 @@ public class PebbleTalkerService extends Service {
 	private NotificationListAdapter listHandler;
 
 	private boolean commBusy = false;
-	private Queue<Integer> notificationRemovalQueue = new ArrayDeque<Integer>();
+	private Queue<Integer> notificationRemovalQueue = new LinkedList<Integer>();
 
 	PendingNotification curSendingNotification;
-	private Queue<PendingNotification> sendingQueue = new ArrayDeque<PendingNotification>();
+	private Queue<PendingNotification> sendingQueue = new LinkedList<PendingNotification>();
 	private SparseArray<PendingNotification> sentNotifications = new SparseArray<PendingNotification>();
 
 	private LocationLookup locationLookup;
