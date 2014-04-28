@@ -35,6 +35,8 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Crashlytics.getInstance().setDebugMode(true);
         Crashlytics.start(this);
 
         setContentView(R.layout.activity_main);
