@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 import com.matejdro.pebblenotificationcenter.util.CrashLogger;
 import timber.log.Timber;
 
@@ -48,6 +49,8 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 	@Override
 	public void onNotificationPosted(final StatusBarNotification sbn) {
+        Log.d("Posted " + sbn.getPackageName() + " " + sbn.getId() + " " + new NotificationParser(this, sbn.getNotification()).text, "TITANIUMDEBUG");
+
 		handler.post(new Runnable() {
 
 			@Override
@@ -59,7 +62,9 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
-		NotificationHandler.notificationDismissedOnPhone(this, sbn.getPackageName(), sbn.getTag(), sbn.getId());
+        Log.d("Removed " + sbn.getPackageName() + " "  + sbn.getId() + " " + new NotificationParser(this, sbn.getNotification()).text, "TITANIUMDEBUG");
+
+        NotificationHandler.notificationDismissedOnPhone(this, sbn.getPackageName(), sbn.getTag(), sbn.getId());
 	}
 
 	public static void dismissNotification(String pkg, String tag, int id)

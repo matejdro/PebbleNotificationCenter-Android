@@ -125,16 +125,6 @@ public class PebbleTalkerService extends Service {
 	{
         Timber.d("Send " + notification.id);
 
-		if (devConn != null)
-		{
-			UUID prev = devConn.getCurrentRunningApp();
-
-			if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(systemAppsUUID))
-			{
-				previousUUID = prev;
-			}
-		}
-		
 		curSendingNotification = notification;
 		sentNotifications.put(notification.id, notification);
 
@@ -168,7 +158,6 @@ public class PebbleTalkerService extends Service {
 
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
 
-		PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
 		commStarted();
 	}
 
@@ -323,6 +312,8 @@ public class PebbleTalkerService extends Service {
 			text = text.substring(chunk.length());
 		}
 
+        openApp();
+
 		if (commBusy)
 		{
 			sendingQueue.add(notification);
@@ -330,6 +321,17 @@ public class PebbleTalkerService extends Service {
 		else
 			send(notification);
 	}
+
+    private void openApp()
+    {
+        UUID prev = devConn.getCurrentRunningApp();
+        if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(systemAppsUUID))
+        {
+            previousUUID = prev;
+        }
+
+        PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
+    }
 
 	private void closeApp()
 	{
@@ -382,8 +384,6 @@ public class PebbleTalkerService extends Service {
 	{
 		Timber.i("Went idle");
 
-		handler.removeCallbacks(makeIdle);
-
 		if (curSendingNotification != null)
 		{
 			send(curSendingNotification);
@@ -416,22 +416,6 @@ public class PebbleTalkerService extends Service {
 		return false;
 	}
 
-	private final Runnable makeIdle = new Runnable() {
-		public void run() {
-            Timber.i("Idle timeout");
-
-			if (curSendingNotification != null)
-			{
-				sendingQueue.add(curSendingNotification);
-				curSendingNotification = null;
-			}
-
-			if (isWatchConnected())
-				commWentIdle();
-			else
-				commBusy = false;
-		}
-	};
 	/**
 	 * Starts timer that will mark communication as idle, if nothing happened in 10 seconds.
 	 */
@@ -440,8 +424,6 @@ public class PebbleTalkerService extends Service {
 		Timber.i("Not Idle");
 
 		commBusy = true;
-		handler.removeCallbacks(makeIdle);
-		handler.postDelayed(makeIdle, 5000);
 	}
 
 	private void menuPicked(PebbleDictionary data)
@@ -593,8 +575,6 @@ public class PebbleTalkerService extends Service {
 		
 		PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
 
-        //Stop timer at config part, so people won't get spam if their NC version is not correct.
-        handler.removeCallbacks(makeIdle);
         commBusy = false;
 	}
 
