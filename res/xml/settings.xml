@@ -128,10 +128,6 @@
         <Preference
             android:key="notifierLicense"
             android:title="Open source Licenses" />
-        <CheckBoxPreference
-            android:key="bugReports"
-            android:title="Enable bug reporting"
-            android:defaultValue="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

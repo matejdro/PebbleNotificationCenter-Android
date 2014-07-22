@@ -17,7 +17,6 @@ import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
-import com.matejdro.pebblenotificationcenter.util.CrashLogger;
 import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
@@ -69,16 +68,6 @@ public class PebbleTalkerService extends Service {
 
 	@Override
 	public void onCreate() {
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
-        {
-            @Override
-            public void uncaughtException(Thread thread, Throwable throwable)
-            {
-                CrashLogger.report(PebbleTalkerService.this, throwable);
-                System.exit(1);
-            }
-        });
-
 		handler = new Handler();
 		instance = this;
 		settings = PreferenceManager.getDefaultSharedPreferences(this);

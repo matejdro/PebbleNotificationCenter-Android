@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
-import com.matejdro.pebblenotificationcenter.util.CrashLogger;
 import timber.log.Timber;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -26,15 +25,6 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 	@Override
 	public void onCreate() {
         Timber.d("Creating Notification Listener...");
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
-        {
-            @Override
-            public void uncaughtException(Thread thread, Throwable throwable)
-            {
-                CrashLogger.report(JellybeanNotificationListener.this, throwable);
-                System.exit(1);
-            }
-        });
 
 		handler = new Handler();
 		instance = this;
