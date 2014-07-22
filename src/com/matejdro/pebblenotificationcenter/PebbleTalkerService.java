@@ -324,6 +324,7 @@ public class PebbleTalkerService extends Service {
 
 	private void closeApp()
 	{
+        Timber.d("CloseApp " + previousUUID);
 		commBusy = false;
 
 		if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
@@ -486,6 +487,8 @@ public class PebbleTalkerService extends Service {
 	{
 		int id = data.getInteger(1).intValue();
 
+        Timber.d("Dismiss requested. Close: " + data.contains(2));
+
 		PendingNotification notification = sentNotifications.get(id);
 		if (notification != null)
 		{
@@ -637,7 +640,6 @@ public class PebbleTalkerService extends Service {
 				subtitle = text.substring(0, firstLineBreak).trim();
 				text = text.substring(firstLineBreak).trim();
 			}
-
 		}
 
 		notify(context, title, subtitle, text, noHistory, false);
