@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 public class WatchappHandler {
-	public static final int SUPPORTED_PROTOCOL = 10;
+	public static final int SUPPORTED_PROTOCOL = 11;
 
 	public static boolean isFirstRun(SharedPreferences settings)
 	{
