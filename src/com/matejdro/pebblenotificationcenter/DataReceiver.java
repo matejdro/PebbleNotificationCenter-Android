@@ -1,21 +1,16 @@
 package com.matejdro.pebblenotificationcenter;
 
-import static com.getpebble.android.kit.Constants.APP_UUID;
-import static com.getpebble.android.kit.Constants.MSG_DATA;
-import static com.getpebble.android.kit.Constants.TRANSACTION_ID;
-
-import java.util.UUID;
-
-import org.json.JSONException;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
+import org.json.JSONException;
 import timber.log.Timber;
+
+import java.util.UUID;
+
+import static com.getpebble.android.kit.Constants.*;
 
 
 public class DataReceiver extends BroadcastReceiver {
@@ -39,7 +34,7 @@ public class DataReceiver extends BroadcastReceiver {
 		final UUID receivedUuid = (UUID) intent.getSerializableExtra(APP_UUID);
 
 		// Pebble-enabled apps are expected to be good citizens and only inspect broadcasts containing their UUID
-		if (!receivedUuid.equals(pebbleAppUUID)) {
+		if (!pebbleAppUUID.equals(receivedUuid)) {
 			return;
 		}
 
