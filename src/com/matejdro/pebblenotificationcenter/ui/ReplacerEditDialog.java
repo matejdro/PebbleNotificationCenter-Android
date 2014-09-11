@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import com.matejdro.pebblenotificationcenter.R;
 
 
@@ -73,13 +71,7 @@ public class ReplacerEditDialog extends Dialog {
 			public void onClick(View v) {
 				EditText characterField = (EditText) findViewById(R.id.editCharacter);
 				CharSequence character = characterField.getText();
-				
-				if (character.length() != 1 && !ReplacerFragment.UNICODE_PATTERN.matcher(character).matches())
-				{
-					Toast.makeText(getContext(), R.string.enterChracter, Toast.LENGTH_SHORT).show();
-					return;
-				}
-								
+
 				if (OKListener != null)
 				{
 					EditText replacementField = (EditText) findViewById(R.id.editReplacement);

@@ -23,14 +23,14 @@ public class SettingsMemoryStorage {
 	private SharedPreferences preferences;
 	private HashSet<String> selectedPackages;
 	private List<Pattern> regexPatterns;
-	private HashMap<Character, String> replacingStrings;
+	private HashMap<String, String> replacingStrings;
 	
 	public SettingsMemoryStorage(Context context)
 	{
 		this.context = context;
 		this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		this.selectedPackages = new HashSet<String>();
-		this.replacingStrings = new HashMap<Character, String>();
+		this.replacingStrings = new HashMap<String, String>();
 		this.regexPatterns = new ArrayList<Pattern>();
 	}
 	
@@ -76,10 +76,9 @@ public class SettingsMemoryStorage {
 			if (keyString.isEmpty())
 				continue;
 			
-			char keyCharacter = keyString.charAt(0);
 			String valueString = replacingValues.next();
 			
-			replacingStrings.put(keyCharacter, valueString);
+			replacingStrings.put(keyString, valueString);
 		}
 
 		dirty = false;
@@ -109,7 +108,7 @@ public class SettingsMemoryStorage {
 		return regexPatterns;
 	}
 	
-	public HashMap<Character, String> getReplacingStrings()
+	public HashMap<String, String> getReplacingStrings()
 	{
 		if (dirty)
 			loadSettings();

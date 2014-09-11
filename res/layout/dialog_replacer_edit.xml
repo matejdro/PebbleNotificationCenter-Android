@@ -22,8 +22,7 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textNoSuggestions"
-            android:maxLength="6" />
+            android:inputType="textNoSuggestions" />
     </LinearLayout>
 
     <LinearLayout

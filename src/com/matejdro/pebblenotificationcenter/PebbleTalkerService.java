@@ -354,7 +354,7 @@ public class PebbleTalkerService extends Service {
         Timber.d("CloseApp " + previousUUID);
 		commBusy = false;
 
-		if (false && settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
+		if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
 			PebbleKit.startAppOnPebble(this, previousUUID);
 		else
 			PebbleKit.closeAppOnPebble(this, DataReceiver.pebbleAppUUID);

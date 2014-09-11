@@ -3,6 +3,7 @@ package com.matejdro.pebblenotificationcenter.util;
 import java.util.HashMap;
 
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+import java.util.Map;
 
 
 public class TextUtil {	
@@ -13,8 +14,9 @@ public class TextUtil {
 
 	public static String prepareString(String text, int length)
 	{
-		text = fixInternationalAndTrim(text, length);
-        
+		text = fixInternationalCharacters(text);
+        text = trimString(text, length, true);
+
         if (RTLUtility.getInstance().isRTL(text)){            
             text = RTLUtility.getInstance().format(text, 15);        	
         }
@@ -23,31 +25,16 @@ public class TextUtil {
 	}
 
 
-	public static String fixInternationalAndTrim(String text, int length)
-	{
-		StringBuilder builder = new StringBuilder(length);
+   public static String fixInternationalCharacters(String input)
+   {
+       HashMap<String, String> replacementTable = PebbleNotificationCenter.getInMemorySettings().getReplacingStrings();
+       for (Map.Entry<String, String> e : replacementTable.entrySet())
+       {
+            input = input.replace(e.getKey(), e.getValue());
+       }
 
-		length = Math.min(length, text.length());
-
-		HashMap<Character, String> replacementTable = PebbleNotificationCenter.getInMemorySettings().getReplacingStrings();
-
-		for (int i = 0; i < length; i++)
-		{
-			char ch = text.charAt(i);
-
-			String replacement = replacementTable.get(ch);
-			if (replacement != null)
-			{
-				builder.append(replacement);
-			}
-			else
-			{
-				builder.append(ch);
-			}
-		}
-
-		return builder.toString();		
-	}
+       return input;
+   }
 
 	public static String trimString(String text)
 	{

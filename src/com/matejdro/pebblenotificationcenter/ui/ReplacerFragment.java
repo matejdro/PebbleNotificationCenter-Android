@@ -1,27 +1,13 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
-import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.AlertDialog;
-import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,15 +22,25 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.ui.ReplacerEditDialog.ReplacerDialogResult;
 import com.matejdro.pebblenotificationcenter.ui.ReplacerFilePickerDialog.FilePickerDialogResult;
+import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReplacerFragment extends Fragment {
-	public static Pattern UNICODE_PATTERN = Pattern.compile("U\\+([0-9a-fA-F]{4,5})"); 
-	public static DecimalFormat FOUR_DIGIT_FORMAT = new DecimalFormat("0000");
+	public static Pattern UNICODE_PATTERN = Pattern.compile("U\\+([0-9a-fA-F]+)");
 	private static SharedPreferences preferences;
 	private static SharedPreferences.Editor editor;
 
@@ -112,15 +108,13 @@ public class ReplacerFragment extends Fragment {
 
 	private static String convertToCharacter(CharSequence string)
 	{
-		if (string.length() == 1)
-			return string.toString();
-
 		Matcher matcher = UNICODE_PATTERN.matcher(string);
 		if (!matcher.matches())
-			return null;
+			return string.toString();
 
-		char matchedChar = (char) Integer.parseInt(matcher.group(1), 16);
-		return Character.toString(matchedChar);
+        char[] chars = Character.toChars(Integer.parseInt(matcher.group(1), 16));
+
+		return String.valueOf(chars);
 	}
 
 	@Override
@@ -282,7 +276,7 @@ public class ReplacerFragment extends Fragment {
 					BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 					for (int i = 0; i < characters.size(); i++)
 					{
-						int charId = characters.get(i).charAt(0);
+						int charId = Character.codePointAt(characters.get(i), 0);
 						
 						writer.write("U+");
 						writer.write(String.format("%04x", charId & 0xFFFFFFFF));
