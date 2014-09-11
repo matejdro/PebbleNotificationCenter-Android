@@ -5,6 +5,9 @@ import java.util.Date;
 
 public class TimeUtil {
   static public boolean isBetweenTimes(Calendar current, Calendar start, Calendar stop) {
+    if (start == null || stop == null)
+        return false;
+
     int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
     int currentTime = currentHour * 100 + currentMinute;
