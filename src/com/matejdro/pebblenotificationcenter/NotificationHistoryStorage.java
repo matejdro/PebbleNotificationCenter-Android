@@ -47,6 +47,18 @@ public class NotificationHistoryStorage extends SQLiteOpenHelper {
 		super.close();
 	}	
 
+    public void clearDatabase()
+    {
+        SQLiteDatabase database = getWritableDatabase();
+
+        database.delete("notifications", null, null);
+
+
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putLong("lastCleanup", System.currentTimeMillis());
+        editor.apply();
+    }
+
 	public void cleanDatabase()
 	{		
 		SQLiteDatabase database = getWritableDatabase();

@@ -160,5 +160,15 @@
     <string name="pebbleAppLoadingError">Error while loading app list. Is your Pebble connected and Developer Connection
         enabled?
     </string>
+    <string name="clearHistory">Clear History</string>
+    <string name="deleteHistoryConfirm">Do you really want to clear whole notification history?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="historyCleared">History cleared</string>
+    <string name="openingPebbleAppFailed">Opening Pebble app failed. Do you have Pebble app installed?</string>
+    <string name="pebbleAppInstallDialog">Do you want to open Pebble App Store to install Notification Center to your
+        Pebble?
+    </string>
+    <string name="openInPebbleAppStore">Open NC in Pebble App Store</string>
 
 </resources>

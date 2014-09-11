@@ -5,11 +5,24 @@
         android:title="Settings"
         android:orderInCategory="4"
        	/>
+
     <item
         android:id="@+id/action_test_notification"
         android:icon="@drawable/ic_action_pebble"
         android:title="Test Notification"
          android:orderInCategory="6"
         />
+
+    <item
+            android:id="@+id/clearHistory"
+            android:title="@string/clearHistory"
+            android:orderInCategory="7"
+            />
+
+    <item
+            android:id="@+id/openInPebbleApp"
+            android:title="@string/openInPebbleAppStore"
+            android:orderInCategory="7"
+            />
     
 </menu>

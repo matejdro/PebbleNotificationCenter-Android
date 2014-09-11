@@ -18,7 +18,9 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
+import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
@@ -95,6 +97,11 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
                   .setContentTitle("Test Notification").setContentText("See notifcation on pebble")
                   .setSubText("Hello World");
           mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
+            case R.id.clearHistory:
+                clearHistory();
+                break;
+            case R.id.openInPebbleApp:
+                WatchappHandler.openPebbleApp(this, PreferenceManager.getDefaultSharedPreferences(this).edit());
           return true;
 		}
 
@@ -153,6 +160,33 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
         {
             WatchappHandler.displayNotification(this, settings.edit());
         }
+    }
+
+    private void clearHistory()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setMessage(R.string.deleteHistoryConfirm).setTitle(R.string.clearHistory);
+
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                dialogInterface.dismiss();
+            }
+        });
+
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                new NotificationHistoryStorage(MainActivity.this).clearDatabase();
+                dialogInterface.dismiss();
+                Toast.makeText(MainActivity.this, R.string.historyCleared, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
     }
 
     /**
