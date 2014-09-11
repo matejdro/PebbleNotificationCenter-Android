@@ -10,7 +10,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v4.app.*;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -160,12 +164,14 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
         public static final int PAGE_DEFAULT = 0;
         public static final int PAGE_APPS = 1;
         public static final int PAGE_APPS_SYSTEM = 2;
-        public static final int PAGE_TEXT_REPLACEMENT = 3;
+        public static final int PAGE_APPS_PEBBLE = 3;
+        public static final int PAGE_TEXT_REPLACEMENT = 4;
 
         public static final String[] TITLES = {
                 "General",
                 "User Apps",
                 "System Apps",
+                "Pebble Apps",
                 "Character Replacement"
         };
 
@@ -185,6 +191,9 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
 
                 case PAGE_APPS_SYSTEM:
                     return AppListFragment.newInstance(true);
+
+                case PAGE_APPS_PEBBLE:
+                    return new PebbleAppListFragment();
 
                 case PAGE_TEXT_REPLACEMENT:
                     return new ReplacerFragment();

@@ -100,9 +100,11 @@ Phone --> Pebble
 				Fourth bit (0x08) = Is notification waiting to be sent?
 				Fifth bit (0x10) = Enable LCD light when notification arrives
 				Sixth bit (0x20) = Don't vibrate when charging
+				Seventh bit (0x40) = Inverse mode
 			[8] = Compatible watchapp version (first byte)
 			[9] = Compatible watchapp version (second byte)
 			[10] = Shake action
+
 
 	
 	Packet 4 - Dismiss notification

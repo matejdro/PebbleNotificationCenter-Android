@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
-import com.matejdro.pebblenotificationcenter.util.ListSerialization;
+import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import timber.log.Timber;
 
 import java.util.*;
@@ -184,7 +184,7 @@ public class AppListFragment extends Fragment {
 						checkedApps.remove(appInfo.info.packageName);
 						Timber.d("Removed application %s from checkedApps, checkedApps.size() = %d", appInfo.info.packageName, checkedApps.size());
 					}
-					ListSerialization.saveCollection(editor, checkedApps, PebbleNotificationCenter.SELECTED_PACKAGES);
+					PreferencesUtil.saveCollection(editor, checkedApps, PebbleNotificationCenter.SELECTED_PACKAGES);
 					PebbleNotificationCenter.getInMemorySettings().markDirty();
 				}
 			});
@@ -209,7 +209,7 @@ public class AppListFragment extends Fragment {
 			if (getActivity() == null)
 				return null;
 			
-			ListSerialization.loadCollection(preferences, checkedApps, PebbleNotificationCenter.SELECTED_PACKAGES);
+			PreferencesUtil.loadCollection(preferences, checkedApps, PebbleNotificationCenter.SELECTED_PACKAGES);
 
 			final PackageManager pm = getActivity().getPackageManager();
 			List<PackageInfo> packages = pm.getInstalledPackages(0);

@@ -120,6 +120,12 @@
             android:entryValues="@array/shakeActionValues"
             android:key="shakeAction"
             android:title="Action on shake" />
+
+        <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="invertColors"
+                android:title="Invert colors" />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference 

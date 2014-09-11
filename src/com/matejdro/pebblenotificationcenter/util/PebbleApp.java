@@ -12,6 +12,7 @@ public class PebbleApp
 {
     private String name;
     protected UUID uuid;
+    private int notificationMode;
 
     public String getName()
     {
@@ -27,6 +28,17 @@ public class PebbleApp
     {
         this.name = name;
         this.uuid = uuid;
+        notificationMode = 0;
+    }
+
+    public int getNotificationMode()
+    {
+        return notificationMode;
+    }
+
+    public void setNotificationMode(int notificationMode)
+    {
+        this.notificationMode = notificationMode;
     }
 
     public static List<PebbleApp> getFromByteBuffer(ByteBuffer buffer)

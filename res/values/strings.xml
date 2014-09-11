@@ -125,6 +125,11 @@
         <item>Send notification</item>
         <item>Change setting</item>
     </string-array>
+    <string-array name="pebble_app_options">
+        <item>NC Notification</item>
+        <item>Pebble Notification</item>
+        <item>No Notification</item>
+    </string-array>
 
     <string name="title_activity_tasker_setup">TaskerSetupActivity</string>
     <string name="action_settings">Settings</string>
@@ -151,5 +156,9 @@
     <string name="replacement">Replacement:</string>
     <string name="enterChracter">You need to enter one character or unicode code for it!</string>
     <string name="importNoFiles">No dictionary files found.\n\nPlace your replacement dictionary .txt files into NotificationCenter folder on your phone\'s storage and try again.</string>
+    <string name="pebbleAppsDescription">In this view you can disable Notification Center when specific app is open on Pebble. It is useful to prevent NC from interrupting apps like sleep tracking or stopwatch. It also requires Developer Connection to be enabled in Pebble settings.</string>
+    <string name="pebbleAppLoadingError">Error while loading app list. Is your Pebble connected and Developer Connection
+        enabled?
+    </string>
 
 </resources>

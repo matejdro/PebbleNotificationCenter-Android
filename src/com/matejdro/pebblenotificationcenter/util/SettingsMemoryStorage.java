@@ -47,14 +47,14 @@ public class SettingsMemoryStorage {
 
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		
-		Iterator<String> packages = ListSerialization.getDirectIterator(preferences, PebbleNotificationCenter.SELECTED_PACKAGES);
+		Iterator<String> packages = PreferencesUtil.getDirectIterator(preferences, PebbleNotificationCenter.SELECTED_PACKAGES);
 		while (packages.hasNext())
 		{
 			selectedPackages.add(packages.next());
 		}
 
 		
-		Iterator<String> blacklistRegexes = ListSerialization.getDirectIterator(preferences, PebbleNotificationCenter.REGEX_LIST);
+		Iterator<String> blacklistRegexes = PreferencesUtil.getDirectIterator(preferences, PebbleNotificationCenter.REGEX_LIST);
 		while (blacklistRegexes.hasNext())
 		{
             String pattern = blacklistRegexes.next();
@@ -68,8 +68,8 @@ public class SettingsMemoryStorage {
             }
 		}
 		
-		Iterator<String> replacingKeys = ListSerialization.getDirectIterator(preferences, PebbleNotificationCenter.REPLACING_KEYS_LIST);
-		Iterator<String> replacingValues = ListSerialization.getDirectIterator(preferences, PebbleNotificationCenter.REPLACING_VALUES_LIST);
+		Iterator<String> replacingKeys = PreferencesUtil.getDirectIterator(preferences, PebbleNotificationCenter.REPLACING_KEYS_LIST);
+		Iterator<String> replacingValues = PreferencesUtil.getDirectIterator(preferences, PebbleNotificationCenter.REPLACING_VALUES_LIST);
 		while (replacingKeys.hasNext() && replacingValues.hasNext())
 		{
 			String keyString = replacingKeys.next();

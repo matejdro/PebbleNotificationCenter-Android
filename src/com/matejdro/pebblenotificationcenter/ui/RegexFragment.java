@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
+import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,6 @@ import android.widget.TextView;
 
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
-import com.matejdro.pebblenotificationcenter.util.ListSerialization;
 
 /**
  * Created by jbergler on 25/11/2013.
@@ -44,7 +44,7 @@ public class RegexFragment extends Fragment {
         editor = preferences.edit();
 
         regexList = new ArrayList<String>();
-        ListSerialization.loadCollection(preferences, regexList, PebbleNotificationCenter.REGEX_LIST);
+        PreferencesUtil.loadCollection(preferences, regexList, PebbleNotificationCenter.REGEX_LIST);
 
         return inflater.inflate(R.layout.fragment_regex_list, null);
     }
@@ -103,7 +103,7 @@ public class RegexFragment extends Fragment {
 
     private void saveList()
     {
-        ListSerialization.saveCollection(editor, regexList, PebbleNotificationCenter.REGEX_LIST);
+        PreferencesUtil.saveCollection(editor, regexList, PebbleNotificationCenter.REGEX_LIST);
 		PebbleNotificationCenter.getInMemorySettings().markDirty();
         regexAdapter.notifyDataSetChanged();
     }

@@ -89,11 +89,6 @@
               </intent-filter>
         </receiver>
 
-        <receiver android:name=".util.CrashLogger">
-            <intent-filter>
-                <action android:name="com.matejdro.pebblenotificationcenter.BUG_REPORT" />
-            </intent-filter>
-        </receiver>
         <meta-data android:name="com.crashlytics.ApiKey" android:value="048e0255b748bd3c0abc33c75a2601ff67b550c8"/>
     </application>
 

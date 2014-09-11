@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
+import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -40,7 +41,6 @@ import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.ui.ReplacerEditDialog.ReplacerDialogResult;
 import com.matejdro.pebblenotificationcenter.ui.ReplacerFilePickerDialog.FilePickerDialogResult;
-import com.matejdro.pebblenotificationcenter.util.ListSerialization;
 
 public class ReplacerFragment extends Fragment {
 	public static Pattern UNICODE_PATTERN = Pattern.compile("U\\+([0-9a-fA-F]{4,5})"); 
@@ -99,8 +99,8 @@ public class ReplacerFragment extends Fragment {
 		preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		editor = preferences.edit();
 
-		ListSerialization.loadCollection(preferences, characters, PebbleNotificationCenter.REPLACING_KEYS_LIST);
-		ListSerialization.loadCollection(preferences, replacements, PebbleNotificationCenter.REPLACING_VALUES_LIST);
+		PreferencesUtil.loadCollection(preferences, characters, PebbleNotificationCenter.REPLACING_KEYS_LIST);
+		PreferencesUtil.loadCollection(preferences, replacements, PebbleNotificationCenter.REPLACING_VALUES_LIST);
 
 		return view;
 	}
@@ -165,8 +165,8 @@ public class ReplacerFragment extends Fragment {
 
 	private void saveData()
 	{
-		ListSerialization.saveCollection(editor, characters, PebbleNotificationCenter.REPLACING_KEYS_LIST);
-		ListSerialization.saveCollection(editor, replacements, PebbleNotificationCenter.REPLACING_VALUES_LIST);
+		PreferencesUtil.saveCollection(editor, characters, PebbleNotificationCenter.REPLACING_KEYS_LIST);
+		PreferencesUtil.saveCollection(editor, replacements, PebbleNotificationCenter.REPLACING_VALUES_LIST);
 
 		listViewAdapter.notifyDataSetChanged();
 		PebbleNotificationCenter.getInMemorySettings().markDirty();

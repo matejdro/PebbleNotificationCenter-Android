@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import org.json.JSONException;
+import timber.log.Timber;
 
 import java.util.UUID;
 
@@ -168,6 +169,7 @@ public final class PebbleKit {
         final Intent stopAppIntent = new Intent(INTENT_APP_STOP);
         stopAppIntent.putExtra(APP_UUID, watchappUuid);
         context.sendBroadcast(stopAppIntent);
+        Timber.d("Sent close app command !!");
     }
 
     /**

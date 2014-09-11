@@ -18,6 +18,7 @@ import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
+import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
 import timber.log.Timber;
@@ -285,6 +286,26 @@ public class PebbleTalkerService extends Service {
 
 			if (settings.getBoolean("noNotificationsNoPebble", false) && !isWatchConnected())
 				return;
+
+            updateCurrentlyRunningApp();
+            int pebbleAppMode = 0;
+            if (previousUUID != null)
+            {
+                pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, previousUUID);
+            }
+
+            if (pebbleAppMode == 1) //Pebble native notification
+            {
+                String nativeTitle = notification.title;
+                String nativeText = notification.subtitle + "\n\n" + notification.text;
+
+                devConn.sendNotification(nativeTitle, nativeText);
+                return;
+            }
+            else if (pebbleAppMode == 2) //No notification
+            {
+                return;
+            }
 		}
 
 		Random rnd = new Random();
@@ -311,14 +332,20 @@ public class PebbleTalkerService extends Service {
 			send(notification);
 	}
 
-    private void openApp()
+    private void updateCurrentlyRunningApp()
     {
+        previousUUID = null;
+
         UUID prev = devConn.getCurrentRunningApp();
         if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(systemAppsUUID))
         {
             previousUUID = prev;
         }
+    }
 
+    private void openApp()
+    {
+        updateCurrentlyRunningApp();
         PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
     }
 
@@ -327,7 +354,7 @@ public class PebbleTalkerService extends Service {
         Timber.d("CloseApp " + previousUUID);
 		commBusy = false;
 
-		if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
+		if (false && settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
 			PebbleKit.startAppOnPebble(this, previousUUID);
 		else
 			PebbleKit.closeAppOnPebble(this, DataReceiver.pebbleAppUUID);
@@ -554,6 +581,8 @@ public class PebbleTalkerService extends Service {
 		flags |= (byte) (notificationWaiting ? 0x08 : 0);
 		flags |= (byte) (backlight ? 0x10 : 0);
 		flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.DONT_VIBRATE_WHEN_CHARGING, true) ? 0x20 : 0);
+        flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.INVERT_COLORS, false) ? 0x40 : 0);
+
 
 		configBytes[7] = flags;
 

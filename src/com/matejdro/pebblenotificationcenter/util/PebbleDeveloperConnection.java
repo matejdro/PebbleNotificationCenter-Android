@@ -3,12 +3,15 @@ package com.matejdro.pebblenotificationcenter.util;
 import android.os.Handler;
 import android.os.Looper;
 import com.getpebble.android.kit.Constants;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -139,6 +142,41 @@ public class PebbleDeveloperConnection extends WebSocketClient
         return appList;
     }
 
+    public void sendNotification(String title, String message)
+    {
+        if (!isOpen())
+            return;
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        DataOutputStream dataStream = new DataOutputStream(stream);
+
+        Calendar localCalendar = Calendar.getInstance();
+        String date = new SimpleDateFormat().format(localCalendar.getTime());
+
+        int sizeTitle = Math.min(255, title.getBytes().length) + 1;
+        int sizeMessage = Math.min(255, message.getBytes().length) + 1;
+        int sizeDate = Math.min(255, date.getBytes().length) + 1;
+
+        try
+        {
+            dataStream.writeByte(1); //Message goes from phone to watch
+            dataStream.writeShort(1 + sizeTitle + sizeMessage + sizeDate); //Size of the messages(3 strings and one byte)
+            dataStream.writeShort(3000); //Endpoint - NOTIFICATIONS
+            dataStream.writeByte(1); //SMS Notification command
+
+            writePebbleString(dataStream, title);
+            writePebbleString(dataStream, message);
+            writePebbleString(dataStream, date);
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+
+        send(stream.toByteArray());
+    }
+
     private void completeWaitingTasks(DeveloperConnectionTaskType type, Object result)
     {
         Iterator<DeveloperConnectionResult> iterator = waitingTasks.iterator();
@@ -267,31 +305,42 @@ public class PebbleDeveloperConnection extends WebSocketClient
         GET_ALL_INSTALLED_APP_UUID
     }
 
-    private static CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
     public static String getPebbleStringFromByteBuffer(ByteBuffer buffer, int limit)
     {
-        StringBuilder builder = new StringBuilder();
+        byte[] stringData = new byte[32];
 
-        ByteBuffer newBuffer = buffer.duplicate();
-        newBuffer.limit(newBuffer.position() + 32);
-        buffer.position(buffer.position() + 32);
-        String string = "";
         try
         {
+            buffer.get(stringData);
+            String string = new String(stringData, "UTF-8");
 
-            string = decoder.decode(newBuffer).toString();
             int end = string.indexOf(0);
             if (end < 0)
-                return "";
+                return "[ERROR]";
 
-            string = string.substring(0, end);
-        } catch (CharacterCodingException e)
+            return string.substring(0, end);
+        } catch (UnsupportedEncodingException e)
         {
             e.printStackTrace();
         }
 
-        return string;
+        return "[ERROR]";
+    }
 
+    public static void writePebbleString(DataOutputStream stream, String string)
+    {
+        string = TextUtil.trimString(string, 255, true);
+        byte[] stringData = string.getBytes();
+
+        try
+        {
+            stream.writeByte(stringData.length & 0xFF);
+            stream.write(stringData);
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }
