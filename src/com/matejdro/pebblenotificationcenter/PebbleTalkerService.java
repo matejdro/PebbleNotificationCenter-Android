@@ -339,9 +339,11 @@ public class PebbleTalkerService extends Service
 
     private void updateCurrentlyRunningApp()
     {
-        previousUUID = null;
 
         UUID prev = devConn.getCurrentRunningApp();
+        if (!prev.equals(DataReceiver.pebbleAppUUID))
+            previousUUID = null;
+
         if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(systemAppsUUID))
         {
             previousUUID = prev;
@@ -350,7 +352,6 @@ public class PebbleTalkerService extends Service
 
     private void openApp()
     {
-        updateCurrentlyRunningApp();
         PebbleKit.startAppOnPebble(this, DataReceiver.pebbleAppUUID);
     }
 
@@ -359,7 +360,7 @@ public class PebbleTalkerService extends Service
         Timber.d("CloseApp " + previousUUID);
         commBusy = false;
 
-        if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
+        if (!settings.getBoolean("dontUseOpenApp", false) && settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
             PebbleKit.startAppOnPebble(this, previousUUID);
         else
             PebbleKit.closeAppOnPebble(this, DataReceiver.pebbleAppUUID);

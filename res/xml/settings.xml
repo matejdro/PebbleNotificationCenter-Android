@@ -134,6 +134,12 @@
         <Preference
             android:key="notifierLicense"
             android:title="Open source Licenses" />
+        <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="dontUseOpenApp"
+                android:title="Don't open other apps"
+                android:summary="DEBUG "/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>
