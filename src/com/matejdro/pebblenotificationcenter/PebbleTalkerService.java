@@ -217,7 +217,7 @@ public class PebbleTalkerService extends Service
     {
         Timber.d("notify internal");
 
-        text = TextUtil.prepareString(text, 1000);
+        text = TextUtil.prepareString(text, 900);
 
         PendingNotification notification = new PendingNotification();
         notification.androidID = androidID;
