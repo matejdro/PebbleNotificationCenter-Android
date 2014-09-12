@@ -97,6 +97,7 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
                   .setContentTitle("Test Notification").setContentText("See notifcation on pebble")
                   .setSubText("Hello World");
           mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
+            break;
             case R.id.clearHistory:
                 clearHistory();
                 break;

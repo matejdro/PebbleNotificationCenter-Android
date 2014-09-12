@@ -47,8 +47,15 @@ Pebble --> Phone
 		 2 = Close app after receiving this packet. If this key is present, pebble app will be closed (also see Packet 7) - uint8
 				
 	Packet 10 - Config received
-		Sent after config was received. Phone should send pending notifications or list of recent notifications. 			
-	
+    Sent after config was received. Phone should send pending notifications or list of recent notifications.
+
+	Packet 11 - Config change
+    Send when Pebble wants to change config on the phone
+    Additional data:
+        1 = ID of the setting - uint8. Possible settings:
+            0 = Disable notifications 1 or 0 - value is uint8
+        2 = Value of the setting (type depends on the setting)
+
 Phone --> Pebble
 
 	Packet 0 - New notification packet
