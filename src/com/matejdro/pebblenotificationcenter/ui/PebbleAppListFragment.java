@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import com.matejdro.pebblenotificationcenter.DataReceiver;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.util.PebbleApp;
 import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
@@ -22,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 public class PebbleAppListFragment extends Fragment {
@@ -217,6 +219,15 @@ public class PebbleAppListFragment extends Fragment {
             apps = connection.getInstalledPebbleApps();
             if (apps != null)
             {
+                //Remove Notification Center from the list
+                Iterator<PebbleApp> iterator = apps.iterator();
+                while (iterator.hasNext())
+                {
+                    PebbleApp app = iterator.next();
+                    if (app.getUuid().equals(DataReceiver.pebbleAppUUID))
+                        iterator.remove();
+                }
+
                 Collections.sort(apps, new PebbleAppComparator());
 
                 for (PebbleApp app : apps)

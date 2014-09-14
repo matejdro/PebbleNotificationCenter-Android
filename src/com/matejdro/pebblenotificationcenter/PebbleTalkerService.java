@@ -197,6 +197,21 @@ public class PebbleTalkerService extends Service
                 dismissOnPebble(notification.id, dontClose);
             }
         }
+
+        if (!dontClose)
+        {
+            Iterator<PendingNotification> iterator = sendingQueue.iterator();
+            while (iterator.hasNext())
+            {
+                PendingNotification notification = iterator.next();
+
+                if (!notification.isListNotification && notification.androidID != null && notification.androidID.intValue() == androidId.intValue() && notification.pkg != null && notification.pkg.equals(pkg) && (notification.tag == null || notification.tag.equals(tag)))
+                {
+                    iterator.remove();
+                }
+            }
+
+        }
     }
 
     private void dismissOnPebbleSucceeded(PebbleDictionary data)
