@@ -170,5 +170,15 @@
         Pebble?
     </string>
     <string name="openInPebbleAppStore">Open NC in Pebble App Store</string>
+    <string name="PebbleAppsOther">Other</string>
+    <string name="PebbleAppMainMenu">Main Menu</string>
+    <string name="PebbleAppSettings">Settings</string>
+    <string name="PebbleAppMusic">Music</string>
+    <string name="PebbleAppNotificationHistory">Notifications (native)</string>
+    <string name="PebbleAppAlarms">Alarms</string>
+    <string name="PebbleAppWatchfaceList">Watchfaces (list)</string>
+    <string name="PebbleWatchfaceSimplicity">Simplicity watchface</string>
+    <string name="PebbleWatchfaceAnalog">Classic analog watchface</string>
+    <string name="PebbleWatchfaceText">Text watchface</string>
 
 </resources>

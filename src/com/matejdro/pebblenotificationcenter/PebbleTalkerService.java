@@ -28,7 +28,8 @@ import java.util.*;
 
 public class PebbleTalkerService extends Service
 {
-    private static final UUID systemAppsUUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
+    //This used to be UUID for all system apps, but now they all get their separate UUID it seems
+    public static final UUID invalidUUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
 
     private static PebbleTalkerService instance;
 
@@ -312,9 +313,9 @@ public class PebbleTalkerService extends Service
             updateCurrentlyRunningApp();
             int pebbleAppMode = 0;
             if (previousUUID != null)
-            {
                 pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, previousUUID);
-            }
+            else
+                pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, invalidUUID);
 
             if (pebbleAppMode == 1) //Pebble native notification
             {
@@ -359,7 +360,7 @@ public class PebbleTalkerService extends Service
         if (!prev.equals(DataReceiver.pebbleAppUUID))
             previousUUID = null;
 
-        if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(systemAppsUUID))
+        if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(invalidUUID))
         {
             previousUUID = prev;
         }
@@ -592,7 +593,6 @@ public class PebbleTalkerService extends Service
         configBytes[4] = (byte) timeout;
         configBytes[5] = (byte) vibratePeriod;
         configBytes[6] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.VIBRATION_MODE, "4"));
-        ;
 
         byte flags = 0;
         flags |= (byte) (settings.getBoolean("autoSwitch", false) ? 0x01 : 0);

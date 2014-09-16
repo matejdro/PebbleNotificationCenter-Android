@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.matejdro.pebblenotificationcenter.DataReceiver;
+import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.util.PebbleApp;
 import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
@@ -228,11 +229,17 @@ public class PebbleAppListFragment extends Fragment {
                         iterator.remove();
                 }
 
+                apps.addAll(PebbleApp.getSystemApps(PebbleAppListFragment.this.getActivity()));
+
                 Collections.sort(apps, new PebbleAppComparator());
+
+                PebbleApp otherApp = new PebbleApp(getString(R.string.PebbleAppsOther), PebbleTalkerService.invalidUUID);
+                apps.add(otherApp);
 
                 for (PebbleApp app : apps)
                 {
                     app.setNotificationMode(PreferencesUtil.getPebbleAppNotificationMode(preferences, app.getUuid()));
+                    System.out.println(app.getName() + " " + app.getUuid().toString());
                 }
             }
 

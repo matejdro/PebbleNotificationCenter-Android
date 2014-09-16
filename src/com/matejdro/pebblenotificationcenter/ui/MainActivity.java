@@ -23,7 +23,9 @@ import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
+import java.net.URISyntaxException;
 
 
 public class MainActivity extends FragmentActivity /*implements ActionBar.TabListener*/ {
@@ -99,7 +101,19 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
           mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
             break;
             case R.id.clearHistory:
-                clearHistory();
+                try
+                {
+                    PebbleDeveloperConnection conn = new PebbleDeveloperConnection();
+                    conn.connectBlocking();
+                    System.out.println(conn.getCurrentRunningApp());
+                } catch (URISyntaxException e)
+                {
+                    e.printStackTrace();
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                //clearHistory();
                 break;
             case R.id.openInPebbleApp:
                 WatchappHandler.openPebbleApp(this, PreferenceManager.getDefaultSharedPreferences(this).edit());
