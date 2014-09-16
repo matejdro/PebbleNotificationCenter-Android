@@ -385,7 +385,8 @@ public class PebbleTalkerService extends Service
         editor.putLong("lastClose", System.currentTimeMillis());
         editor.apply();
 
-        stopSelf();
+        if (!settings.getBoolean("dontSelfStop", false))
+            stopSelf();
     }
 
     private void appOpened()
