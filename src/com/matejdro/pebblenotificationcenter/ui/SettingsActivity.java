@@ -119,10 +119,7 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		EditTextPreference timeoutPreference = (EditTextPreference) findPreference("watchappTimeout");
 		timeoutPreference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
-		
-		EditTextPreference periodicVibratePreference = (EditTextPreference) findPreference("vibratePeriodicallyPeriod");
-		periodicVibratePreference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
-		
+
 		try
 		{
 			findPreference("version").setSummary( getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
