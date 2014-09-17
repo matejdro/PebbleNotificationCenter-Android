@@ -17,7 +17,7 @@ public enum AppSetting
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),
     INBOX_REVERSE("inboxReverse", false),
     DISPLAY_ONLY_NEWEST("inboxDisplayOnlyNewest", false),
-    VIBRATION_PATTERN("vibrationPattern", "500, 1000"),
+    VIBRATION_PATTERN("vibrationPattern", "500"),
     PERIODIC_VIBRATION("settingPeriodicVibration", "20"),
     INCLUDED_REGEX("WhitelistRegexes", null),
     EXCLUDED_REGEX("BlacklistRegexes", null);
