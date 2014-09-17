@@ -76,9 +76,28 @@ public class NotificationParser {
 		}
 		else
 			title = extras.getCharSequence(Notification.EXTRA_TITLE).toString();
-		
 
-		return true;
+        if (extras.get(Notification.EXTRA_TEXT_LINES) != null)
+        {
+            for (CharSequence line : extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES))
+            {
+                text += line + "\n\n";
+            }
+            text = text.trim();
+        }
+        else
+        {
+            text = extras.getCharSequence(Notification.EXTRA_TEXT).toString();
+        }
+
+        if (extras.get(Notification.EXTRA_SUB_TEXT) != null)
+        {
+            text = text.trim();
+            text= text + "\n\n" + extras.getCharSequence(Notification.EXTRA_SUB_TEXT).toString();
+        }
+
+
+        return true;
 	}
 
     @TargetApi(value = Build.VERSION_CODES.KITKAT)
