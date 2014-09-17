@@ -23,6 +23,7 @@ import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.util.ConfigBackup;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
 
 
@@ -103,10 +104,19 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
                 break;
             case R.id.openInPebbleApp:
                 WatchappHandler.openPebbleApp(this, PreferenceManager.getDefaultSharedPreferences(this).edit());
-          return true;
+                break;
+            case R.id.backupConfig:
+                backupConfig();
+                break;
+            case R.id.restoreConfig:
+                restoreConfig();
+                break;
+
+            default:
+                return false;
 		}
 
-		return false;
+		return true;
 	}
 
     private void checkServiceRunning()
@@ -184,6 +194,60 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
                 new NotificationHistoryStorage(MainActivity.this).clearDatabase();
                 dialogInterface.dismiss();
                 Toast.makeText(MainActivity.this, R.string.historyCleared, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void backupConfig()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setMessage(R.string.backupDialogText).setTitle(R.string.backupDialogTitle);
+
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                dialogInterface.dismiss();
+            }
+        });
+
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                ConfigBackup.backup(MainActivity.this);
+                Toast.makeText(MainActivity.this, R.string.backupCompleted, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void restoreConfig()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setMessage(R.string.restoreConfigDialogText).setTitle(R.string.restoreConfigDialogTitle);
+
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                dialogInterface.dismiss();
+            }
+        });
+
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                if (ConfigBackup.restore(MainActivity.this))
+                    Toast.makeText(MainActivity.this, R.string.configRestoreOK, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MainActivity.this, R.string.configRestoreError, Toast.LENGTH_SHORT).show();
             }
         });
 

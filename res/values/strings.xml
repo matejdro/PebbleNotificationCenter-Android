@@ -146,7 +146,7 @@
     <string name="replacement">Replacement:</string>
     <string name="enterChracter">You need to enter one character or unicode code for it!</string>
     <string name="importNoFiles">No dictionary files found.\n\nPlace your replacement dictionary .txt files into NotificationCenter folder on your phone\'s storage and try again.</string>
-    <string name="pebbleAppsDescription">In this view you can disable Notification Center when specific app is open on Pebble. It is useful to prevent NC from interrupting apps like sleep tracking or stopwatch. It also requires Developer Connection to be enabled in Pebble settings.</string>
+    <string name="pebbleAppsDescription">In this view you can disable Notification Center when specific app is open on Pebble. It is useful to prevent NC from interrupting apps like sleep tracking or stopwatch. You can also switch to native Pebble notifications which means many NC features won\'t work, but it also won\'t close currently running app. For this feature to work, you need to enable Developer Connection Pebble app settings.</string>
     <string name="pebbleAppLoadingError">Error while loading app list. Is your Pebble connected and Developer Connection
         enabled?
     </string>
@@ -245,5 +245,17 @@
     <string name="virtualAppDefaultSettings">Default Settings</string>
     <string name="virtualAppThirdParty">3rd party notifications</string>
     <string name="virtualAppTaskerReceiver">Tasker notifications</string>
+    <string name="backupDialogText">Making new backup will delete any previously made backups. Do you want to proceed?
+    </string>
+    <string name="backupDialogTitle">Config Backup</string>
+    <string name="backupConfigMenuOption">Backup Config</string>
+    <string name="restoreConfigMenuOption">Restore Config</string>
+    <string name="restoreConfigDialogTitle">Restore Config</string>
+    <string name="restoreConfigDialogText">This action will replace whole Notification Center config with a backuped
+        one. Do you want to proceed?
+    </string>
+    <string name="backupCompleted">Backup completed</string>
+    <string name="configRestoreOK">Restore completed</string>
+    <string name="configRestoreError">Error while restoring! Did you even make backup?</string>
 
 </resources>
