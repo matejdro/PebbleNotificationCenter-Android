@@ -38,9 +38,7 @@ public class NotificationHandler {
 			return;
 		}
 
-
-
-		if (settingStorage.canAppSendNotifications()) {
+		if (!settingStorage.canAppSendNotifications()) {
 			Timber.d("Discarding notification from %s because package is not selected", pack);
 			return;
 		}
