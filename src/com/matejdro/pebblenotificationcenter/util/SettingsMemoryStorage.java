@@ -1,19 +1,12 @@
 package com.matejdro.pebblenotificationcenter.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
-import android.widget.Toast;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class SettingsMemoryStorage {
 	private Context context;	
@@ -21,17 +14,14 @@ public class SettingsMemoryStorage {
 	private boolean dirty = true;
 	
 	private SharedPreferences preferences;
-	private HashSet<String> selectedPackages;
-	private List<Pattern> regexPatterns;
+    private DefaultAppSettingsStorage appSettingsStorage;
 	private HashMap<String, String> replacingStrings;
 	
 	public SettingsMemoryStorage(Context context)
 	{
 		this.context = context;
 		this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		this.selectedPackages = new HashSet<String>();
 		this.replacingStrings = new HashMap<String, String>();
-		this.regexPatterns = new ArrayList<Pattern>();
 	}
 	
 	public void markDirty()
@@ -41,33 +31,11 @@ public class SettingsMemoryStorage {
 	
 	private void loadSettings()
 	{
-		selectedPackages.clear();
-		regexPatterns.clear();
 		replacingStrings.clear();
 
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		
-		Iterator<String> packages = PreferencesUtil.getDirectIterator(preferences, PebbleNotificationCenter.SELECTED_PACKAGES);
-		while (packages.hasNext())
-		{
-			selectedPackages.add(packages.next());
-		}
+        appSettingsStorage = new DefaultAppSettingsStorage(preferences, preferences.edit());
 
-		
-		Iterator<String> blacklistRegexes = PreferencesUtil.getDirectIterator(preferences, PebbleNotificationCenter.REGEX_LIST);
-		while (blacklistRegexes.hasNext())
-		{
-            String pattern = blacklistRegexes.next();
-            try
-            {
-                regexPatterns.add(Pattern.compile(pattern));
-            }
-            catch (PatternSyntaxException e)
-            {
-                Toast.makeText(context, "[Notification Center] Invalid regex pattern:" + pattern, Toast.LENGTH_LONG).show();
-            }
-		}
-		
 		Iterator<String> replacingKeys = PreferencesUtil.getDirectIterator(preferences, PebbleNotificationCenter.REPLACING_KEYS_LIST);
 		Iterator<String> replacingValues = PreferencesUtil.getDirectIterator(preferences, PebbleNotificationCenter.REPLACING_VALUES_LIST);
 		while (replacingKeys.hasNext() && replacingValues.hasNext())
@@ -91,23 +59,16 @@ public class SettingsMemoryStorage {
 		
 		return preferences;
 	}
-	
-	public HashSet<String> getSelectedPackages()
-	{
-		if (dirty)
-			loadSettings();
 
-		return selectedPackages;
-	}
-	
-	public List<Pattern> getRegexPatterns()
-	{
-		if (dirty)
-			loadSettings();
-		
-		return regexPatterns;
-	}
-	
+    public DefaultAppSettingsStorage getDefaultSettingsStorage()
+    {
+        if (dirty)
+            loadSettings();
+
+        return appSettingsStorage;
+    }
+
+
 	public HashMap<String, String> getReplacingStrings()
 	{
 		if (dirty)

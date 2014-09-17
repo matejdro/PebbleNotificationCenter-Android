@@ -4,5 +4,52 @@
     <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
+
+    <style name="AppSettingParent">
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+    </style>
+
+    <style name="AppSettingsName">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppSettingsDesc">
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_marginTop">3dp</item>
+    </style>
+
+    <style name="AppSettingSeparator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">#CCCCCC</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="AppSettingsSectionText">
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="AppSettingsSectionSeparator" parent="AppSettingSeparator">
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:background">#555555</item>
+    </style>
+
+    <style name="AppSettingsRegexListSeparator" parent="AppSettingSeparator">
+        <item name="android:background">#DDDDDD</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+    </style>
+
+
 </resources>

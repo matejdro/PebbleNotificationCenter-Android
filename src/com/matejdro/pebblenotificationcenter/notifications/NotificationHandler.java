@@ -1,8 +1,5 @@
 package com.matejdro.pebblenotificationcenter.notifications;
 
-import java.util.regex.Pattern;
-
-import timber.log.Timber;
 import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,10 +7,17 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+import timber.log.Timber;
 
 public class NotificationHandler {
 	public static boolean active = false;
@@ -24,8 +28,9 @@ public class NotificationHandler {
 
 		SettingsMemoryStorage settings = PebbleNotificationCenter.getInMemorySettings();
 		SharedPreferences preferences = settings.getSharedPreferences();
-		
-		boolean enableOngoing = preferences.getBoolean("enableOngoing", false);
+        AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, pack, settings.getDefaultSettingsStorage(), true);
+
+		boolean enableOngoing = settingStorage.getBoolean(AppSetting.SEND_ONGOING_NOTIFICATIONS);
 		boolean isOngoing = (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0;
 		
 		if (isOngoing && !enableOngoing) {
@@ -33,10 +38,9 @@ public class NotificationHandler {
 			return;
 		}
 
-		boolean includingMode = preferences.getBoolean(PebbleNotificationCenter.APP_INCLUSION_MODE, false);
-		boolean notificationExist = settings.getSelectedPackages().contains(pack);
 
-		if (includingMode != notificationExist) {
+
+		if (settingStorage.canAppSendNotifications()) {
 			Timber.d("Discarding notification from %s because package is not selected", pack);
 			return;
 		}
@@ -52,37 +56,23 @@ public class NotificationHandler {
 			text = notification.tickerText.toString();
 		}
 		
-		if (!preferences.getBoolean("sendBlank", false)) {
+		if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
 			if (text.length() == 0 && (secondaryTitle == null || secondaryTitle.length() == 0)) {
 				Timber.d("Discarding notification from %s because it is empty", pack);
 				return;
 			}
 		}
 
-		String patternMatched = null;
-		for (Pattern pattern : settings.getRegexPatterns()) {	
-			
-			if (pattern.matcher(title).find() || (secondaryTitle != null && pattern.matcher(secondaryTitle).find()) || (pattern.matcher(text).find())) {
-				patternMatched = pattern.toString();
-				break;
-			}
-		}
+        String combinedText = title + " " + secondaryTitle + " " + text;
 
-		/**
-		 * Logic for regex matching is as follows:
-		 * regexMode == false    patternMatched == null       exclude, no match, send
-		 * regexMode == false    patternMatched != null       exclude, matched, don't send
-		 * regexMode == true     patternMatched == null       include, no match, don't send
-		 * regexMode == true     patternMatched != null       include, matched, send
-		 */
-		boolean regexMode = preferences.getBoolean(PebbleNotificationCenter.REGEX_INCLUSION_MODE, false);
-		if (regexMode == (patternMatched == null))
-		{
-			if (regexMode) Timber.d("Discarding notification from %s because it hasn't matched and regex mode is exclude.", pack);
-			else           Timber.d("Discarding notification from %s because it has matched '%s' and regex mode is include.", pack, patternMatched);
-			return;
-		}
-		
+        List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
+        if (regexList.size() > 0 && !containsRegexes(combinedText, regexList))
+            return;
+
+        regexList = settingStorage.getStringList(AppSetting.EXCLUDED_REGEX);
+        if (containsRegexes(combinedText, regexList))
+            return;
+
 		if (isDismissible)
 			PebbleTalkerService.notify(context, id, pack, tag, title, secondaryTitle, text, !isOngoing);
 		else
@@ -107,7 +97,27 @@ public class NotificationHandler {
 		return applicationName;
 
 	}
-		
+
+    public static boolean containsRegexes(String text, List<String> regexes)
+    {
+        for (String regex : regexes)
+        {
+            try
+            {
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(text);
+                if (matcher.find())
+                    return true;
+            }
+            catch (PatternSyntaxException e)
+            {
+            }
+        }
+
+        return false;
+    }
+
+
 	public static boolean isNotificationListenerSupported()
 	{
 		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;

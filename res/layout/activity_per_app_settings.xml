@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        >
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+
+        <TextView
+                android:id="@+id/appName"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="App"
+                android:textSize="25sp" />
+
+
+
+        <!-- Use default settings -->
+        <RelativeLayout
+                android:layout_marginTop="20dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/isAppSelectedView">
+
+            <CheckBox
+                    android:id="@+id/isAppSelectedCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+
+                    />
+
+            <TextView
+                    android:id="@+id/isAppSelectedName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/isAppSelectedCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingAppSelected"
+                    />
+
+            <TextView
+                    android:id="@+id/isAppSelectedDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/isAppSelectedName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/isAppSelectedCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingAppSelectedDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:id="@+id/isAppSelectedSeparator"
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+
+        <!-- Use default settings -->
+        <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/useDefaultView">
+
+            <CheckBox
+                    android:id="@+id/useDefaultCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+
+                    />
+
+            <TextView
+                    android:id="@+id/useDefaultName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/useDefaultCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingUseDefaultSettings"
+                    />
+
+            <TextView
+                    android:id="@+id/useDefaultDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/useDefaultName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/useDefaultCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingUseDefaultSettingsDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                android:background="#555555"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Send ongoing -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/sendOngoingView">
+
+            <CheckBox
+                    android:id="@+id/sendOngoingCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/sendOngoingName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/sendOngoingCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingSendOngoing"
+                    />
+
+            <TextView
+                    android:id="@+id/sendOngoingDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sendOngoingName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/sendOngoingCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingSendOngoingDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Send blank -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/sendBlankView">
+
+            <CheckBox
+                    android:id="@+id/sendBlankCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/sendBlankName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/sendBlankCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingSendBlankNotifications"
+                    />
+
+            <TextView
+                    android:id="@+id/sendBlankDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sendBlankName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/sendBlankCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingSendBlankNotificationsDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Switch to most recent notification -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/switchToRecentView">
+
+            <CheckBox
+                    android:id="@+id/switchToRecentCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/switchToRecentName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/switchToRecentCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingSwitchToRecent"
+                    />
+
+            <TextView
+                    android:id="@+id/switchToRecentDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/switchToRecentName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/switchToRecentCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingSwitchToRecentDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Ignore quite hours -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/overrideQuietView">
+
+            <CheckBox
+                    android:id="@+id/overrideQuietCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/overrideQuietName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/overrideQuietCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingIgnoreQuietHours"
+                    />
+
+            <TextView
+                    android:id="@+id/overrideQuietDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/overrideQuietName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/overrideQuietCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingIgnoreQuietHoursDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Dismiss Upwards -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/dismissUpwardsView">
+
+            <CheckBox
+                    android:id="@+id/dismissUpwardsCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/dismissUpwardsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/dismissUpwardsCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingDismissUpwards"
+                    />
+
+            <TextView
+                    android:id="@+id/dismissUpwardsDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dismissUpwardsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/dismissUpwardsCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingDismissUpwardsDescripition"
+                    />
+
+        </RelativeLayout>
+
+        <!-- SECTION: Inbox parsing -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingsSectionText"
+                android:text="@string/settingsCategoryInboxParsing"
+                />
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingsSectionSeparator"
+                />
+
+        <!-- Alternate inbox parsing -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/alternateInboxParsingView">
+
+            <CheckBox
+                    android:id="@+id/alternateInboxParsingCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/alternateInboxParsingName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/alternateInboxParsingCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingAlternateInboxParser"
+                    />
+
+            <TextView
+                    android:id="@+id/alternateInboxParsingDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/alternateInboxParsingName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/alternateInboxParsingCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingAlternateInboxParserDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Reverse inbox -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/reverseInboxView">
+
+            <CheckBox
+                    android:id="@+id/reverseInboxCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/reverseInboxName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/reverseInboxCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingReverseInbox"
+                    />
+
+            <TextView
+                    android:id="@+id/reverseInboxDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/reverseInboxName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/reverseInboxCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingReverseInboxDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Display first message only -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/displayFirstOnlyView">
+
+            <CheckBox
+                    android:id="@+id/displayFirstOnlyCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/displayFirstOnlyName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/displayFirstOnlyCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingDisplayFirstOnly"
+                    />
+
+            <TextView
+                    android:id="@+id/displayFirstOnlyDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/displayFirstOnlyName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/displayFirstOnlyCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingDisplayFirstOnlyDescription"
+                    />
+
+        </RelativeLayout>
+
+        <!-- SECTION: Vibration -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingsSectionText"
+                android:text="@string/settingsCategoryVibration"
+                />
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingsSectionSeparator"
+                />
+
+        <!-- Vibration pattern -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/vibrationPatternView">
+
+            <TextView
+                    android:id="@+id/vibrationPatternName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingVibrationPattern"
+                    />
+
+            <TextView
+                    android:id="@+id/vibrationPatternDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/vibrationPatternName"
+                    android:layout_alignParentLeft="true"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingVibrationPatternDescription"
+                    />
+            
+            
+            <EditText
+                    android:id="@+id/vibrationPatternEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/vibrationPatternDesc"
+                    android:inputType="text"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Periodic vibration -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/periodicVibrationView">
+
+            <TextView
+                    android:id="@+id/periodicVibrationName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingPeriodicVibration"
+                    />
+
+            <TextView
+                    android:id="@+id/periodicVibrationDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/periodicVibrationName"
+                    android:layout_alignParentLeft="true"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingPeriodicVibrationDescription"
+                    />
+
+
+            <EditText
+                    android:id="@+id/periodicVibrationEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/periodicVibrationDesc"
+                    android:inputType="number"/>
+
+        </RelativeLayout>
+
+        <!-- SECTION: Regex -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 style="@style/AppSettingsSectionText"
+                android:text="@string/settingsCategoryRegularExpressions"
+                />
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingsSectionSeparator"
+                />
+
+        <!-- Including Regex -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/includingRegexView">
+
+            <TextView
+                    android:id="@+id/includingRegexName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingIncludingRegex"
+                    />
+
+            <TextView
+                    android:id="@+id/includingRegexDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/includingRegexName"
+                    android:layout_alignParentLeft="true"
+                    style="@style/AppSettingsDesc"
+                    android:singleLine="false"
+                    android:text="@string/settingIncludingRegexDescription"
+                    />
+
+            <Button
+                    android:id="@+id/includingRegexAddButton"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/includingRegexDesc"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Add"/>
+
+            <LinearLayout
+                    android:id="@+id/includingRegexList"
+                    android:layout_below="@id/includingRegexAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/includingRegexListEmptyText"
+                    android:layout_below="@id/includingRegexAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/regexListEmpty"
+                    android:textStyle="italic"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Excluding Regex -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/excludingRegexView"
+                android:layout_marginBottom="20dp">
+
+            <TextView
+                    android:id="@+id/excludingRegexName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingExcludingRegex"
+                    />
+
+            <TextView
+                    android:id="@+id/excludingRegexDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/excludingRegexName"
+                    android:layout_alignParentLeft="true"
+                    style="@style/AppSettingsDesc"
+                    android:singleLine="false"
+                    android:text="@string/settingExcludingRegexDescription"
+                    />
+            
+            <Button
+                    android:id="@+id/excludingRegexAddButton"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/excludingRegexDesc"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Add"/>
+            
+            <LinearLayout
+                    android:id="@+id/excludingRegexList"
+                    android:layout_below="@id/excludingRegexAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/excludingRegexListEmptyText"
+                    android:layout_below="@id/excludingRegexAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No expressions"
+                    android:textStyle="italic"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+</ScrollView>

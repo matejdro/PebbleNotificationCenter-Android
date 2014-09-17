@@ -1,21 +1,21 @@
 package com.matejdro.pebblenotificationcenter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CustomNotificationCatcher extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-		if (settings.getBoolean("enableCustom", true))
+        AppSettingStorage storage = new SharedPreferencesAppStorage(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
+		if (storage.canAppSendNotifications())
 		{
 			String notificationData = intent.getStringExtra("notificationData");
 			if (notificationData == null)
@@ -35,11 +35,11 @@ public class CustomNotificationCatcher extends BroadcastReceiver {
 					if (text.endsWith("NOHISTORY"))
 					{
 						text = text.substring(0, text.length() - 9);
-						PebbleTalkerService.notify(context, title, subtitle, text, true, false);
+						PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, title, subtitle, text, true, false);
 					}
 					else
 					{
-						PebbleTalkerService.notify(context, title, subtitle, text);
+						PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, title, subtitle, text);
 					}
 				}
 				else
@@ -47,11 +47,11 @@ public class CustomNotificationCatcher extends BroadcastReceiver {
 					if (text.endsWith("NOHISTORY"))
 					{
 						text = text.substring(0, text.length() - 9);
-						PebbleTalkerService.notify(context, title, text, true);
+						PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, title, text, true);
 					}
 					else
 					{
-						PebbleTalkerService.notify(context, title, text);
+						PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, title, text);
 					}
 				}
 				

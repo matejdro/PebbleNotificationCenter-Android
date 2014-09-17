@@ -62,13 +62,13 @@ Phone --> Pebble
 	Phone sends it to display notification.
 	Additional data:
 		1 = Unique notification id (int32)
-		2 = Config bytes - byte[3]
-			[0] = Font size (0-2)
-			[1] = Flags - uint8
+		2 = Config/meta bytes - byte array
+			[0] = Flags
 				First bit (0x01) = Is notification dismissable
 				Second bit (0x02) = Notification type (1 = from history, 0 = live)
-		3 = Closing timeout - uint16
-		4 = Amount of chunks text is split into - uint8
+				Third bit (0x04) = Switch to most recent notification
+			[1] = Amount of chunks text is split into
+			[2] = Periodic vibration interval
 		5 = Title (max 30 bytes) - cstring
 		6 = Subtitle (max 30 bytes) - cstring
 		
@@ -98,10 +98,7 @@ Phone --> Pebble
 			[2] = Body font (0-17)
 			[3] = Timeout in seconds (first byte)
 			[4] = Timeout in seconds (second byte)
-			[5] = Vibrating period (0 = disabled)
-			[6] = Vibrating mode (0 = disabled, 1 = vibrate longer for first notification, 2 = always vibrate same)
 			[7] = Flags
-				First bit (0x01) = Switch to new notification instead of staying at current one
 				Second bit (0x02) = Display closing screen (needed for "switch to last app" feature)
 				Third bit (0x04) = Is active notifications menu supported?
 				Fourth bit (0x08) = Is notification waiting to be sent?

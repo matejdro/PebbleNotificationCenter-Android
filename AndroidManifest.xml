@@ -82,6 +82,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.PerAppActivity" />
+
         <receiver android:name=".tasker.TaskerReceiver"
             android:exported="true" >
             <intent-filter>

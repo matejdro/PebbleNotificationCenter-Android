@@ -14,6 +14,10 @@ import android.util.SparseArray;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
@@ -33,10 +37,9 @@ public class PebbleTalkerService extends Service
 
     private static PebbleTalkerService instance;
 
-
     private SharedPreferences settings;
+    private DefaultAppSettingsStorage defaultSettingsStorage;
     private NotificationHistoryStorage historyDb;
-    ;
     private Handler handler;
 
     private PebbleDeveloperConnection devConn;
@@ -78,6 +81,7 @@ public class PebbleTalkerService extends Service
         handler = new Handler();
         instance = this;
         settings = PreferenceManager.getDefaultSharedPreferences(this);
+        defaultSettingsStorage = new DefaultAppSettingsStorage(settings, settings.edit());
         historyDb = new NotificationHistoryStorage(this);
 
         try
@@ -126,6 +130,14 @@ public class PebbleTalkerService extends Service
         curSendingNotification = notification;
         sentNotifications.put(notification.id, notification);
 
+        int periodicVibrationInterval = 0;
+        try
+        {
+            periodicVibrationInterval = Math.min(Integer.parseInt(notification.settingStorage.getString(AppSetting.PERIODIC_VIBRATION)), 128);
+        } catch (NumberFormatException e)
+        {
+        }
+
         PebbleDictionary data = new PebbleDictionary();
 
         byte[] configBytes = new byte[3];
@@ -133,9 +145,11 @@ public class PebbleTalkerService extends Service
         byte flags = 0;
         flags |= (byte) (notification.dismissable ? 0x01 : 0);
         flags |= (byte) (notification.isListNotification ? 0x2 : 0);
+        flags |= (byte) (notification.settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) ? 0x4 : 0);
 
-        configBytes[0] = Byte.parseByte(settings.getString("textSize", "0")); //Text size
-        configBytes[1] = flags; //Flags
+        configBytes[0] = Byte.parseByte(settings.getString("textSize", "0"));
+        configBytes[1] = flags;
+        configBytes[2] = (byte) periodicVibrationInterval;
 
         int timeout = 0;
         try
@@ -177,7 +191,13 @@ public class PebbleTalkerService extends Service
     {
         Timber.d("got dismiss: " + pkg + " " + androidId + " " + tag);
 
-        boolean syncDismissUp = settings.getBoolean("syncDismissUp", true);
+        AppSettingStorage settingsStorage;
+        if (pkg == null)
+            settingsStorage = defaultSettingsStorage;
+        else
+            settingsStorage = new SharedPreferencesAppStorage(this, pkg, defaultSettingsStorage, true);
+
+        boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
         if (!syncDismissUp)
             return;
 
@@ -244,6 +264,10 @@ public class PebbleTalkerService extends Service
         notification.text = text;
         notification.dismissable = dismissable;
         notification.isListNotification = isListNotification;
+        if (pkg == null)
+            notification.settingStorage = defaultSettingsStorage;
+        else
+            notification.settingStorage = new SharedPreferencesAppStorage(this, pkg, defaultSettingsStorage, true);
 
         Timber.d("got notify: " + pkg + " " + androidID + " " + tag);
 
@@ -285,7 +309,7 @@ public class PebbleTalkerService extends Service
 
             }
 
-            if (settings.getBoolean("enableQuietTime", false))
+            if (settings.getBoolean("enableQuietTime", false) && !notification.settingStorage.getBoolean(AppSetting.IGNORE_QUIET_HOURS))
             {
                 int startHour = settings.getInt("quiteTimeStartHour", 0);
                 int startMinute = settings.getInt("quiteTimeStartMinute", 0);
@@ -564,14 +588,6 @@ public class PebbleTalkerService extends Service
         {
         }
 
-        int vibratePeriod = 0;
-        try
-        {
-            vibratePeriod = Math.min(200, Integer.parseInt(settings.getString("vibratePeriodicallyPeriod", "20")));
-        } catch (NumberFormatException e)
-        {
-        }
-
         boolean backlight = false;
         int backlightSetting = Integer.parseInt(settings.getString(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, "2"));
         switch (backlightSetting)
@@ -592,11 +608,8 @@ public class PebbleTalkerService extends Service
         configBytes[2] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.FONT_BODY, "4"));
         configBytes[3] = (byte) (timeout >>> 0x08);
         configBytes[4] = (byte) timeout;
-        configBytes[5] = (byte) vibratePeriod;
-        configBytes[6] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.VIBRATION_MODE, "4"));
 
         byte flags = 0;
-        flags |= (byte) (settings.getBoolean("autoSwitch", false) ? 0x01 : 0);
         flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) ? 0x02 : 0);
         flags |= (byte) (NotificationHandler.isNotificationListenerSupported() ? 0x04 : 0);
         flags |= (byte) (notificationWaiting ? 0x08 : 0);
@@ -692,12 +705,12 @@ public class PebbleTalkerService extends Service
         }
     }
 
-	public static void notify(Context context, String title, String text)
+	public static void notify(Context context, String pkg, String title, String text)
 	{
-		notify(context, title, text, false);
+		notify(context, pkg, title, text, false);
 	}
 
-	public static void notify(Context context, String title, String text, boolean noHistory)
+	public static void notify(Context context, String pkg, String title, String text, boolean noHistory)
 	{
 		//Attempt to figure out subtitle
 		String subtitle = "";
@@ -712,17 +725,17 @@ public class PebbleTalkerService extends Service
 			}
 		}
 
-		notify(context, title, subtitle, text, noHistory, false);
+		notify(context, pkg, title, subtitle, text, noHistory, false);
 	}
 
-	public static void notify(Context context, String title, String subtitle, String text)
+	public static void notify(Context context, String pkg, String title, String subtitle, String text)
 	{
-		notify(context, title, subtitle, text, false, false);
+		notify(context, pkg, title, subtitle, text, false, false);
 	}
 
-	public static void notify(Context context, String title, String subtitle, String text, boolean noHistory, boolean isListNotification)
+	public static void notify(Context context, String pkg, String title, String subtitle, String text, boolean noHistory, boolean isListNotification)
 	{
-		notify(context, null, null, null, title, subtitle, text, false, noHistory, isListNotification);
+		notify(context, null, pkg, null, title, subtitle, text, false, noHistory, isListNotification);
 	}
 
 	public static void notify(Context context, Integer id, String pkg, String tag, String title, String subtitle, String text, boolean dismissable)

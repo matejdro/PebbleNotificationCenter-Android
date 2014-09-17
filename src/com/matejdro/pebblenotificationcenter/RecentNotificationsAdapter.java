@@ -48,6 +48,6 @@ public class RecentNotificationsAdapter extends NotificationListAdapter {
 	public void notificationPicked(int index) {
 		NotificationMeta notification = notifications.get(index);
 		
-		PebbleTalkerService.notify(service, notification.title, notification.subtitle, notification.text, true, true);
+		PebbleTalkerService.notify(service, null, notification.title, notification.subtitle, notification.text, true, true);
 	}
 }

@@ -1,5 +1,9 @@
 package com.matejdro.pebblenotificationcenter.tasker;
 
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import java.io.IOException;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -22,8 +26,12 @@ public class TaskerReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		if (intent == null)
 			return;
-		
-		Bundle bundle = intent.getBundleExtra("com.twofortyfouram.locale.intent.extra.BUNDLE");
+
+        AppSettingStorage storage = new SharedPreferencesAppStorage(context, AppSetting.VIRTUAL_APP_TASKER_RECEIVER, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
+        if (!storage.canAppSendNotifications())
+            return;
+
+        Bundle bundle = intent.getBundleExtra("com.twofortyfouram.locale.intent.extra.BUNDLE");
 		if (bundle == null)
 			return;
 		
@@ -38,7 +46,7 @@ public class TaskerReceiver extends BroadcastReceiver {
 			
 			boolean storeInHistory = bundle.getBoolean("storeInHistory");
 						
-			PebbleTalkerService.notify(context, title, subtitle, body, !storeInHistory, false);
+			PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_TASKER_RECEIVER, title, subtitle, body, !storeInHistory, false);
 		}
 		else if (action == 1)
 		{			

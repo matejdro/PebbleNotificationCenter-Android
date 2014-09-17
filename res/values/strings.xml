@@ -180,5 +180,81 @@
     <string name="PebbleWatchfaceSimplicity">Simplicity watchface</string>
     <string name="PebbleWatchfaceAnalog">Classic analog watchface</string>
     <string name="PebbleWatchfaceText">Text watchface</string>
+    <string name="settingUseDefaultSettings">Use default settings for that app</string>
+    <string name="settingUseDefaultSettingsDescription">If checked, bottom settings won\'t be in effect and this app will use default settings</string>
+    <string name="settingSendOngoing">Send ongoing notifications</string>
+    <string name="settingSendOngoingDescription">Send notifications that are not just one time event, but something
+        ongoing (for example ongoing file download or app instalation)
+    </string>
+    <string name="settingSendBlankNotifications">Send blank notifications</string>
+    <string name="settingSendBlankNotificationsDescription">When checked, NC will also send completely blank
+        notifications from this app
+    </string>
+    <string name="settingSwitchToRecent">Switch to most recent notification</string>
+    <string name="settingSwitchToRecentDescription">When this is checked and new notification comes from this app, it
+        will switch to that notification instead of queuing it.
+    </string>
+    <string name="settingIgnoreQuietHours">Ignore quiet hours</string>
+    <string name="settingIgnoreQuietHoursDescription">When this is checked, notifications from this app will show up on
+        your Pebble regardless of the time.
+    </string>
+    <string name="settingDismissUpwards">Dismiss Upwards</string>
+    <string name="settingDismissUpwardsDescripition">When checked and you dismiss notification on the phone, it will
+        also disappear on the Pebble. Only works on Android 4.3 and newer.
+    </string>
+    <string name="settingsCategoryInboxParsing">Inbox Parsing</string>
+    <string name="settingAlternateInboxParser">Use alternate inbox parser</string>
+    <string name="settingAlternateInboxParserDescription">This and below settings only affect users on Android 4.4+ and apps with
+        inbox notifications (for example Gmail with multiple messages). It enables below options and generates
+        notifications with a bit less clutter. It is recommended to keep this enabled unless notification looks weird on
+        Pebble or is missing information.
+    </string>
+    <string name="settingReverseInbox">Reverse inbox</string>
+    <string name="settingReverseInboxDescription">Check this if app does not follow standards and displays new messages
+        at the bottom instead of at the top.
+    </string>
+    <string name="settingDisplayFirstOnly">Display newest message only</string>
+    <string name="settingDisplayFirstOnlyDescription">Instead of displaying all the messages from the notification,
+        display first one only.
+    </string>
+    <string name="settingsCategoryRegularExpressions">Regular expressions</string>
+    <string name="settingsCategoryVibration">Vibration</string>
+    <string name="settingVibrationPattern">Vibration pattern</string>
+    <string name="settingVibrationPatternDescription">Here you can define vibration pattern for this app. Pattern is in
+        format \'vibrateTime, pauseTime, vibrateTime, pauseTime ...\', where times are in miliseconds. For example
+        \'100, 200, 300, 400\' will vibrate for 100ms, then wait 200 ms and then again vibrate 300ms and wait 400ms.
+        After that sequence will repeat. Limit is 20 total numbers (so 10 vibrations and 10 pausers).
+    </string>
+    <string name="settingPeriodicVibration">Periodic Vibration</string>
+    <string name="settingPeriodicVibrationDescription">After initial vibration, Pebble will also vibrate every few
+        seconds to remind you notification is there in case you did not felt it first time or you were busy. Here you
+        can set interval of that vibration. You can also set it to 0 to disable the feature.
+    </string>
+    <string name="settingIncludingRegex">Including Regex</string>
+    <string name="settingIncludingRegexDescription">Here you can define list of regular expression that notification
+        needs to contain in order for it to display on Pebble. If this list is empty, this setting is simply ignored. That option is very powerful so it
+        is recommended that you google and learn about regular expressions first. But for basics, you can just enter any
+        word here (case sensitive!) and it should match notification. For example if you enter \'Pebble\' (without
+        quotes), it will only match notifications that contain \'Pebble\'.
+    </string>
+    <string name="regexListEmpty">No expressions</string>
+    <string name="settingExcludingRegex">Excluding Regex</string>
+    <string name="settingExcludingRegexDescription">Same as above, except that here all messages that contain specified
+        expressions will NOT be sent to Pebble.
+    </string>
+    <string name="settingAppSelected">App Selected</string>
+    <string name="settingAppSelectedDescription">This setting is equal to checking app on the app list</string>
+    <string name="invalidVibrationPattern">Invalid vibration pattern!</string>
+    <string name="ok">OK</string>
+    <string name="invalidRegexPattern">Invalid regular expression!</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="regexEditingDialogTItle">Editing Filter</string>
+    <string name="regexAddDialogText">Enter keyword/regex for this filter</string>
+    <string name="regexAddDialogTitle">Add Filter</string>
+    <string name="virtualAppDefaultSettings">Default Settings</string>
+    <string name="virtualAppThirdParty">3rd party notifications</string>
+    <string name="virtualAppTaskerReceiver">Tasker notifications</string>
 
 </resources>
