@@ -168,7 +168,11 @@ public class PerAppActivity extends Activity
 
     private static boolean validateVibrationPattern(String pattern)
     {
+        if (pattern.trim().isEmpty())
+            return false;
+
         String split[] = pattern.split(",");
+
         for (String s : split)
         {
             if (!TextUtil.isInteger(s.trim()))

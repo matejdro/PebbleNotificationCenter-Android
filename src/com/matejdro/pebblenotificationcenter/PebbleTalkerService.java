@@ -139,8 +139,9 @@ public class PebbleTalkerService extends Service
         }
 
         PebbleDictionary data = new PebbleDictionary();
+        List<Byte> vibrationPattern = AppSetting.parseVibrationPattern(notification.settingStorage);
 
-        byte[] configBytes = new byte[3];
+        byte[] configBytes = new byte[4 + vibrationPattern.size()];
 
         byte flags = 0;
         flags |= (byte) (notification.dismissable ? 0x01 : 0);
@@ -150,6 +151,9 @@ public class PebbleTalkerService extends Service
         configBytes[0] = Byte.parseByte(settings.getString("textSize", "0"));
         configBytes[1] = flags;
         configBytes[2] = (byte) periodicVibrationInterval;
+        configBytes[3] = (byte) vibrationPattern.size();
+        for (int i = 0; i < vibrationPattern.size(); i++)
+            configBytes[4 + i] = vibrationPattern.get(i);
 
         int timeout = 0;
         try

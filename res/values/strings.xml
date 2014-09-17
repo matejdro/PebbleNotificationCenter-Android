@@ -222,8 +222,7 @@
     <string name="settingVibrationPattern">Vibration pattern</string>
     <string name="settingVibrationPatternDescription">Here you can define vibration pattern for this app. Pattern is in
         format \'vibrateTime, pauseTime, vibrateTime, pauseTime ...\', where times are in miliseconds. For example
-        \'100, 200, 300, 400\' will vibrate for 100ms, then wait 200 ms and then again vibrate 300ms and wait 400ms.
-        After that sequence will repeat. Limit is 20 total numbers (so 10 vibrations and 10 pausers).
+        \'100, 200, 300\' will vibrate for 100ms, then wait 200 ms and then again vibrate 300ms. Limit is 20 total numbers (so 10 vibrations and 10 pausers). Maximum total duration is 10 seconds. If you want to disable vibration, just enter 0.
     </string>
     <string name="settingPeriodicVibration">Periodic Vibration</string>
     <string name="settingPeriodicVibrationDescription">After initial vibration, Pebble will also vibrate every few

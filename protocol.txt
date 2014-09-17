@@ -69,6 +69,8 @@ Phone --> Pebble
 				Third bit (0x04) = Switch to most recent notification
 			[1] = Amount of chunks text is split into
 			[2] = Periodic vibration interval
+			[3] = Number of bytes in vibration pattern
+			[4,5,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
 		5 = Title (max 30 bytes) - cstring
 		6 = Subtitle (max 30 bytes) - cstring
 		
