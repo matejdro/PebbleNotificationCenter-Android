@@ -4,8 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
-import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,8 +13,8 @@ public class CustomNotificationCatcher extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-        AppSettingStorage storage = new SharedPreferencesAppStorage(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
-		if (storage.canAppSendNotifications())
+        DefaultAppSettingsStorage storage = PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage();
+        if (storage.canAppSendNotifications(AppSetting.VIRTUAL_APP_THIRD_PARTY))
 		{
 			String notificationData = intent.getStringExtra("notificationData");
 			if (notificationData == null)

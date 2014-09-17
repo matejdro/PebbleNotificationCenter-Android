@@ -1,14 +1,5 @@
 package com.matejdro.pebblenotificationcenter.tasker;
 
-import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
-import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
-import java.io.IOException;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,9 +7,14 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.R;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
+import java.io.IOException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class TaskerReceiver extends BroadcastReceiver {
 
@@ -27,8 +23,8 @@ public class TaskerReceiver extends BroadcastReceiver {
 		if (intent == null)
 			return;
 
-        AppSettingStorage storage = new SharedPreferencesAppStorage(context, AppSetting.VIRTUAL_APP_TASKER_RECEIVER, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
-        if (!storage.canAppSendNotifications())
+        DefaultAppSettingsStorage storage = PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage();
+        if (!storage.canAppSendNotifications(AppSetting.VIRTUAL_APP_TASKER_RECEIVER))
             return;
 
         Bundle bundle = intent.getBundleExtra("com.twofortyfouram.locale.intent.extra.BUNDLE");
