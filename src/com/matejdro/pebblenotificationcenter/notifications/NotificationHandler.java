@@ -47,7 +47,7 @@ public class NotificationHandler {
 
 		final String title = getAppName(context, pack);
 
-		NotificationParser parser = new NotificationParser(context, notification);
+		NotificationParser parser = new NotificationParser(context, pack, notification);
 
 		String secondaryTitle = parser.title;
 		String text = parser.text.trim();

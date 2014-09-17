@@ -35,7 +35,7 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 		{
 			StatusBarNotification sbn = sbns[i];
 			Notification notification = sbn.getNotification();
-			NotificationParser parser = new NotificationParser(service, notification);
+			NotificationParser parser = new NotificationParser(service,sbn.getPackageName(),  notification);
 			PendingNotification pn = new PendingNotification();
 			pn.androidID = sbn.getId();
 			pn.dismissable = sbn.isClearable();

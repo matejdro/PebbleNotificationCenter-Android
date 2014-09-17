@@ -1,27 +1,32 @@
 package com.matejdro.pebblenotificationcenter.notifications;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.CharacterStyle;
 import android.widget.RemoteViews;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 public class NotificationParser {
 	public String title;
 	public String text;
 
-	public NotificationParser(Context context, Notification notification)
+	public NotificationParser(Context context, String pkg, Notification notification)
 	{
 		this.title = null;
 		this.text = "";
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 		{
-			if (tryParseNatively(context, notification))
+			if (tryParseNatively(context, pkg, notification))
 			{
 				return;
 			}
@@ -44,13 +49,17 @@ public class NotificationParser {
 	}
 	
 	@TargetApi(value = Build.VERSION_CODES.KITKAT)
-	public boolean tryParseNatively(Context context, Notification notification)
+	public boolean tryParseNatively(Context context, String pkg, Notification notification)
 	{
 		Bundle extras = notification.extras;
 		if (extras == null)
 			return false;
-			
-			
+
+        if (extras.get(Notification.EXTRA_TEXT_LINES) != null)
+        {
+            if (parseInboxNotification(context, pkg, extras))
+                return true;
+        }
 		if ((extras.get(Notification.EXTRA_TITLE) == null && extras.get(Notification.EXTRA_TITLE_BIG) == null) ||
 			(extras.get(Notification.EXTRA_TEXT) == null && extras.get(Notification.EXTRA_TEXT_LINES) == null))
 		{
@@ -68,21 +77,84 @@ public class NotificationParser {
 		else
 			title = extras.getCharSequence(Notification.EXTRA_TITLE).toString();
 		
-		if (extras.get(Notification.EXTRA_TEXT_LINES) != null)
-		{
-			for (CharSequence line : extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES))
-			{
-				text += line + "\n\n";
-			}
-			text = text.trim();
-		}
-		else
-		{
-			text = extras.getCharSequence(Notification.EXTRA_TEXT).toString();
-		}
-		
+
 		return true;
 	}
+
+    @TargetApi(value = Build.VERSION_CODES.KITKAT)
+    public boolean parseInboxNotification(Context context, String pkg, Bundle extras)
+    {
+        AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, pkg, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
+        if (!settingStorage.getBoolean(AppSetting.USE_ALTERNATE_INBOX_PARSER))
+            return false;
+
+        boolean useSubText = settingStorage.getBoolean(AppSetting.INBOX_USE_SUB_TEXT);
+
+        if (useSubText && extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT) != null)
+            title = extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT).toString();
+        else if (useSubText && extras.getCharSequence(Notification.EXTRA_SUB_TEXT) != null)
+            title = extras.getCharSequence(Notification.EXTRA_SUB_TEXT).toString();
+        else if (extras.getCharSequence(Notification.EXTRA_TITLE) != null)
+            title = extras.getCharSequence(Notification.EXTRA_TITLE).toString();
+        else
+            return false;
+
+        CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+        boolean stopFirst = settingStorage.getBoolean(AppSetting.DISPLAY_ONLY_NEWEST);
+        boolean reverse = settingStorage.getBoolean(AppSetting.INBOX_REVERSE);
+
+        int i = reverse ? lines.length - 1 : 0;
+        while (true)
+        {
+            text += formatSpannable(lines[i]) + "\n\n";
+
+            if (stopFirst)
+                break;
+
+            if (reverse)
+            {
+                i--;
+                if (i <= 0)
+                    break;
+            }
+            else
+            {
+                i++;
+                if (i >= lines.length)
+                    break;
+            }
+        }
+
+        text = text.trim();
+
+        return true;
+    }
+
+    private String formatSpannable(CharSequence sequence)
+    {
+        if (!(sequence instanceof SpannableString))
+        {
+            return sequence.toString();
+        }
+
+        SpannableString spannableString = (SpannableString) sequence;
+
+        CharacterStyle[] spans = spannableString.getSpans(0, spannableString.length(), CharacterStyle.class);
+
+        if (spans.length == 0)
+            return sequence.toString();
+
+        CharacterStyle firstSpan = spans[0];
+        if (spannableString.getSpanStart(firstSpan) != 0)
+            return sequence.toString();
+
+        int formatEnd = spannableString.getSpanEnd(firstSpan);
+
+        String firstLine = spannableString.subSequence(0, formatEnd).toString();
+        String secondLine = spannableString.subSequence(formatEnd, spannableString.length()).toString();
+
+        return firstLine + "\n" + secondLine;
+    }
 
 	private void getExtraData(Notification notification) {
 		RemoteViews views = notification.contentView;

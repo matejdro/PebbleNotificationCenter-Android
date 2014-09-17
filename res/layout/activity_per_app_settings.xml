@@ -463,6 +463,51 @@
                     />
 
         </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Use sub text for subtitle -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/inboxUseSubtextView">
+
+            <CheckBox
+                    android:id="@+id/inboxUseSubtextCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/inboxUseSubtextName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/inboxUseSubtextCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingInboxUseSubtext"
+                    />
+
+            <TextView
+                    android:id="@+id/inboxUseSubtextDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/inboxUseSubtextName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/inboxUseSubtextCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingInboxUseSubtextDescription"
+                    />
+
+        </RelativeLayout>
+
+
 
         <!-- SECTION: Vibration -->
         <TextView

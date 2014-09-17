@@ -257,5 +257,10 @@
     <string name="backupCompleted">Backup completed</string>
     <string name="configRestoreOK">Restore completed</string>
     <string name="configRestoreError">Error while restoring! Did you even make backup?</string>
+    <string name="settingInboxUseSubtext">Use sub text for notification subtitle</string>
+    <string name="settingInboxUseSubtextDescription">Use text below message list for notification subtitle instead of
+        actual notification title. Works better for standard-compilant apps (for example Gmail shows mail address
+        instead of \'X new messages\').
+    </string>
 
 </resources>
