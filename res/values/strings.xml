@@ -46,16 +46,6 @@
         <item>Excluding mode</item>
         <item>Including mode</item>
     </string-array>
-    <string-array name="fontSizeText">
-        <item>Small</item>
-        <item>Medium</item>
-        <item>Large</item>
-    </string-array>
-    <string-array name="vibrationModes">
-        <item>Disabled</item>
-        <item>Vibrate longer on first notification, shorter on all others</item>
-        <item>Allways vibrate shorter</item>
-    </string-array>
     <string-array name="vibrationModeValues">
         <item>0</item>
         <item>1</item>
