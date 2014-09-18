@@ -275,7 +275,7 @@ public class PebbleTalkerService extends Service
 
         Timber.d("got notify: " + pkg + " " + androidID + " " + tag);
 
-        if (!noHistory)
+        if (!noHistory && notification.settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY))
             historyDb.storeNotification(System.currentTimeMillis(), title, subtitle, text);
 
         if (!isListNotification)
@@ -383,7 +383,6 @@ public class PebbleTalkerService extends Service
 
     private void updateCurrentlyRunningApp()
     {
-
         UUID prev = devConn.getCurrentRunningApp();
         if (!DataReceiver.pebbleAppUUID.equals(prev))
             previousUUID = null;

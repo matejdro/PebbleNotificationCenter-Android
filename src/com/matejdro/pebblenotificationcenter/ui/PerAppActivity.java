@@ -50,6 +50,7 @@ public class PerAppActivity extends Activity
         linkViewToCheckbox(R.id.sendBlankView, R.id.sendBlankCheck);
         linkViewToCheckbox(R.id.switchToRecentView, R.id.switchToRecentCheck);
         linkViewToCheckbox(R.id.overrideQuietView, R.id.overrideQuietCheck);
+        linkViewToCheckbox(R.id.saveToHistoryView, R.id.saveToHistoryCheck);
         linkViewToCheckbox(R.id.dismissUpwardsView, R.id.dismissUpwardsCheck);
         linkViewToCheckbox(R.id.alternateInboxParsingView, R.id.alternateInboxParsingCheck);
         linkViewToCheckbox(R.id.reverseInboxView, R.id.reverseInboxCheck);
@@ -61,6 +62,7 @@ public class PerAppActivity extends Activity
         linkCheckboxToSetting(R.id.switchToRecentCheck, AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION);
         linkCheckboxToSetting(R.id.overrideQuietCheck, AppSetting.IGNORE_QUIET_HOURS);
         linkCheckboxToSetting(R.id.dismissUpwardsCheck, AppSetting.DISMISS_UPRWADS);
+        linkCheckboxToSetting(R.id.saveToHistoryCheck, AppSetting.SAVE_TO_HISTORY);
         linkCheckboxToSetting(R.id.alternateInboxParsingCheck, AppSetting.USE_ALTERNATE_INBOX_PARSER);
         linkCheckboxToSetting(R.id.reverseInboxCheck, AppSetting.INBOX_REVERSE);
         linkCheckboxToSetting(R.id.displayFirstOnlyCheck, AppSetting.DISPLAY_ONLY_NEWEST);

@@ -14,6 +14,7 @@ public enum AppSetting
     SWITCH_TO_MOST_RECENT_NOTIFICATION("autoSwitch", false),
     IGNORE_QUIET_HOURS("ignoreQuietHours", false),
     DISMISS_UPRWADS("syncDismissUp", true),
+    SAVE_TO_HISTORY("saveToHistory", true),
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),
     INBOX_REVERSE("inboxReverse", false),
     DISPLAY_ONLY_NEWEST("inboxDisplayOnlyNewest", false),
