@@ -43,7 +43,7 @@ public class PebbleTalkerService extends Service
     private Handler handler;
 
     private PebbleDeveloperConnection devConn;
-    private UUID previousUUID;
+    private static UUID previousUUID;
 
     private NotificationListAdapter listHandler;
 
