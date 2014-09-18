@@ -385,7 +385,7 @@ public class PebbleTalkerService extends Service
     {
 
         UUID prev = devConn.getCurrentRunningApp();
-        if (!prev.equals(DataReceiver.pebbleAppUUID))
+        if (!DataReceiver.pebbleAppUUID.equals(prev))
             previousUUID = null;
 
         if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(invalidUUID))
