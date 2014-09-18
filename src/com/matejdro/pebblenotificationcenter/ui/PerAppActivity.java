@@ -23,9 +23,9 @@ import com.matejdro.pebblenotificationcenter.util.TextUtil;
  */
 public class PerAppActivity extends Activity
 {
-    private AppSettingStorage settingsStorage;
-    private String appPackage;
-    private boolean taskerMode;
+    protected AppSettingStorage settingsStorage;
+    protected String appPackage;
+    protected String appName;
 
     private RegexListView includingRegexList;
     private RegexListView excludingRegexList;
@@ -37,26 +37,12 @@ public class PerAppActivity extends Activity
         setContentView(R.layout.activity_per_app_settings);
 
         Intent startIntent = getIntent();
-        ((TextView) findViewById(R.id.appName)).setText(startIntent.getStringExtra("appName"));
+        appName = startIntent.getStringExtra("appName");
         appPackage = startIntent.getStringExtra("appPackage");
-        taskerMode = startIntent.getExtras().containsKey("taskerMode");
 
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor defaultEditor = defaultSharedPreferences.edit();
-        DefaultAppSettingsStorage defaultAppSettingsStorage = new DefaultAppSettingsStorage(defaultSharedPreferences, defaultEditor);
+        settingsStorage = initAppSettingStorage();
 
-        if (appPackage.equals(AppSetting.VIRTUAL_APP_DEFAULT_SETTINGS))
-        {
-            settingsStorage = defaultAppSettingsStorage;
-            findViewById(R.id.isAppSelectedView).setVisibility(View.GONE);
-            findViewById(R.id.isAppSelectedSeparator).setVisibility(View.GONE);
-            findViewById(R.id.useDefaultView).setVisibility(View.GONE);
-
-        }
-        else
-        {
-            settingsStorage = new SharedPreferencesAppStorage(this, appPackage, defaultAppSettingsStorage, false);
-        }
+        ((TextView) findViewById(R.id.appName)).setText(appName);
 
         linkViewToCheckbox(R.id.isAppSelectedView, R.id.isAppSelectedCheck);
         linkViewToCheckbox(R.id.useDefaultView, R.id.useDefaultCheck);
@@ -110,6 +96,30 @@ public class PerAppActivity extends Activity
         includingRegexList.addAll(settingsStorage.getStringList(AppSetting.INCLUDED_REGEX));
         excludingRegexList = new RegexListView(this, R.id.excludingRegexList, R.id.excludingRegexAddButton, R.id.excludingRegexListEmptyText);
         excludingRegexList.addAll(settingsStorage.getStringList(AppSetting.EXCLUDED_REGEX));
+    }
+
+    public AppSettingStorage initAppSettingStorage()
+    {
+        AppSettingStorage settingsStorage = null;
+
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor defaultEditor = defaultSharedPreferences.edit();
+        DefaultAppSettingsStorage defaultAppSettingsStorage = new DefaultAppSettingsStorage(defaultSharedPreferences, defaultEditor);
+
+        if (appPackage.equals(AppSetting.VIRTUAL_APP_DEFAULT_SETTINGS))
+        {
+            settingsStorage = defaultAppSettingsStorage;
+            findViewById(R.id.isAppSelectedView).setVisibility(View.GONE);
+            findViewById(R.id.isAppSelectedSeparator).setVisibility(View.GONE);
+            findViewById(R.id.useDefaultView).setVisibility(View.GONE);
+
+        }
+        else
+        {
+            settingsStorage = new SharedPreferencesAppStorage(this, appPackage, defaultAppSettingsStorage, false);
+        }
+
+        return settingsStorage;
 
     }
 

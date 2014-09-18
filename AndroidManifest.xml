@@ -73,16 +73,21 @@
         <activity android:name=".ui.LicenseActivity" >
         </activity>
 
-        <activity
-            android:name="com.matejdro.pebblenotificationcenter.tasker.TaskerSetupActivity"
-            android:label="@string/title_activity_main"
-            android:exported="true" >
+        <activity android:name="com.matejdro.pebblenotificationcenter.tasker.TaskerSetupActivity" />
+
+        <activity android:name=".ui.PerAppActivity" />
+
+        <activity android:name=".tasker.TaskerActionPickerActivity"
+                  android:label="@string/title_activity_main"
+                  android:exported="true">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.PerAppActivity" />
+        <activity android:name=".tasker.TaskerNotificationActivity" />
+        <activity android:name=".tasker.TaskerGlobalSettingsActivity"/>
+        <activity android:name=".tasker.TaskerAppListActivity"/>
+        <activity android:name=".tasker.TaskerAppSettingsActivity"/>
 
         <receiver android:name=".tasker.TaskerReceiver"
             android:exported="true" >

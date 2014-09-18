@@ -138,7 +138,6 @@ public class AppListFragment extends Fragment {
 
 	private class AppListAdapter extends BaseAdapter
 	{
-
 		@Override
 		public int getCount() {
 			return apps.size();
@@ -340,8 +339,8 @@ public class AppListFragment extends Fragment {
 
 	public static class AppInfoStorage
 	{
-		String packageName;
-		CharSequence label;
+		public String packageName;
+		public CharSequence label;
 	}
 
     public static class AppInfoComparator implements Comparator<AppInfoStorage>

@@ -4,116 +4,107 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
-import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
-import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
-import java.io.IOException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
-public class TaskerReceiver extends BroadcastReceiver {
+public class TaskerReceiver extends BroadcastReceiver
+{
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		if (intent == null)
-			return;
+    @Override
+    public void onReceive(Context context, Intent intent)
+    {
+        if (intent == null)
+            return;
 
         DefaultAppSettingsStorage storage = PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage();
         if (!storage.canAppSendNotifications(AppSetting.VIRTUAL_APP_TASKER_RECEIVER))
             return;
 
         Bundle bundle = intent.getBundleExtra("com.twofortyfouram.locale.intent.extra.BUNDLE");
-		if (bundle == null)
-			return;
-		
-		int action = bundle.getInt("action");
-				
-		
-		if (action == 0)
-		{
-			String title = bundle.getString("title");
-			String subtitle = bundle.getString("subtitle");
-			String body = bundle.getString("body");
-			
-			boolean storeInHistory = bundle.getBoolean("storeInHistory");
-						
-			PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_TASKER_RECEIVER, title, subtitle, body, !storeInHistory, false);
-		}
-		else if (action == 1)
-		{			
-			Object value = bundle.get("value");
-			String key = bundle.getString("key");
-			
-			int settingType = getSettingType(context, key);
-			if (settingType < 0)
-				return;
-			
-			Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        if (bundle == null)
+            return;
 
-			
-			if (settingType == 0)
-			{
-				if (value instanceof Boolean)
-					editor.putBoolean(key, (Boolean) value);
-				else
-					editor.putBoolean(key, value.equals("1"));
-			}
-			else
-			{
-				editor.putString(key, (String) value);
-			}
-			
-			editor.apply();
-		}
-	}
-	
-	private int getSettingType(Context context, String key)
-	{
-		XmlResourceParser parser = context.getResources().getXml(R.xml.settings);
-		try
-		{
-			while (true)
-			{
-				int element = parser.next();
-				if (element == XmlPullParser.END_DOCUMENT)
-					break;
-				
-				if (element != XmlPullParser.START_TAG)
-					continue;
-						
-				int type = -1;
-				
-				if (parser.getName().equals("CheckBoxPreference"))
-					type = 0;
-				else if (parser.getName().equals("ListPreference"))
-					type = 1;
-				else if (parser.getName().equals("EditTextPreference"))
-					type = 1;
-				else 
-					continue;
-				
-				for (int i = 0; i < parser.getAttributeCount(); i++)
-				{
-					if (parser.getAttributeName(i).equals("key") && parser.getAttributeValue(i).equals(key))
-					{
-						return type;
-					}
-				}
-			}
+        int action = bundle.getInt("action");
 
-		}
-		catch (XmlPullParserException e)
-		{
-		} 
-		catch (IOException e) {
-		}
 
-		return -1;
-	}
+        if (action == 0) //Notification
+        {
+            String title = bundle.getString("title");
+            String subtitle = bundle.getString("subtitle");
+            String body = bundle.getString("body");
 
+            boolean storeInHistory = bundle.getBoolean("storeInHistory");
+
+            PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_TASKER_RECEIVER, title, subtitle, body, !storeInHistory, false);
+        } else if (action == 1) //Global setting modify
+        {
+
+            Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+
+            for (String key : bundle.keySet())
+            {
+                if (!key.startsWith("setting_"))
+                    continue;
+
+                String actualSetting = key.substring(8);
+                writeIntoSharedPreferences(editor, actualSetting, bundle.get(key));
+            }
+
+            editor.apply();
+        }
+        else if (action == 2) //PerApp Setting modify
+        {
+            String appPackage = bundle.getString("appPackage");
+
+            Editor editor;
+            if (appPackage.equals(AppSetting.VIRTUAL_APP_DEFAULT_SETTINGS))
+                editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+            else
+                editor = context.getSharedPreferences("app_".concat(appPackage), Context.MODE_PRIVATE).edit();
+
+            for (String key : bundle.keySet())
+            {
+                if (!key.startsWith("setting_"))
+                    continue;
+
+                String actualSetting = key.substring(8);
+                writeIntoSharedPreferences(editor, actualSetting, bundle.get(key));
+            }
+
+            editor.apply();
+
+            if (bundle.containsKey("special_appchecked"))
+            {
+                boolean checked = bundle.getBoolean("special_appchecked");
+                editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+
+                if (checked)
+                    editor.putBoolean("appChecked_".concat(appPackage), true);
+                else
+                    editor.remove("appChecked_".concat(appPackage));
+
+                editor.apply();
+            }
+
+        }
+    }
+
+
+    public static void writeIntoSharedPreferences(Editor editor, String key, Object object)
+    {
+        if (object instanceof Integer)
+            editor.putInt(key, (Integer) object);
+        else if (object instanceof Boolean)
+            editor.putBoolean(key, (Boolean) object);
+        else if (object instanceof String)
+            editor.putString(key, (String) object);
+        else if (object instanceof Float)
+           editor.putFloat(key, (Float) object);
+        else if (object instanceof Long)
+            editor.putLong(key, (Long) object);
+    }
 }

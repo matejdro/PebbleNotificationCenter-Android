@@ -212,7 +212,7 @@
     <string name="settingVibrationPattern">Vibration pattern</string>
     <string name="settingVibrationPatternDescription">Here you can define vibration pattern for this app. Pattern is in
         format \'vibrateTime, pauseTime, vibrateTime, pauseTime ...\', where times are in miliseconds. For example
-        \'100, 200, 300\' will vibrate for 100ms, then wait 200 ms and then again vibrate 300ms. Limit is 20 total numbers (so 10 vibrations and 10 pausers). Maximum total duration is 10 seconds. If you want to disable vibration, just enter 0.
+        \'100, 200, 300\' will vibrate for 100ms, then wait 200 ms and then again vibrate for 300ms. Limit is 20 total numbers (so 10 vibrations and 10 pauses). Maximum total duration is 10 seconds. If you want to disable vibration, just enter 0.
     </string>
     <string name="settingPeriodicVibration">Periodic Vibration</string>
     <string name="settingPeriodicVibrationDescription">After initial vibration, Pebble will also vibrate every few
@@ -220,7 +220,7 @@
         can set interval of that vibration. You can also set it to 0 to disable the feature.
     </string>
     <string name="settingIncludingRegex">Including Regex</string>
-    <string name="settingIncludingRegexDescription">Here you can define list of regular expression that notification
+    <string name="settingIncludingRegexDescription">Here you can define list of regular expressions that notification
         needs to contain in order for it to display on Pebble. If this list is empty, this setting is simply ignored. That option is very powerful so it
         is recommended that you google and learn about regular expressions first. But for basics, you can just enter any
         word here (case sensitive!) and it should match notification. For example if you enter \'Pebble\' (without
@@ -262,5 +262,12 @@
         actual notification title. Works better for standard-compilant apps (for example Gmail shows mail address
         instead of \'X new messages\').
     </string>
+    <string name="taskerPickYourAction">Pick your action:</string>
+    <string name="taskerActionNotification">Send Notification</string>
+    <string name="taskerActionGlobalSetting">Edit Global Setting</string>
+    <string name="taskerActionAppSetting">Edit App Setting</string>
+    <string name="taskerDescriptionNotification">Notification - %s</string>
+    <string name="taskerDescriptionGlobalSetting">Change global settings</string>
+    <string name="taskerDescriptionPerAppSetting">Change app settings - %s</string>
 
 </resources>

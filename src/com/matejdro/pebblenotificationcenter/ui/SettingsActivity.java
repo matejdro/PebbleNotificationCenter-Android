@@ -1,135 +1,136 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
 import android.app.TimePickerDialog;
-import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
-
 import com.matejdro.pebblenotificationcenter.R;
 
 
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences settings;
-	private SharedPreferences.Editor editor;
+    private SharedPreferences.Editor editor;
 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		addPreferencesFromResource(R.xml.settings);
+        init();
 
-		settings = PreferenceManager.getDefaultSharedPreferences(this);
-		editor = settings.edit();
+        addPreferencesFromResource(R.xml.settings);
 
-		setPopupOptionsEnabled(!settings.getBoolean("noNotifications", false), settings.getBoolean("enableQuietTime", false));
-		findPreference("noNotifications").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				setPopupOptionsEnabled(!(Boolean) newValue, settings.getBoolean("enableQuietTime", false));
-				return true;
-			}
-		});
-		findPreference("enableQuietTime").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				setPopupOptionsEnabled(!settings.getBoolean("noNotifications", false), (Boolean) newValue);
-				return true;
-			}
-		});
+        settings = getPreferenceManager().getSharedPreferences();
+        editor = settings.edit();
 
-		final Preference quietFrom = findPreference("quietTimeStart");
-		int startHour = settings.getInt("quiteTimeStartHour", 0);
-		int startMinute = settings.getInt("quiteTimeStartMinute", 0);
-		quietFrom.setSummary(formatTime(startHour, startMinute));
-		quietFrom.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        setPopupOptionsEnabled(!settings.getBoolean("noNotifications", false), settings.getBoolean("enableQuietTime", false));
+        findPreference("noNotifications").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                setPopupOptionsEnabled(!(Boolean) newValue, settings.getBoolean("enableQuietTime", false));
+                return true;
+            }
+        });
+        findPreference("enableQuietTime").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                setPopupOptionsEnabled(!settings.getBoolean("noNotifications", false), (Boolean) newValue);
+                return true;
+            }
+        });
 
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				int startHour = settings.getInt("quiteTimeStartHour", 0);
-				int startMinute = settings.getInt("quiteTimeStartMinute", 0);
+        final Preference quietFrom = findPreference("quietTimeStart");
+        int startHour = settings.getInt("quiteTimeStartHour", 0);
+        int startMinute = settings.getInt("quiteTimeStartMinute", 0);
+        quietFrom.setSummary(formatTime(startHour, startMinute));
+        quietFrom.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
-				TimePickerDialog dialog = new TimePickerDialog(SettingsActivity.this, new OnTimeSetListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                int startHour = settings.getInt("quiteTimeStartHour", 0);
+                int startMinute = settings.getInt("quiteTimeStartMinute", 0);
 
-					@Override
-					public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-						editor.putInt("quiteTimeStartHour", hourOfDay);
-						editor.putInt("quiteTimeStartMinute", minute);
-						editor.apply();
+                TimePickerDialog dialog = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
 
-						quietFrom.setSummary(formatTime(hourOfDay, minute));
-					}
-				}, startHour, startMinute, DateFormat.is24HourFormat(SettingsActivity.this));
-				dialog.show();
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        editor.putInt("quiteTimeStartHour", hourOfDay);
+                        editor.putInt("quiteTimeStartMinute", minute);
+                        editor.apply();
 
-				return true;
-			}
-		});
+                        quietFrom.setSummary(formatTime(hourOfDay, minute));
+                    }
+                }, startHour, startMinute, DateFormat.is24HourFormat(SettingsActivity.this));
+                dialog.show();
 
-		final Preference quietTo = findPreference("quietTimeEnd");
-		int endHour = settings.getInt("quiteTimeEndHour", 23);
-		int endMinute = settings.getInt("quiteTimeEndMinute", 59);
-		quietTo.setSummary(formatTime(endHour, endMinute));
-		quietTo.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                return true;
+            }
+        });
 
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				int startHour = settings.getInt("quiteTimeEndHour", 0);
-				int startMinute = settings.getInt("quiteTimeEndMinute", 0);
+        final Preference quietTo = findPreference("quietTimeEnd");
+        int endHour = settings.getInt("quiteTimeEndHour", 23);
+        int endMinute = settings.getInt("quiteTimeEndMinute", 59);
+        quietTo.setSummary(formatTime(endHour, endMinute));
+        quietTo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
-				TimePickerDialog dialog = new TimePickerDialog(SettingsActivity.this, new OnTimeSetListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                int startHour = settings.getInt("quiteTimeEndHour", 0);
+                int startMinute = settings.getInt("quiteTimeEndMinute", 0);
 
-					@Override
-					public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-						editor.putInt("quiteTimeEndHour", hourOfDay);
-						editor.putInt("quiteTimeEndMinute", minute);
-						editor.apply();
+                TimePickerDialog dialog = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
 
-						quietTo.setSummary(formatTime(hourOfDay, minute));
-					}
-				}, startHour, startMinute, DateFormat.is24HourFormat(SettingsActivity.this));
-				dialog.show();
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        editor.putInt("quiteTimeEndHour", hourOfDay);
+                        editor.putInt("quiteTimeEndMinute", minute);
+                        editor.apply();
 
-				return true;
-			}
-		});
+                        quietTo.setSummary(formatTime(hourOfDay, minute));
+                    }
+                }, startHour, startMinute, DateFormat.is24HourFormat(SettingsActivity.this));
+                dialog.show();
 
-		Preference notifierLicenseButton = findPreference("notifierLicense");
-		notifierLicenseButton.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                return true;
+            }
+        });
 
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
+        Preference notifierLicenseButton = findPreference("notifierLicense");
+        notifierLicenseButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
-				Intent intent = new Intent(SettingsActivity.this, LicenseActivity.class);
-				startActivity(intent);
-				return true;
-			}
-		});
-		
-		EditTextPreference timeoutPreference = (EditTextPreference) findPreference("watchappTimeout");
-		timeoutPreference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
 
-		try
-		{
-			findPreference("version").setSummary( getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-		}
-		catch (NameNotFoundException e)
-		{
-			
-		}
+                Intent intent = new Intent(SettingsActivity.this, LicenseActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
 
-	}
+        EditTextPreference timeoutPreference = (EditTextPreference) findPreference("watchappTimeout");
+        timeoutPreference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        try
+        {
+            findPreference("version").setSummary( getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+
+        }
+
+    }
+
+    public void init()
+    {
+    }
 
 	@SuppressWarnings("deprecation")
 	private void setPopupOptionsEnabled(boolean popupEnabled, boolean timeEnabled)
