@@ -271,5 +271,8 @@
     <string name="taskerDescriptionPerAppSetting">Change app settings - %s</string>
     <string name="settingSaveToHistory">Save to history</string>
     <string name="settingSaveToHistoryDescription">Save notifications from this app to notification history</string>
+    <string name="appListDescription">In this view you can enable/disable apps and edit settings for specific app (click
+        on the app name to change its settings). Default settings are global settings and apply to every app unless you set different options on specific app and override defaults that way.
+    </string>
 
 </resources>

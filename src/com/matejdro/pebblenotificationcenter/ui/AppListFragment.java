@@ -133,6 +133,13 @@ public class AppListFragment extends Fragment {
 		listView.setAdapter(listViewAdapter);
 		listView.setVisibility(View.VISIBLE);
 		listView.setScrollingCacheEnabled(true);
+
+
+        TextView header = new TextView(getActivity());
+        header.setText(getString(R.string.appListDescription));
+        int padding = (int)((10 * getResources().getDisplayMetrics().density) + 0.5);
+        header.setPadding(padding, padding, padding, padding);
+        listView.addHeaderView(header);
 	}
 
 
