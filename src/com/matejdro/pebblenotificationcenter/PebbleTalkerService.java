@@ -383,13 +383,11 @@ public class PebbleTalkerService extends Service
 
     private void updateCurrentlyRunningApp()
     {
-        UUID prev = devConn.getCurrentRunningApp();
-        if (!DataReceiver.pebbleAppUUID.equals(prev))
-            previousUUID = null;
+        UUID currentApp = devConn.getCurrentRunningApp();
 
-        if (prev != null && !(prev.getLeastSignificantBits() == 0 && prev.getMostSignificantBits() == 0) && !prev.equals(DataReceiver.pebbleAppUUID) && !prev.equals(invalidUUID))
+        if (currentApp != null && !(currentApp.getLeastSignificantBits() == 0 && currentApp.getMostSignificantBits() == 0) && !currentApp.equals(DataReceiver.pebbleAppUUID) && !currentApp.equals(invalidUUID))
         {
-            previousUUID = prev;
+            previousUUID = currentApp;
         }
     }
 
