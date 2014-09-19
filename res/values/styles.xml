@@ -8,6 +8,8 @@
     <style name="AppSettingParent">
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
     </style>
 
     <style name="AppSettingsName">
@@ -26,8 +28,6 @@
         <item name="android:background">#CCCCCC</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:layout_marginRight">5dp</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
     </style>
 
     <style name="AppSettingsSectionText">
@@ -40,7 +40,6 @@
     </style>
 
     <style name="AppSettingsSectionSeparator" parent="AppSettingSeparator">
-        <item name="android:layout_marginTop">2dp</item>
         <item name="android:background">#555555</item>
     </style>
 
@@ -48,7 +47,6 @@
         <item name="android:background">#DDDDDD</item>
         <item name="android:layout_marginLeft">30dp</item>
         <item name="android:layout_marginRight">30dp</item>
-        <item name="android:layout_marginTop">2dp</item>
     </style>
 
 

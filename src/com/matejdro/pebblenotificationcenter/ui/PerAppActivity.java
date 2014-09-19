@@ -80,16 +80,19 @@ public class PerAppActivity extends Activity
             }
         });
 
+        final View useDefaultParent = findViewById(R.id.useDefaultView);
         checkBox = (CheckBox) findViewById(R.id.useDefaultCheck);
-        checkBox.setChecked(settingsStorage.shouldAppUseDefaultSettings());
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b)
             {
                 settingsStorage.setAppUseDefaultSettings(b);
+                useDefaultParent.setBackgroundColor(b ? 0xFFFFAAAA : 0x00000000);
             }
         });
+        checkBox.setChecked(settingsStorage.shouldAppUseDefaultSettings());
+
 
         ((EditText) findViewById(R.id.vibrationPatternEdit)).setText(settingsStorage.getString(AppSetting.VIBRATION_PATTERN));
         ((EditText) findViewById(R.id.periodicVibrationEdit)).setText(settingsStorage.getString(AppSetting.PERIODIC_VIBRATION));
