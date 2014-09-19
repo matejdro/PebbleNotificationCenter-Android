@@ -2,7 +2,6 @@ package com.matejdro.pebblenotificationcenter.ui;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -97,7 +96,7 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
 			NotificationCompat.Builder mBuilder =
               new NotificationCompat.Builder(this).setSmallIcon(R.drawable.icon)
                   .setContentTitle("Test Notification").setContentText("See notifcation on pebble")
-                  .setSubText("Hello World").setDefaults(Notification.DEFAULT_ALL);
+                  .setSubText("Hello World");
           mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
             break;
             case R.id.clearHistory:

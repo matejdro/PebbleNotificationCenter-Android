@@ -247,7 +247,10 @@ public class PebbleAppListFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			if (apps == null)
+            if (getActivity() == null)
+                return;
+
+            if (apps == null)
                 showError();
             else
                 showList();

@@ -304,6 +304,9 @@ public class AppListFragment extends Fragment {
     public static List<AppInfoStorage> getVirtualApps(Context context)
     {
         List<AppInfoStorage> virtualApps = new ArrayList<AppInfoStorage>(3);
+        if (context == null)
+            return virtualApps;
+
 
         AppInfoStorage app = new AppInfoStorage();
         app.label = context.getString(R.string.virtualAppDefaultSettings);
