@@ -103,22 +103,29 @@ public class PebbleTalkerService extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
 
-        if (intent != null && intent.hasExtra("id"))
+        if (intent != null)
         {
-            int id = intent.getIntExtra("id", -1);
-            String title = intent.getStringExtra("title");
-            String pkg = intent.getStringExtra("pkg");
+            if (intent.hasExtra("id"))
+            {
+                int id = intent.getIntExtra("id", -1);
+                String title = intent.getStringExtra("title");
+                String pkg = intent.getStringExtra("pkg");
 
-            String tag = intent.getStringExtra("tag");
-            String subtitle = intent.getStringExtra("subtitle");
-            String text = intent.getStringExtra("text");
-            boolean dismissable = intent.getBooleanExtra("dismissable", false);
-            boolean noHistory = intent.getBooleanExtra("noHistory", false);
-            boolean isListNotification = intent.getBooleanExtra("isListNotification", false);
+                String tag = intent.getStringExtra("tag");
+                String subtitle = intent.getStringExtra("subtitle");
+                String text = intent.getStringExtra("text");
+                boolean dismissable = intent.getBooleanExtra("dismissable", false);
+                boolean noHistory = intent.getBooleanExtra("noHistory", false);
+                boolean isListNotification = intent.getBooleanExtra("isListNotification", false);
 
-            notifyInternal(id, pkg, tag, title, subtitle, text, dismissable, noHistory, isListNotification);
-        } else
-            appOpened();
+                notifyInternal(id, pkg, tag, title, subtitle, text, dismissable, noHistory, isListNotification);
+            }
+
+            else if (intent.hasExtra("appJustOpened"))
+            {
+                appOpened();
+            }
+        }
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -796,6 +803,8 @@ public class PebbleTalkerService extends Service
 		if (service == null)
 		{
 			Intent startIntent = new Intent(context, PebbleTalkerService.class);
+            if (packetId == 0)
+                startIntent.putExtra("appJustOpened", true);
 			context.startService(startIntent);
 		}
 		else
