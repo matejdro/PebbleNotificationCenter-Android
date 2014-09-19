@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.matejdro.pebblenotificationcenter.R;
@@ -161,17 +160,7 @@ public class TaskerAppListActivity extends Activity
 
 			if (convertView == null)
             {
-                int leftPadding = (int)((10 * getResources().getDisplayMetrics().density) + 0.5);
-                int topPadding = (int)((20 * getResources().getDisplayMetrics().density) + 0.5);
-                int fontSize =  (int)((7 * getResources().getDisplayMetrics().scaledDensity) + 0.5);
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                convertView = new TextView(TaskerAppListActivity.this);
-                convertView.setLayoutParams(params);
-                convertView.setPadding(leftPadding, topPadding, 0, topPadding);
-                ((TextView) convertView).setTextSize(fontSize);
-
+                convertView = getLayoutInflater().inflate(R.layout.tasker_app_list_item, null);
             }
 
 			final AppListFragment.AppInfoStorage appInfo = apps.get(position);

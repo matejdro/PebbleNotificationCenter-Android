@@ -1,0 +1,13 @@
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/appName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="App"
+        android:textSize="13sp" />
