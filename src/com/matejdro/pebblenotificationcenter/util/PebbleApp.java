@@ -70,6 +70,9 @@ public class PebbleApp
     {
         List<PebbleApp> apps = new ArrayList<PebbleApp>(9);
 
+        if (context == null)
+            return apps;
+
         apps.add(new PebbleApp(context.getString(R.string.PebbleAppMainMenu), UUID.fromString("dec0424c-0625-4878-b1f2-147e57e83688")));
         apps.add(new PebbleApp(context.getString(R.string.PebbleAppSettings), UUID.fromString("07e0d9cb-8957-4bf7-9d42-35bf47caadfe")));
         apps.add(new PebbleApp(context.getString(R.string.PebbleAppMusic), UUID.fromString("1f03293d-47af-4f28-b960-f2b02a6dd757")));

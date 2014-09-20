@@ -10,6 +10,7 @@ import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 
 public class TaskerReceiver extends BroadcastReceiver
 {
@@ -64,7 +65,7 @@ public class TaskerReceiver extends BroadcastReceiver
             if (appPackage.equals(AppSetting.VIRTUAL_APP_DEFAULT_SETTINGS))
                 editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
             else
-                editor = context.getSharedPreferences("app_".concat(appPackage), Context.MODE_PRIVATE).edit();
+                editor = context.getSharedPreferences("app_".concat(SharedPreferencesAppStorage.filterAppName(appPackage)), Context.MODE_PRIVATE).edit();
 
             for (String key : bundle.keySet())
             {

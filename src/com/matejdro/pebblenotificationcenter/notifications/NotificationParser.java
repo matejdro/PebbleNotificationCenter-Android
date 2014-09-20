@@ -55,7 +55,7 @@ public class NotificationParser {
 		if (extras == null)
 			return false;
 
-        if (extras.get(Notification.EXTRA_TEXT_LINES) != null && extras.getCharSequence(Notification.EXTRA_TEXT_LINES).length() > 0)
+        if (extras.get(Notification.EXTRA_TEXT_LINES) != null && extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES).length > 0)
         {
             if (parseInboxNotification(context, pkg, extras))
                 return true;

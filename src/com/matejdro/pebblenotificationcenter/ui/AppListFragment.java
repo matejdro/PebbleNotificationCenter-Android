@@ -240,7 +240,10 @@ public class AppListFragment extends Fragment {
 
             tryMigratingCheckboxList();
 
-			final PackageManager pm = getActivity().getPackageManager();
+            if (getActivity() == null)
+                return null;
+
+            final PackageManager pm = getActivity().getPackageManager();
 			List<PackageInfo> packages = pm.getInstalledPackages(0);
 
 			for (PackageInfo packageInfo : packages) {
