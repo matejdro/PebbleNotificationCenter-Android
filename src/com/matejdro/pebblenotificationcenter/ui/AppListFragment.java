@@ -238,12 +238,14 @@ public class AppListFragment extends Fragment {
 			if (getActivity() == null)
 				return null;
 
+            Context context = getActivity();
+
             tryMigratingCheckboxList();
 
             if (getActivity() == null)
                 return null;
 
-            final PackageManager pm = getActivity().getPackageManager();
+            final PackageManager pm = context.getPackageManager();
 			List<PackageInfo> packages = pm.getInstalledPackages(0);
 
 			for (PackageInfo packageInfo : packages) {
@@ -271,7 +273,7 @@ public class AppListFragment extends Fragment {
 
 			Collections.sort(apps, new AppInfoComparator());
 
-            apps.addAll(0, getVirtualApps(getActivity()));
+            apps.addAll(0, getVirtualApps(context));
 
 			return null;
 		}

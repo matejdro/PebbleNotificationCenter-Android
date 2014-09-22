@@ -1,6 +1,7 @@
 package com.matejdro.pebblenotificationcenter.tasker;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -190,7 +191,9 @@ public class TaskerAppListActivity extends Activity
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			final PackageManager pm = getPackageManager();
+            Context context = getApplicationContext();
+
+            final PackageManager pm = context.getPackageManager();
 			List<PackageInfo> packages = pm.getInstalledPackages(0);
 
 			for (PackageInfo packageInfo : packages) {
@@ -214,7 +217,7 @@ public class TaskerAppListActivity extends Activity
 
 			Collections.sort(apps, new AppListFragment.AppInfoComparator());
 
-            apps.addAll(0, AppListFragment.getVirtualApps(TaskerAppListActivity.this));
+            apps.addAll(0, AppListFragment.getVirtualApps(context));
 
 			return null;
 		}

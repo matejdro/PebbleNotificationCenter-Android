@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -203,6 +204,8 @@ public class PebbleAppListFragment extends Fragment {
 			if (getActivity() == null)
 				return null;
 
+            Context context = getActivity();
+
             PebbleDeveloperConnection connection = null;
             try
             {
@@ -229,11 +232,11 @@ public class PebbleAppListFragment extends Fragment {
                         iterator.remove();
                 }
 
-                apps.addAll(PebbleApp.getSystemApps(PebbleAppListFragment.this.getActivity()));
+                apps.addAll(PebbleApp.getSystemApps(context));
 
                 Collections.sort(apps, new PebbleAppComparator());
 
-                PebbleApp otherApp = new PebbleApp(getString(R.string.PebbleAppsOther), PebbleTalkerService.invalidUUID);
+                PebbleApp otherApp = new PebbleApp(context.getString(R.string.PebbleAppsOther), PebbleTalkerService.invalidUUID);
                 apps.add(otherApp);
 
                 for (PebbleApp app : apps)
