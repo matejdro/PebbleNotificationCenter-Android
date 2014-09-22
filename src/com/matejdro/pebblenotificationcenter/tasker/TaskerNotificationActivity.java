@@ -61,10 +61,7 @@ public class TaskerNotificationActivity extends Activity {
          bundle.putString("body", body);
          bundle.putBoolean("storeInHistory", storeInHistory);
 
-         if (TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(this))
-         {
-             TaskerPlugin.Setting.setVariableReplaceKeys(bundle, new String[] { "title", "subtitle", "body" });
-         }
+         TaskerPlugin.Setting.setVariableReplaceKeys(bundle, new String[] { "title", "subtitle", "body" });
 
          intent.putExtra("com.twofortyfouram.locale.intent.extra.BLURB", description);
          intent.putExtra("com.twofortyfouram.locale.intent.extra.BUNDLE", bundle);
