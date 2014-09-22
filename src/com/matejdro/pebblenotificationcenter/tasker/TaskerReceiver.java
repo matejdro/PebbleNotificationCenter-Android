@@ -21,10 +21,6 @@ public class TaskerReceiver extends BroadcastReceiver
         if (intent == null)
             return;
 
-        DefaultAppSettingsStorage storage = PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage();
-        if (!storage.canAppSendNotifications(AppSetting.VIRTUAL_APP_TASKER_RECEIVER))
-            return;
-
         Bundle bundle = intent.getBundleExtra("com.twofortyfouram.locale.intent.extra.BUNDLE");
         if (bundle == null)
             return;
@@ -34,6 +30,10 @@ public class TaskerReceiver extends BroadcastReceiver
 
         if (action == 0) //Notification
         {
+            DefaultAppSettingsStorage storage = PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage();
+            if (!storage.canAppSendNotifications(AppSetting.VIRTUAL_APP_TASKER_RECEIVER))
+                return;
+
             String title = bundle.getString("title");
             String subtitle = bundle.getString("subtitle");
             String body = bundle.getString("body");
@@ -41,9 +41,9 @@ public class TaskerReceiver extends BroadcastReceiver
             boolean storeInHistory = bundle.getBoolean("storeInHistory");
 
             PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_TASKER_RECEIVER, title, subtitle, body, !storeInHistory, false);
-        } else if (action == 1) //Global setting modify
+        }
+        else if (action == 1) //Global setting modify
         {
-
             Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 
             for (String key : bundle.keySet())
