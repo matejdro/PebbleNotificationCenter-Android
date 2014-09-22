@@ -48,8 +48,11 @@ public class TaskerAppSettingsActivity extends PerAppActivity
         }
     }
 
-    public void onBackPressed()
+    @Override
+    public void save()
     {
+        super.save();
+
         Intent intent = new Intent();
 
         Bundle bundle = new Bundle();
@@ -65,8 +68,6 @@ public class TaskerAppSettingsActivity extends PerAppActivity
         intent.putExtra("com.twofortyfouram.locale.intent.extra.BUNDLE", bundle);
 
         setResult(RESULT_OK, intent);
-
-        super.onBackPressed();
     }
 
 }

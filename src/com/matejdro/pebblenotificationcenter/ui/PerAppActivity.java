@@ -118,8 +118,7 @@ public class PerAppActivity extends Activity
             findViewById(R.id.isAppSelectedSeparator).setVisibility(View.GONE);
             findViewById(R.id.useDefaultView).setVisibility(View.GONE);
 
-        }
-        else
+        } else
         {
             settingsStorage = new SharedPreferencesAppStorage(this, appPackage, defaultAppSettingsStorage, false);
         }
@@ -130,6 +129,13 @@ public class PerAppActivity extends Activity
 
     @Override
     public void onBackPressed()
+    {
+        save();
+
+        super.onBackPressed();
+    }
+
+    protected void save()
     {
         settingsStorage.setString(AppSetting.PERIODIC_VIBRATION, ((EditText) findViewById(R.id.periodicVibrationEdit)).getText().toString());
 
@@ -147,9 +153,6 @@ public class PerAppActivity extends Activity
 
         settingsStorage.setStringList(AppSetting.INCLUDED_REGEX, includingRegexList.getInternalStorage());
         settingsStorage.setStringList(AppSetting.EXCLUDED_REGEX, excludingRegexList.getInternalStorage());
-
-
-        super.onBackPressed();
     }
 
     private void linkViewToCheckbox(int viewId, int checkBoxId)
