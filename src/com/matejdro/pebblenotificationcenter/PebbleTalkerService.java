@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -21,14 +22,20 @@ import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStor
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
-import timber.log.Timber;
-
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Random;
+import java.util.UUID;
+import timber.log.Timber;
 
 public class PebbleTalkerService extends Service
 {
@@ -50,9 +57,9 @@ public class PebbleTalkerService extends Service
     private boolean commBusy = false;
     private Queue<Integer> notificationRemovalQueue = new LinkedList<Integer>();
 
-    PendingNotification curSendingNotification;
-    private Queue<PendingNotification> sendingQueue = new LinkedList<PendingNotification>();
-    private SparseArray<PendingNotification> sentNotifications = new SparseArray<PendingNotification>();
+    ProcessedNotification curSendingNotification;
+    private Queue<ProcessedNotification> sendingQueue = new LinkedList<ProcessedNotification>();
+    private SparseArray<ProcessedNotification> sentNotifications = new SparseArray<ProcessedNotification>();
 
     private LocationLookup locationLookup;
 
@@ -105,20 +112,10 @@ public class PebbleTalkerService extends Service
 
         if (intent != null)
         {
-            if (intent.hasExtra("id"))
+            if (intent.hasExtra("notification"))
             {
-                int id = intent.getIntExtra("id", -1);
-                String title = intent.getStringExtra("title");
-                String pkg = intent.getStringExtra("pkg");
-
-                String tag = intent.getStringExtra("tag");
-                String subtitle = intent.getStringExtra("subtitle");
-                String text = intent.getStringExtra("text");
-                boolean dismissable = intent.getBooleanExtra("dismissable", false);
-                boolean noHistory = intent.getBooleanExtra("noHistory", false);
-                boolean isListNotification = intent.getBooleanExtra("isListNotification", false);
-
-                notifyInternal(id, pkg, tag, title, subtitle, text, dismissable, noHistory, isListNotification);
+                PebbleNotification notification = intent.getParcelableExtra("notification");
+                processNotification(notification);
             }
 
             else if (intent.hasExtra("appJustOpened"))
@@ -130,30 +127,33 @@ public class PebbleTalkerService extends Service
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void send(PendingNotification notification)
+    private void send(ProcessedNotification notification)
     {
-        Timber.d("Send " + notification.id);
+        Timber.d("Send " + notification.id + " " + notification.source.getTitle() + " " + notification.source.getSubtitle());
 
         curSendingNotification = notification;
         sentNotifications.put(notification.id, notification);
 
+        AppSettingStorage settingStorage = notification.source.getSettingStorage(this);
+
         int periodicVibrationInterval = 0;
         try
         {
-            periodicVibrationInterval = Math.min(Integer.parseInt(notification.settingStorage.getString(AppSetting.PERIODIC_VIBRATION)), 128);
+            periodicVibrationInterval = Math.min(Integer.parseInt(settingStorage.getString(AppSetting.PERIODIC_VIBRATION)), 128);
         } catch (NumberFormatException e)
         {
         }
 
         PebbleDictionary data = new PebbleDictionary();
-        List<Byte> vibrationPattern = AppSetting.parseVibrationPattern(notification.settingStorage);
+        List<Byte> vibrationPattern = AppSetting.parseVibrationPattern(settingStorage);
 
-        byte[] configBytes = new byte[4 + vibrationPattern.size()];
+        byte[] configBytes = new byte[5 + vibrationPattern.size()];
 
         byte flags = 0;
-        flags |= (byte) (notification.dismissable ? 0x01 : 0);
-        flags |= (byte) (notification.isListNotification ? 0x2 : 0);
-        flags |= (byte) (notification.settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) ? 0x4 : 0);
+        flags |= (byte) (notification.source.isDismissable() ? 0x01 : 0);
+        flags |= (byte) (notification.source.isListNotification() ? 0x2 : 0);
+        flags |= (byte) (settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) ? 0x4 : 0);
+        flags |= (byte) (true ? 0x8 : 0);
 
         configBytes[0] = Byte.parseByte(settings.getString("textSize", "0"));
         configBytes[1] = flags;
@@ -161,6 +161,11 @@ public class PebbleTalkerService extends Service
         configBytes[3] = (byte) vibrationPattern.size();
         for (int i = 0; i < vibrationPattern.size(); i++)
             configBytes[4 + i] = vibrationPattern.get(i);
+
+        if (notification.source.getActions() != null)
+            configBytes[4 + configBytes[3]] = (byte) Math.min(notification.source.getActions().size(), 5);
+        else
+            configBytes[4 + configBytes[3]] = 0;
 
         int timeout = 0;
         try
@@ -175,11 +180,10 @@ public class PebbleTalkerService extends Service
         data.addBytes(2, configBytes);
         data.addUint16(3, (short) timeout);
         data.addUint8(4, (byte) notification.textChunks.size());
-        data.addString(5, notification.title);
-        data.addString(6, notification.subtitle);
+        data.addString(5, notification.source.getTitle());
+        data.addString(6, notification.source.getSubtitle());
 
         PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
-
         commStarted();
     }
 
@@ -214,9 +218,9 @@ public class PebbleTalkerService extends Service
 
         for (int i = 0; i < sentNotifications.size(); i++)
         {
-            PendingNotification notification = sentNotifications.valueAt(i);
+            ProcessedNotification notification = sentNotifications.valueAt(i);
 
-            if (!notification.isListNotification && notification.androidID != null && notification.androidID.intValue() == androidId.intValue() && notification.pkg != null && notification.pkg.equals(pkg) && (notification.tag == null || notification.tag.equals(tag)))
+            if (!notification.source.isListNotification() && notification.source.isSameNotification(androidId, pkg, tag))
             {
                 Timber.tag("NC Upwards debug");
                 Timber.d("	rem notifications check: %b %d", commBusy, sendingQueue.size());
@@ -230,14 +234,15 @@ public class PebbleTalkerService extends Service
             }
         }
 
+        //Remove now dismissed notification from queue so it does not spam Pebble later
         if (!dontClose)
         {
-            Iterator<PendingNotification> iterator = sendingQueue.iterator();
+            Iterator<ProcessedNotification> iterator = sendingQueue.iterator();
             while (iterator.hasNext())
             {
-                PendingNotification notification = iterator.next();
+                ProcessedNotification notification = iterator.next();
 
-                if (!notification.isListNotification && notification.androidID != null && notification.androidID.intValue() == androidId.intValue() && notification.pkg != null && notification.pkg.equals(pkg) && (notification.tag == null || notification.tag.equals(tag)))
+                if (!notification.source.isListNotification() && notification.source.isSameNotification(androidId, pkg, tag))
                 {
                     iterator.remove();
                 }
@@ -260,46 +265,59 @@ public class PebbleTalkerService extends Service
         commWentIdle();
     }
 
-    private void notifyInternal(Integer androidID, String pkg, String tag, String title, String subtitle, String text, boolean dismissable, boolean noHistory, boolean isListNotification)
+    private void processNotification(PebbleNotification notificationSource)
     {
         Timber.d("notify internal");
 
-        text = TextUtil.prepareString(text, 900);
-
-        PendingNotification notification = new PendingNotification();
-        notification.androidID = androidID;
-        notification.pkg = pkg;
-        notification.tag = tag;
-        notification.title = TextUtil.prepareString(title, 30);
-        notification.subtitle = TextUtil.prepareString(subtitle, 30);
-        notification.text = text;
-        notification.dismissable = dismissable;
-        notification.isListNotification = isListNotification;
-        if (pkg == null)
-            notification.settingStorage = defaultSettingsStorage;
-        else
-            notification.settingStorage = new SharedPreferencesAppStorage(this, pkg, defaultSettingsStorage, true);
-
-        Timber.d("got notify: " + pkg + " " + androidID + " " + tag);
-
-        if (!noHistory && notification.settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY))
-            historyDb.storeNotification(System.currentTimeMillis(), title, subtitle, text);
-
-        if (!isListNotification)
+        if (notificationSource.getSubtitle() == null)
         {
-            if (notification.androidID != null)
+            //Attempt to figure out subtitle
+            String subtitle = "";
+            String text = notificationSource.getText();
+
+            if (text.contains("\n"))
+            {
+                int firstLineBreak = text.indexOf('\n');
+                if (firstLineBreak < 40 && firstLineBreak < text.length() * 0.8)
+                {
+                    subtitle = text.substring(0, firstLineBreak).trim();
+                    text = text.substring(firstLineBreak).trim();
+                }
+            }
+
+            notificationSource.setText(text);
+            notificationSource.setSubtitle(subtitle);
+        }
+
+        if (notificationSource.getTitle().trim().equals(notificationSource.getSubtitle().trim()))
+            notificationSource.setSubtitle("");
+
+        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), 900));
+        notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
+        notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
+
+        ProcessedNotification notification = new ProcessedNotification();
+        notification.source = notificationSource;
+        AppSettingStorage settingStorage = notificationSource.getSettingStorage(this);
+
+        if (!notificationSource.isListNotification() && !notificationSource.isHistoryDisabled() && settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY))
+            historyDb.storeNotification(System.currentTimeMillis(), notificationSource.getTitle(), notificationSource.getSubtitle(), notificationSource.getText());
+
+        if (!notificationSource.isListNotification())
+        {
+            if (notificationSource.getAndroidID() != null)
             {
                 //Preventing spamming of equal notifications
                 for (int i = 0; i < sentNotifications.size(); i++)
                 {
-                    PendingNotification comparing = sentNotifications.valueAt(i);
-                    if (!notification.isListNotification && notification.androidID == comparing.androidID && comparing.text.equals(notification.text) && comparing.title.equals(notification.title) && comparing.subtitle.equals(notification.subtitle))
+                    ProcessedNotification comparing = sentNotifications.valueAt(i);
+                    if (notificationSource.isSameNotification(comparing.source))
                     {
                         return;
                     }
                 }
 
-                dismissOnPebbleInternal(notification.androidID, notification.pkg, notification.tag, true);
+                dismissOnPebbleInternal(notificationSource.getAndroidID(), notificationSource.getPackage(), notificationSource.getTag(), true);
             }
 
             if (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
@@ -320,7 +338,7 @@ public class PebbleTalkerService extends Service
 
             }
 
-            if (settings.getBoolean("enableQuietTime", false) && !notification.settingStorage.getBoolean(AppSetting.IGNORE_QUIET_HOURS))
+            if (settings.getBoolean("enableQuietTime", false) && !settingStorage.getBoolean(AppSetting.IGNORE_QUIET_HOURS))
             {
                 int startHour = settings.getInt("quiteTimeStartHour", 0);
                 int startMinute = settings.getInt("quiteTimeStartMinute", 0);
@@ -354,8 +372,8 @@ public class PebbleTalkerService extends Service
 
             if (pebbleAppMode == 1) //Pebble native notification
             {
-                String nativeTitle = notification.title;
-                String nativeText = notification.subtitle + "\n\n" + notification.text;
+                String nativeTitle = notificationSource.getTitle();
+                String nativeText = notificationSource.getSubtitle() + "\n\n" + notificationSource.getText();
 
                 devConn.sendNotification(nativeTitle, nativeText);
                 return;
@@ -372,12 +390,15 @@ public class PebbleTalkerService extends Service
         }
         while (sentNotifications.get(notification.id) != null);
 
+        String text = notificationSource.getText();
+
         while (text.length() > 0)
         {
             String chunk = TextUtil.trimString(text, 80, false);
             notification.textChunks.add(chunk);
             text = text.substring(chunk.length());
         }
+
 
         openApp();
 
@@ -392,7 +413,7 @@ public class PebbleTalkerService extends Service
     {
         UUID currentApp = devConn.getCurrentRunningApp();
 
-        if (currentApp != null && !(currentApp.getLeastSignificantBits() == 0 && currentApp.getMostSignificantBits() == 0) && !currentApp.equals(DataReceiver.pebbleAppUUID) && !currentApp.equals(invalidUUID))
+        if (currentApp != null && !(currentApp.getLeastSignificantBits() == 0 && currentApp.getMostSignificantBits() == 0) && (!currentApp.equals(DataReceiver.pebbleAppUUID) || previousUUID == null) && !currentApp.equals(invalidUUID))
         {
             previousUUID = currentApp;
         }
@@ -408,10 +429,11 @@ public class PebbleTalkerService extends Service
         Timber.d("CloseApp " + previousUUID);
         commBusy = false;
 
-        if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null)
+        if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null && !previousUUID.equals(DataReceiver.pebbleAppUUID))
             PebbleKit.startAppOnPebble(this, previousUUID);
         else
             PebbleKit.closeAppOnPebble(this, DataReceiver.pebbleAppUUID);
+
 
         Editor editor = settings.edit();
         editor.putLong("lastClose", System.currentTimeMillis());
@@ -427,23 +449,7 @@ public class PebbleTalkerService extends Service
 
     private void configDelivered()
     {
-        if (commWentIdle())
-            return;
-
-        Timber.i("Sending notification list");
-
-        if (NotificationHandler.isNotificationListenerSupported())
-        {
-            PebbleDictionary data = new PebbleDictionary();
-            data.addUint8(0, (byte) 3);
-
-            PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
-        } else
-        {
-            listHandler = new RecentNotificationsAdapter(this, historyDb);
-            listHandler.sendNotification(0);
-        }
-
+        commWentIdle();
     }
 
     /**
@@ -461,7 +467,7 @@ public class PebbleTalkerService extends Service
             return true;
         }
 
-        PendingNotification next = sendingQueue.poll();
+        ProcessedNotification next = sendingQueue.poll();
         if (next != null)
         {
             send(next);
@@ -518,7 +524,7 @@ public class PebbleTalkerService extends Service
 
         int id = data.getInteger(1).intValue();
 
-        PendingNotification notification = sentNotifications.get(id);
+        ProcessedNotification notification = sentNotifications.get(id);
         if (notification == null)
         {
             Timber.d("Unknown ID!");
@@ -550,6 +556,43 @@ public class PebbleTalkerService extends Service
         commStarted();
     }
 
+    private void actionsTextRequested(PebbleDictionary data)
+    {
+        int id = data.getInteger(1).intValue();
+
+        ProcessedNotification notification = sentNotifications.get(id);
+        if (notification == null)
+        {
+            Timber.d("Unknown ID!");
+
+            notificationTransferCompleted();
+            return;
+        }
+
+        data = new PebbleDictionary();
+
+        data.addUint8(0, (byte) 5);
+        data.addInt32(1, id);
+
+        List<NotificationAction> actions = notification.source.getActions();
+        int size = Math.min(actions.size(), 5);
+
+        byte[] textData = new byte[size * 19];
+
+        for (int i = 0; i < size; i++)
+        {
+            String text = TextUtil.prepareString(actions.get(i).getActionText(), 18);
+            System.arraycopy(text.getBytes(), 0, textData, i * 19, text.length());
+            textData[19 * (i + 1) -1 ] = 0;
+        }
+
+        data.addBytes(3, textData);
+
+        PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
+        commStarted();
+    }
+
+
     private void notificationTransferCompleted()
     {
         Timber.d("Transfer completed...");
@@ -563,16 +606,36 @@ public class PebbleTalkerService extends Service
             return;
     }
 
-    private void dismissRequested(PebbleDictionary data)
+    private void actionRequested(PebbleDictionary data)
     {
         int id = data.getInteger(1).intValue();
+        int action = data.getUnsignedInteger(3).intValue();
 
-        Timber.d("Dismiss requested. Close: " + data.contains(2));
+        Timber.d("Dismiss requested. Close: " + data.contains(2) + " action: " + action);
 
-        PendingNotification notification = sentNotifications.get(id);
+        ProcessedNotification notification = sentNotifications.get(id);
         if (notification != null)
         {
-            JellybeanNotificationListener.dismissNotification(notification.pkg, notification.tag, notification.androidID);
+            switch (action)
+            {
+                case 0: //Dismiss
+                    JellybeanNotificationListener.dismissNotification(notification.source.getPackage(), notification.source.getTag(), notification.source.getAndroidID());
+                    break;
+                case 2: //Open
+                    if (notification.source.getOpenAction() != null)
+                        try
+                        {
+                            notification.source.getOpenAction().send();
+                        } catch (PendingIntent.CanceledException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    break;
+               default:
+                   int customActionID = action - 3;
+                   NotificationAction notificationAction = notification.source.getActions().get(customActionID);
+                   notificationAction.executeAction(this);
+            }
         }
 
         if (data.contains(2))
@@ -671,7 +734,7 @@ public class PebbleTalkerService extends Service
 			notificationTransferCompleted();
 			break;
 		case 3:
-			dismissRequested(data);
+			actionRequested(data);
 			break;
 		case 4:
 			if (listHandler != null) listHandler.gotRequest(data);
@@ -697,7 +760,10 @@ public class PebbleTalkerService extends Service
         case 11:
             receivedConfigChange(data);
             break;
-		}
+        case 12:
+            actionsTextRequested(data);
+            break;
+        }
 	}
 
     private boolean isWatchConnected()
@@ -712,77 +778,20 @@ public class PebbleTalkerService extends Service
         }
     }
 
-	public static void notify(Context context, String pkg, String title, String text)
+	public static void notify(Context context, PebbleNotification notification)
 	{
-		notify(context, pkg, title, text, false);
-	}
-
-	public static void notify(Context context, String pkg, String title, String text, boolean noHistory)
-	{
-		//Attempt to figure out subtitle
-		String subtitle = "";
-
-		if (text.contains("\n"))
-		{
-			int firstLineBreak = text.indexOf('\n');
-			if (firstLineBreak < 40 && firstLineBreak < text.length() * 0.8)
-			{
-				subtitle = text.substring(0, firstLineBreak).trim();
-				text = text.substring(firstLineBreak).trim();
-			}
-		}
-
-		notify(context, pkg, title, subtitle, text, noHistory, false);
-	}
-
-	public static void notify(Context context, String pkg, String title, String subtitle, String text)
-	{
-		notify(context, pkg, title, subtitle, text, false, false);
-	}
-
-	public static void notify(Context context, String pkg, String title, String subtitle, String text, boolean noHistory, boolean isListNotification)
-	{
-		notify(context, null, pkg, null, title, subtitle, text, false, noHistory, isListNotification);
-	}
-
-	public static void notify(Context context, Integer id, String pkg, String tag, String title, String subtitle, String text, boolean dismissable)
-	{
-		notify(context, id, pkg, tag, title, subtitle, text, dismissable, false, false);
-	}
-
-	public static void notify(Context context, Integer id, String pkg, String tag, String title, String subtitle, String text, boolean dismissable, boolean noHistory, boolean isListNotification)
-	{
-		if (title == null)
-			title = "";
-		if (subtitle == null)
-			subtitle = "";
-		if (subtitle.trim().equalsIgnoreCase(title.trim()))
-			subtitle = "";
-		if (text == null)
-			text = "";
-
         Timber.d("notify");
 		PebbleTalkerService service = PebbleTalkerService.instance;
 
 		if (service == null)
 		{
 			Intent startIntent = new Intent(context, PebbleTalkerService.class);
-
-			startIntent.putExtra("id", id);
-			startIntent.putExtra("pkg", pkg);
-			startIntent.putExtra("tag", tag);
-			startIntent.putExtra("title", title);
-			startIntent.putExtra("subtitle", subtitle);
-			startIntent.putExtra("text", text);
-			startIntent.putExtra("dismissable", dismissable);
-			startIntent.putExtra("noHistory", noHistory);
-			startIntent.putExtra("isListNotification", isListNotification);
-
+            startIntent.putExtra("notification", notification);
 			context.startService(startIntent);
 		}
 		else
 		{
-			service.notifyInternal(id, pkg, tag, title, subtitle, text, dismissable, noHistory, isListNotification);
+			service.processNotification(notification);
 		}
 	}
 

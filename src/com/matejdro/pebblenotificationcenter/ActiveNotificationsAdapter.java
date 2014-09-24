@@ -8,12 +8,13 @@ import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotification
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
 
+import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
 import java.util.Arrays;
 import java.util.Comparator;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class ActiveNotificationsAdapter extends NotificationListAdapter {
-	private PendingNotification[] notifications;
+	private PebbleNotification[] notifications;
 	
 	public ActiveNotificationsAdapter(PebbleTalkerService service) {
 		super(service);
@@ -26,43 +27,41 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 		StatusBarNotification[] sbns = JellybeanNotificationListener.getCurrentNotifications();
         if (sbns == null)
         {
-            notifications = new PendingNotification[0];
+            notifications = new PebbleNotification[0];
             return;
         }
-		notifications = new PendingNotification[sbns.length];
+		notifications = new PebbleNotification[sbns.length];
 		
 		for (int i = 0; i < sbns.length; i++)
 		{
 			StatusBarNotification sbn = sbns[i];
 			Notification notification = sbn.getNotification();
 			NotificationParser parser = new NotificationParser(service,sbn.getPackageName(),  notification);
-			PendingNotification pn = new PendingNotification();
-			pn.androidID = sbn.getId();
-			pn.dismissable = sbn.isClearable();
-			pn.pkg = sbn.getPackageName();
-			pn.title = NotificationHandler.getAppName(service, pn.pkg);
-			pn.subtitle = parser.title;
-			pn.text = parser.text;
-			pn.postTime = sbn.getPostTime();
-			pn.tag = sbn.getTag();
-			
-			notifications[i] = pn;
+
+			PebbleNotification pn = new PebbleNotification(NotificationHandler.getAppName(service, sbn.getPackageName()), parser.text, sbn.getPackageName());
+            pn.setAndroidID(sbn.getId());
+            pn.setDismissable(sbn.isClearable());
+            pn.setSubtitle(parser.title);
+            pn.setPostTime(sbn.getPostTime());
+            pn.setTag(sbn.getTag());
+            pn.setListNotification(true);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            {
+                pn.setActions(ActionParser.getActions(notification));
+            }
+            if (notification.contentIntent != null)
+                pn.setOpenAction(notification.contentIntent);
+
+            notifications[i] = pn;
 		}
 		
-		Arrays.sort(notifications, new PendingComparable());
+		Arrays.sort(notifications, new NotificationComparable());
 	}
 	
 	@Override
-	public NotificationMeta getNotificationAt(int index) {
-		PendingNotification notification = notifications[index];
-		
-		NotificationMeta meta = new NotificationMeta();
-		meta.title = notification.title;
-		meta.subtitle = notification.subtitle;
-		meta.date = notification.postTime;
-		meta.isOngoing = !notification.dismissable;
-		
-		return meta;
+	public PebbleNotification getNotificationAt(int index) {
+		return notifications[index];
 	}
 
 	@Override
@@ -72,27 +71,27 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 
 	@Override
 	public void notificationPicked(int index) {
-		PendingNotification pn = notifications[index];
+		PebbleNotification pn = notifications[index];
 		
-		PebbleTalkerService.notify(service, pn.androidID, pn.pkg, pn.tag, pn.title, pn.subtitle, pn.text, pn.dismissable, true, true);
+		PebbleTalkerService.notify(service, pn);
 	}
 	
-	private static class PendingComparable implements Comparator<PendingNotification>
+	private static class NotificationComparable implements Comparator<PebbleNotification>
 	{
 
 		@Override
-		public int compare(PendingNotification lhs, PendingNotification rhs) {
+		public int compare(PebbleNotification lhs, PebbleNotification rhs) {
 			//First sort by normal/onging, then by date.
 			
-			if (lhs.dismissable != rhs.dismissable)
+			if (lhs.isDismissable() != rhs.isDismissable())
 			{
-				if (lhs.dismissable)
+				if (lhs.isDismissable())
 					return -1;
 				else
 					return 11;
 			}
 			
-			return (int) (rhs.postTime - lhs.postTime);
+			return (int) (rhs.getPostTime() - lhs.getPostTime());
 		}
 		
 	}

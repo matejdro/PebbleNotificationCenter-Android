@@ -54,7 +54,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 	public static void dismissNotification(String pkg, String tag, int id)
 	{
-        Timber.d("dismissing");
+        Timber.d("dismissing " + pkg + " " + tag + " " + id + " " + (instance != null));
 
         if (instance != null)
 		    instance.cancelNotification(pkg, tag, id);

@@ -14,8 +14,8 @@ public class TextUtil
 
     public static String prepareString(String text, int length)
     {
-        text = fixInternationalCharacters(text);
         text = trimString(text, length, true);
+        text = fixInternationalCharacters(text);
 
         if (RTLUtility.getInstance().isRTL(text))
         {

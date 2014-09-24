@@ -26,34 +26,20 @@ public class CustomNotificationCatcher extends BroadcastReceiver {
 				
 				String title = data.getString("title");
 				String text = data.getString("body");
-				
-				if (data.has("subtitle"))
-				{
-					String subtitle = data.getString("subtitle");
-					
-					if (text.endsWith("NOHISTORY"))
-					{
-						text = text.substring(0, text.length() - 9);
-						PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, title, subtitle, text, true, false);
-					}
-					else
-					{
-						PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, title, subtitle, text);
-					}
-				}
-				else
-				{
-					if (text.endsWith("NOHISTORY"))
-					{
-						text = text.substring(0, text.length() - 9);
-						PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, title, text, true);
-					}
-					else
-					{
-						PebbleTalkerService.notify(context, AppSetting.VIRTUAL_APP_THIRD_PARTY, title, text);
-					}
-				}
-				
+                boolean noHistory = false;
+                if (text.endsWith("NOHISTORY"))
+                {
+                    text = text.substring(0, text.length() - 9);
+                    noHistory = true;
+                }
+
+                PebbleNotification notification = new PebbleNotification(title, text, AppSetting.VIRTUAL_APP_THIRD_PARTY);
+                notification.setNoHistory(noHistory);
+                if (data.has("subtitle"))
+                    notification.setSubtitle(data.getString("subtitle"));
+
+
+                PebbleTalkerService.notify(context, notification);
 			}
 			catch (JSONException e)
 			{

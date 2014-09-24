@@ -160,7 +160,7 @@
         Pebble?
     </string>
     <string name="openInPebbleAppStore">Open NC in Pebble App Store</string>
-    <string name="PebbleAppsOther">Other</string>
+    <string name="PebbleAppsOther">Unknown</string>
     <string name="PebbleAppMainMenu">Main Menu</string>
     <string name="PebbleAppSettings">Settings</string>
     <string name="PebbleAppMusic">Music</string>

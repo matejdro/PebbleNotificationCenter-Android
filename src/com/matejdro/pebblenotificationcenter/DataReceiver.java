@@ -30,7 +30,7 @@ public class DataReceiver extends BroadcastReceiver {
 	
 	
 
-	public void onReceive(final Context context, final Intent intent) {				
+	public void onReceive(final Context context, final Intent intent) {
 		final UUID receivedUuid = (UUID) intent.getSerializableExtra(APP_UUID);
 
 		// Pebble-enabled apps are expected to be good citizens and only inspect broadcasts containing their UUID

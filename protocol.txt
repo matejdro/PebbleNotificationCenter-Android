@@ -15,11 +15,11 @@ Pebble --> Phone
 	Notifies phone that it can start sending new notification if there is any
 	No additional data
 	
-	Packet 3 - Dismiss notification
+	Packet 3 - Notification action
 	Additional data:
 		1 = Unique id of notification - int32
 		2 = Close app after receiving this packet. If this key is present, pebble app will be closed (also see Packet 7) - uint8
-		
+		3 = Action (0 = dismiss, 2 = open, 3+ = actions specific to that notification)
 
 	Packet 4 - Request notification at list index
 	Additional data:
@@ -56,6 +56,11 @@ Pebble --> Phone
             0 = Disable notifications 1 or 0 - value is uint8
         2 = Value of the setting (type depends on the setting)
 
+	Packet 12 - Send action names
+	Requests phone to send action names (Packet 5 from phone)
+	Additional data:
+		1 = Unique notification id (int32)
+
 Phone --> Pebble
 
 	Packet 0 - New notification packet
@@ -67,6 +72,7 @@ Phone --> Pebble
 				First bit (0x01) = Is notification dismissable
 				Second bit (0x02) = Notification type (1 = from history, 0 = live)
 				Third bit (0x04) = Switch to most recent notification
+				Fourth bit (0x08) = Enable action menu
 			[1] = Amount of chunks text is split into
 			[2] = Periodic vibration interval
 			[3] = Number of bytes in vibration pattern
@@ -86,7 +92,7 @@ Phone --> Pebble
 	Additional data:
 		1 = Offset of this list entry - uint16
 		2 = Number of all entries in this menu - uint16
-		3 - Type of this notification (1 = ongoing, 2 = normal) - uint8
+		3 - Type of this notification (1 = ongoing, 0 = normal) - uint8
 		4 - Title of this noification (up to 20 bytes) - cstring
 		5 - Subtitle of this notification (up to 20 bytes) - cstring
 		6 - Date string (up to 20 bytes) - cstring
@@ -116,6 +122,14 @@ Phone --> Pebble
 	Packet 4 - Dismiss notification
 	Removes notification from Pebble
 	Additional data:
-		1 = Unique notification id (int32)	
-		
-	
+		1 = Unique notification id (int32)		
+
+	Packet 5 - Notification action names
+    Additional data:
+    	1 = Unique notification id (int32)
+        2 = Name of action 1
+        3 = Name of action 2
+        4 = Name of action 3
+        5 = Name of action 4
+        6 = Name of action 5
+

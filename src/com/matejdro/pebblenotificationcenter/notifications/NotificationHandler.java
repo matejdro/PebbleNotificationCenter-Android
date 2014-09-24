@@ -7,11 +7,13 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
+import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -71,12 +73,26 @@ public class NotificationHandler {
         if (containsRegexes(combinedText, regexList))
             return;
 
-		if (isDismissible)
-			PebbleTalkerService.notify(context, id, pack, tag, title, secondaryTitle, text, !isOngoing);
-		else
-			PebbleTalkerService.notify(context, title, secondaryTitle, text);
+        PebbleNotification pebbleNotification = new PebbleNotification(title, text, pack);
+        pebbleNotification.setSubtitle(secondaryTitle);
+        if (isDismissible)
+        {
+            pebbleNotification.setDismissable(true);
+            pebbleNotification.setAndroidID(id);
+            pebbleNotification.setTag(tag);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            pebbleNotification.setActions(ActionParser.getActions(notification));
+        }
+
+        if (notification.contentIntent != null)
+            pebbleNotification.setOpenAction(notification.contentIntent);
+
+        PebbleTalkerService.notify(context, pebbleNotification);
 	}
-	
+
 	public static void notificationDismissedOnPhone(Context context, String pkg, String tag, int id)
 	{		
 		PebbleTalkerService.dismissOnPebble(id, pkg, tag);
@@ -118,6 +134,6 @@ public class NotificationHandler {
 
 	public static boolean isNotificationListenerSupported()
 	{
-		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
 	}
 }

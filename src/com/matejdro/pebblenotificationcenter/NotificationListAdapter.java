@@ -1,13 +1,10 @@
 package com.matejdro.pebblenotificationcenter;
 
-import java.text.DateFormat;
-import java.util.Date;
-
-import android.util.Log;
-
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
+import java.text.DateFormat;
+import java.util.Date;
 import timber.log.Timber;
 
 public abstract class NotificationListAdapter {
@@ -19,7 +16,7 @@ public abstract class NotificationListAdapter {
 		this.service = service;
 	}
 	
-	public abstract NotificationMeta getNotificationAt(int index);
+	public abstract PebbleNotification getNotificationAt(int index);
 	public abstract int getNumOfNotifications();
 	public abstract void notificationPicked(int index);
 	
@@ -72,20 +69,15 @@ public abstract class NotificationListAdapter {
 			return;
 		}
 		
-		NotificationMeta meta = getNotificationAt(index);
-				
-		if (meta.title == null)
-			meta.title = "";
-		if (meta.subtitle == null)
-			meta.subtitle = "";
+		PebbleNotification notification = getNotificationAt(index);
 
 		data.addUint8(0, (byte) 2);
 		data.addUint16(1, (short) index);
 		data.addUint16(2, (short) getNumOfNotifications());
-		data.addUint8(3, (byte) (meta.isOngoing ? 1 : 0));
-		data.addString(4, TextUtil.prepareString(meta.title));
-		data.addString(5, TextUtil.prepareString(meta.subtitle));
-		data.addString(6, getFormattedDate(meta.date));
+		data.addUint8(3, (byte) (notification.isDismissable() ? 0 : 1));
+		data.addString(4, TextUtil.prepareString(notification.getTitle()));
+		data.addString(5, TextUtil.prepareString(notification.getSubtitle()));
+		data.addString(6, getFormattedDate(notification.getPostTime()));
 
 		Timber.i("Sending notification " + index + " " + data.getString(4));
 		
@@ -101,15 +93,5 @@ public abstract class NotificationListAdapter {
 		String dateS = dateFormat.format(dateO) + " " + timeFormat.format(dateO);
 
 		return TextUtil.trimString(dateS);
-	}
-	
-	public static class NotificationMeta
-	{
-		public String title;
-		public String subtitle;
-		public String text;
-		
-		public boolean isOngoing;
-		public long date;
 	}
 }
