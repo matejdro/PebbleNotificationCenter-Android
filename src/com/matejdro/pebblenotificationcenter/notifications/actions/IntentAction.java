@@ -38,6 +38,7 @@ public class IntentAction extends NotificationAction
     public void writeToParcel(Parcel parcel, int i)
     {
         parcel.writeValue(actionText);
+
         parcel.writeValue(actionIntent);
     }
 

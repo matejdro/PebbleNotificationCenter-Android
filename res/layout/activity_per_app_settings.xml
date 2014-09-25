@@ -423,6 +423,45 @@
 
         </RelativeLayout>
 
+        <!-- Show Action menu -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/loadWearActionsView">
+
+            <CheckBox
+                    android:id="@+id/loadWearActionsCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/loadWearActionsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/loadWearActionsCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingLoadWearActions"
+                    />
+
+            <TextView
+                    android:id="@+id/loadWearActionsDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/loadWearActionsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/loadWearActionsCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingLoadWearActionsDescription"
+                    />
+
+        </RelativeLayout>
+
 
         <!-- SECTION: Inbox parsing -->
         <TextView

@@ -8,6 +8,8 @@ import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
  */
 public abstract class NotificationAction implements Parcelable
 {
+    public static final int MAX_NUMBER_OF_ACTIONS = 5;
+
     protected String actionText;
 
     public NotificationAction(String actionText)

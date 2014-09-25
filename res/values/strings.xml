@@ -279,5 +279,9 @@
         menu. Otherwise it will default to dismissing.
     </string>
     <string name="settingShowActionMenu">Show action menu</string>
+    <string name="settingLoadWearActions">Load Android Wear voice actions</string>
+    <string name="settingLoadWearActionsDescription">Load voice actions meant from Android Wear (if app supports it of
+        course)
+    </string>
 
 </resources>

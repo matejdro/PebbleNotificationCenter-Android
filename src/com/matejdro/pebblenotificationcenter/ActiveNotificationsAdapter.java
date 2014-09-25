@@ -5,11 +5,14 @@ import android.app.Notification;
 import android.content.Intent;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
-
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
+import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -47,10 +50,19 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
             pn.setTag(sbn.getTag());
             pn.setListNotification(true);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            AppSettingStorage settingStorage = pn.getSettingStorage(service);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && settingStorage.getBoolean(AppSetting.ACTIONS_SHOW_MENU))
             {
-                pn.setActions(ActionParser.getActions(notification));
+                ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>();
+
+                ActionParser.parseNativeActions(notification, actions);
+                if (settingStorage.getBoolean(AppSetting.LOAD_WEAR_ACTIONS))
+                    ActionParser.parseWearActions(notification, actions);
+
+                pn.setActions(actions);
             }
+
             if (notification.contentIntent != null)
                 pn.setOpenAction(notification.contentIntent);
 

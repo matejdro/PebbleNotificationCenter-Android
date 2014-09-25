@@ -15,7 +15,9 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
+import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,13 +85,19 @@ public class NotificationHandler {
             pebbleNotification.setTag(tag);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && settingStorage.getBoolean(AppSetting.ACTIONS_SHOW_MENU))
         {
-            pebbleNotification.setActions(ActionParser.getActions(notification));
+            ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>();
+
+            ActionParser.parseNativeActions(notification, actions);
+            if (settingStorage.getBoolean(AppSetting.LOAD_WEAR_ACTIONS))
+                ActionParser.parseWearActions(notification, actions);
+
+            pebbleNotification.setActions(actions);
         }
 
         if (notification.contentIntent != null)
-            pebbleNotification.setOpenAction(notification.contentIntent);
+                pebbleNotification.setOpenAction(notification.contentIntent);
 
         Intent startIntent = new Intent(context, PebbleTalkerService.class);
         startIntent.putExtra("notification", pebbleNotification);

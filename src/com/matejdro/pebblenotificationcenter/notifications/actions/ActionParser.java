@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.os.Build;
+import android.os.Bundle;
 import com.crashlytics.android.Crashlytics;
+import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Matej on 22.9.2014.
@@ -14,24 +17,52 @@ import java.util.ArrayList;
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
 public class ActionParser
 {
-    @SuppressLint("NewApi")
-    public static ArrayList<NotificationAction> getActions(Notification notification)
+    public static void parseWearActions(Notification notification, List<NotificationAction> storage)
     {
+        if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+            return;
+
+        Bundle bundle = NotificationParser.getExtras(notification);
+
+        if (bundle.containsKey("android.wearable.EXTENSIONS"))
+        {
+            Bundle bundle1 = bundle.getBundle("android.wearable.EXTENSIONS");
+
+            if (bundle1.containsKey("actions"))
+            {
+                ArrayList<Bundle> actionList = (ArrayList<Bundle>) bundle1.get("actions");
+                for (Bundle b : actionList)
+                {
+                    if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                        break;
+
+                    NotificationAction action = WearAction.parseFromBundle(b);
+                    if (action != null)
+                        storage.add(action);
+                }
+            }
+
+        }
+    }
+
+    @SuppressLint("NewApi")
+    public static void parseNativeActions(Notification notification, List<NotificationAction> storage)
+    {
+        if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+            return;
+
         Notification.Action[] actions = getActionsField(notification);
 
         if (actions == null)
-            return null;
-
-        ArrayList<NotificationAction> pebbleActions = new ArrayList<NotificationAction>(actions.length);
+            return;
 
         for (Notification.Action action : actions)
         {
-            pebbleActions.add(new IntentAction(action.title.toString(), action.actionIntent));
-            if (pebbleActions.size() >= 5)
+            if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                 break;
-        }
 
-        return pebbleActions;
+            storage.add(new IntentAction(action.title.toString(), action.actionIntent));
+        }
     }
 
     /**
