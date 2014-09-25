@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter;
 
+import android.content.Intent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,9 @@ public class RecentNotificationsAdapter extends NotificationListAdapter {
 	@Override
 	public void notificationPicked(int index) {
         PebbleNotification notification = notifications.get(index);
-		
-		PebbleTalkerService.notify(service, notification);
+
+        Intent startIntent = new Intent(service, PebbleTalkerService.class);
+        startIntent.putExtra("notification", notification);
+        service.startService(startIntent);
 	}
 }

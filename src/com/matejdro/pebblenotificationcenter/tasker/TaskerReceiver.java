@@ -44,7 +44,9 @@ public class TaskerReceiver extends BroadcastReceiver
             notification.setSubtitle(subtitle);
             notification.setNoHistory(noHistory);
 
-            PebbleTalkerService.notify(context, notification);
+            Intent startIntent = new Intent(context, PebbleTalkerService.class);
+            startIntent.putExtra("notification", notification);
+            context.startService(startIntent);
         }
         else if (action == 1) //Global setting modify
         {

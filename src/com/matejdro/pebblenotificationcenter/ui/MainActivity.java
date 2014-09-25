@@ -19,7 +19,6 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
@@ -42,9 +41,6 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Crashlytics.getInstance().setDebugMode(true);
-        Crashlytics.start(this);
 
         setContentView(R.layout.activity_main);
 

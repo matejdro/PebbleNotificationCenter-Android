@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.SparseArray;
+import com.crashlytics.android.Crashlytics;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
+import org.json.JSONException;
 import timber.log.Timber;
 
 public class PebbleTalkerService extends Service
@@ -117,11 +119,17 @@ public class PebbleTalkerService extends Service
             {
                 PebbleNotification notification = intent.getParcelableExtra("notification");
                 processNotification(notification);
-            }
-
-            else if (intent.hasExtra("appJustOpened"))
+            } else if (intent.hasExtra("packet"))
             {
-                appOpened();
+                String jsonPacket = intent.getStringExtra("packet");
+                receivedPacketFromPebble(jsonPacket);
+            } else if (intent.hasExtra("dismissUpwardsId"))
+            {
+                int id = intent.getIntExtra("dismissUpwardsId", -1);
+                String pkg = intent.getStringExtra("pkg");
+                String tag = intent.getStringExtra("tag");
+
+                processDismissUpwards(id, pkg, tag, false);
             }
         }
 
@@ -203,7 +211,7 @@ public class PebbleTalkerService extends Service
         commStarted();
     }
 
-    private void dismissOnPebbleInternal(Integer androidId, String pkg, String tag, boolean dontClose)
+    private void processDismissUpwards(Integer androidId, String pkg, String tag, boolean dontClose)
     {
         Timber.d("got dismiss: " + pkg + " " + androidId + " " + tag);
 
@@ -318,7 +326,7 @@ public class PebbleTalkerService extends Service
                     }
                 }
 
-                dismissOnPebbleInternal(notificationSource.getAndroidID(), notificationSource.getPackage(), notificationSource.getTag(), true);
+                processDismissUpwards(notificationSource.getAndroidID(), notificationSource.getPackage(), notificationSource.getTag(), true);
             }
 
             if (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
@@ -399,7 +407,6 @@ public class PebbleTalkerService extends Service
             notification.textChunks.add(chunk);
             text = text.substring(chunk.length());
         }
-
 
         openApp();
 
@@ -721,9 +728,22 @@ public class PebbleTalkerService extends Service
         editor.apply();
     }
 
-	private void packetInternal(int id, PebbleDictionary data)
+	private void receivedPacketFromPebble(String jsonPacket)
 	{
-		switch (id)
+        PebbleDictionary data = null;
+        try
+        {
+            data = PebbleDictionary.fromJson(jsonPacket);
+        } catch (JSONException e)
+        {
+            Crashlytics.logException(e);
+            e.printStackTrace();
+            return;
+        }
+
+        int id = data.getUnsignedInteger(0).intValue();
+
+        switch (id)
 		{
 		case 0:
 			appOpened();
@@ -778,48 +798,4 @@ public class PebbleTalkerService extends Service
             return false;
         }
     }
-
-	public static void notify(Context context, PebbleNotification notification)
-	{
-        Timber.d("notify");
-		PebbleTalkerService service = PebbleTalkerService.instance;
-
-		if (service == null)
-		{
-			Intent startIntent = new Intent(context, PebbleTalkerService.class);
-            startIntent.putExtra("notification", notification);
-			context.startService(startIntent);
-		}
-		else
-		{
-			service.processNotification(notification);
-		}
-	}
-
-	public static void dismissOnPebble(Integer id, String pkg, String tag)
-	{
-		PebbleTalkerService service = PebbleTalkerService.instance;
-
-		if (service != null)
-		{
-			service.dismissOnPebbleInternal(id, pkg, tag, false);
-		}
-	}
-
-	public static void gotPacket(final Context context, final int packetId, final PebbleDictionary data)
-	{
-		PebbleTalkerService service = PebbleTalkerService.instance;
-
-		if (service == null)
-		{
-			Intent startIntent = new Intent(context, PebbleTalkerService.class);
-            if (packetId == 0)
-                startIntent.putExtra("appJustOpened", true);
-			context.startService(startIntent);
-		}
-		else
-		{
-			service.packetInternal(packetId, data);
-		}
-	}
 }

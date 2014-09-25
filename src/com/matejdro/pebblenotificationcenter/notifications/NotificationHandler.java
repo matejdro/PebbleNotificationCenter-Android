@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter.notifications;
 
 import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -90,13 +91,11 @@ public class NotificationHandler {
         if (notification.contentIntent != null)
             pebbleNotification.setOpenAction(notification.contentIntent);
 
-        PebbleTalkerService.notify(context, pebbleNotification);
-	}
+        Intent startIntent = new Intent(context, PebbleTalkerService.class);
+        startIntent.putExtra("notification", pebbleNotification);
+        context.startService(startIntent);
 
-	public static void notificationDismissedOnPhone(Context context, String pkg, String tag, int id)
-	{		
-		PebbleTalkerService.dismissOnPebble(id, pkg, tag);
-	}
+    }
 
 	public static String getAppName(Context context, String packageName)
 	{

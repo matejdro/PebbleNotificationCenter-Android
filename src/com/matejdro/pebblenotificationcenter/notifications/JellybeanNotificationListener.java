@@ -1,10 +1,12 @@
 package com.matejdro.pebblenotificationcenter.notifications;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import timber.log.Timber;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -49,7 +51,15 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
-        NotificationHandler.notificationDismissedOnPhone(this, sbn.getPackageName(), sbn.getTag(), sbn.getId());
+//        int id = intent.getIntExtra("dismissUpwardsId", -1);
+//        String pkg = intent.getStringExtra("pkg");
+//        String tag = intent.getStringExtra("tag");
+
+        Intent intent = new Intent(this, PebbleTalkerService.class);
+        intent.putExtra("dismissUpwardsId", sbn.getId());
+        intent.putExtra("pkg", sbn.getPackageName());
+        intent.putExtra("tag", sbn.getTag());
+        startService(intent);
 	}
 
 	public static void dismissNotification(String pkg, String tag, int id)

@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.content.Intent;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
@@ -72,8 +73,10 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 	@Override
 	public void notificationPicked(int index) {
 		PebbleNotification pn = notifications[index];
-		
-		PebbleTalkerService.notify(service, pn);
+
+        Intent startIntent = new Intent(service, PebbleTalkerService.class);
+        startIntent.putExtra("notification", pn);
+        service.startService(startIntent);
 	}
 	
 	private static class NotificationComparable implements Comparator<PebbleNotification>

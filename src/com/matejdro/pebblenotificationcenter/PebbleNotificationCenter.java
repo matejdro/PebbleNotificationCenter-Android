@@ -1,9 +1,9 @@
 package com.matejdro.pebblenotificationcenter;
 
+import com.crashlytics.android.Crashlytics;
+import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import timber.log.Timber;
 import timber.log.Timber.DebugTree;
-
-import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 
 public class PebbleNotificationCenter extends android.app.Application {
     public static final String APP_INCLUSION_MODE = "includeMode";
@@ -30,10 +30,12 @@ public class PebbleNotificationCenter extends android.app.Application {
     
     @Override public void onCreate() {
         super.onCreate();
+        Crashlytics.start(this);
+
         Timber.plant(new DebugTree());
         Timber.d("Timber.plant()");
-        
-		settingsMemoryStorage = new SettingsMemoryStorage(this);
+
+        settingsMemoryStorage = new SettingsMemoryStorage(this);
     }
     	
 	public static SettingsMemoryStorage getInMemorySettings()

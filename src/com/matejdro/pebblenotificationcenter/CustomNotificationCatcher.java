@@ -38,8 +38,9 @@ public class CustomNotificationCatcher extends BroadcastReceiver {
                 if (data.has("subtitle"))
                     notification.setSubtitle(data.getString("subtitle"));
 
-
-                PebbleTalkerService.notify(context, notification);
+                Intent startIntent = new Intent(context, PebbleTalkerService.class);
+                startIntent.putExtra("notification", notification);
+                context.startService(startIntent);
 			}
 			catch (JSONException e)
 			{
