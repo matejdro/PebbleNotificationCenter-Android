@@ -25,6 +25,7 @@ public class PebbleNotification implements Parcelable
     private AppSettingStorage settingStorage;
     private ArrayList<NotificationAction> actions;
     private boolean noHistory;
+    private boolean noActions;
     private boolean listNotification;
     private PendingIntent openAction;
 
@@ -40,6 +41,7 @@ public class PebbleNotification implements Parcelable
         postTime = System.currentTimeMillis();
         dismissable = false;
         noHistory = false;
+        noActions = false;
         listNotification = false;
     }
 
@@ -156,6 +158,16 @@ public class PebbleNotification implements Parcelable
         this.noHistory = noHistory;
     }
 
+    public boolean areActionsDisabled()
+    {
+        return noActions;
+    }
+
+    public void setNoActions(boolean noActions)
+    {
+        this.noActions = noActions;
+    }
+
     public boolean isListNotification()
     {
         return listNotification;
@@ -202,6 +214,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeInt(androidID);
         parcel.writeByte((byte) (dismissable ? 1 : 0));
         parcel.writeByte((byte) (noHistory ? 1 : 0));
+        parcel.writeByte((byte) (noActions ? 1 : 0));
         parcel.writeByte((byte) (listNotification ? 1 : 0));
         parcel.writeLong(postTime);
         parcel.writeValue(tag);
@@ -224,6 +237,7 @@ public class PebbleNotification implements Parcelable
             notification.androidID = parcel.readInt();
             notification.dismissable = parcel.readByte() == 1;
             notification.noHistory = parcel.readByte() == 1;
+            notification.noActions = parcel.readByte() == 1;
             notification.listNotification = parcel.readByte() == 1;
             notification.postTime = parcel.readLong();
             notification.tag = (String) parcel.readValue(getClass().getClassLoader());

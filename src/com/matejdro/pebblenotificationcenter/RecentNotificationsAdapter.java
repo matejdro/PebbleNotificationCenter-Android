@@ -32,6 +32,7 @@ public class RecentNotificationsAdapter extends NotificationListAdapter {
 			notification.setSubtitle(cursor.getString(2));
 			notification.setPostTime(sendingDate);
             notification.setListNotification(true);
+            notification.setNoActions(true);
 
 			notifications.add(notification);
 		}

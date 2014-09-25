@@ -39,7 +39,7 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 			Notification notification = sbn.getNotification();
 			NotificationParser parser = new NotificationParser(service,sbn.getPackageName(),  notification);
 
-			PebbleNotification pn = new PebbleNotification(NotificationHandler.getAppName(service, sbn.getPackageName()), parser.text, sbn.getPackageName());
+            PebbleNotification pn = new PebbleNotification(NotificationHandler.getAppName(service, sbn.getPackageName()), parser.text, sbn.getPackageName());
             pn.setAndroidID(sbn.getId());
             pn.setDismissable(sbn.isClearable());
             pn.setSubtitle(parser.title);

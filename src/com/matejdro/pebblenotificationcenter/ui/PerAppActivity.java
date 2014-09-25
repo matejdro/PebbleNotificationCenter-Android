@@ -56,6 +56,7 @@ public class PerAppActivity extends Activity
         linkViewToCheckbox(R.id.reverseInboxView, R.id.reverseInboxCheck);
         linkViewToCheckbox(R.id.displayFirstOnlyView, R.id.displayFirstOnlyCheck);
         linkViewToCheckbox(R.id.inboxUseSubtextView, R.id.inboxUseSubtextCheck);
+        linkViewToCheckbox(R.id.showActionMenuView, R.id.showActionMenuCheck);
 
         linkCheckboxToSetting(R.id.sendOngoingCheck, AppSetting.SEND_ONGOING_NOTIFICATIONS);
         linkCheckboxToSetting(R.id.sendBlankCheck, AppSetting.SEND_BLANK_NOTIFICATIONS);
@@ -67,6 +68,7 @@ public class PerAppActivity extends Activity
         linkCheckboxToSetting(R.id.reverseInboxCheck, AppSetting.INBOX_REVERSE);
         linkCheckboxToSetting(R.id.displayFirstOnlyCheck, AppSetting.DISPLAY_ONLY_NEWEST);
         linkCheckboxToSetting(R.id.inboxUseSubtextCheck, AppSetting.INBOX_USE_SUB_TEXT);
+        linkCheckboxToSetting(R.id.showActionMenuCheck, AppSetting.ACTIONS_SHOW_MENU);
 
         //Two special checkboxes that are not linked to AppSetting
         CheckBox checkBox = (CheckBox) findViewById(R.id.isAppSelectedCheck);

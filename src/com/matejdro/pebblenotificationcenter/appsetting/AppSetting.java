@@ -19,6 +19,7 @@ public enum AppSetting
     INBOX_REVERSE("inboxReverse", false),
     DISPLAY_ONLY_NEWEST("inboxDisplayOnlyNewest", false),
     INBOX_USE_SUB_TEXT("inboxUseSubtext", true),
+    ACTIONS_SHOW_MENU("actionsShowMenu", true),
     VIBRATION_PATTERN("vibrationPattern", "500"),
     PERIODIC_VIBRATION("settingPeriodicVibration", "20"),
     INCLUDED_REGEX("WhitelistRegexes", null),

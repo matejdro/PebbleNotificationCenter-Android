@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.CharacterStyle;
 import android.widget.RemoteViews;
+import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -24,7 +25,7 @@ public class NotificationParser {
 		this.title = null;
 		this.text = "";
 		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
 		{
 			if (tryParseNatively(context, pkg, notification))
 			{
@@ -48,10 +49,10 @@ public class NotificationParser {
 		}
 	}
 	
-	@TargetApi(value = Build.VERSION_CODES.KITKAT)
+	@TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
 	public boolean tryParseNatively(Context context, String pkg, Notification notification)
 	{
-		Bundle extras = notification.extras;
+		Bundle extras = getExtras(notification);
 		if (extras == null)
 			return false;
 
@@ -100,7 +101,7 @@ public class NotificationParser {
         return true;
 	}
 
-    @TargetApi(value = Build.VERSION_CODES.KITKAT)
+    @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
     public boolean parseInboxNotification(Context context, String pkg, Bundle extras)
     {
         AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, pkg, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
@@ -281,89 +282,28 @@ public class NotificationParser {
 		}
 	}
 
-	//	private void dumpViewGroup(int depth, ViewGroup vg, SparseArray<CharSequence> texts) {
-	//		
-	//		System.out.println("vg size " + vg.getChildCount());
-	//		for (int i = 0; i < vg.getChildCount(); ++i) {
-	//			
-	//			
-	//			
-	//			View v = vg.getChildAt(i);
-	//			
-	//			if (v instanceof android.widget.Button
-	//					|| v.getClass().toString().contains("android.widget.DateTimeView")) {
-	//					continue;
-	//			}
-	//
-	//			if (v instanceof TextView) {
-	//				CharSequence viewSeq = texts.get(v.getId());
-	//				if (viewSeq == null)
-	//					continue;
-	//				String viewText = viewSeq.toString();
-	//				
-	//				if (viewText.equals("...")
-	//						|| isInteger(viewText)
-	//						|| text.contains(viewText)) {
-	//					continue;
-	//				}
-	//				
-	//				viewText = viewText.trim();
-	//				
-	//				if (v.getId() == android.R.id.title)
-	//				{
-	//					if (title == null || title.length() < viewText.length())
-	//						title = viewText;
-	//				}
-	//				else
-	//					text += viewText + "\n";
-	//			}
-	//			if (v instanceof ViewGroup) {
-	//				dumpViewGroup(depth + 1, (ViewGroup) v, texts);
-	//			}
-	//		}
-	//	}
+    /**
+     * Get the extras Bundle from a notification using reflection. Extras were present in
+     * Jellybean notifications, but the field was private until KitKat.
+     */
+    public static Bundle getExtras(Notification notif) {
+        try {
+            Field extrasField = Notification.class.getDeclaredField("extras");
+            extrasField.setAccessible(true);
 
-//	private SparseArray<CharSequence> getRemoteViewData(RemoteViews views)
-//	{
-//		SparseArray<CharSequence> viewText = new SparseArray<CharSequence>();
-//
-//		try {
-//			Class secretClass = views.getClass();
-//
-//			Field actionsField = secretClass.getDeclaredField("mActions");
-//
-//			actionsField.setAccessible(true);
-//
-//			ArrayList<Object> actions = (ArrayList<Object>) actionsField.get(views);
-//			for (Object action : actions) {			
-//				if (!action.getClass().getName().contains("$ReflectionAction"))
-//					continue;
-//
-//				Field typeField = action.getClass().getDeclaredField("type");
-//				typeField.setAccessible(true);
-//				int type = typeField.getInt(action);
-//				if (type != 9 && type != 10)
-//					continue;
-//
-//
-//				Field idField = action.getClass().getSuperclass().getDeclaredField("viewId");
-//				idField.setAccessible(true);
-//				int viewId = idField.getInt(action);
-//
-//				Field valueField = action.getClass().getDeclaredField("value");
-//				valueField.setAccessible(true);
-//				CharSequence value = (CharSequence) valueField.get(action);
-//
-//				System.out.println(value);
-//				
-//				viewText.append(viewId, value);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//		return viewText;
-//	}
+            Bundle extras = (Bundle) extrasField.get(notif);
+            if (extras == null) {
+                extras = new Bundle();
+            }
+            return extras;
+        } catch (IllegalAccessException e) {
+            Crashlytics.logException(e);
+        } catch (NoSuchFieldException e) {
+            Crashlytics.logException(e);
+        }
+
+        return null;
+    }
 
 	public static boolean isInteger(String input) {
 		try {

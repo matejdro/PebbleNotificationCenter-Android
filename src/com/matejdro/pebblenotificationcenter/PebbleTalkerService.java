@@ -162,7 +162,7 @@ public class PebbleTalkerService extends Service
         flags |= (byte) (notification.source.isDismissable() ? 0x01 : 0);
         flags |= (byte) (notification.source.isListNotification() ? 0x2 : 0);
         flags |= (byte) (settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) ? 0x4 : 0);
-        flags |= (byte) (true ? 0x8 : 0);
+        flags |= (byte) (settingStorage.getBoolean(AppSetting.ACTIONS_SHOW_MENU) && !notification.source.areActionsDisabled() ? 0x8 : 0);
 
         configBytes[0] = Byte.parseByte(settings.getString("textSize", "0"));
         configBytes[1] = flags;

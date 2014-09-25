@@ -372,6 +372,57 @@
 
         </RelativeLayout>
 
+        <!-- SECTION: Actions -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingsSectionText"
+                android:text="@string/settingCategoryActions"
+                />
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingsSectionSeparator"
+                />
+
+        <!-- Show Action menu -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/showActionMenuView">
+
+            <CheckBox
+                    android:id="@+id/showActionMenuCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/showActionMenuName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/showActionMenuCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingShowActionMenu"
+                    />
+
+            <TextView
+                    android:id="@+id/showActionMenuDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/showActionMenuName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/showActionMenuCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingShowActionMenuDescription"
+                    />
+
+        </RelativeLayout>
+
 
         <!-- SECTION: Inbox parsing -->
         <TextView
