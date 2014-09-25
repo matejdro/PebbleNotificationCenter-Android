@@ -40,7 +40,8 @@ import timber.log.Timber;
 public class PebbleTalkerService extends Service
 {
     //This used to be UUID for all system apps, but now they all get their separate UUID it seems
-    public static final UUID invalidUUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
+    public static final UUID UNKNOWN_UUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
+    public static final UUID MAIN_MENU_UUID = UUID.fromString("dec0424c-0625-4878-b1f2-147e57e83688");
 
     private static PebbleTalkerService instance;
 
@@ -368,7 +369,7 @@ public class PebbleTalkerService extends Service
             if (previousUUID != null)
                 pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, previousUUID);
             else
-                pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, invalidUUID);
+                pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, UNKNOWN_UUID);
 
             if (pebbleAppMode == 1) //Pebble native notification
             {
@@ -413,7 +414,7 @@ public class PebbleTalkerService extends Service
     {
         UUID currentApp = devConn.getCurrentRunningApp();
 
-        if (currentApp != null && !(currentApp.getLeastSignificantBits() == 0 && currentApp.getMostSignificantBits() == 0) && (!currentApp.equals(DataReceiver.pebbleAppUUID) || previousUUID == null) && !currentApp.equals(invalidUUID))
+        if (currentApp != null && !(currentApp.getLeastSignificantBits() == 0 && currentApp.getMostSignificantBits() == 0) && (!currentApp.equals(DataReceiver.pebbleAppUUID) || previousUUID == null) && !currentApp.equals(UNKNOWN_UUID))
         {
             previousUUID = currentApp;
         }
@@ -429,7 +430,7 @@ public class PebbleTalkerService extends Service
         Timber.d("CloseApp " + previousUUID);
         commBusy = false;
 
-        if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null && !previousUUID.equals(DataReceiver.pebbleAppUUID))
+        if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null && !previousUUID.equals(DataReceiver.pebbleAppUUID) && !previousUUID.equals(MAIN_MENU_UUID))
             PebbleKit.startAppOnPebble(this, previousUUID);
         else
             PebbleKit.closeAppOnPebble(this, DataReceiver.pebbleAppUUID);

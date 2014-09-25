@@ -236,7 +236,7 @@ public class PebbleAppListFragment extends Fragment {
 
                 Collections.sort(apps, new PebbleAppComparator());
 
-                PebbleApp otherApp = new PebbleApp(context.getString(R.string.PebbleAppsOther), PebbleTalkerService.invalidUUID);
+                PebbleApp otherApp = new PebbleApp(context.getString(R.string.PebbleAppsOther), PebbleTalkerService.UNKNOWN_UUID);
                 apps.add(otherApp);
 
                 for (PebbleApp app : apps)

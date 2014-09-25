@@ -14,6 +14,9 @@ public class TextUtil
 
     public static String prepareString(String text, int length)
     {
+        if(text == null)
+            return text;
+
         text = trimString(text, length, true);
         text = fixInternationalCharacters(text);
 
@@ -28,6 +31,9 @@ public class TextUtil
 
     public static String fixInternationalCharacters(String input)
     {
+        if(input == null)
+            return input;
+
         HashMap<String, String> replacementTable = PebbleNotificationCenter.getInMemorySettings().getReplacingStrings();
         for (Map.Entry<String, String> e : replacementTable.entrySet())
         {
