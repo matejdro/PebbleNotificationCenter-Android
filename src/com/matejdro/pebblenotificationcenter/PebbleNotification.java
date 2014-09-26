@@ -82,7 +82,7 @@ public class PebbleNotification implements Parcelable
 
     public void setTitle(String title)
     {
-        this.title = title;
+        this.title = title == null ? "" : title;
     }
 
     public String getSubtitle()
@@ -92,7 +92,7 @@ public class PebbleNotification implements Parcelable
 
     public void setSubtitle(String subtitle)
     {
-        this.subtitle = subtitle;
+        this.subtitle = subtitle == null ? "" : subtitle;
     }
 
     public String getText()
@@ -102,7 +102,7 @@ public class PebbleNotification implements Parcelable
 
     public void setText(String text)
     {
-        this.text = text;
+        this.text = text == null ? "" : text;
     }
 
     public boolean isDismissable()

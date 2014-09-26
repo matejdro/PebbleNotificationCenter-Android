@@ -70,7 +70,7 @@ public class PerAppActivity extends Activity
         linkCheckboxToSetting(R.id.displayFirstOnlyCheck, AppSetting.DISPLAY_ONLY_NEWEST);
         linkCheckboxToSetting(R.id.inboxUseSubtextCheck, AppSetting.INBOX_USE_SUB_TEXT);
         linkCheckboxToSetting(R.id.showActionMenuCheck, AppSetting.ACTIONS_SHOW_MENU);
-        linkCheckboxToSetting(R.id.loadWearActionsView, AppSetting.LOAD_WEAR_ACTIONS);
+        linkCheckboxToSetting(R.id.loadWearActionsCheck, AppSetting.LOAD_WEAR_ACTIONS);
 
         //Two special checkboxes that are not linked to AppSetting
         CheckBox checkBox = (CheckBox) findViewById(R.id.isAppSelectedCheck);
