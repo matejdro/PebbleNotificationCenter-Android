@@ -423,6 +423,12 @@
 
         </RelativeLayout>
 
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+
         <!-- Show Action menu -->
         <RelativeLayout
                 android:layout_width="fill_parent"
@@ -461,6 +467,67 @@
                     />
 
         </RelativeLayout>
+
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+
+        <!-- Canned Responses -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/cannedResponsesView">
+
+            <TextView
+                    android:id="@+id/cannedResponsesName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingCannedResponses"
+                    />
+
+            <TextView
+                    android:id="@+id/cannedResponsesDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/cannedResponsesName"
+                    android:layout_alignParentLeft="true"
+                    style="@style/AppSettingsDesc"
+                    android:singleLine="false"
+                    android:text="@string/settingCannedResponsesDescription"
+                    />
+
+            <Button
+                    android:id="@+id/cannedResponsesAddButton"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/cannedResponsesDesc"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Add"/>
+
+            <LinearLayout
+                    android:id="@+id/cannedResponsesList"
+                    android:layout_below="@id/cannedResponsesAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/cannedResponsestEmptyText"
+                    android:layout_below="@id/cannedResponsesAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cannedResponsesNoResponses"
+                    android:textStyle="italic"/>
+
+        </RelativeLayout>
+
 
 
         <!-- SECTION: Inbox parsing -->

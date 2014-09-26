@@ -26,6 +26,7 @@ import com.matejdro.pebblenotificationcenter.lists.NotificationListAdapter;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.notifications.actions.ListAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
@@ -468,7 +469,7 @@ public class PebbleTalkerService extends Service
      *
      * @return true if that function did anything, false if communication is still idle after calling.
      */
-    private boolean commWentIdle()
+    public boolean commWentIdle()
     {
         Timber.i("Went idle");
 
@@ -507,7 +508,7 @@ public class PebbleTalkerService extends Service
     /**
      * Starts timer that will mark communication as idle, if nothing happened in 10 seconds.
      */
-    private void commStarted()
+    public void commStarted()
     {
         Timber.i("Not Idle");
 
@@ -645,12 +646,28 @@ public class PebbleTalkerService extends Service
                default:
                    int customActionID = action - 3;
                    NotificationAction notificationAction = notification.source.getActions().get(customActionID);
-                   notificationAction.executeAction(this);
+                   notificationAction.executeAction(this, notification);
+                   notification.activeAction = notificationAction;
             }
         }
 
         if (data.contains(2))
             closeApp();
+    }
+
+    private void actionListItemPicked(int packetId, PebbleDictionary data)
+    {
+        int notificationId = data.getInteger(1).intValue();
+
+        ProcessedNotification notification = sentNotifications.get(notificationId);
+        if (notification != null)
+        {
+            NotificationAction action = notification.activeAction;
+            if (action != null && action instanceof ListAction)
+            {
+                ((ListAction) action).handlePacket(this, packetId, data);
+            }
+        }
     }
 
     private void sendConfig(boolean notificationWaiting)
@@ -787,6 +804,11 @@ public class PebbleTalkerService extends Service
         case 12:
             actionsTextRequested(data);
             break;
+        case 13:
+        case 14:
+            actionListItemPicked(id, data);
+            break;
+
         }
 	}
 

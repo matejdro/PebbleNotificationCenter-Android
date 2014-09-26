@@ -73,7 +73,7 @@
         <activity android:name=".ui.LicenseActivity" >
         </activity>
 
-        <activity android:name=".ui.PerAppActivity" />
+        <activity android:name=".ui.perapp.PerAppActivity" />
 
         <activity android:name=".tasker.TaskerActionPickerActivity"
                   android:label="@string/title_activity_main"

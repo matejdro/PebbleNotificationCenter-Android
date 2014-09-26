@@ -21,6 +21,7 @@ public enum AppSetting
     INBOX_USE_SUB_TEXT("inboxUseSubtext", true),
     ACTIONS_SHOW_MENU("actionsShowMenu", true),
     LOAD_WEAR_ACTIONS("loadWearActions", true),
+    CANNED_RESPONSES("cannedResponses", null),
     VIBRATION_PATTERN("vibrationPattern", "500"),
     PERIODIC_VIBRATION("settingPeriodicVibration", "20"),
     INCLUDED_REGEX("WhitelistRegexes", null),

@@ -61,6 +61,17 @@ Pebble --> Phone
 	Additional data:
 		1 = Unique notification id (int32)
 
+	Packet 13 - Send canned responses
+	Requests phone to send action names (Packet 6 from phone)
+	Additional data:
+		1 = Unique notification id (int32)
+		2 = Send responses from this index beyond
+
+	Packet 14 - Send canned responses
+	Additional data:
+		1 = Unique id of notification - int32
+		2 = Canned response index - uint8
+
 Phone --> Pebble
 
 	Packet 0 - New notification packet
@@ -127,9 +138,13 @@ Phone --> Pebble
 	Packet 5 - Notification action names
     Additional data:
     	1 = Unique notification id (int32)
-        2 = Name of action 1
-        3 = Name of action 2
-        4 = Name of action 3
-        5 = Name of action 4
-        6 = Name of action 5
+        3 = Names of actions (up to 5) - multiple null-terminated strings (up to 19 chars each) in one byte array
+
+    Packet 6 - Canned responses texts
+    Additional data:
+    	1 = Unique notification id (int32)
+        2 = Number of all canned reponses (uint8)
+        3 = Index of the first canned reponse in this packet (uint8)
+        4 = Canned responses (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
+
 

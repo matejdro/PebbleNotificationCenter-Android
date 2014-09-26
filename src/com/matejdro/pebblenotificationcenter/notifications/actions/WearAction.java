@@ -10,22 +10,31 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.ProcessedNotification;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Matej on 22.9.2014.
  */
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
-public class WearAction extends NotificationAction
+public class WearAction extends ListAction
 {
     private PendingIntent actionIntent;
     private String voiceKey;
+    private String[] appProvidedChoices;
+    private List<String> cannedResponseList;
+    private ProcessedNotification parent;
 
-    public WearAction(String actionText, PendingIntent intent, String voiceKey)
+    public WearAction(String actionText, PendingIntent intent, String voiceKey, String[] appProvidedChoices)
     {
         super(actionText);
         this.actionIntent = intent;
         this.voiceKey = voiceKey;
+        this.appProvidedChoices = appProvidedChoices;
     }
 
     public static WearAction parseFromBundle(Bundle bundle)
@@ -39,29 +48,47 @@ public class WearAction extends NotificationAction
 
         Bundle firstRemoteInput = (Bundle) remoteInputs[0];
         String key = firstRemoteInput.getString("resultKey");
+        CharSequence[] choices = firstRemoteInput.getCharSequenceArray("choices");
 
-        return new WearAction(title, actionIntent, key);
+        String[] choicesString = new String[0];
+        if (choices != null)
+        {
+            choicesString = new String[choices.length];
+            for (int i = 0; i < choices.length; i++)
+                choicesString[i] = choices[i].toString();
+        }
+
+        return new WearAction(title, actionIntent, key, choicesString);
     }
 
     @Override
-    public void executeAction(PebbleTalkerService service)
+    public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
-        try
-        {
-            Bundle messageTextBundle = new Bundle();
-            messageTextBundle.putCharSequence(voiceKey, "Replying from my Pebble!");
+        parent = notification;
+        cannedResponseList = new ArrayList<String>();
 
-            Intent messageDataIntent = new Intent();
-            messageDataIntent.putExtra("android.remoteinput.resultsData", messageTextBundle);
-
-            ClipData clipData = new ClipData("android.remoteinput.results", new String[] { ClipDescription.MIMETYPE_TEXT_INTENT }, new ClipData.Item(messageDataIntent));
-            Intent replyIntent = new Intent();
-            replyIntent.setClipData(clipData);
-            actionIntent.send(service, 0, replyIntent);
-        } catch (PendingIntent.CanceledException e)
+        ArrayList<String> userProvidedChoices = (ArrayList<String>) notification.source.getSettingStorage(service).getStringList(AppSetting.CANNED_RESPONSES);
+        if (userProvidedChoices != null)
         {
-            e.printStackTrace();
+            for (String choice : userProvidedChoices)
+            {
+                cannedResponseList.add(choice);
+                if (cannedResponseList.size() >= 20)
+                    return;
+            }
         }
+
+        if (cannedResponseList.size() < 20 && appProvidedChoices != null)
+        {
+            for (CharSequence choice : appProvidedChoices)
+            {
+                cannedResponseList.add(choice.toString());
+                if (cannedResponseList.size() >= 20)
+                    return;
+            }
+        }
+
+        super.executeAction(service, notification);
     }
 
     @Override
@@ -76,7 +103,9 @@ public class WearAction extends NotificationAction
         parcel.writeValue(actionText);
         parcel.writeValue(actionIntent);
         parcel.writeString(voiceKey);
+        parcel.writeStringArray(appProvidedChoices);
     }
+
 
     public static final Creator<WearAction> CREATOR = new Creator<WearAction>()
     {
@@ -86,7 +115,9 @@ public class WearAction extends NotificationAction
             String text = (String) parcel.readValue(String.class.getClassLoader());
             PendingIntent intent = (PendingIntent) parcel.readValue(PendingIntent.class.getClassLoader());
             String key = parcel.readString();
-            return new WearAction(text, intent, key);
+            String[] choices = parcel.createStringArray();
+
+            return new WearAction(text, intent, key, choices);
         }
 
         @Override
@@ -95,4 +126,44 @@ public class WearAction extends NotificationAction
             return new WearAction[0];
         }
     };
+
+    private void sendWearReply(String text, PebbleTalkerService service)
+    {
+        try
+        {
+            Bundle messageTextBundle = new Bundle();
+            messageTextBundle.putCharSequence(voiceKey, text);
+
+            Intent messageDataIntent = new Intent();
+            messageDataIntent.putExtra("android.remoteinput.resultsData", messageTextBundle);
+
+            ClipData clipData = new ClipData("android.remoteinput.results", new String[] { ClipDescription.MIMETYPE_TEXT_INTENT }, new ClipData.Item(messageDataIntent));
+            Intent replyIntent = new Intent();
+            replyIntent.setClipData(clipData);
+            actionIntent.send(service, 0, replyIntent);
+        } catch (PendingIntent.CanceledException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public int getNumberOfItems()
+    {
+        return cannedResponseList.size();
+    }
+
+    @Override
+    public String getItem(int id)
+    {
+        return cannedResponseList.get(id);
+    }
+
+    @Override
+    public void itemPicked(PebbleTalkerService service, int id)
+    {
+        sendWearReply(cannedResponseList.get(id), service);
+        JellybeanNotificationListener.dismissNotification(parent.source.getPackage(), parent.source.getTag(), parent.source.getAndroidID());
+    }
 }

@@ -1,4 +1,4 @@
-package com.matejdro.pebblenotificationcenter.ui;
+package com.matejdro.pebblenotificationcenter.ui.perapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,8 +27,9 @@ public class PerAppActivity extends Activity
     protected String appPackage;
     protected String appName;
 
-    private RegexListView includingRegexList;
-    private RegexListView excludingRegexList;
+    private RegexList includingRegexList;
+    private RegexList excludingRegexList;
+    private CannedResponseList cannedResponseList;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -101,9 +102,11 @@ public class PerAppActivity extends Activity
         ((EditText) findViewById(R.id.vibrationPatternEdit)).setText(settingsStorage.getString(AppSetting.VIBRATION_PATTERN));
         ((EditText) findViewById(R.id.periodicVibrationEdit)).setText(settingsStorage.getString(AppSetting.PERIODIC_VIBRATION));
 
-        includingRegexList = new RegexListView(this, R.id.includingRegexList, R.id.includingRegexAddButton, R.id.includingRegexListEmptyText);
+        cannedResponseList = new CannedResponseList(this, R.id.cannedResponsesList, R.id.cannedResponsesAddButton, R.id.cannedResponsestEmptyText);
+        cannedResponseList.addAll(settingsStorage.getStringList(AppSetting.CANNED_RESPONSES));
+        includingRegexList = new RegexList(this, R.id.includingRegexList, R.id.includingRegexAddButton, R.id.includingRegexListEmptyText);
         includingRegexList.addAll(settingsStorage.getStringList(AppSetting.INCLUDED_REGEX));
-        excludingRegexList = new RegexListView(this, R.id.excludingRegexList, R.id.excludingRegexAddButton, R.id.excludingRegexListEmptyText);
+        excludingRegexList = new RegexList(this, R.id.excludingRegexList, R.id.excludingRegexAddButton, R.id.excludingRegexListEmptyText);
         excludingRegexList.addAll(settingsStorage.getStringList(AppSetting.EXCLUDED_REGEX));
     }
 
@@ -155,6 +158,7 @@ public class PerAppActivity extends Activity
         }
         settingsStorage.setString(AppSetting.VIBRATION_PATTERN, vibrationPattern);
 
+        settingsStorage.setStringList(AppSetting.CANNED_RESPONSES, cannedResponseList.getInternalStorage());
         settingsStorage.setStringList(AppSetting.INCLUDED_REGEX, includingRegexList.getInternalStorage());
         settingsStorage.setStringList(AppSetting.EXCLUDED_REGEX, excludingRegexList.getInternalStorage());
     }

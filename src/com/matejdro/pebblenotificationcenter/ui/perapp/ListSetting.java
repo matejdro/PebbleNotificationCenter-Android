@@ -1,16 +1,12 @@
-package com.matejdro.pebblenotificationcenter.ui;
+package com.matejdro.pebblenotificationcenter.ui.perapp;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.matejdro.pebblenotificationcenter.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -19,7 +15,7 @@ import java.util.regex.PatternSyntaxException;
 /**
  * Created by Matej on 16.9.2014.
  */
-public class RegexListView
+public abstract class ListSetting
 {
     private DisplayMetrics displayMetrics;
 
@@ -30,9 +26,9 @@ public class RegexListView
     private LinearLayout layout;
     private View listEmptyText;
 
-    private Activity activity;
+    protected Activity activity;
 
-    public RegexListView(Activity activity, int listLayoutId, int listAddButtonId, int listEmptyTextId)
+    public ListSetting(Activity activity, int listLayoutId, int listAddButtonId, int listEmptyTextId)
     {
         this.activity = activity;
         this.layout = (LinearLayout) activity.findViewById(listLayoutId);
@@ -78,62 +74,9 @@ public class RegexListView
         return view;
     }
 
-    private void openAddDialog(String text)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    protected abstract void openAddDialog(String text);
 
-        final EditText editField = new EditText(activity);
-        editField.setText(text);
-
-        builder.setTitle(R.string.regexAddDialogTitle);
-        builder.setView(editField);
-
-        builder.setMessage(R.string.regexAddDialogText);
-
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                validateAndAdd(editField.getText().toString());
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, null);
-        builder.show();
-    }
-
-    private void openEditDialog(final int id, String text)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-        final EditText editField = new EditText(activity);
-        editField.setText(text);
-
-        builder.setTitle(R.string.regexEditingDialogTItle);
-        builder.setView(editField);
-
-        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                validateAndUpdate(id, editField.getText().toString());
-            }
-        });
-
-        builder.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                remove(id);
-            }
-        });
-
-        builder.setNegativeButton(R.string.cancel, null);
-        builder.show();
-
-    }
+    protected abstract void openEditDialog(final int id, String text);
 
     public void remove(int id)
     {
@@ -155,30 +98,6 @@ public class RegexListView
         storage.remove(id);
     }
 
-    public void validateAndAdd(final String text)
-    {
-        if (isRegexValid(text))
-        {
-            Pattern pattern = Pattern.compile(text);
-            add(text);
-        }
-        else
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage(R.string.invalidRegexPattern);
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i)
-                {
-                    openAddDialog(text);
-                }
-            });
-
-            builder.show();
-        }
-    }
-
     public void add(String text)
     {
         TextView listItem = createViewItem(text);
@@ -193,31 +112,6 @@ public class RegexListView
         layout.addView(listItem);
 
         listEmptyText.setVisibility(View.GONE);
-    }
-
-    public void validateAndUpdate(final int id, final String text)
-    {
-        if (isRegexValid(text))
-        {
-
-            Pattern pattern = Pattern.compile(text);
-            update(id, text);
-        }
-        else
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage(R.string.invalidRegexPattern);
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i)
-                {
-                    openEditDialog(id, text);
-                }
-            });
-
-            builder.show();
-        }
     }
 
     public void update(int id, String text)

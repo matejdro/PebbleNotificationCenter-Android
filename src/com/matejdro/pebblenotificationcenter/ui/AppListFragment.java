@@ -28,6 +28,7 @@ import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
+import com.matejdro.pebblenotificationcenter.ui.perapp.PerAppActivity;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import java.util.ArrayList;
 import java.util.Collections;

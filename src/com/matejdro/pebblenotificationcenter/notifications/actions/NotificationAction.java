@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.os.Parcelable;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 
 /**
  * Created by Matej on 22.9.2014.
@@ -22,5 +23,5 @@ public abstract class NotificationAction implements Parcelable
         return actionText;
     }
 
-    public abstract void executeAction(PebbleTalkerService service);
+    public abstract void executeAction(PebbleTalkerService service, ProcessedNotification notification);
 }

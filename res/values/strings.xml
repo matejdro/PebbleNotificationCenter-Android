@@ -283,5 +283,12 @@
     <string name="settingLoadWearActionsDescription">Load voice actions meant from Android Wear (if app supports it of
         course)
     </string>
+    <string name="settingCannedResponses">Canned responses</string>
+    <string name="settingCannedResponsesDescription">Here you can define list of canned responses that you can reply
+        with if app has Android Wear voice reply support.
+    </string>
+    <string name="cannedResponsesNoResponses">No responses</string>
+    <string name="addCannedResponse">Add canned response</string>
+    <string name="editCannedResponse">Edit canned response</string>
 
 </resources>

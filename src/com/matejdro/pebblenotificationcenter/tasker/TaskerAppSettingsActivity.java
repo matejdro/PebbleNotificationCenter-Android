@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblenotificationcenter.ui.PerAppActivity;
+import com.matejdro.pebblenotificationcenter.ui.perapp.PerAppActivity;
 
 /**
  * Created by Matej on 18.9.2014.
