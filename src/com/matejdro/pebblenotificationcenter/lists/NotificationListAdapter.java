@@ -1,7 +1,10 @@
-package com.matejdro.pebblenotificationcenter;
+package com.matejdro.pebblenotificationcenter.lists;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
+import com.matejdro.pebblenotificationcenter.DataReceiver;
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
+import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.text.DateFormat;
 import java.util.Date;

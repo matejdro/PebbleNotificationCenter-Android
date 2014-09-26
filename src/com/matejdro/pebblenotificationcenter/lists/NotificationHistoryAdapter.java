@@ -1,16 +1,19 @@
-package com.matejdro.pebblenotificationcenter;
+package com.matejdro.pebblenotificationcenter.lists;
 
 import android.content.Intent;
+import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
+import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
 
-public class RecentNotificationsAdapter extends NotificationListAdapter {
+public class NotificationHistoryAdapter extends NotificationListAdapter {
 	private List<PebbleNotification> notifications;
 	private NotificationHistoryStorage storage;
 	
-	public RecentNotificationsAdapter(PebbleTalkerService service, NotificationHistoryStorage storage) {
+	public NotificationHistoryAdapter(PebbleTalkerService service, NotificationHistoryStorage storage) {
 		super(service);
 		this.storage = storage;
 		

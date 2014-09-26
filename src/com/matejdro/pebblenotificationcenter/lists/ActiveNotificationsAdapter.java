@@ -1,10 +1,12 @@
-package com.matejdro.pebblenotificationcenter;
+package com.matejdro.pebblenotificationcenter.lists;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Intent;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
+import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;

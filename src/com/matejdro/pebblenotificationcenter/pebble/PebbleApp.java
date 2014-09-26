@@ -1,4 +1,4 @@
-package com.matejdro.pebblenotificationcenter.util;
+package com.matejdro.pebblenotificationcenter.pebble;
 
 import android.content.Context;
 import com.matejdro.pebblenotificationcenter.R;

@@ -20,11 +20,14 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
+import com.matejdro.pebblenotificationcenter.lists.ActiveNotificationsAdapter;
+import com.matejdro.pebblenotificationcenter.lists.NotificationHistoryAdapter;
+import com.matejdro.pebblenotificationcenter.lists.NotificationListAdapter;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
-import com.matejdro.pebblenotificationcenter.util.PebbleDeveloperConnection;
+import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
@@ -516,7 +519,7 @@ public class PebbleTalkerService extends Service
         int index = data.getUnsignedInteger(1).intValue();
         if (index == 1 || !NotificationHandler.isNotificationListenerSupported())
         {
-            listHandler = new RecentNotificationsAdapter(this, historyDb);
+            listHandler = new NotificationHistoryAdapter(this, historyDb);
             listHandler.sendNotification(0);
         } else
         {
