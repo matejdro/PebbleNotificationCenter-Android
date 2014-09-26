@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter;
 
+import android.content.pm.ApplicationInfo;
 import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import timber.log.Timber;
@@ -30,7 +31,10 @@ public class PebbleNotificationCenter extends android.app.Application {
     
     @Override public void onCreate() {
         super.onCreate();
-        Crashlytics.start(this);
+
+        boolean isDebuggable =  ( 0 != ( getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
+        if (!isDebuggable)
+            Crashlytics.start(this);
 
         Timber.plant(new DebugTree());
         Timber.d("Timber.plant()");
