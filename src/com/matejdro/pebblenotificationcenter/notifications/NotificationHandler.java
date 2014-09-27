@@ -89,9 +89,9 @@ public class NotificationHandler {
         {
             ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>();
 
-            ActionParser.parseNativeActions(notification, actions);
             if (settingStorage.getBoolean(AppSetting.LOAD_WEAR_ACTIONS))
                 ActionParser.parseWearActions(notification, actions);
+            ActionParser.parseNativeActions(notification, actions);
 
             pebbleNotification.setActions(actions);
         }
