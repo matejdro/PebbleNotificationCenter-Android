@@ -385,41 +385,38 @@
                 />
 
         <!-- Show Action menu -->
+        <!-- Vibration pattern -->
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 style="@style/AppSettingParent"
-                android:id="@+id/showActionMenuView">
-
-            <CheckBox
-                    android:id="@+id/showActionMenuCheck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    />
+                android:id="@+id/actionMenuModeView">
 
             <TextView
-                    android:id="@+id/showActionMenuName"
+                    android:id="@+id/actionMenuModeName"
                     android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/showActionMenuCheck"
                     style="@style/AppSettingsName"
-                    android:text="@string/settingShowActionMenu"
+                    android:text="@string/actionMenuMode"
                     />
 
             <TextView
-                    android:id="@+id/showActionMenuDesc"
-
+                    android:id="@+id/actionMenuModeDesc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/showActionMenuName"
+                    android:layout_below="@id/actionMenuModeName"
                     android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@id/showActionMenuCheck"
                     style="@style/AppSettingsDesc"
-                    android:text="@string/settingShowActionMenuDescription"
+                    android:text="@string/actionMenuModeDescription"
                     />
+
+6
+            <Spinner
+                    android:id="@+id/actionMenuModeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/actionMenuModeDesc"/>
 
         </RelativeLayout>
 
@@ -429,7 +426,7 @@
                 />
 
 
-        <!-- Show Action menu -->
+        <!-- Load Wear items -->
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

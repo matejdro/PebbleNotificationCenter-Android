@@ -7,9 +7,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
@@ -57,7 +60,6 @@ public class PerAppActivity extends Activity
         linkViewToCheckbox(R.id.reverseInboxView, R.id.reverseInboxCheck);
         linkViewToCheckbox(R.id.displayFirstOnlyView, R.id.displayFirstOnlyCheck);
         linkViewToCheckbox(R.id.inboxUseSubtextView, R.id.inboxUseSubtextCheck);
-        linkViewToCheckbox(R.id.showActionMenuView, R.id.showActionMenuCheck);
         linkViewToCheckbox(R.id.loadWearActionsView, R.id.loadWearActionsCheck);
 
         linkCheckboxToSetting(R.id.sendOngoingCheck, AppSetting.SEND_ONGOING_NOTIFICATIONS);
@@ -70,8 +72,9 @@ public class PerAppActivity extends Activity
         linkCheckboxToSetting(R.id.reverseInboxCheck, AppSetting.INBOX_REVERSE);
         linkCheckboxToSetting(R.id.displayFirstOnlyCheck, AppSetting.DISPLAY_ONLY_NEWEST);
         linkCheckboxToSetting(R.id.inboxUseSubtextCheck, AppSetting.INBOX_USE_SUB_TEXT);
-        linkCheckboxToSetting(R.id.showActionMenuCheck, AppSetting.ACTIONS_SHOW_MENU);
         linkCheckboxToSetting(R.id.loadWearActionsCheck, AppSetting.LOAD_WEAR_ACTIONS);
+
+        linkSpinnerToSetting(R.id.actionMenuModeSpinner, AppSetting.ACTIONS_MENU_MODE, R.array.settingActionMenuModeOptions);
 
         //Two special checkboxes that are not linked to AppSetting
         CheckBox checkBox = (CheckBox) findViewById(R.id.isAppSelectedCheck);
@@ -189,6 +192,30 @@ public class PerAppActivity extends Activity
             public void onCheckedChanged(CompoundButton compoundButton, boolean b)
             {
                 settingsStorage.setBoolean(setting, b);
+            }
+        });
+    }
+
+    private void linkSpinnerToSetting(int spinnerId, final AppSetting setting, int settingNamesArrayId)
+    {
+        final Spinner spinner = (Spinner) findViewById(spinnerId);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, settingNamesArrayId, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setSelection(settingsStorage.getInt(setting));
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                settingsStorage.setInt(setting, i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView)
+            {
             }
         });
     }

@@ -160,17 +160,17 @@ public class PebbleTalkerService extends Service
         PebbleDictionary data = new PebbleDictionary();
         List<Byte> vibrationPattern = AppSetting.parseVibrationPattern(settingStorage);
 
-        byte[] configBytes = new byte[5 + vibrationPattern.size()];
+        byte[] configBytes = new byte[6 + vibrationPattern.size()];
 
         byte flags = 0;
         flags |= (byte) (notification.source.isDismissable() ? 0x01 : 0);
         flags |= (byte) (notification.source.isListNotification() ? 0x2 : 0);
         flags |= (byte) (settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) ? 0x4 : 0);
-        flags |= (byte) (settingStorage.getBoolean(AppSetting.ACTIONS_SHOW_MENU) && !notification.source.areActionsDisabled() ? 0x8 : 0);
 
         configBytes[0] = Byte.parseByte(settings.getString("textSize", "0"));
         configBytes[1] = flags;
         configBytes[2] = (byte) periodicVibrationInterval;
+
         configBytes[3] = (byte) vibrationPattern.size();
         for (int i = 0; i < vibrationPattern.size(); i++)
             configBytes[4 + i] = vibrationPattern.get(i);
@@ -179,6 +179,8 @@ public class PebbleTalkerService extends Service
             configBytes[4 + configBytes[3]] = (byte) Math.min(notification.source.getActions().size(), 5);
         else
             configBytes[4 + configBytes[3]] = 0;
+
+        configBytes[5 + configBytes[3]] = (byte) settingStorage.getInt(AppSetting.ACTIONS_MENU_MODE);
 
         int timeout = 0;
         try

@@ -83,11 +83,13 @@ Phone --> Pebble
 				First bit (0x01) = Is notification dismissable
 				Second bit (0x02) = Notification type (1 = from history, 0 = live)
 				Third bit (0x04) = Switch to most recent notification
-				Fourth bit (0x08) = Enable action menu
 			[1] = Amount of chunks text is split into
 			[2] = Periodic vibration interval
 			[3] = Number of bytes in vibration pattern
 			[4,5,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
+			[6+] = Number of actions (up to 5) 
+				(array position may be higher than 6 due to bytes taken by vibration pattern. You must append number of vibration pattern bytes to 4 to get actual number)
+			[7+] = Action menu mode (0 = Disabled, 1 = Press SELECt, 2 = Hold SELECT)
 		5 = Title (max 30 bytes) - cstring
 		6 = Subtitle (max 30 bytes) - cstring
 		

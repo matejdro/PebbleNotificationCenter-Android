@@ -275,10 +275,6 @@
         on the app name to change its settings). Default settings are global settings and apply to every app unless you set different options on specific app and override defaults that way.
     </string>
     <string name="settingCategoryActions">Actions</string>
-    <string name="settingShowActionMenuDescription">When checked, pressing SELECT button on Pebble will display action
-        menu. Otherwise it will default to dismissing.
-    </string>
-    <string name="settingShowActionMenu">Show action menu</string>
     <string name="settingLoadWearActions">Load Android Wear voice actions</string>
     <string name="settingLoadWearActionsDescription">Load voice actions meant from Android Wear (if app supports it of
         course)
@@ -290,5 +286,14 @@
     <string name="cannedResponsesNoResponses">No responses</string>
     <string name="addCannedResponse">Add canned response</string>
     <string name="editCannedResponse">Edit canned response</string>
+    <string name="actionMenuModeDescription">How you want to open actions menu. If disabled or hold is chosen, single press
+        will simply dismiss notification.
+    </string>
+    <string name="actionMenuMode">Action menu activation</string>
+    <string-array name="settingActionMenuModeOptions">
+        <item>Disabled</item>
+        <item>SELECT press</item>
+        <item>SELECT hold</item>
+    </string-array>
 
 </resources>

@@ -54,7 +54,7 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 
             AppSettingStorage settingStorage = pn.getSettingStorage(service);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && settingStorage.getBoolean(AppSetting.ACTIONS_SHOW_MENU))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
             {
                 ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>();
 
