@@ -23,7 +23,7 @@ import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.util.ConfigBackup;
-import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
+import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 
 
 public class MainActivity extends FragmentActivity /*implements ActionBar.TabListener*/ {

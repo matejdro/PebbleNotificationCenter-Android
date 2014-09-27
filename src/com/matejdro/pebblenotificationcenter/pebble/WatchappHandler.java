@@ -1,4 +1,4 @@
-package com.matejdro.pebblenotificationcenter.util;
+package com.matejdro.pebblenotificationcenter.pebble;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -10,7 +10,7 @@ import android.net.Uri;
 import com.matejdro.pebblenotificationcenter.R;
 
 public class WatchappHandler {
-    public static final int SUPPORTED_PROTOCOL = 13;
+    public static final int SUPPORTED_PROTOCOL = 14;
 
     public static boolean isFirstRun(SharedPreferences settings)
     {

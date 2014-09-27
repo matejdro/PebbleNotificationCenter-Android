@@ -31,7 +31,7 @@ import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationA
 import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
-import com.matejdro.pebblenotificationcenter.util.WatchappHandler;
+import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Iterator;
