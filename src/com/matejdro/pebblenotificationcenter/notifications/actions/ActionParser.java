@@ -81,7 +81,11 @@ public class ActionParser
             Crashlytics.logException(e);
         } catch (NoSuchFieldException e) {
             Crashlytics.logException(e);
+        } catch (IllegalAccessError e)
+        {
+            //Weird error that appears on some devices (Only Xiaomi reported so far) and apparently means that Notification.Action on these devices is different than usual Android. Unsupported for now.
         }
+
 
         return null;
     }

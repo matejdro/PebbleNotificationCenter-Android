@@ -301,6 +301,7 @@
     </string>
     <string name="voiceInputResultActionName">Result %d</string>
     <string name="settingEnableVoiceReply">Enable voice reply</string>
+
     <string name="settingEnableVoiceReplyDescription">When this setting is enabled, you can dictate reply on android
         wear actions. Of course Pebble does not have microphone, but you can use your phone\'s mic (sometimes it even
         hears from your pocket) or mic on your headphones.
