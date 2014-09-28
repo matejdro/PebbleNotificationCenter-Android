@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.os.Parcelable;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
-import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +28,7 @@ public class WearAction extends ListAction
     private String[] appProvidedChoices;
     private List<String> cannedResponseList;
     private ProcessedNotification parent;
+    private boolean firstItemIsVoice;
 
     public WearAction(String actionText, PendingIntent intent, String voiceKey, String[] appProvidedChoices)
     {
@@ -35,6 +36,7 @@ public class WearAction extends ListAction
         this.actionIntent = intent;
         this.voiceKey = voiceKey;
         this.appProvidedChoices = appProvidedChoices;
+        firstItemIsVoice = false;
     }
 
     public static WearAction parseFromBundle(Bundle bundle)
@@ -66,6 +68,12 @@ public class WearAction extends ListAction
     {
         parent = notification;
         cannedResponseList = new ArrayList<String>();
+
+        if (notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
+        {
+            cannedResponseList.add("Voice");
+            firstItemIsVoice = true;
+        }
 
         ArrayList<String> userProvidedChoices = (ArrayList<String>) notification.source.getSettingStorage(service).getStringList(AppSetting.CANNED_RESPONSES);
         if (userProvidedChoices != null)
@@ -127,7 +135,7 @@ public class WearAction extends ListAction
         }
     };
 
-    private void sendWearReply(String text, PebbleTalkerService service)
+    protected static void sendWearReply(String text, Context context, PendingIntent actionIntent, String voiceKey)
     {
         try
         {
@@ -140,7 +148,7 @@ public class WearAction extends ListAction
             ClipData clipData = new ClipData("android.remoteinput.results", new String[] { ClipDescription.MIMETYPE_TEXT_INTENT }, new ClipData.Item(messageDataIntent));
             Intent replyIntent = new Intent();
             replyIntent.setClipData(clipData);
-            actionIntent.send(service, 0, replyIntent);
+            actionIntent.send(context, 0, replyIntent);
         } catch (PendingIntent.CanceledException e)
         {
             e.printStackTrace();
@@ -163,7 +171,9 @@ public class WearAction extends ListAction
     @Override
     public void itemPicked(PebbleTalkerService service, int id)
     {
-        sendWearReply(cannedResponseList.get(id), service);
-        JellybeanNotificationListener.dismissNotification(parent.source.getPackage(), parent.source.getTag(), parent.source.getAndroidID());
+        if (id == 0 && firstItemIsVoice)
+            new VoiceAction(actionIntent, voiceKey, service).startVoice();
+        else
+            sendWearReply(cannedResponseList.get(id), service, actionIntent, voiceKey);
     }
 }

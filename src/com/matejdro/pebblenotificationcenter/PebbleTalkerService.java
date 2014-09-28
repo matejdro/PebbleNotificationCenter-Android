@@ -29,9 +29,9 @@ import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ListAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
+import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
-import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -165,7 +165,7 @@ public class PebbleTalkerService extends Service
         byte flags = 0;
         flags |= (byte) (notification.source.isDismissable() ? 0x01 : 0);
         flags |= (byte) (notification.source.isListNotification() ? 0x2 : 0);
-        flags |= (byte) (settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) ? 0x4 : 0);
+        flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || notification.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
 
         configBytes[0] = Byte.parseByte(settings.getString("textSize", "0"));
         configBytes[1] = flags;
@@ -180,7 +180,10 @@ public class PebbleTalkerService extends Service
         else
             configBytes[4 + configBytes[3]] = 0;
 
-        configBytes[5 + configBytes[3]] = (byte) settingStorage.getInt(AppSetting.ACTIONS_MENU_MODE);
+        if (notification.source.areActionsDisabled())
+            configBytes[5 + configBytes[3]] = 0;
+        else
+            configBytes[5 + configBytes[3]] = (byte) settingStorage.getInt(AppSetting.ACTIONS_MENU_MODE);
 
         int timeout = 0;
         try
@@ -217,7 +220,7 @@ public class PebbleTalkerService extends Service
         commStarted();
     }
 
-    private void processDismissUpwards(Integer androidId, String pkg, String tag, boolean dontClose)
+    public void processDismissUpwards(Integer androidId, String pkg, String tag, boolean dontClose)
     {
         Timber.d("got dismiss: " + pkg + " " + androidId + " " + tag);
 
@@ -250,19 +253,25 @@ public class PebbleTalkerService extends Service
         }
 
         //Remove now dismissed notification from queue so it does not spam Pebble later
-        if (!dontClose)
+        Iterator<ProcessedNotification> iterator = sendingQueue.iterator();
+        while (iterator.hasNext())
         {
-            Iterator<ProcessedNotification> iterator = sendingQueue.iterator();
-            while (iterator.hasNext())
+            ProcessedNotification notification = iterator.next();
+
+            if (!notification.source.isListNotification() && notification.source.isSameNotification(androidId, pkg, tag))
             {
-                ProcessedNotification notification = iterator.next();
-
-                if (!notification.source.isListNotification() && notification.source.isSameNotification(androidId, pkg, tag))
-                {
-                    iterator.remove();
-                }
+                iterator.remove();
             }
+        }
+        for (int i = 0; i < sentNotifications.size(); i++)
+        {
+            ProcessedNotification notification = sentNotifications.valueAt(i);
 
+            if (!notification.source.isListNotification() && notification.source.isSameNotification(androidId, pkg, tag))
+            {
+                sentNotifications.removeAt(i);
+                i--;
+            }
         }
     }
 
@@ -280,7 +289,7 @@ public class PebbleTalkerService extends Service
         commWentIdle();
     }
 
-    private void processNotification(PebbleNotification notificationSource)
+    public void processNotification(PebbleNotification notificationSource)
     {
         Timber.d("notify internal");
 

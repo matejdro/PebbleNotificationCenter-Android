@@ -26,6 +26,7 @@ public class PebbleNotification implements Parcelable
     private ArrayList<NotificationAction> actions;
     private boolean noHistory;
     private boolean noActions;
+    private boolean forceSwitch;
     private boolean listNotification;
     private PendingIntent openAction;
 
@@ -42,6 +43,7 @@ public class PebbleNotification implements Parcelable
         dismissable = false;
         noHistory = false;
         noActions = false;
+        forceSwitch = false;
         listNotification = false;
     }
 
@@ -188,6 +190,16 @@ public class PebbleNotification implements Parcelable
         this.openAction = openAction;
     }
 
+    public boolean shouldNCForceSwitchToThisNotification()
+    {
+        return forceSwitch;
+    }
+
+    public void setForceSwitch(boolean forceSwitch)
+    {
+        this.forceSwitch = forceSwitch;
+    }
+
     public boolean isSameNotification(PebbleNotification comparing)
     {
         return androidID == comparing.androidID && comparing.text.equals(text) && comparing.title.equals(title) && comparing.subtitle.equals(subtitle);
@@ -216,6 +228,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeByte((byte) (noHistory ? 1 : 0));
         parcel.writeByte((byte) (noActions ? 1 : 0));
         parcel.writeByte((byte) (listNotification ? 1 : 0));
+        parcel.writeByte((byte) (forceSwitch ? 1 : 0));
         parcel.writeLong(postTime);
         parcel.writeValue(tag);
         parcel.writeValue(subtitle);
@@ -239,6 +252,7 @@ public class PebbleNotification implements Parcelable
             notification.noHistory = parcel.readByte() == 1;
             notification.noActions = parcel.readByte() == 1;
             notification.listNotification = parcel.readByte() == 1;
+            notification.forceSwitch = parcel.readByte() == 1;
             notification.postTime = parcel.readLong();
             notification.tag = (String) parcel.readValue(getClass().getClassLoader());
             notification.subtitle = (String) parcel.readValue(getClass().getClassLoader());

@@ -384,8 +384,7 @@
                 style="@style/AppSettingsSectionSeparator"
                 />
 
-        <!-- Show Action menu -->
-        <!-- Vibration pattern -->
+        <!-- Action menu mode -->
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -464,12 +463,10 @@
                     />
 
         </RelativeLayout>
-
         <View
                 android:layout_width="fill_parent"
                 style="@style/AppSettingSeparator"
                 />
-
 
         <!-- Canned Responses -->
         <RelativeLayout
@@ -524,8 +521,49 @@
                     android:textStyle="italic"/>
 
         </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
 
 
+        <!-- Enable Voice Reply -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/enableVoiceReplyView">
+
+            <CheckBox
+                    android:id="@+id/enableVoiceReplyCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/enableVoiceReplyName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/enableVoiceReplyCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingEnableVoiceReply"
+                    />
+
+            <TextView
+                    android:id="@+id/enableVoiceReplyDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/enableVoiceReplyName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/enableVoiceReplyCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingEnableVoiceReplyDescription"
+                    />
+
+        </RelativeLayout>
 
         <!-- SECTION: Inbox parsing -->
         <TextView

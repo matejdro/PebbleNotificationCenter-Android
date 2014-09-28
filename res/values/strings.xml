@@ -290,6 +290,21 @@
         will simply dismiss notification.
     </string>
     <string name="actionMenuMode">Action menu activation</string>
+    <string name="voiceErrorNoInternet">No internet connection.</string>
+    <string name="voiceErrorNoSpeech">No speech detected.</string>
+    <string name="voiceErrorUnknown">Unknown error.</string>
+    <string name="voiceInputNotificationTitle">Voice input</string>
+    <string name="voiceInputSpeakInstructions">Speak after the beep</string>
+    <string name="voiceInputResultTitle">Result %d:\n</string>
+    <string name="voiceInputResultNotificationSubtitle">Results</string>
+    <string name="voiceInputResultNotificationText">%s\n\nPick correct text from menu or retry.
+    </string>
+    <string name="voiceInputResultActionName">Result %d</string>
+    <string name="settingEnableVoiceReply">Enable voice reply</string>
+    <string name="settingEnableVoiceReplyDescription">When this setting is enabled, you can dictate reply on android
+        wear actions. Of course Pebble does not have microphone, but you can use your phone\'s mic (sometimes it even
+        hears from your pocket) or mic on your headphones.
+    </string>
     <string-array name="settingActionMenuModeOptions">
         <item>Disabled</item>
         <item>SELECT press</item>
