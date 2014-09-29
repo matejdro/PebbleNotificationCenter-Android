@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
+import android.os.Bundle;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
@@ -94,6 +95,7 @@ public class NotificationHandler {
             ActionParser.parseNativeActions(notification, actions);
 
             pebbleNotification.setActions(actions);
+            parseWearGroupData(notification, pebbleNotification);
         }
 
         if (notification.contentIntent != null)
@@ -102,6 +104,24 @@ public class NotificationHandler {
         Intent startIntent = new Intent(context, PebbleTalkerService.class);
         startIntent.putExtra("notification", pebbleNotification);
         context.startService(startIntent);
+
+    }
+
+    public static void parseWearGroupData(Notification notification, PebbleNotification pebbleNotification)
+    {
+        Bundle extras = NotificationParser.getExtras(notification);
+        if (extras == null)
+            return;
+
+        if (!extras.containsKey("android.support.groupKey"))
+            return;
+
+        pebbleNotification.setWearGroupKey(extras.getString("android.support.groupKey"));
+
+        if (extras.getBoolean("android.support.isGroupSummary", false))
+            pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY);
+        else
+            pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE);
 
     }
 

@@ -35,12 +35,13 @@ public class JellybeanNotificationListener extends NotificationListenerService {
         Timber.d("Finished creating Notification Listener...");
 
 
+
         super.onCreate();
 	}
 
 	@Override
 	public void onNotificationPosted(final StatusBarNotification sbn) {
-		handler.post(new Runnable() {
+        handler.post(new Runnable() {
 
 			@Override
 			public void run() {

@@ -20,7 +20,6 @@ public class TaskerAppSettingsActivity extends PerAppActivity
         loadIntent();
 
         AppSettingStorage original = super.initAppSettingStorage();
-        System.out.println(original);
         return new BundleAppSettingsStorage(original, storage);
     }
 

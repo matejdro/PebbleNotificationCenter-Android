@@ -145,7 +145,6 @@ public class PebbleTalkerService extends Service
         Timber.d("Send " + notification.id + " " + notification.source.getTitle() + " " + notification.source.getSubtitle());
 
         curSendingNotification = notification;
-        sentNotifications.put(notification.id, notification);
 
         AppSettingStorage settingStorage = notification.source.getSettingStorage(this);
 
@@ -324,24 +323,28 @@ public class PebbleTalkerService extends Service
         notification.source = notificationSource;
         AppSettingStorage settingStorage = notificationSource.getSettingStorage(this);
 
-        if (!notificationSource.isListNotification() && !notificationSource.isHistoryDisabled() && settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY))
+        if (!notificationSource.isListNotification() &&
+                !notificationSource.isHistoryDisabled() &&
+                settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
+                canDisplayWearGroupNotification(notification.source, settingStorage))
+        {
             historyDb.storeNotification(System.currentTimeMillis(), notificationSource.getTitle(), notificationSource.getSubtitle(), notificationSource.getText());
+        }
 
         if (!notificationSource.isListNotification())
         {
+
             if (notificationSource.getAndroidID() != null)
             {
                 //Preventing spamming of equal notifications
                 for (int i = 0; i < sentNotifications.size(); i++)
                 {
                     ProcessedNotification comparing = sentNotifications.valueAt(i);
-                    if (notificationSource.isSameNotification(comparing.source))
+                    if (notificationSource.hasIdenticalContent(comparing.source))
                     {
                         return;
                     }
                 }
-
-                processDismissUpwards(notificationSource.getAndroidID(), notificationSource.getPackage(), notificationSource.getTag(), true);
             }
 
             if (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
@@ -413,6 +416,15 @@ public class PebbleTalkerService extends Service
             notification.id = rnd.nextInt();
         }
         while (sentNotifications.get(notification.id) != null);
+
+        if (!notification.source.isListNotification() && !canDisplayWearGroupNotification(notification.source, settingStorage))
+        {
+            sentNotifications.put(notification.id, notification);
+            return;
+        }
+
+        processDismissUpwards(notificationSource.getAndroidID(), notificationSource.getPackage(), notificationSource.getTag(), true);
+        sentNotifications.put(notification.id, notification);
 
         String text = notificationSource.getText();
 
@@ -642,7 +654,7 @@ public class PebbleTalkerService extends Service
             switch (action)
             {
                 case 0: //Dismiss
-                    JellybeanNotificationListener.dismissNotification(notification.source.getPackage(), notification.source.getTag(), notification.source.getAndroidID());
+                    dismissOnPhone(notification);
                     break;
                 case 2: //Open
                     if (notification.source.getOpenAction() != null)
@@ -664,6 +676,30 @@ public class PebbleTalkerService extends Service
 
         if (data.contains(2))
             closeApp();
+    }
+
+    private void dismissOnPhone(ProcessedNotification notification)
+    {
+        //Group messages can't be dismissed (they are not even displayed), so I should find relevat message in actual notification tray
+        if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
+        {
+            for (int i = 0; i < sentNotifications.size(); i++)
+            {
+                ProcessedNotification compare = sentNotifications.valueAt(i);
+
+                if (compare.source.getWearGroupKey().equals(notification.source.getWearGroupKey()) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+                {
+                    notification = compare;
+                    break;
+                }
+            }
+        }
+
+        if (!notification.source.isDismissable())
+            return;
+
+        JellybeanNotificationListener.dismissNotification(notification.source.getPackage(), notification.source.getTag(), notification.source.getAndroidID());
+
     }
 
     private void actionListItemPicked(int packetId, PebbleDictionary data)
@@ -833,5 +869,20 @@ public class PebbleTalkerService extends Service
         {
             return false;
         }
+    }
+
+    private static boolean canDisplayWearGroupNotification(PebbleNotification notification, AppSettingStorage settingStorage)
+    {
+        boolean groupNotificationEnabled = settingStorage.getBoolean(AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
+        if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && groupNotificationEnabled)
+        {
+            return false; //Don't send summary notifications, we will send group ones instead.
+        }
+        else if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE && !groupNotificationEnabled)
+        {
+            return false; //Don't send group notifications, they are not enabled.
+        }
+
+        return true;
     }
 }

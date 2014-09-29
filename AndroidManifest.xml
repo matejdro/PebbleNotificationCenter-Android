@@ -46,6 +46,11 @@
         </service>
         <service android:name="com.matejdro.pebblenotificationcenter.PebbleTalkerService" >
         </service>
+        <service android:name="com.matejdro.pebblenotificationcenter.notifications.SideChannelNotificationListener" >
+            <intent-filter>
+                <action android:name="android.support.BIND_NOTIFICATION_SIDE_CHANNEL" />
+            </intent-filter>
+        </service>
 
         <receiver android:name="com.matejdro.pebblenotificationcenter.DataReceiver"
             android:exported="true" >

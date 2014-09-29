@@ -582,6 +582,50 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 style="@style/AppSettingParent"
+                android:id="@+id/useWearGroupNotificationsView">
+
+            <CheckBox
+                    android:id="@+id/useWearGroupNotificationsCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/useWearGroupNotificationsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/useWearGroupNotificationsCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingUseWearGroupNotifications"
+                    />
+
+            <TextView
+                    android:id="@+id/useWearGroupNotificationsDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/useWearGroupNotificationsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/useWearGroupNotificationsCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingUseWearGroupNotificationsDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+
+        <!-- Alternate inbox parsing -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
                 android:id="@+id/alternateInboxParsingView">
 
             <CheckBox

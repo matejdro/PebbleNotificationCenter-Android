@@ -29,6 +29,12 @@ public class PebbleNotification implements Parcelable
     private boolean forceSwitch;
     private boolean listNotification;
     private PendingIntent openAction;
+    private String wearGroupKey;
+
+    public static final int WEAR_GROUP_TYPE_DISABLED = 0;
+    public static final int WEAR_GROUP_TYPE_GROUP_MESSAGE = 1;
+    public static final int WEAR_GROUP_TYPE_GROUP_SUMMARY = 2;
+    private int wearGroupType;
 
     public PebbleNotification(String title, String text, String pkg)
     {
@@ -45,6 +51,7 @@ public class PebbleNotification implements Parcelable
         noActions = false;
         forceSwitch = false;
         listNotification = false;
+        wearGroupType = WEAR_GROUP_TYPE_DISABLED;
     }
 
     public Integer getAndroidID()
@@ -200,12 +207,40 @@ public class PebbleNotification implements Parcelable
         this.forceSwitch = forceSwitch;
     }
 
-    public boolean isSameNotification(PebbleNotification comparing)
+    public String getWearGroupKey()
     {
-        return androidID == comparing.androidID && comparing.text.equals(text) && comparing.title.equals(title) && comparing.subtitle.equals(subtitle);
+        return wearGroupKey;
     }
 
-    public boolean isSameNotification(Integer androidId, String pkg, String text)
+    public void setWearGroupKey(String wearGroupKey)
+    {
+        this.wearGroupKey = wearGroupKey;
+    }
+
+    public int getWearGroupType()
+    {
+        return wearGroupType;
+    }
+
+    public void setWearGroupType(int wearGroupType)
+    {
+        this.wearGroupType = wearGroupType;
+    }
+
+    public boolean isInSameGroup(PebbleNotification comparing)
+    {
+        if (getWearGroupType() == WEAR_GROUP_TYPE_DISABLED || comparing.getWearGroupType() == WEAR_GROUP_TYPE_DISABLED)
+            return false;
+
+        return getWearGroupKey().equals(comparing.getWearGroupKey());
+    }
+
+    public boolean hasIdenticalContent(PebbleNotification comparing)
+    {
+        return getPackage().equals(comparing.getPackage()) && comparing.text.equals(text) && comparing.title.equals(title) && comparing.subtitle.equals(subtitle);
+    }
+
+    public boolean isSameNotification(Integer androidId, String pkg, String tag)
     {
         return this.androidID != -1 && this.androidID == androidId.intValue() && this.pkg != null && this.pkg.equals(pkg) && (this.tag == null || this.tag.equals(tag));
     }
@@ -235,6 +270,8 @@ public class PebbleNotification implements Parcelable
         parcel.writeValue(text);
         parcel.writeValue(actions);
         parcel.writeValue(openAction);
+        parcel.writeValue(wearGroupKey);
+        parcel.writeInt(wearGroupType);
     }
 
     public static final Creator<PebbleNotification> CREATOR = new Creator<PebbleNotification>()
@@ -259,6 +296,8 @@ public class PebbleNotification implements Parcelable
             notification.text = (String) parcel.readValue(getClass().getClassLoader());
             notification.actions = (ArrayList) parcel.readValue(getClass().getClassLoader());
             notification.openAction = (PendingIntent) parcel.readValue(getClass().getClassLoader());
+            notification.wearGroupKey = (String) parcel.readValue(getClass().getClassLoader());
+            notification.wearGroupType = parcel.readInt();
 
             return notification;
         }

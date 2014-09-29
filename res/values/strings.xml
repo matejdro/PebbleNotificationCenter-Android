@@ -194,10 +194,10 @@
     </string>
     <string name="settingsCategoryInboxParsing">Inbox Parsing</string>
     <string name="settingAlternateInboxParser">Use alternate inbox parser</string>
-    <string name="settingAlternateInboxParserDescription">This and below settings only affect users on Android 4.1+ and apps with
-        inbox notifications (for example Gmail with multiple messages). It enables below options and generates
+    <string name="settingAlternateInboxParserDescription">If app does not support Android Wear notifications, this is next best thing. It tries to improve formatting of
+        inbox notifications (for example Gmail notification with multiple messages). It enables below options and generates
         notifications with a bit less clutter. It is recommended to keep this enabled unless notification looks weird on
-        Pebble or is missing information.
+        Pebble or is missing information. Android 4.1 or newer required.
     </string>
     <string name="settingReverseInbox">Reverse inbox</string>
     <string name="settingReverseInboxDescription">Check this if app does not follow standards and displays new messages
@@ -305,6 +305,12 @@
     <string name="settingEnableVoiceReplyDescription">When this setting is enabled, you can dictate reply on android
         wear actions. Of course Pebble does not have microphone, but you can use your phone\'s mic (sometimes it even
         hears from your pocket) or mic on your headphones.
+    </string>
+    <string name="settingUseWearGroupNotifications">Use Wear group notifications</string>
+    <string name="settingUseWearGroupNotificationsDescription">Instead of inbox notifications, display group
+        notifications for Android Wear. This will display full individual messages instead of just displaying summary of
+        your inbox when you receive multiple messages. Requires at least Android 4.1 or newer and app needs to implement Android
+        Wear notifications for it to work.
     </string>
     <string-array name="settingActionMenuModeOptions">
         <item>Disabled</item>

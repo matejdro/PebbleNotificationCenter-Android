@@ -15,6 +15,7 @@ public enum AppSetting
     IGNORE_QUIET_HOURS("ignoreQuietHours", false),
     DISMISS_UPRWADS("syncDismissUp", true),
     SAVE_TO_HISTORY("saveToHistory", true),
+    USE_WEAR_GROUP_NOTIFICATIONS("useWearGroupNotifications", true),
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),
     INBOX_REVERSE("inboxReverse", false),
     DISPLAY_ONLY_NEWEST("inboxDisplayOnlyNewest", false),
