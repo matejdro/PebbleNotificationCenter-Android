@@ -69,6 +69,7 @@ public class PebbleTalkerService extends Service
     private SparseArray<ProcessedNotification> sentNotifications = new SparseArray<ProcessedNotification>();
 
     private LocationLookup locationLookup;
+    private int closingAttempts = 0;
 
     @Override
     public IBinder onBind(Intent intent)
@@ -464,7 +465,8 @@ public class PebbleTalkerService extends Service
         Timber.d("CloseApp " + previousUUID);
         commBusy = false;
 
-        if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null && !previousUUID.equals(DataReceiver.pebbleAppUUID) && !previousUUID.equals(MAIN_MENU_UUID))
+        //startAppOnPebble seems to fail sometimes so I fallback to regular closing if it fails 2 times.
+        if (settings.getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && previousUUID != null && !previousUUID.equals(DataReceiver.pebbleAppUUID) && !previousUUID.equals(MAIN_MENU_UUID) && closingAttempts < 3)
             PebbleKit.startAppOnPebble(this, previousUUID);
         else
             PebbleKit.closeAppOnPebble(this, DataReceiver.pebbleAppUUID);
@@ -474,7 +476,7 @@ public class PebbleTalkerService extends Service
         editor.putLong("lastClose", System.currentTimeMillis());
         editor.apply();
 
-            stopSelf();
+        closingAttempts++;
     }
 
     private void appOpened()
@@ -809,6 +811,9 @@ public class PebbleTalkerService extends Service
         }
 
         int id = data.getUnsignedInteger(0).intValue();
+
+        if (id != 7)
+            closingAttempts = 0;
 
         switch (id)
 		{
