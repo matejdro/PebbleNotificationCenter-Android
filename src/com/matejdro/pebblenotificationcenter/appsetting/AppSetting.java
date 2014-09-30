@@ -24,6 +24,7 @@ public enum AppSetting
     LOAD_WEAR_ACTIONS("loadWearActions", true),
     ENABLE_VOICE_REPLY("enableVoiceReply", true),
     CANNED_RESPONSES("cannedResponses", null),
+    TASKER_ACTIONS("taskerActions", null),
     VIBRATION_PATTERN("vibrationPattern", "500"),
     PERIODIC_VIBRATION("settingPeriodicVibration", "20"),
     INCLUDED_REGEX("WhitelistRegexes", null),

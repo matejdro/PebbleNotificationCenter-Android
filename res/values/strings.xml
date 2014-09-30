@@ -312,6 +312,35 @@
         your inbox when you receive multiple messages. Requires at least Android 4.1 or newer and app needs to implement Android
         Wear notifications for it to work.
     </string>
+    <string name="taskerNoTasksError">No tasks. Is tasker installed?</string>
+    <string name="settingTaskerActions">Tasker actions</string>
+    <string name="settingTaskerActionsDescription">Here you can add tasker tasks that will be added to that app\'s
+        actions. When you select that task on the Pebble, tasker task will be executed. You need to enable external
+        access in tasker to use this option.
+    </string>
+    <string name="taskerActionsNoTasks">No tasks</string>
+    <string name="removeTaskConfirmation">Do you want to remove task %s from actions?</string>
+    <string name="voiceInputErrorNotificationText">%s\n\n
+
+        Use retry from actions menu to retry voice input.
+    </string>
+    <string name="taskerVariablesDescription" formatted="false">
+    You can use those variables in task that is triggered by NC:\n\n
+    %ncappname = name of the app that sent notification\n\n
+    %ncappppkg = package of the app that sent notification\n\n
+    %ncid = ID of the notification\n\n
+    %nctag = Tag of the notification\n\n
+    %nctitle = Title of the notification\n\n
+    %ncsubtitle = Subtitle of the notification\n\n
+    %nctext = Text of the notification
+    </string>
+    <string name="voiceInputErrorNotificationSubtitle">Error</string>
+    <string name="taskerActionsVariablesButton">Variables</string>
+    <string name="taskerActionErrorNotificationTitle">Tasker Action</string>
+    <string name="taskerActionErrorNotificationSubtitle">Error</string>
+    <string name="taskerActionErrorNoExternalAccess">Tasker\'s External Access is turned off.</string>
+    <string name="taskerActionErrorNotInstalled">Tasker is not installed</string>
+    <string name="taskerActionErrorUnknown">Unknown error.</string>
     <string-array name="settingActionMenuModeOptions">
         <item>Disabled</item>
         <item>SELECT press</item>

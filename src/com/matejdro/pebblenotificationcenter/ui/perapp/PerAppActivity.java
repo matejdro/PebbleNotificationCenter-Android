@@ -33,6 +33,7 @@ public class PerAppActivity extends Activity
     private RegexList includingRegexList;
     private RegexList excludingRegexList;
     private CannedResponseList cannedResponseList;
+    private TaskerTaskList taskerTaskList;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -108,6 +109,8 @@ public class PerAppActivity extends Activity
         ((EditText) findViewById(R.id.vibrationPatternEdit)).setText(settingsStorage.getString(AppSetting.VIBRATION_PATTERN));
         ((EditText) findViewById(R.id.periodicVibrationEdit)).setText(settingsStorage.getString(AppSetting.PERIODIC_VIBRATION));
 
+        taskerTaskList = new TaskerTaskList(this, R.id.taskerActionsList, R.id.taskerActionsAddButton, R.id.taskerActionsEmptyText);
+        taskerTaskList.addAll(settingsStorage.getStringList(AppSetting.TASKER_ACTIONS));
         cannedResponseList = new CannedResponseList(this, R.id.cannedResponsesList, R.id.cannedResponsesAddButton, R.id.cannedResponsestEmptyText);
         cannedResponseList.addAll(settingsStorage.getStringList(AppSetting.CANNED_RESPONSES));
         includingRegexList = new RegexList(this, R.id.includingRegexList, R.id.includingRegexAddButton, R.id.includingRegexListEmptyText);
@@ -164,9 +167,19 @@ public class PerAppActivity extends Activity
         }
         settingsStorage.setString(AppSetting.VIBRATION_PATTERN, vibrationPattern);
 
+        settingsStorage.setStringList(AppSetting.TASKER_ACTIONS, taskerTaskList.getInternalStorage());
         settingsStorage.setStringList(AppSetting.CANNED_RESPONSES, cannedResponseList.getInternalStorage());
         settingsStorage.setStringList(AppSetting.INCLUDED_REGEX, includingRegexList.getInternalStorage());
         settingsStorage.setStringList(AppSetting.EXCLUDED_REGEX, excludingRegexList.getInternalStorage());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (resultCode != RESULT_OK)
+            return;
+
+        taskerTaskList.onActivityResult(data);
     }
 
     private void linkViewToCheckbox(int viewId, int checkBoxId)

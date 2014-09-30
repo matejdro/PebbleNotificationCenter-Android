@@ -152,8 +152,8 @@ public class VoiceAction implements RecognitionListener
 
     private void sendErrorNotification(String error)
     {
-        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), String.format("%s\n\nUse retry from actions menu to retry voice inout.", error), service.getPackageName());
-        notification.setSubtitle("Error");
+        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), service.getString(R.string.voiceInputErrorNotificationText, error), service.getPackageName());
+        notification.setSubtitle(service.getString(R.string.voiceInputErrorNotificationSubtitle));
         notification.setAndroidID(VOICE_NOTIFICATION_ID);
         notification.setForceSwitch(true);
 

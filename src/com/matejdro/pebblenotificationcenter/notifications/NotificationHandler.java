@@ -17,6 +17,7 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.notifications.actions.TaskerAction;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,17 +87,18 @@ public class NotificationHandler {
             pebbleNotification.setTag(tag);
         }
 
+        ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>();
+        TaskerAction.addTaskerTasks(settingStorage, actions);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
-            ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>();
-
             if (settingStorage.getBoolean(AppSetting.LOAD_WEAR_ACTIONS))
                 ActionParser.parseWearActions(notification, actions);
             ActionParser.parseNativeActions(notification, actions);
 
-            pebbleNotification.setActions(actions);
             parseWearGroupData(notification, pebbleNotification);
         }
+        pebbleNotification.setActions(actions);
+
 
         if (notification.contentIntent != null)
                 pebbleNotification.setOpenAction(notification.contentIntent);

@@ -14,6 +14,7 @@ import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.notifications.actions.TaskerAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -54,16 +55,16 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 
             AppSettingStorage settingStorage = pn.getSettingStorage(service);
 
+            ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>();
+            TaskerAction.addTaskerTasks(settingStorage, actions);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
             {
-                ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>();
-
                 if (settingStorage.getBoolean(AppSetting.LOAD_WEAR_ACTIONS))
                     ActionParser.parseWearActions(notification, actions);
                 ActionParser.parseNativeActions(notification, actions);
 
-                pn.setActions(actions);
             }
+            pn.setActions(actions);
 
             if (notification.contentIntent != null)
                 pn.setOpenAction(notification.contentIntent);
@@ -73,7 +74,8 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 		
 		Arrays.sort(notifications, new NotificationComparable());
 	}
-	
+
+
 	@Override
 	public PebbleNotification getNotificationAt(int index) {
 		return notifications[index];

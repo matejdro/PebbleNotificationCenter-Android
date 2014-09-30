@@ -425,6 +425,77 @@
                 />
 
 
+        <!-- Tasker Actions -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/taskerActionsView">
+
+            <TextView
+                    android:id="@+id/taskerActionsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingTaskerActions"
+                    />
+
+            <TextView
+                    android:id="@+id/taskerActionsDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/taskerActionsName"
+                    android:layout_alignParentLeft="true"
+                    style="@style/AppSettingsDesc"
+                    android:singleLine="false"
+                    android:text="@string/settingTaskerActionsDescription"
+                    />
+
+            <Button
+                    android:id="@+id/taskerActionsAddButton"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/taskerActionsDesc"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Add"/>
+
+            <Button
+                    android:id="@+id/taskerActionsVariablesButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/taskerActionsDesc"
+                    android:layout_toRightOf="@id/taskerActionsAddButton"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/taskerActionsVariablesButton"/>
+
+
+            <LinearLayout
+                    android:id="@+id/taskerActionsList"
+                    android:layout_below="@id/taskerActionsAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/taskerActionsEmptyText"
+                    android:layout_below="@id/taskerActionsAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/taskerActionsNoTasks"
+                    android:textStyle="italic"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+
         <!-- Load Wear items -->
         <RelativeLayout
                 android:layout_width="fill_parent"
