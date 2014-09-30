@@ -7,6 +7,8 @@ import timber.log.Timber;
 import timber.log.Timber.DebugTree;
 
 public class PebbleNotificationCenter extends android.app.Application {
+    public static final String PACKAGE = "com.matejdro.pebblenotificationcenter";
+
     public static final String APP_INCLUSION_MODE = "includeMode";
     public static final String SELECTED_PACKAGES = "CheckedApps";
     public static final String REPLACING_KEYS_LIST = "ReplacingKeys";

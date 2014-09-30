@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.ui.AppListFragment;
 import java.util.ArrayList;
@@ -197,7 +198,10 @@ public class TaskerAppListActivity extends Activity
 			List<PackageInfo> packages = pm.getInstalledPackages(0);
 
 			for (PackageInfo packageInfo : packages) {
-				try
+                if (packageInfo.packageName.equals(PebbleNotificationCenter.PACKAGE))
+                    continue;
+
+                try
 				{
 					ApplicationInfo appInfo = pm.getApplicationInfo(packageInfo.packageName, 0);
 					

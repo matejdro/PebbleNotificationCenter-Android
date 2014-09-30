@@ -252,8 +252,11 @@ public class AppListFragment extends Fragment {
 			for (PackageInfo packageInfo : packages) {
 				try
 				{
+                    if (packageInfo.packageName.equals(PebbleNotificationCenter.PACKAGE))
+                        continue;
+
 					ApplicationInfo appInfo = pm.getApplicationInfo(packageInfo.packageName, 0);
-					
+
 					boolean isSystemApp = ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
 					if (isSystemApp == showSystemApps )
 					{

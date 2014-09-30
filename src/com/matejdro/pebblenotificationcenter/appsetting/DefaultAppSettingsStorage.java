@@ -99,6 +99,10 @@ public class DefaultAppSettingsStorage implements AppSettingStorage
 
     public boolean canAppSendNotifications(String pkg)
     {
+        //Notification Center should always be enabled as some features depend on it. I also don't see any reason why would somebody disable it.
+        if (pkg.equals(PebbleNotificationCenter.PACKAGE))
+            return true;
+
         boolean includingMode = preferences.getBoolean(PebbleNotificationCenter.APP_INCLUSION_MODE, false);
         return includingMode == isAppChecked(pkg);
     }
