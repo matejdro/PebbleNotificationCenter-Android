@@ -687,7 +687,7 @@ public class PebbleTalkerService extends Service
             {
                 ProcessedNotification compare = sentNotifications.valueAt(i);
 
-                if (compare.source.getWearGroupKey().equals(notification.source.getWearGroupKey()) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+                if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
                 {
                     notification = compare;
                     break;
