@@ -30,7 +30,7 @@ public class ActionParser
 
         AppSettingStorage settingStorage = pebbleNotification.getSettingStorage(context);
 
-        if (settingStorage.getInt(AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_BEFORE_APP_OPTIONS)
+        if (settingStorage.getInt(AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_BEFORE_APP_OPTIONS && pebbleNotification.isDismissable())
          actions.add(new DismissOnPhoneAction(context));
         if (settingStorage.getInt(AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_BEFORE_APP_OPTIONS)
             actions.add(new DismissOnPebbleAction(context));
@@ -47,7 +47,7 @@ public class ActionParser
             ActionParser.parseNativeActions(notification, actions);
         }
 
-        if (settingStorage.getInt(AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS)
+        if (settingStorage.getInt(AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS && pebbleNotification.isDismissable())
             actions.add(new DismissOnPhoneAction(context));
         if (settingStorage.getInt(AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS)
             actions.add(new DismissOnPebbleAction(context));
