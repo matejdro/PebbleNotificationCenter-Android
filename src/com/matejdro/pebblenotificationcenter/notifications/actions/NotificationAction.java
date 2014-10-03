@@ -9,7 +9,12 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
  */
 public abstract class NotificationAction implements Parcelable
 {
-    public static final int MAX_NUMBER_OF_ACTIONS = 5;
+    public static final int MAX_NUMBER_OF_ACTIONS = 20;
+
+    public static final int VISIBILITY_OPTION_HIDDEN = 0;
+    public static final int VISIBILITY_OPTION_BEFORE_APP_OPTIONS = 1;
+    public static final int VISIBILITY_OPTION_AFTER_APP_OPTIONS = 2;
+
 
     protected String actionText;
 

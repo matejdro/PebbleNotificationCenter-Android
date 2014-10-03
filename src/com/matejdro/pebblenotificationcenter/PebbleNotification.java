@@ -1,6 +1,5 @@
 package com.matejdro.pebblenotificationcenter;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -25,10 +24,9 @@ public class PebbleNotification implements Parcelable
     private AppSettingStorage settingStorage;
     private ArrayList<NotificationAction> actions;
     private boolean noHistory;
-    private boolean noActions;
+    private boolean forceActionMenu;
     private boolean forceSwitch;
     private boolean listNotification;
-    private PendingIntent openAction;
     private String wearGroupKey;
 
     public static final int WEAR_GROUP_TYPE_DISABLED = 0;
@@ -48,7 +46,7 @@ public class PebbleNotification implements Parcelable
         postTime = System.currentTimeMillis();
         dismissable = false;
         noHistory = false;
-        noActions = false;
+        forceActionMenu = false;
         forceSwitch = false;
         listNotification = false;
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
@@ -167,14 +165,14 @@ public class PebbleNotification implements Parcelable
         this.noHistory = noHistory;
     }
 
-    public boolean areActionsDisabled()
+    public boolean shouldForceActionMenu()
     {
-        return noActions;
+        return forceActionMenu;
     }
 
-    public void setNoActions(boolean noActions)
+    public void setForceActionMenu(boolean noActions)
     {
-        this.noActions = noActions;
+        this.forceActionMenu = noActions;
     }
 
     public boolean isListNotification()
@@ -185,16 +183,6 @@ public class PebbleNotification implements Parcelable
     public void setListNotification(boolean listNotification)
     {
         this.listNotification = listNotification;
-    }
-
-    public PendingIntent getOpenAction()
-    {
-        return openAction;
-    }
-
-    public void setOpenAction(PendingIntent openAction)
-    {
-        this.openAction = openAction;
     }
 
     public boolean shouldNCForceSwitchToThisNotification()
@@ -261,7 +249,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeInt(androidID);
         parcel.writeByte((byte) (dismissable ? 1 : 0));
         parcel.writeByte((byte) (noHistory ? 1 : 0));
-        parcel.writeByte((byte) (noActions ? 1 : 0));
+        parcel.writeByte((byte) (forceActionMenu ? 1 : 0));
         parcel.writeByte((byte) (listNotification ? 1 : 0));
         parcel.writeByte((byte) (forceSwitch ? 1 : 0));
         parcel.writeLong(postTime);
@@ -269,7 +257,6 @@ public class PebbleNotification implements Parcelable
         parcel.writeValue(subtitle);
         parcel.writeValue(text);
         parcel.writeValue(actions);
-        parcel.writeValue(openAction);
         parcel.writeValue(wearGroupKey);
         parcel.writeInt(wearGroupType);
     }
@@ -287,7 +274,7 @@ public class PebbleNotification implements Parcelable
             notification.androidID = parcel.readInt();
             notification.dismissable = parcel.readByte() == 1;
             notification.noHistory = parcel.readByte() == 1;
-            notification.noActions = parcel.readByte() == 1;
+            notification.forceActionMenu = parcel.readByte() == 1;
             notification.listNotification = parcel.readByte() == 1;
             notification.forceSwitch = parcel.readByte() == 1;
             notification.postTime = parcel.readLong();
@@ -295,7 +282,6 @@ public class PebbleNotification implements Parcelable
             notification.subtitle = (String) parcel.readValue(getClass().getClassLoader());
             notification.text = (String) parcel.readValue(getClass().getClassLoader());
             notification.actions = (ArrayList) parcel.readValue(getClass().getClassLoader());
-            notification.openAction = (PendingIntent) parcel.readValue(getClass().getClassLoader());
             notification.wearGroupKey = (String) parcel.readValue(getClass().getClassLoader());
             notification.wearGroupType = parcel.readInt();
 

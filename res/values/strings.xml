@@ -139,6 +139,38 @@
         <item>Include</item>
     </string-array>
 
+    <string-array name="settingSelectButtonAction">
+        <item>Nothing</item>
+        <item>Dismiss notification</item>
+        <item>Open actions menu</item>
+        <item>Action menu item 1</item>
+        <item>Action menu item 2</item>
+        <item>Action menu item 3</item>
+        <item>Action menu item 4</item>
+        <item>Action menu item 5</item>
+        <item>Action menu item 6</item>
+        <item>Action menu item 7</item>
+        <item>Action menu item 8</item>
+        <item>Action menu item 9</item>
+        <item>Action menu item 10</item>
+        <item>Action menu item 11</item>
+        <item>Action menu item 12</item>
+        <item>Action menu item 13</item>
+        <item>Action menu item 14</item>
+        <item>Action menu item 15</item>
+        <item>Action menu item 16</item>
+        <item>Action menu item 17</item>
+        <item>Action menu item 18</item>
+        <item>Action menu item 19</item>
+        <item>Action menu item 20</item>
+    </string-array>
+
+    <string-array name="settingActionVisibility">
+        <item>Disable</item>
+        <item>Above app actions</item>
+        <item>Below app actions</item>
+    </string-array>
+
     <string name="replacementListTitle">Regex Filters:</string>
     <string name="replacementListDescription">Global filter by keywords/regular expressions for notifications that should be included/excluded from displaying.</string>
     <string name="replacement_description">In this window you can define replacement pairs. Notification Center will swap specified characters with specified text. Use that to remove or translate characters that Pebble does not display to readable text.</string>
@@ -286,10 +318,6 @@
     <string name="cannedResponsesNoResponses">No responses</string>
     <string name="addCannedResponse">Add canned response</string>
     <string name="editCannedResponse">Edit canned response</string>
-    <string name="actionMenuModeDescription">How you want to open actions menu. If disabled or hold is chosen, single press
-        will simply dismiss notification.
-    </string>
-    <string name="actionMenuMode">Action menu activation</string>
     <string name="voiceErrorNoInternet">No internet connection.</string>
     <string name="voiceErrorNoSpeech">No speech detected.</string>
     <string name="voiceErrorUnknown">Unknown error.</string>
@@ -341,10 +369,18 @@
     <string name="taskerActionErrorNoExternalAccess">Tasker\'s External Access is turned off.</string>
     <string name="taskerActionErrorNotInstalled">Tasker is not installed</string>
     <string name="taskerActionErrorUnknown">Unknown error.</string>
-    <string-array name="settingActionMenuModeOptions">
-        <item>Disabled</item>
-        <item>SELECT press</item>
-        <item>SELECT hold</item>
-    </string-array>
+    <string name="openOnPhone">Open on phone</string>
+    <string name="settingSelectPress">SELECT press action</string>
+    <string name="settingSelectPressDescription">
+        <![CDATA[What happens when you press SELECT button on Pebble. Menu actions are equal to pressing corresponding action in action menu. For example if you pick &quot;Action menu item 3&quot; then pressing SELECT button would be equal to opening action menu and selecting 3rd action.]]></string>
+    <string name="settingSelectHold">SELECT hold action</string>
+    <string name="settingSelectHoldDescription">Same as above except that this actions is executed when you hold SELECT
+        button.
+    </string>
+    <string name="settingDismissOnPhone">Dismiss on phone action position</string>
+    <string name="dismissOnPebblePosition">Dismiss on Pebble action position</string>
+    <string name="settingOpenOnPhonePosition">Open on phone action position</string>
+    <string name="dismissOnPebble">Dismiss - Pebble</string>
+    <string name="dismissOnPhone">Dismiss - Phone</string>
 
 </resources>

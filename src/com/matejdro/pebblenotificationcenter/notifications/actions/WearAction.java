@@ -13,6 +13,7 @@ import android.os.Parcelable;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.lists.actions.ActionList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  */
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
-public class WearAction extends ListAction
+public class WearAction extends NotificationAction
 {
     private PendingIntent actionIntent;
     private String voiceKey;
@@ -96,7 +97,8 @@ public class WearAction extends ListAction
             }
         }
 
-        super.executeAction(service, notification);
+        notification.activeActionList = new WearCannedResponseList();
+        notification.activeActionList.showList(service, notification);
     }
 
     @Override
@@ -156,24 +158,27 @@ public class WearAction extends ListAction
 
     }
 
-    @Override
-    public int getNumberOfItems()
+    public class WearCannedResponseList extends ActionList
     {
-        return cannedResponseList.size();
-    }
+        @Override
+        public int getNumberOfItems()
+        {
+            return cannedResponseList.size();
+        }
 
-    @Override
-    public String getItem(int id)
-    {
-        return cannedResponseList.get(id);
-    }
+        @Override
+        public String getItem(int id)
+        {
+            return cannedResponseList.get(id);
+        }
 
-    @Override
-    public void itemPicked(PebbleTalkerService service, int id)
-    {
-        if (id == 0 && firstItemIsVoice)
-            new VoiceAction(actionIntent, voiceKey, service).startVoice();
-        else
-            sendWearReply(cannedResponseList.get(id), service, actionIntent, voiceKey);
+        @Override
+        public void itemPicked(PebbleTalkerService service, int id)
+        {
+            if (id == 0 && firstItemIsVoice)
+                new VoiceAction(actionIntent, voiceKey, service).startVoice();
+            else
+                sendWearReply(cannedResponseList.get(id), service, actionIntent, voiceKey);
+        }
     }
 }

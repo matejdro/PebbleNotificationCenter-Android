@@ -104,7 +104,7 @@ public class VoiceAction implements RecognitionListener
     public void onResults(Bundle bundle)
     {
         ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        int size = Math.min(matches.size(), 4);
+        int size = Math.min(matches.size(), 10);
 
         if (size == 0)
         {
@@ -125,6 +125,7 @@ public class VoiceAction implements RecognitionListener
         notification.setSubtitle(service.getString(R.string.voiceInputResultNotificationSubtitle));
         notification.setAndroidID(VOICE_NOTIFICATION_ID);
         notification.setForceSwitch(true);
+        notification.setForceActionMenu(true);
 
         ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>(1);
         for (int i = 0; i < size; i++)
@@ -132,6 +133,7 @@ public class VoiceAction implements RecognitionListener
             actions.add(new VoiceConfirmAction(service.getString(R.string.voiceInputResultActionName, i + 1), matches.get(i), resultIntent, resultKey));
         }
         actions.add(new RetryAction(resultIntent, resultKey));
+        actions.add(new DismissOnPebbleAction(service.getString(R.string.cancel)));
         notification.setActions(actions);
 
         service.processNotification(notification);
@@ -156,13 +158,14 @@ public class VoiceAction implements RecognitionListener
         notification.setSubtitle(service.getString(R.string.voiceInputErrorNotificationSubtitle));
         notification.setAndroidID(VOICE_NOTIFICATION_ID);
         notification.setForceSwitch(true);
+        notification.setForceActionMenu(true);
 
         ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>(1);
         actions.add(new RetryAction(resultIntent, resultKey));
+        actions.add(new DismissOnPebbleAction(service.getString(R.string.cancel)));
         notification.setActions(actions);
 
         service.processNotification(notification);
-
     }
 
     private static class RetryAction extends NotificationAction

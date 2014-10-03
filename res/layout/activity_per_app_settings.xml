@@ -384,41 +384,167 @@
                 style="@style/AppSettingsSectionSeparator"
                 />
 
-        <!-- Action menu mode -->
+        <!-- SELECT press action -->
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 style="@style/AppSettingParent"
-                android:id="@+id/actionMenuModeView">
+                android:id="@+id/selectPressActionView">
 
             <TextView
-                    android:id="@+id/actionMenuModeName"
+                    android:id="@+id/selectPressActionName"
                     android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/AppSettingsName"
-                    android:text="@string/actionMenuMode"
+                    android:text="@string/settingSelectPress"
                     />
 
             <TextView
-                    android:id="@+id/actionMenuModeDesc"
+                    android:id="@+id/selectPressActionDesc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/actionMenuModeName"
+                    android:layout_below="@id/selectPressActionName"
                     android:layout_alignParentLeft="true"
                     style="@style/AppSettingsDesc"
-                    android:text="@string/actionMenuModeDescription"
+                    android:text="@string/settingSelectPressDescription"
                     />
 
 6
             <Spinner
-                    android:id="@+id/actionMenuModeSpinner"
+                    android:id="@+id/selectPressActionSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/actionMenuModeDesc"/>
+                    android:layout_below="@id/selectPressActionDesc"/>
 
         </RelativeLayout>
 
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Dismiss on Pebble position -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/dismissOnPebbleView">
+
+            <TextView
+                    android:id="@+id/dismissOnPebbleName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingDismissOnPhone"
+                    />
+
+            6
+            <Spinner
+                    android:id="@+id/dismissOnPebbleSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dismissOnPebbleName"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Dismiss on Pebble position -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/dismissOnPhoneView">
+
+            <TextView
+                    android:id="@+id/dismissOnPhoneName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/dismissOnPebblePosition"
+                    />
+
+
+            <Spinner
+                    android:id="@+id/dismissOnPhoneSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dismissOnPhoneName"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Open on phone position -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/openOnPhoneView">
+
+            <TextView
+                    android:id="@+id/openOnPhoneName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingOpenOnPhonePosition"
+                    />
+
+            6
+            <Spinner
+                    android:id="@+id/openOnPhoneSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/openOnPhoneName"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- SELECT hold action -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/selectHoldActionView">
+
+            <TextView
+                    android:id="@+id/selectHoldActionName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingSelectHold"
+                    />
+
+            <TextView
+                    android:id="@+id/selecttHoldActionDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/selectHoldActionName"
+                    android:layout_alignParentLeft="true"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingSelectHoldDescription"
+                    />
+
+            6
+            <Spinner
+                    android:id="@+id/selecttHoldActionSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/selecttHoldActionDesc"/>
+
+        </RelativeLayout>
         <View
                 android:layout_width="fill_parent"
                 style="@style/AppSettingSeparator"

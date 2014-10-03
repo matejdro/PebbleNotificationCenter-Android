@@ -1,6 +1,5 @@
 package com.matejdro.pebblenotificationcenter;
 
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -23,10 +22,11 @@ import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStor
 import com.matejdro.pebblenotificationcenter.lists.ActiveNotificationsAdapter;
 import com.matejdro.pebblenotificationcenter.lists.NotificationHistoryAdapter;
 import com.matejdro.pebblenotificationcenter.lists.NotificationListAdapter;
+import com.matejdro.pebblenotificationcenter.lists.actions.ActionList;
+import com.matejdro.pebblenotificationcenter.lists.actions.NotificationActionList;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
-import com.matejdro.pebblenotificationcenter.notifications.actions.ListAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
@@ -175,16 +175,6 @@ public class PebbleTalkerService extends Service
         for (int i = 0; i < vibrationPattern.size(); i++)
             configBytes[4 + i] = vibrationPattern.get(i);
 
-        if (notification.source.getActions() != null)
-            configBytes[4 + configBytes[3]] = (byte) Math.min(notification.source.getActions().size(), 5);
-        else
-            configBytes[4 + configBytes[3]] = 0;
-
-        if (notification.source.areActionsDisabled())
-            configBytes[5 + configBytes[3]] = 0;
-        else
-            configBytes[5 + configBytes[3]] = (byte) settingStorage.getInt(AppSetting.ACTIONS_MENU_MODE);
-
         int timeout = 0;
         try
         {
@@ -205,7 +195,7 @@ public class PebbleTalkerService extends Service
         commStarted();
     }
 
-    private void dismissOnPebble(Integer id, boolean dontClose)
+    public void dismissOnPebble(Integer id, boolean dontClose)
     {
         Timber.d("Dismissing upwards...");
 
@@ -643,45 +633,102 @@ public class PebbleTalkerService extends Service
             return;
     }
 
-    private void actionRequested(PebbleDictionary data)
+//    private void actionRequested(PebbleDictionary data)
+//    {
+//        int id = data.getInteger(1).intValue();
+//        int action = data.getUnsignedInteger(3).intValue();
+//
+//        Timber.d("Dismiss requested. Close: " + data.contains(2) + " action: " + action);
+//
+//        ProcessedNotification notification = sentNotifications.get(id);
+//        if (notification != null)
+//        {
+//            ActionList list = notification.activeActionList;
+//            if (list != null)
+//            {
+//                list.itemPicked();
+//            }
+//
+////            switch (action)
+////            {
+////                case 0: //Dismiss
+////                    dismissOnPhone(notification);
+////                    break;
+////                case 2: //Open
+////                    if (notification.source.getOpenAction() != null)
+////                        try
+////                        {
+////                            notification.source.getOpenAction().send();
+////                        } catch (PendingIntent.CanceledException e)
+////                        {
+////                            e.printStackTrace();
+////                        }
+////                    break;
+////               default:
+////                   int customActionID = action - 3;
+////                   NotificationAction notificationAction = notification.source.getActions().get(customActionID);
+////                   notificationAction.executeAction(this, notification);
+////                   notification.activeAction = notificationAction;
+////            }
+//        }
+//
+//        if (data.contains(2))
+//            closeApp();
+//    }
+
+    private void pebbleSelectPressed(PebbleDictionary data)
     {
         int id = data.getInteger(1).intValue();
-        int action = data.getUnsignedInteger(3).intValue();
+        boolean hold = data.contains(2);
 
-        Timber.d("Dismiss requested. Close: " + data.contains(2) + " action: " + action);
+        Timber.d("Select button pressed on Pebble, Hold: %b", hold);
+
 
         ProcessedNotification notification = sentNotifications.get(id);
-        if (notification != null)
+        if (notification == null)
+            return;
+
+        if (notification.source.getActions() == null || notification.source.getActions().size() == 0)
         {
-            switch (action)
-            {
-                case 0: //Dismiss
-                    dismissOnPhone(notification);
-                    break;
-                case 2: //Open
-                    if (notification.source.getOpenAction() != null)
-                        try
-                        {
-                            notification.source.getOpenAction().send();
-                        } catch (PendingIntent.CanceledException e)
-                        {
-                            e.printStackTrace();
-                        }
-                    break;
-               default:
-                   int customActionID = action - 3;
-                   NotificationAction notificationAction = notification.source.getActions().get(customActionID);
-                   notificationAction.executeAction(this, notification);
-                   notification.activeAction = notificationAction;
-            }
+            dismissOnPhone(notification);
+            return;
         }
 
-        if (data.contains(2))
-            closeApp();
+        AppSetting relevantSetting = hold ? AppSetting.SELECT_HOLD_ACTION : AppSetting.SELECT_PRESS_ACTION;
+        AppSettingStorage settingStorage = notification.source.getSettingStorage(this);
+
+        int action = settingStorage.getInt(relevantSetting);
+
+
+        if (notification.source.shouldForceActionMenu() || action == 2)
+        {
+            notification.activeActionList = new NotificationActionList(notification);
+            notification.activeActionList.showList(this, notification);
+        }
+        else if (action == 0)
+        {
+            return;
+        }
+        else if (action == 1)
+        {
+            dismissOnPhone(notification);
+        }
+        else
+        {
+            action -= 2;
+            if (notification.source.getActions().size() <= action)
+                return;
+
+            notification.source.getActions().get(action).executeAction(this, notification);
+        }
+
+
     }
 
-    private void dismissOnPhone(ProcessedNotification notification)
+    public void dismissOnPhone(ProcessedNotification notification)
     {
+        dismissOnPebble(notification.id, false);
+
         //Group messages can't be dismissed (they are not even displayed), so I should find relevat message in actual notification tray
         if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
         {
@@ -704,17 +751,17 @@ public class PebbleTalkerService extends Service
 
     }
 
-    private void actionListItemPicked(int packetId, PebbleDictionary data)
+    private void actionListPacket(int packetId, PebbleDictionary data)
     {
         int notificationId = data.getInteger(1).intValue();
 
         ProcessedNotification notification = sentNotifications.get(notificationId);
         if (notification != null)
         {
-            NotificationAction action = notification.activeAction;
-            if (action != null && action instanceof ListAction)
+            ActionList list = notification.activeActionList;
+            if (list != null)
             {
-                ((ListAction) action).handlePacket(this, packetId, data);
+                list.handlePacket(this, packetId, data);
             }
         }
     }
@@ -826,9 +873,6 @@ public class PebbleTalkerService extends Service
 		case 2:
 			notificationTransferCompleted();
 			break;
-		case 3:
-			actionRequested(data);
-			break;
 		case 4:
 			if (listHandler != null) listHandler.gotRequest(data);
 			break;
@@ -854,11 +898,11 @@ public class PebbleTalkerService extends Service
             receivedConfigChange(data);
             break;
         case 12:
-            actionsTextRequested(data);
+            pebbleSelectPressed(data);
             break;
         case 13:
-        case 14:
-            actionListItemPicked(id, data);
+        case 3:
+            actionListPacket(id, data);
             break;
 
         }

@@ -15,11 +15,10 @@ Pebble --> Phone
 	Notifies phone that it can start sending new notification if there is any
 	No additional data
 	
-	Packet 3 - Notification action
+	Packet 3 - Action list item picked
 	Additional data:
-		1 = Unique id of notification - int32
-		2 = Close app after receiving this packet. If this key is present, pebble app will be closed (also see Packet 7) - uint8
-		3 = Action (0 = dismiss, 2 = open, 3+ = actions specific to that notification)
+		1 = Unique id of currelty active notification - int32
+		2 = Canned response index - uint8
 
 	Packet 4 - Request notification at list index
 	Additional data:
@@ -56,21 +55,18 @@ Pebble --> Phone
             0 = Disable notifications 1 or 0 - value is uint8
         2 = Value of the setting (type depends on the setting)
 
-	Packet 12 - Send action names
-	Requests phone to send action names (Packet 5 from phone)
+	Packet 12 - SELECT button pressed
+	Requests phone to send list of actions (Packet 5 from phone)
 	Additional data:
 		1 = Unique notification id (int32)
+		2 = If present, button was held instead of just pressed.
 
-	Packet 13 - Send canned responses
-	Requests phone to send action names (Packet 6 from phone)
-	Additional data:
-		1 = Unique notification id (int32)
-		2 = Send responses from this index beyond
 
-	Packet 14 - Send canned responses
+	Packet 13 - Send action list items
+	Requests phone to continue send action names (Packet 6 from phone)
 	Additional data:
-		1 = Unique id of notification - int32
-		2 = Canned response index - uint8
+		1 = Unique notification id (int32)	
+		2 = Send responses from this index beyond (If this is missing, packet acts as ACK that everything came through)
 
 Phone --> Pebble
 
@@ -87,9 +83,6 @@ Phone --> Pebble
 			[2] = Periodic vibration interval
 			[3] = Number of bytes in vibration pattern
 			[4,5,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
-			[6+] = Number of actions (up to 5) 
-				(array position may be higher than 6 due to bytes taken by vibration pattern. You must append number of vibration pattern bytes to 4 to get actual number)
-			[7+] = Action menu mode (0 = Disabled, 1 = Press SELECt, 2 = Hold SELECT)
 		5 = Title (max 30 bytes) - cstring
 		6 = Subtitle (max 30 bytes) - cstring
 		
@@ -137,16 +130,10 @@ Phone --> Pebble
 	Additional data:
 		1 = Unique notification id (int32)		
 
-	Packet 5 - Notification action names
+    Packet 5 - Action list names - Names of items in action list
     Additional data:
-    	1 = Unique notification id (int32)
-        3 = Names of actions (up to 5) - multiple null-terminated strings (up to 19 chars each) in one byte array
-
-    Packet 6 - Canned responses texts
-    Additional data:
-    	1 = Unique notification id (int32)
-        2 = Number of all canned reponses (uint8)
-        3 = Index of the first canned reponse in this packet (uint8)
-        4 = Canned responses (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
+        1 = Number of all actions (uint8)
+        2 = Index of the first canned reponse in this packet (uint8)
+        3 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
 
 

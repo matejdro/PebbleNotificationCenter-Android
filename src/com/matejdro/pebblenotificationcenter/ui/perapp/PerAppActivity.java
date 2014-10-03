@@ -78,7 +78,11 @@ public class PerAppActivity extends Activity
         linkCheckboxToSetting(R.id.enableVoiceReplyCheck, AppSetting.ENABLE_VOICE_REPLY);
         linkCheckboxToSetting(R.id.useWearGroupNotificationsCheck, AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
 
-        linkSpinnerToSetting(R.id.actionMenuModeSpinner, AppSetting.ACTIONS_MENU_MODE, R.array.settingActionMenuModeOptions);
+        linkSpinnerToSetting(R.id.selectPressActionSpinner, AppSetting.SELECT_PRESS_ACTION, R.array.settingSelectButtonAction);
+        linkSpinnerToSetting(R.id.selecttHoldActionSpinner, AppSetting.SELECT_HOLD_ACTION, R.array.settingSelectButtonAction);
+        linkSpinnerToSetting(R.id.dismissOnPhoneSpinner, AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility);
+        linkSpinnerToSetting(R.id.dismissOnPebbleSpinner, AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION, R.array.settingActionVisibility);
+        linkSpinnerToSetting(R.id.openOnPhoneSpinner, AppSetting.OPEN_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility);
 
         //Two special checkboxes that are not linked to AppSetting
         CheckBox checkBox = (CheckBox) findViewById(R.id.isAppSelectedCheck);
