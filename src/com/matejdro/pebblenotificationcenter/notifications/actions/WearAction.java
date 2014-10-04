@@ -40,14 +40,16 @@ public class WearAction extends NotificationAction
         firstItemIsVoice = false;
     }
 
-    public static WearAction parseFromBundle(Bundle bundle)
+    public static NotificationAction parseFromBundle(Bundle bundle)
     {
         String title = bundle.getCharSequence("title").toString() + " (Wear)";
         PendingIntent actionIntent = bundle.getParcelable("actionIntent");
 
         Parcelable[] remoteInputs = (Parcelable[]) bundle.getParcelableArray("remoteInputs");
         if (remoteInputs == null || remoteInputs.length == 0)
-            return null;
+        {
+            return new IntentAction(title, actionIntent);
+        }
 
         Bundle firstRemoteInput = (Bundle) remoteInputs[0];
         String key = firstRemoteInput.getString("resultKey");
