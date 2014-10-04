@@ -75,13 +75,19 @@ public class ActionParser
 
             if (wearExtras.containsKey("actions"))
             {
-                ArrayList<Bundle> actionList = (ArrayList<Bundle>) wearExtras.get("actions");
-                for (Bundle b : actionList)
+                ArrayList<?> actionList = (ArrayList<?>) wearExtras.get("actions");
+                for (Object obj : actionList)
                 {
                     if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                         break;
 
-                    NotificationAction action = WearAction.parseFromBundle(b);
+                    NotificationAction action = null;
+
+                    if (obj instanceof  Bundle)
+                        action = WearAction.parseFromBundle((Bundle) obj);
+                    else if (obj instanceof Notification.Action)
+                        action = WearAction.parseFromAction((Notification.Action) obj);
+
                     if (action != null)
                         storage.add(action);
                 }

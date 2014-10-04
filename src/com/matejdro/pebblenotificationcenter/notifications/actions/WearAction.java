@@ -1,7 +1,9 @@
 package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.RemoteInput;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
@@ -54,6 +56,33 @@ public class WearAction extends NotificationAction
         Bundle firstRemoteInput = (Bundle) remoteInputs[0];
         String key = firstRemoteInput.getString("resultKey");
         CharSequence[] choices = firstRemoteInput.getCharSequenceArray("choices");
+
+        String[] choicesString = new String[0];
+        if (choices != null)
+        {
+            choicesString = new String[choices.length];
+            for (int i = 0; i < choices.length; i++)
+                choicesString[i] = choices[i].toString();
+        }
+
+        return new WearAction(title, actionIntent, key, choicesString);
+    }
+
+    @TargetApi(value = Build.VERSION_CODES.L)
+    public static NotificationAction parseFromAction(Notification.Action action)
+    {
+        String title = action.title.toString() + " (Wear)";
+        PendingIntent actionIntent = action.actionIntent;
+
+        RemoteInput[] remoteInputs = action.getRemoteInputs();
+        if (remoteInputs == null || remoteInputs.length == 0)
+        {
+            return new IntentAction(title, actionIntent);
+        }
+
+        RemoteInput firstRemoteInput =  remoteInputs[0];
+        String key = firstRemoteInput.getResultKey();
+        CharSequence[] choices = firstRemoteInput.getChoices();
 
         String[] choicesString = new String[0];
         if (choices != null)
