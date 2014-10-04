@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
@@ -106,13 +107,42 @@ public class NotificationHandler {
         if (!extras.containsKey("android.support.groupKey"))
             return;
 
-        pebbleNotification.setWearGroupKey(extras.getString("android.support.groupKey"));
+        String groupKey = extras.getString("android.support.groupKey");
+        boolean summary = extras.getBoolean("android.support.isGroupSummary", false);
 
-        if (extras.getBoolean("android.support.isGroupSummary", false))
+        if (summary && hasPages(extras))
+            return;
+
+        pebbleNotification.setWearGroupKey(groupKey);
+
+        if (summary)
+        {
             pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY);
+        }
         else
             pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE);
 
+    }
+
+    /*
+        Some apps (*ahem* Whatsapp *ahem*) seem to not follow standards and show first Wear notification as a group summary instead of regular notification.
+        This check is attempt to fix that.
+     */
+    public static boolean hasPages(Bundle extras)
+    {
+        if (!extras.containsKey("android.wearable.EXTENSIONS"))
+            return false;
+
+        Bundle wearables = extras.getBundle("android.wearable.EXTENSIONS");
+
+        if (!wearables.containsKey("pages"))
+            return false;
+
+        Parcelable[] pages = wearables.getParcelableArray("pages");
+        if (pages.length < 1)
+            return false;
+
+        return true;
     }
 
 	public static String getAppName(Context context, String packageName)
