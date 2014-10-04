@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <Preference
+            android:title="Most settings are now per-app"
+            android:summary="This menu is now left with only several global settings. Most other settings were moved to per-app settings which means you can set different options for every app. You can get to them by clicking on app name in app list (where you check/uncheck apps) or you can edit default settings, which you can find at the top of the app list."/>
+
     <PreferenceCategory android:title="New notification popup" >
         <CheckBoxPreference
             android:key="noNotifications"
