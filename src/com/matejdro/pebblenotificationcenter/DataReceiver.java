@@ -29,6 +29,15 @@ public class DataReceiver extends BroadcastReceiver {
 	
 
 	public void onReceive(final Context context, final Intent intent) {
+        if ("com.getpebble.action.PEBBLE_CONNECTED".equals(intent.getAction()))
+        {
+            Intent startIntent = new Intent(context, PebbleTalkerService.class);
+            startIntent.putExtra("PebbleConnected", true);
+            context.startService(startIntent);
+
+            return;
+        }
+
 		final UUID receivedUuid = (UUID) intent.getSerializableExtra(APP_UUID);
 
 		// Pebble-enabled apps are expected to be good citizens and only inspect broadcasts containing their UUID

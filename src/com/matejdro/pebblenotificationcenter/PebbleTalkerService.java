@@ -145,7 +145,10 @@ public class PebbleTalkerService extends Service
 
                 processDismissUpwards(pkg, false);
             }
-
+            else if (intent.hasExtra("PebbleConnected"))
+            {
+                pebbleReconnected();
+            }
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -884,6 +887,12 @@ public class PebbleTalkerService extends Service
         }
 
         editor.apply();
+    }
+
+    private void pebbleReconnected()
+    {
+        if (sendingQueue.size() > 0 || curSendingNotification != null)
+            openApp();
     }
 
 	private void receivedPacketFromPebble(String jsonPacket)
