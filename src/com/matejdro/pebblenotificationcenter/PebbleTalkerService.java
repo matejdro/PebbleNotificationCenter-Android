@@ -128,7 +128,8 @@ public class PebbleTalkerService extends Service
             {
                 String jsonPacket = intent.getStringExtra("packet");
                 receivedPacketFromPebble(jsonPacket);
-            } else if (intent.hasExtra("dismissUpwardsId"))
+            }
+            else if (intent.hasExtra("dismissUpwardsId"))
             {
                 int id = intent.getIntExtra("dismissUpwardsId", -1);
                 String pkg = intent.getStringExtra("pkg");
@@ -136,6 +137,13 @@ public class PebbleTalkerService extends Service
 
                 processDismissUpwards(id, pkg, tag, false);
             }
+            else if (intent.hasExtra("dismissUpwardsPackage"))
+            {
+                String pkg = intent.getStringExtra("dismissUpwardsPackage");
+
+                processDismissUpwards(pkg, false);
+            }
+
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -264,6 +272,62 @@ public class PebbleTalkerService extends Service
             }
         }
     }
+
+    public void processDismissUpwards(String pkg, boolean dontClose)
+    {
+        Timber.d("got package dismiss: " + pkg );
+
+        AppSettingStorage settingsStorage;
+        if (pkg == null)
+            settingsStorage = defaultSettingsStorage;
+        else
+            settingsStorage = new SharedPreferencesAppStorage(this, pkg, defaultSettingsStorage, true);
+
+        boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
+        if (!syncDismissUp)
+            return;
+
+        for (int i = 0; i < sentNotifications.size(); i++)
+        {
+            ProcessedNotification notification = sentNotifications.valueAt(i);
+
+            if (!notification.source.isListNotification() && notification.source.getPackage().equals(pkg))
+            {
+                Timber.tag("NC Upwards debug");
+                Timber.d("	rem notifications check: %b %d", commBusy, sendingQueue.size());
+                if (commBusy)
+                {
+                    notificationRemovalQueue.add(notification.id);
+                    continue;
+                }
+
+                dismissOnPebble(notification.id, dontClose);
+            }
+        }
+
+        //Remove now dismissed notification from queue so it does not spam Pebble later
+        Iterator<ProcessedNotification> iterator = sendingQueue.iterator();
+        while (iterator.hasNext())
+        {
+            ProcessedNotification notification = iterator.next();
+
+            if (!notification.source.isListNotification() && notification.source.getPackage().equals(pkg))
+            {
+                iterator.remove();
+            }
+        }
+        for (int i = 0; i < sentNotifications.size(); i++)
+        {
+            ProcessedNotification notification = sentNotifications.valueAt(i);
+
+            if (!notification.source.isListNotification() && notification.source.getPackage().equals(pkg))
+            {
+                sentNotifications.removeAt(i);
+                i--;
+            }
+        }
+    }
+
 
     private void dismissOnPebbleSucceeded(PebbleDictionary data)
     {

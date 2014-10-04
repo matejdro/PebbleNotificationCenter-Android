@@ -52,10 +52,6 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
-//        int id = intent.getIntExtra("dismissUpwardsId", -1);
-//        String pkg = intent.getStringExtra("pkg");
-//        String tag = intent.getStringExtra("tag");
-
         Intent intent = new Intent(this, PebbleTalkerService.class);
         intent.putExtra("dismissUpwardsId", sbn.getId());
         intent.putExtra("pkg", sbn.getPackageName());
