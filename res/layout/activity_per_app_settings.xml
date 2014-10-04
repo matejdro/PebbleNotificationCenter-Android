@@ -424,93 +424,6 @@
                 style="@style/AppSettingSeparator"
                 />
 
-        <!-- Dismiss on Pebble position -->
-        <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppSettingParent"
-                android:id="@+id/dismissOnPebbleView">
-
-            <TextView
-                    android:id="@+id/dismissOnPebbleName"
-                    android:layout_alignParentLeft="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/AppSettingsName"
-                    android:text="@string/dismissOnPebblePosition"
-                    />
-
-            6
-            <Spinner
-                    android:id="@+id/dismissOnPebbleSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/dismissOnPebbleName"/>
-
-        </RelativeLayout>
-        <View
-                android:layout_width="fill_parent"
-                style="@style/AppSettingSeparator"
-                />
-
-        <!-- Dismiss on Pebble position -->
-        <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppSettingParent"
-                android:id="@+id/dismissOnPhoneView">
-
-            <TextView
-                    android:id="@+id/dismissOnPhoneName"
-                    android:layout_alignParentLeft="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/AppSettingsName"
-                    android:text="@string/settingDismissOnPhone"
-                    />
-
-
-            <Spinner
-                    android:id="@+id/dismissOnPhoneSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/dismissOnPhoneName"/>
-
-        </RelativeLayout>
-        <View
-                android:layout_width="fill_parent"
-                style="@style/AppSettingSeparator"
-                />
-
-        <!-- Open on phone position -->
-        <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppSettingParent"
-                android:id="@+id/openOnPhoneView">
-
-            <TextView
-                    android:id="@+id/openOnPhoneName"
-                    android:layout_alignParentLeft="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/AppSettingsName"
-                    android:text="@string/settingOpenOnPhonePosition"
-                    />
-
-            6
-            <Spinner
-                    android:id="@+id/openOnPhoneSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/openOnPhoneName"/>
-
-        </RelativeLayout>
-        <View
-                android:layout_width="fill_parent"
-                style="@style/AppSettingSeparator"
-                />
-
         <!-- SELECT hold action -->
         <RelativeLayout
                 android:layout_width="fill_parent"
@@ -550,6 +463,93 @@
                 style="@style/AppSettingSeparator"
                 />
 
+        <!-- Dismiss on Phone position -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/dismissOnPhoneView">
+
+            <TextView
+                    android:id="@+id/dismissOnPhoneName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingDismissOnPhone"
+                    />
+
+
+            <Spinner
+                    android:id="@+id/dismissOnPhoneSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dismissOnPhoneName"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+
+        <!-- Dismiss on Pebble position -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/dismissOnPebbleView">
+
+            <TextView
+                    android:id="@+id/dismissOnPebbleName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/dismissOnPebblePosition"
+                    />
+
+
+            <Spinner
+                    android:id="@+id/dismissOnPebbleSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dismissOnPebbleName"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- Open on phone position -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/openOnPhoneView">
+
+            <TextView
+                    android:id="@+id/openOnPhoneName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingOpenOnPhonePosition"
+                    />
+
+            6
+            <Spinner
+                    android:id="@+id/openOnPhoneSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/openOnPhoneName"/>
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
 
         <!-- Tasker Actions -->
         <RelativeLayout
