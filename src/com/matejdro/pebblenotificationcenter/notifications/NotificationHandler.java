@@ -124,10 +124,6 @@ public class NotificationHandler {
 
     }
 
-    /*
-        Some apps (*ahem* Whatsapp *ahem*) seem to not follow standards and show first Wear notification as a group summary instead of regular notification.
-        This check is attempt to fix that.
-     */
     public static boolean hasPages(Bundle extras)
     {
         if (!extras.containsKey("android.wearable.EXTENSIONS"))
