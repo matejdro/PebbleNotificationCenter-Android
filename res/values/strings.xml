@@ -372,7 +372,7 @@
     <string name="openOnPhone">Open on phone</string>
     <string name="settingSelectPress">SELECT press action</string>
     <string name="settingSelectPressDescription">
-        <![CDATA[What happens when you press SELECT button on Pebble. Menu actions are equal to pressing corresponding action in action menu. For example if you pick &quot;Action menu item 3&quot; then pressing SELECT button would be equal to opening action menu and selecting 3rd action.]]></string>
+        What happens when you press SELECT button on Pebble. Menu actions are equal to pressing corresponding action in action menu. For example if you pick \&quot;Action menu item 3\&quot; then pressing SELECT button would be equal to opening action menu and selecting 3rd action.</string>
     <string name="settingSelectHold">SELECT hold action</string>
     <string name="settingSelectHoldDescription">Same as above except that this actions is executed when you hold SELECT
         button.
