@@ -494,7 +494,11 @@ public class PebbleTalkerService extends Service
             return;
         }
 
+        boolean oldBusy = commBusy;
+        commBusy = true; //Prevent service from sending dismiss actions before app is even open
         processDismissUpwards(notificationSource.getAndroidID(), notificationSource.getPackage(), notificationSource.getTag(), true);
+        commBusy = oldBusy;
+
         sentNotifications.put(notification.id, notification);
 
         String text = notificationSource.getText();
