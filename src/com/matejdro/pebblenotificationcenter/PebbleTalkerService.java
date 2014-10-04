@@ -49,6 +49,8 @@ public class PebbleTalkerService extends Service
     public static final UUID UNKNOWN_UUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
     public static final UUID MAIN_MENU_UUID = UUID.fromString("dec0424c-0625-4878-b1f2-147e57e83688");
 
+    public static final int TEXT_LIMIT = 900;
+
     private static PebbleTalkerService instance;
 
     private SharedPreferences settings;
@@ -174,6 +176,7 @@ public class PebbleTalkerService extends Service
         flags |= (byte) (notification.source.isDismissable() ? 0x01 : 0);
         flags |= (byte) (notification.source.isListNotification() ? 0x2 : 0);
         flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || notification.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
+        flags |= (byte) (notification.source.shouldScrollToEnd() ? 0x8 : 0);
 
         configBytes[0] = Byte.parseByte(settings.getString("textSize", "0"));
         configBytes[1] = flags;
@@ -370,7 +373,7 @@ public class PebbleTalkerService extends Service
         if (notificationSource.getTitle().trim().equals(notificationSource.getSubtitle().trim()))
             notificationSource.setSubtitle("");
 
-        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), 900));
+        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), TEXT_LIMIT));
         notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
         notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
 
@@ -389,7 +392,7 @@ public class PebbleTalkerService extends Service
         if (!notificationSource.isListNotification())
         {
 
-            if (notificationSource.getAndroidID() != null)
+            if (notificationSource.getAndroidID() != 0)
             {
                 //Preventing spamming of equal notifications
                 for (int i = 0; i < sentNotifications.size(); i++)
@@ -397,6 +400,7 @@ public class PebbleTalkerService extends Service
                     ProcessedNotification comparing = sentNotifications.valueAt(i);
                     if (notificationSource.hasIdenticalContent(comparing.source))
                     {
+                        Timber.d("notify failed - same notification exists");
                         return;
                     }
                 }
@@ -409,14 +413,20 @@ public class PebbleTalkerService extends Service
             {
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 if (pm.isScreenOn())
+                {
+                    Timber.d("notify failed - screen is on");
                     return;
+                }
             }
 
             if (settings.getBoolean(PebbleNotificationCenter.NO_NOTIFY_VIBRATE, false))
             {
                 AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 if (am.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
+                {
+                    Timber.d("notify failed - ringer is silent");
                     return;
+                }
 
             }
 
@@ -438,12 +448,16 @@ public class PebbleTalkerService extends Service
 
                 if ((endTime > startTime && curTime <= endTime && curTime >= startTime) || (endTime < startTime && (curTime <= endTime || curTime >= startTime)))
                 {
+                    Timber.d("notify failed - quiet time");
                     return;
                 }
             }
 
             if (settings.getBoolean("noNotificationsNoPebble", false) && !isWatchConnected())
+            {
+                Timber.d("notify failed - watch not connected");
                 return;
+            }
 
             updateCurrentlyRunningApp();
             int pebbleAppMode = 0;
@@ -461,6 +475,7 @@ public class PebbleTalkerService extends Service
                 return;
             } else if (pebbleAppMode == 2) //No notification
             {
+                Timber.d("notify failed - pebble app");
                 return;
             }
         }
@@ -475,6 +490,7 @@ public class PebbleTalkerService extends Service
         if (!notification.source.isListNotification() && !canDisplayWearGroupNotification(notification.source, settingStorage))
         {
             sentNotifications.put(notification.id, notification);
+            Timber.d("notify failed - group");
             return;
         }
 
@@ -494,6 +510,7 @@ public class PebbleTalkerService extends Service
 
         if (commBusy)
         {
+            Timber.d("notify queued");
             sendingQueue.add(notification);
         } else
             send(notification);
@@ -696,49 +713,6 @@ public class PebbleTalkerService extends Service
         if (commWentIdle())
             return;
     }
-
-//    private void actionRequested(PebbleDictionary data)
-//    {
-//        int id = data.getInteger(1).intValue();
-//        int action = data.getUnsignedInteger(3).intValue();
-//
-//        Timber.d("Dismiss requested. Close: " + data.contains(2) + " action: " + action);
-//
-//        ProcessedNotification notification = sentNotifications.get(id);
-//        if (notification != null)
-//        {
-//            ActionList list = notification.activeActionList;
-//            if (list != null)
-//            {
-//                list.itemPicked();
-//            }
-//
-////            switch (action)
-////            {
-////                case 0: //Dismiss
-////                    dismissOnPhone(notification);
-////                    break;
-////                case 2: //Open
-////                    if (notification.source.getOpenAction() != null)
-////                        try
-////                        {
-////                            notification.source.getOpenAction().send();
-////                        } catch (PendingIntent.CanceledException e)
-////                        {
-////                            e.printStackTrace();
-////                        }
-////                    break;
-////               default:
-////                   int customActionID = action - 3;
-////                   NotificationAction notificationAction = notification.source.getActions().get(customActionID);
-////                   notificationAction.executeAction(this, notification);
-////                   notification.activeAction = notificationAction;
-////            }
-//        }
-//
-//        if (data.contains(2))
-//            closeApp();
-//    }
 
     private void pebbleSelectPressed(PebbleDictionary data)
     {

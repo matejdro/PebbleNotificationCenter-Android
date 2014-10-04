@@ -27,6 +27,7 @@ public class PebbleNotification implements Parcelable
     private boolean forceActionMenu;
     private boolean forceSwitch;
     private boolean listNotification;
+    private boolean scrollToEnd;
     private String wearGroupKey;
 
     public static final int WEAR_GROUP_TYPE_DISABLED = 0;
@@ -41,7 +42,6 @@ public class PebbleNotification implements Parcelable
         this.pkg = pkg;
         this.subtitle = "";
 
-
         androidID = -1;
         postTime = System.currentTimeMillis();
         dismissable = false;
@@ -49,10 +49,12 @@ public class PebbleNotification implements Parcelable
         forceActionMenu = false;
         forceSwitch = false;
         listNotification = false;
+        scrollToEnd = false;
+
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
     }
 
-    public Integer getAndroidID()
+    public int getAndroidID()
     {
         return androidID;
     }
@@ -215,6 +217,16 @@ public class PebbleNotification implements Parcelable
         this.wearGroupType = wearGroupType;
     }
 
+    public boolean shouldScrollToEnd()
+    {
+        return scrollToEnd;
+    }
+
+    public void setScrollToEnd(boolean scrollToEnd)
+    {
+        this.scrollToEnd = scrollToEnd;
+    }
+
     public boolean isInSameGroup(PebbleNotification comparing)
     {
         if (getWearGroupType() == WEAR_GROUP_TYPE_DISABLED || comparing.getWearGroupType() == WEAR_GROUP_TYPE_DISABLED)
@@ -252,6 +264,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeByte((byte) (forceActionMenu ? 1 : 0));
         parcel.writeByte((byte) (listNotification ? 1 : 0));
         parcel.writeByte((byte) (forceSwitch ? 1 : 0));
+        parcel.writeByte((byte) (scrollToEnd ? 1 : 0));
         parcel.writeLong(postTime);
         parcel.writeValue(tag);
         parcel.writeValue(subtitle);
@@ -277,6 +290,7 @@ public class PebbleNotification implements Parcelable
             notification.forceActionMenu = parcel.readByte() == 1;
             notification.listNotification = parcel.readByte() == 1;
             notification.forceSwitch = parcel.readByte() == 1;
+            notification.scrollToEnd = parcel.readByte() == 1;
             notification.postTime = parcel.readLong();
             notification.tag = (String) parcel.readValue(getClass().getClassLoader());
             notification.subtitle = (String) parcel.readValue(getClass().getClassLoader());

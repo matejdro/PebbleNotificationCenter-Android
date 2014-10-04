@@ -77,6 +77,20 @@ public class TextUtil
         return text;
     }
 
+    public static String trimStringFromBack(String text, int length)
+    {
+        if (text == null)
+            return null;
+
+        while (text.getBytes().length > length)
+        {
+            text = text.substring(1);
+        }
+
+        return text;
+    }
+
+
     public static boolean isInteger(String text)
     {
         try

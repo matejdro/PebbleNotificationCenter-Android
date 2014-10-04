@@ -9,8 +9,6 @@ import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
-import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
-import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -38,17 +36,9 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 		{
 			StatusBarNotification sbn = sbns[i];
 			Notification notification = sbn.getNotification();
-			NotificationParser parser = new NotificationParser(service,sbn.getPackageName(),  notification);
 
-            PebbleNotification pn = new PebbleNotification(NotificationHandler.getAppName(service, sbn.getPackageName()), parser.text, sbn.getPackageName());
-            pn.setAndroidID(sbn.getId());
-            pn.setDismissable(sbn.isClearable());
-            pn.setSubtitle(parser.title);
-            pn.setPostTime(sbn.getPostTime());
-            pn.setTag(sbn.getTag());
+            PebbleNotification pn = NotificationHandler.getPebbleNotificationFromAndroidNotification(service, sbn.getPackageName(), notification, sbn.getId(), sbn.getTag(), sbn.isClearable());
             pn.setListNotification(true);
-
-            ActionParser.loadActions(notification, pn, service);
 
             notifications[i] = pn;
 		}

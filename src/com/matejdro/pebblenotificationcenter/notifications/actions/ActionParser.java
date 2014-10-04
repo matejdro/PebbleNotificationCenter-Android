@@ -6,12 +6,16 @@ import android.app.Notification;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
+import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
+import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +46,9 @@ public class ActionParser
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
             if (settingStorage.getBoolean(AppSetting.LOAD_WEAR_ACTIONS))
-                ActionParser.parseWearActions(notification, actions);
+                ActionParser.parseWearActions(context, notification, pebbleNotification, actions);
 
-            ActionParser.parseNativeActions(notification, actions);
+            ActionParser.parseNativeActions(notification, pebbleNotification, actions);
         }
 
         if (settingStorage.getInt(AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS && pebbleNotification.isDismissable())
@@ -58,20 +62,20 @@ public class ActionParser
 
     }
 
-    public static void parseWearActions(Notification notification, List<NotificationAction> storage)
+    public static void parseWearActions(Context context, Notification notification, PebbleNotification pebbleNotification, List<NotificationAction> storage)
     {
         if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
             return;
 
-        Bundle bundle = NotificationParser.getExtras(notification);
+        Bundle extras = NotificationParser.getExtras(notification);
 
-        if (bundle.containsKey("android.wearable.EXTENSIONS"))
+        if (extras.containsKey("android.wearable.EXTENSIONS"))
         {
-            Bundle bundle1 = bundle.getBundle("android.wearable.EXTENSIONS");
+            Bundle wearExtras = extras.getBundle("android.wearable.EXTENSIONS");
 
-            if (bundle1.containsKey("actions"))
+            if (wearExtras.containsKey("actions"))
             {
-                ArrayList<Bundle> actionList = (ArrayList<Bundle>) bundle1.get("actions");
+                ArrayList<Bundle> actionList = (ArrayList<Bundle>) wearExtras.get("actions");
                 for (Bundle b : actionList)
                 {
                     if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
@@ -82,11 +86,34 @@ public class ActionParser
                         storage.add(action);
                 }
             }
+
+            if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                return;
+
+            if (wearExtras.containsKey("pages"))
+            {
+                Parcelable[] pages = wearExtras.getParcelableArray("pages");
+                int counter = 1;
+                for (Parcelable page : pages)
+                {
+                    if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                        return;
+
+                    PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, pebbleNotification.getPackage(), (Notification) page, 0, null, false);
+                    pageNotification.setForceSwitch(true);
+                    pageNotification.setScrollToEnd(true);
+                    pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), PebbleTalkerService.TEXT_LIMIT));
+
+                    storage.add(new NotifyAction(String.format("Page %d", counter), pageNotification));
+
+                    counter++;
+                }
+            }
         }
     }
 
     @SuppressLint("NewApi")
-    public static void parseNativeActions(Notification notification, List<NotificationAction> storage)
+    public static void parseNativeActions(Notification notification, PebbleNotification pebbleNotification, List<NotificationAction> storage)
     {
         if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
             return;

@@ -3,10 +3,11 @@ package com.matejdro.pebblenotificationcenter.notifications;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
-import android.text.style.CharacterStyle;
+import android.text.style.StyleSpan;
 import android.widget.RemoteViews;
 import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
@@ -61,8 +62,8 @@ public class NotificationParser {
             if (parseInboxNotification(context, pkg, extras))
                 return true;
         }
-		if ((extras.get(Notification.EXTRA_TITLE) == null && extras.get(Notification.EXTRA_TITLE_BIG) == null) ||
-			(extras.get(Notification.EXTRA_TEXT) == null && extras.get(Notification.EXTRA_TEXT_LINES) == null))
+
+		if ((extras.get(Notification.EXTRA_TEXT) == null && extras.get(Notification.EXTRA_TEXT_LINES) == null))
 		{
 			return false;
 		}
@@ -75,26 +76,26 @@ public class NotificationParser {
 			else
 				title = extras.getCharSequence(Notification.EXTRA_TITLE).toString();
 		}
-		else
+		else if (extras.get(Notification.EXTRA_TITLE) != null)
 			title = extras.getCharSequence(Notification.EXTRA_TITLE).toString();
 
         if (extras.get(Notification.EXTRA_TEXT_LINES) != null)
         {
             for (CharSequence line : extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES))
             {
-                text += line + "\n\n";
+                text += formatCharSequence(line) + "\n\n";
             }
             text = text.trim();
         }
         else
         {
-            text = extras.getCharSequence(Notification.EXTRA_TEXT).toString();
+            text = formatCharSequence(extras.getCharSequence(Notification.EXTRA_TEXT));
         }
 
         if (extras.get(Notification.EXTRA_SUB_TEXT) != null)
         {
             text = text.trim();
-            text= text + "\n\n" + extras.getCharSequence(Notification.EXTRA_SUB_TEXT).toString();
+            text= text + "\n\n" + formatCharSequence(extras.getCharSequence(Notification.EXTRA_SUB_TEXT));
         }
 
 
@@ -126,7 +127,7 @@ public class NotificationParser {
         int i = reverse ? lines.length - 1 : 0;
         while (true)
         {
-            text += formatSpannable(lines[i]) + "\n\n";
+            text += formatCharSequence(lines[i]) + "\n\n";
 
             if (stopFirst)
                 break;
@@ -150,7 +151,7 @@ public class NotificationParser {
         return true;
     }
 
-    private String formatSpannable(CharSequence sequence)
+    private String formatCharSequence(CharSequence sequence)
     {
         if (!(sequence instanceof SpannableString))
         {
@@ -158,22 +159,29 @@ public class NotificationParser {
         }
 
         SpannableString spannableString = (SpannableString) sequence;
+        String text = spannableString.toString();
 
-        CharacterStyle[] spans = spannableString.getSpans(0, spannableString.length(), CharacterStyle.class);
+        StyleSpan[] spans = spannableString.getSpans(0, spannableString.length(), StyleSpan.class);
 
-        if (spans.length == 0)
-            return sequence.toString();
 
-        CharacterStyle firstSpan = spans[0];
-        if (spannableString.getSpanStart(firstSpan) != 0)
-            return sequence.toString();
+       int addedLength = 0;
 
-        int formatEnd = spannableString.getSpanEnd(firstSpan);
+       for (int i = spans.length - 1; i >= 0; i--)
+       {
+          StyleSpan span = spans[i];
+          if (span.getStyle() == Typeface.BOLD)
+          {
+              text = insertString(text, "\n",  spannableString.getSpanEnd(span));
+              addedLength++;
+          }
+       }
 
-        String firstLine = spannableString.subSequence(0, formatEnd).toString();
-        String secondLine = spannableString.subSequence(formatEnd, spannableString.length()).toString();
+        return text;
+    }
 
-        return firstLine + "\n" + secondLine;
+    private static String insertString(String text, String insert, int pos)
+    {
+        return text.substring(0, pos).trim().concat(insert).concat(text.substring(pos).trim());
     }
 
 	private void getExtraData(Notification notification) {
@@ -258,23 +266,21 @@ public class NotificationParser {
 
 				Field valueField = action.getClass().getDeclaredField("value");
 				valueField.setAccessible(true);
-				String value = ((CharSequence) valueField.get(action)).toString();
+				CharSequence value = (CharSequence) valueField.get(action);
 				
 				if (value.equals("...")
-						|| isInteger(value)
+						|| isInteger(value.toString())
 						|| text.contains(value)) {
 					continue;
 				}
 
-				value = value.trim();
-
 				if (viewId == android.R.id.title)
 				{
 					if (title == null || title.length() < value.length())
-						title = value;
+						title = value.toString().trim();
 				}
 				else
-					text += value + "\n\n";
+					text += formatCharSequence(value) + "\n\n";
 
 			}
 		} catch (Exception e) {

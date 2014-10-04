@@ -48,25 +48,20 @@ public class NotificationHandler {
 			return;
 		}
 
-		final String title = getAppName(context, pack);
+        PebbleNotification pebbleNotification = getPebbleNotificationFromAndroidNotification(context, pack, notification, id, tag, isDismissible);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+        {
+            parseWearGroupData(notification, pebbleNotification);
+        }
 
-		NotificationParser parser = new NotificationParser(context, pack, notification);
+        if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
+            if (pebbleNotification.getText().length() == 0 && (pebbleNotification.getTitle() == null || pebbleNotification.getSubtitle().length() == 0)) {
+                Timber.d("Discarding notification from %s because it is empty", pack);
+                return;
+            }
+        }
 
-		String secondaryTitle = parser.title;
-		String text = parser.text.trim();
-		
-		if (notification.tickerText != null && (text == null || text.trim().length() == 0)) {
-			text = notification.tickerText.toString();
-		}
-		
-		if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
-			if (text.length() == 0 && (secondaryTitle == null || secondaryTitle.length() == 0)) {
-				Timber.d("Discarding notification from %s because it is empty", pack);
-				return;
-			}
-		}
-
-        String combinedText = title + " " + secondaryTitle + " " + text;
+        String combinedText = pebbleNotification.getTitle() + " " + pebbleNotification.getSubtitle() + " " + pebbleNotification.getText();
 
         List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
         if (regexList.size() > 0 && !containsRegexes(combinedText, regexList))
@@ -76,27 +71,36 @@ public class NotificationHandler {
         if (containsRegexes(combinedText, regexList))
             return;
 
-        PebbleNotification pebbleNotification = new PebbleNotification(title, text, pack);
-        pebbleNotification.setSubtitle(secondaryTitle);
-        if (isDismissible)
-        {
-            pebbleNotification.setDismissable(true);
-            pebbleNotification.setAndroidID(id);
-            pebbleNotification.setTag(tag);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-        {
-            parseWearGroupData(notification, pebbleNotification);
-        }
-
-        ActionParser.loadActions(notification, pebbleNotification, context);
-
         Intent startIntent = new Intent(context, PebbleTalkerService.class);
         startIntent.putExtra("notification", pebbleNotification);
         context.startService(startIntent);
-
     }
+
+    public static PebbleNotification getPebbleNotificationFromAndroidNotification(Context context, String pack, Notification notification, int id, String tag, boolean isDismissible)
+    {
+        final String title = getAppName(context, pack);
+
+        NotificationParser parser = new NotificationParser(context, pack, notification);
+
+        String secondaryTitle = parser.title;
+        String text = parser.text.trim();
+
+        if (notification.tickerText != null && (text == null || text.trim().length() == 0)) {
+            text = notification.tickerText.toString();
+        }
+
+        PebbleNotification pebbleNotification = new PebbleNotification(title, text, pack);
+        pebbleNotification.setSubtitle(secondaryTitle);
+        pebbleNotification.setDismissable(isDismissible);
+        pebbleNotification.setAndroidID(id);
+        pebbleNotification.setTag(tag);
+
+
+        ActionParser.loadActions(notification, pebbleNotification, context);
+
+        return pebbleNotification;
+    }
+
 
     public static void parseWearGroupData(Notification notification, PebbleNotification pebbleNotification)
     {
