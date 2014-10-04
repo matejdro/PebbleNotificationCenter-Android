@@ -437,7 +437,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/AppSettingsName"
-                    android:text="@string/settingDismissOnPhone"
+                    android:text="@string/dismissOnPebblePosition"
                     />
 
             6
@@ -466,7 +466,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/AppSettingsName"
-                    android:text="@string/dismissOnPebblePosition"
+                    android:text="@string/settingDismissOnPhone"
                     />
 
 
