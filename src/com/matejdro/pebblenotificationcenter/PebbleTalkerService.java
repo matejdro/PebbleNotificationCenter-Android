@@ -715,7 +715,7 @@ public class PebbleTalkerService extends Service
         }
         else
         {
-            action -= 2;
+            action -= 3;
             if (notification.source.getActions().size() <= action)
                 return;
 
