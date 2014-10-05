@@ -41,6 +41,11 @@
             android:key="watchappTimeout"
             android:summary="After this amount of seconds being idle, watchapp will close automaticaly. You can press any button on watch to stop this timer. Enter 0 to disable."
             android:title="Auto-Close timeout"/>
+        <EditTextPreference
+                android:defaultValue="0"
+                android:key="periodicVibrationTimeout"
+                android:summary="After this amount of seconds being idle, watchapp will stop vibrating periodically. Enter 0 to vibrate indefinitely. Has no effect if periodic vibration is turned off (in per-app settings)."
+                android:title="Periodic vibration timeout"/>
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="closeToLastApp"

@@ -817,12 +817,20 @@ public class PebbleTalkerService extends Service
 
         data.addUint8(0, (byte) 3);
 
-        byte[] configBytes = new byte[11];
+        byte[] configBytes = new byte[13];
 
         int timeout = 0;
         try
         {
             timeout = Math.min(30000, Integer.parseInt(settings.getString("watchappTimeout", "0")));
+        } catch (NumberFormatException e)
+        {
+        }
+
+        int vibratingTimeout = 0;
+        try
+        {
+            vibratingTimeout = Math.min(30000, Integer.parseInt(settings.getString("periodicVibrationTimeout", "0")));
         } catch (NumberFormatException e)
         {
         }
@@ -863,6 +871,8 @@ public class PebbleTalkerService extends Service
         configBytes[8] = (byte) (WatchappHandler.SUPPORTED_PROTOCOL >>> 0x08);
         configBytes[9] = (byte) WatchappHandler.SUPPORTED_PROTOCOL;
         configBytes[10] = (byte) Integer.parseInt(settings.getString(PebbleNotificationCenter.SHAKE_ACTION, "1"));
+        configBytes[11] = (byte) (vibratingTimeout >>> 0x08);
+        configBytes[12] = (byte) vibratingTimeout;
 
         data.addBytes(1, configBytes);
 

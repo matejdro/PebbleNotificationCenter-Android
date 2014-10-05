@@ -123,6 +123,8 @@ Phone --> Pebble
 			[8] = Compatible watchapp version (first byte)
 			[9] = Compatible watchapp version (second byte)
 			[10] = Shake action
+			[11] = Periodic vibration timeout in seconds (first byte)
+			[12] = Periodic vibration timeout in seconds (second byte)
 
 
 	
