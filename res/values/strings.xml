@@ -385,5 +385,6 @@
     <string name="settingLoadPhoneActionsDescription">Load notification actions that appear on the phone\'s
         notifications (buttons below notification text).
     </string>
+    <string name="wearPageAction">Wear page %d</string>
 
 </resources>

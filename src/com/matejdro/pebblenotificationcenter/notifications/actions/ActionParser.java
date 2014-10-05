@@ -111,7 +111,7 @@ public class ActionParser
                     pageNotification.setScrollToEnd(true);
                     pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), PebbleTalkerService.TEXT_LIMIT));
 
-                    storage.add(new NotifyAction(String.format("Page %d", counter), pageNotification));
+                    storage.add(new NotifyAction(context.getString(R.string.wearPageAction, counter), pageNotification));
 
                     counter++;
                 }
