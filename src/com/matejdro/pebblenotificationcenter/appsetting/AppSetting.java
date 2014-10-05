@@ -26,6 +26,7 @@ public enum AppSetting
     DISMISS_ON_PEBBLE_OPTION_LOCATION("dismissOnPebbleLocation", 1),
     OPEN_ON_PHONE_OPTION_LOCATION("openOnPhoneLocation", 1),
     LOAD_WEAR_ACTIONS("loadWearActions", true),
+    LOAD_PHONE_ACTIONS("loadPhoneActions", true),
     ENABLE_VOICE_REPLY("enableVoiceReply", true),
     CANNED_RESPONSES("cannedResponses", null),
     TASKER_ACTIONS("taskerActions", null),

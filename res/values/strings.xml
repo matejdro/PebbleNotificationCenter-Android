@@ -307,9 +307,8 @@
         on the app name to change its settings). Default settings are global settings and apply to every app unless you set different options on specific app and override defaults that way.
     </string>
     <string name="settingCategoryActions">Actions</string>
-    <string name="settingLoadWearActions">Load Android Wear voice actions</string>
-    <string name="settingLoadWearActionsDescription">Load voice actions meant from Android Wear (if app supports it of
-        course)
+    <string name="settingLoadWearActions">Load Android Wear actions</string>
+    <string name="settingLoadWearActionsDescription">Load actions meant for Android Wear (actions that appear when you swipe left on Wear). This includes reply and regular actions.
     </string>
     <string name="settingCannedResponses">Canned responses</string>
     <string name="settingCannedResponsesDescription">Here you can define list of canned responses that you can reply
@@ -382,5 +381,9 @@
     <string name="settingOpenOnPhonePosition">Open on phone action position</string>
     <string name="dismissOnPebble">Dismiss - Pebble</string>
     <string name="dismissOnPhone">Dismiss - Phone</string>
+    <string name="settingLoadPhoneActions">Load phone notification actions</string>
+    <string name="settingLoadPhoneActionsDescription">Load notification actions that appear on the phone\'s
+        notifications (buttons below notification text).
+    </string>
 
 </resources>

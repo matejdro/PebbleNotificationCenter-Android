@@ -61,6 +61,8 @@ public class PerAppActivity extends Activity
         linkViewToCheckbox(R.id.reverseInboxView, R.id.reverseInboxCheck);
         linkViewToCheckbox(R.id.displayFirstOnlyView, R.id.displayFirstOnlyCheck);
         linkViewToCheckbox(R.id.inboxUseSubtextView, R.id.inboxUseSubtextCheck);
+        linkViewToCheckbox(R.id.loadWearActionsView, R.id.loadWearActionsCheck);
+        linkViewToCheckbox(R.id.loadPhoneActionsView, R.id.loadPhoneActionsCheck);
         linkViewToCheckbox(R.id.enableVoiceReplyView, R.id.enableVoiceReplyCheck);
         linkViewToCheckbox(R.id.useWearGroupNotificationsView, R.id.useWearGroupNotificationsCheck);
 
@@ -75,6 +77,7 @@ public class PerAppActivity extends Activity
         linkCheckboxToSetting(R.id.displayFirstOnlyCheck, AppSetting.DISPLAY_ONLY_NEWEST);
         linkCheckboxToSetting(R.id.inboxUseSubtextCheck, AppSetting.INBOX_USE_SUB_TEXT);
         linkCheckboxToSetting(R.id.loadWearActionsCheck, AppSetting.LOAD_WEAR_ACTIONS);
+        linkCheckboxToSetting(R.id.loadPhoneActionsCheck, AppSetting.LOAD_PHONE_ACTIONS);
         linkCheckboxToSetting(R.id.enableVoiceReplyCheck, AppSetting.ENABLE_VOICE_REPLY);
         linkCheckboxToSetting(R.id.useWearGroupNotificationsCheck, AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
 

@@ -48,7 +48,8 @@ public class ActionParser
             if (settingStorage.getBoolean(AppSetting.LOAD_WEAR_ACTIONS))
                 ActionParser.parseWearActions(context, notification, pebbleNotification, actions);
 
-            ActionParser.parseNativeActions(notification, pebbleNotification, actions);
+            if (settingStorage.getBoolean(AppSetting.LOAD_PHONE_ACTIONS))
+                ActionParser.parseNativeActions(notification, pebbleNotification, actions);
         }
 
         if (settingStorage.getInt(AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS && pebbleNotification.isDismissable())

@@ -665,6 +665,49 @@
                 style="@style/AppSettingSeparator"
                 />
 
+        <!-- Load phone notification actions -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/loadPhoneActionsView">
+
+            <CheckBox
+                    android:id="@+id/loadPhoneActionsCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/loadPhoneActionsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/loadPhoneActionsCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingLoadPhoneActions"
+                    />
+
+            <TextView
+                    android:id="@+id/loadPhoneActionsDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/loadPhoneActionsName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/loadPhoneActionsCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingLoadPhoneActionsDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
         <!-- Canned Responses -->
         <RelativeLayout
                 android:layout_width="fill_parent"
