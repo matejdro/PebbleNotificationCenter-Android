@@ -42,7 +42,7 @@ public class PebbleNotification implements Parcelable
         this.pkg = pkg;
         this.subtitle = "";
 
-        androidID = -1;
+        androidID = 0;
         postTime = System.currentTimeMillis();
         dismissable = false;
         noHistory = false;

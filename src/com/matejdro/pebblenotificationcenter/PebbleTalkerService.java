@@ -226,6 +226,9 @@ public class PebbleTalkerService extends Service
 
     public void processDismissUpwards(Integer androidId, String pkg, String tag, boolean dontClose)
     {
+        if (androidId == null || androidId == 0)
+            return;
+
         Timber.d("got dismiss: " + pkg + " " + androidId + " " + tag);
 
         AppSettingStorage settingsStorage;
@@ -743,7 +746,6 @@ public class PebbleTalkerService extends Service
         AppSettingStorage settingStorage = notification.source.getSettingStorage(this);
 
         int action = settingStorage.getInt(relevantSetting);
-
 
         if (notification.source.shouldForceActionMenu() || action == 2)
         {
