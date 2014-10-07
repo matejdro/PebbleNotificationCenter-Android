@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class PebbleNotification implements Parcelable
 {
-    private int androidID;
+    private Integer androidID;
     private String pkg;
     private String tag;
     private String title;
@@ -42,7 +42,7 @@ public class PebbleNotification implements Parcelable
         this.pkg = pkg;
         this.subtitle = "";
 
-        androidID = 0;
+        androidID = null;
         postTime = System.currentTimeMillis();
         dismissable = false;
         noHistory = false;
@@ -54,7 +54,7 @@ public class PebbleNotification implements Parcelable
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
     }
 
-    public int getAndroidID()
+    public Integer getAndroidID()
     {
         return androidID;
     }
@@ -258,7 +258,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeValue(title);
         parcel.writeValue(text);
         parcel.writeValue(pkg);
-        parcel.writeInt(androidID);
+        parcel.writeValue(androidID);
         parcel.writeByte((byte) (dismissable ? 1 : 0));
         parcel.writeByte((byte) (noHistory ? 1 : 0));
         parcel.writeByte((byte) (forceActionMenu ? 1 : 0));
@@ -284,7 +284,7 @@ public class PebbleNotification implements Parcelable
             String pkg = (String) parcel.readValue(String.class.getClassLoader());
 
             PebbleNotification notification = new PebbleNotification(title, text, pkg);
-            notification.androidID = parcel.readInt();
+            notification.androidID = (Integer) parcel.readValue(getClass().getClassLoader());
             notification.dismissable = parcel.readByte() == 1;
             notification.noHistory = parcel.readByte() == 1;
             notification.forceActionMenu = parcel.readByte() == 1;

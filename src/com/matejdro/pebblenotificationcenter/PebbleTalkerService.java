@@ -51,15 +51,13 @@ public class PebbleTalkerService extends Service
 
     public static final int TEXT_LIMIT = 900;
 
-    private static PebbleTalkerService instance;
-
     private SharedPreferences settings;
     private DefaultAppSettingsStorage defaultSettingsStorage;
     private NotificationHistoryStorage historyDb;
     private Handler handler;
 
     private PebbleDeveloperConnection devConn;
-    private static UUID previousUUID;
+    private UUID previousUUID;
 
     private NotificationListAdapter listHandler;
 
@@ -82,7 +80,6 @@ public class PebbleTalkerService extends Service
     @Override
     public void onDestroy()
     {
-        instance = null;
         if (devConn != null)
         {
             devConn.close();
@@ -96,7 +93,6 @@ public class PebbleTalkerService extends Service
     public void onCreate()
     {
         handler = new Handler();
-        instance = this;
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         defaultSettingsStorage = new DefaultAppSettingsStorage(settings, settings.edit());
         historyDb = new NotificationHistoryStorage(this);
@@ -133,7 +129,7 @@ public class PebbleTalkerService extends Service
             }
             else if (intent.hasExtra("dismissUpwardsId"))
             {
-                int id = intent.getIntExtra("dismissUpwardsId", -1);
+                int id = intent.getIntExtra("dismissUpwardsId", 0);
                 String pkg = intent.getStringExtra("pkg");
                 String tag = intent.getStringExtra("tag");
 
@@ -226,10 +222,10 @@ public class PebbleTalkerService extends Service
 
     public void processDismissUpwards(Integer androidId, String pkg, String tag, boolean dontClose)
     {
-        if (androidId == null || androidId == 0)
-            return;
-
         Timber.d("got dismiss: " + pkg + " " + androidId + " " + tag);
+
+        if (androidId == null)
+            return;
 
         AppSettingStorage settingsStorage;
         if (pkg == null)
@@ -398,7 +394,7 @@ public class PebbleTalkerService extends Service
         if (!notificationSource.isListNotification())
         {
 
-            if (notificationSource.getAndroidID() != 0)
+            if (notificationSource.getAndroidID() != null)
             {
                 //Preventing spamming of equal notifications
                 for (int i = 0; i < sentNotifications.size(); i++)
@@ -466,6 +462,7 @@ public class PebbleTalkerService extends Service
             }
 
             updateCurrentlyRunningApp();
+            System.out.println("prev" + previousUUID);
             int pebbleAppMode = 0;
             if (previousUUID != null)
                 pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, previousUUID);
@@ -921,6 +918,8 @@ public class PebbleTalkerService extends Service
         }
 
         int id = data.getUnsignedInteger(0).intValue();
+
+        Timber.d("Pebble packet %d", id);
 
         if (id != 7)
             closingAttempts = 0;
