@@ -242,7 +242,7 @@ public class PebbleNotification implements Parcelable
 
     public boolean isSameNotification(Integer androidId, String pkg, String tag)
     {
-        return this.androidID != -1 && this.androidID == androidId.intValue() && this.pkg != null && this.pkg.equals(pkg) && (this.tag == null || this.tag.equals(tag));
+        return this.androidID != null && this.androidID.equals(androidId) && this.pkg != null && this.pkg.equals(pkg) && (this.tag == null || this.tag.equals(tag));
     }
 
 
