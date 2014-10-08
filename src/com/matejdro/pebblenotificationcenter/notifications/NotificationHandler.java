@@ -76,7 +76,7 @@ public class NotificationHandler {
         context.startService(startIntent);
     }
 
-    public static PebbleNotification getPebbleNotificationFromAndroidNotification(Context context, String pack, Notification notification, int id, String tag, boolean isDismissible)
+    public static PebbleNotification getPebbleNotificationFromAndroidNotification(Context context, String pack, Notification notification, Integer id, String tag, boolean isDismissible)
     {
         final String title = getAppName(context, pack);
 
