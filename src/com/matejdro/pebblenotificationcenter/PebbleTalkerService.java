@@ -115,6 +115,18 @@ public class PebbleTalkerService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        if (devConn == null || devConn.isClosed())
+        {
+            try
+            {
+                devConn = new PebbleDeveloperConnection();
+                devConn.connectBlocking();
+            } catch (InterruptedException e)
+            {
+            } catch (URISyntaxException e)
+            {
+            }
+        }
 
         if (intent != null)
         {
