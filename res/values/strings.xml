@@ -386,5 +386,6 @@
         notifications (buttons below notification text).
     </string>
     <string name="wearPageAction">Wear page %d</string>
+    <string name="errorNoTasker">You need to install tasker to use this action.</string>
 
 </resources>

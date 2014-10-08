@@ -2,9 +2,11 @@ package com.matejdro.pebblenotificationcenter.ui.perapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
+import android.widget.Toast;
 import com.matejdro.pebblenotificationcenter.R;
 import net.dinglisch.android.tasker.TaskerIntent;
 
@@ -36,7 +38,13 @@ public class TaskerTaskList extends ListSetting
     @Override
     protected void openAddDialog(String text)
     {
-        activity.startActivityForResult(TaskerIntent.getTaskSelectIntent(), 0);
+        try
+        {
+            activity.startActivityForResult(TaskerIntent.getTaskSelectIntent(), 0);
+        } catch (ActivityNotFoundException e)
+        {
+            Toast.makeText(activity, R.string.errorNoTasker, Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onActivityResult(Intent data)
