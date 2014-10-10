@@ -49,7 +49,7 @@ public class NotificationHandler {
 		}
 
         PebbleNotification pebbleNotification = getPebbleNotificationFromAndroidNotification(context, pack, notification, id, tag, isDismissible);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
         {
             parseWearGroupData(notification, pebbleNotification);
         }

@@ -336,7 +336,7 @@
     <string name="settingUseWearGroupNotifications">Use Wear group notifications</string>
     <string name="settingUseWearGroupNotificationsDescription">Instead of inbox notifications, display group
         notifications for Android Wear. This will display full individual messages instead of just displaying summary of
-        your inbox when you receive multiple messages. Requires at least Android 4.1 or newer and app needs to implement Android
+        your inbox when you receive multiple messages. Requires at least Android 4.3 or newer and app needs to implement Android
         Wear notifications for it to work.
     </string>
     <string name="taskerNoTasksError">No tasks. Is tasker installed?</string>
