@@ -115,6 +115,7 @@ public class PerAppActivity extends Activity
 
         ((EditText) findViewById(R.id.vibrationPatternEdit)).setText(settingsStorage.getString(AppSetting.VIBRATION_PATTERN));
         ((EditText) findViewById(R.id.periodicVibrationEdit)).setText(settingsStorage.getString(AppSetting.PERIODIC_VIBRATION));
+        ((EditText) findViewById(R.id.minimumVibrationIntervalEdit)).setText(settingsStorage.getString(AppSetting.MINIMUM_VIBRATION_INTERVAL));
 
         taskerTaskList = new TaskerTaskList(this, R.id.taskerActionsList, R.id.taskerActionsAddButton, R.id.taskerActionsEmptyText);
         taskerTaskList.addAll(settingsStorage.getStringList(AppSetting.TASKER_ACTIONS));
@@ -161,6 +162,7 @@ public class PerAppActivity extends Activity
     protected void save()
     {
         settingsStorage.setString(AppSetting.PERIODIC_VIBRATION, ((EditText) findViewById(R.id.periodicVibrationEdit)).getText().toString());
+        settingsStorage.setString(AppSetting.MINIMUM_VIBRATION_INTERVAL, ((EditText) findViewById(R.id.minimumVibrationIntervalEdit)).getText().toString());
 
         String vibrationPattern = ((EditText) findViewById(R.id.vibrationPatternEdit)).getText().toString();
         if (!validateVibrationPattern(vibrationPattern))

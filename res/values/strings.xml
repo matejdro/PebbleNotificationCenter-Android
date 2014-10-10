@@ -387,5 +387,11 @@
     </string>
     <string name="wearPageAction">Wear page %d</string>
     <string name="errorNoTasker">You need to install tasker to use this action.</string>
+    <string name="settingMinimumVibrationInterval">Minimum vibration interval</string>
+    <string name="settingMinimumVibrationIntervalDescription">Allows you to specify minimum amount of seconds that must
+        pass between two notifications for second to vibrate. For example if you set this to 10 and you receive
+        notification, it won\'t vibrate for notifications from this app for next 10 seconds. Useful for group chat notifications where
+        lots of messages can be sent in very short time. Set to 0 to disable.
+    </string>
 
 </resources>

@@ -32,6 +32,7 @@ public enum AppSetting
     TASKER_ACTIONS("taskerActions", null),
     VIBRATION_PATTERN("vibrationPattern", "500"),
     PERIODIC_VIBRATION("settingPeriodicVibration", "20"),
+    MINIMUM_VIBRATION_INTERVAL("minimumVibrationInterval", "0"),
     INCLUDED_REGEX("WhitelistRegexes", null),
     EXCLUDED_REGEX("BlacklistRegexes", null);
 

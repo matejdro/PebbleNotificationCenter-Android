@@ -1118,6 +1118,47 @@
                     android:inputType="number"/>
 
         </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
+        <!-- MinimumVibrationInterval -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/minimumVibrationIntervalView">
+
+            <TextView
+                    android:id="@+id/minimumVibrationIntervalName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingMinimumVibrationInterval"
+                    />
+
+            <TextView
+                    android:id="@+id/minimumVibrationIntervalDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/minimumVibrationIntervalName"
+                    android:layout_alignParentLeft="true"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingMinimumVibrationIntervalDescription"
+                    />
+
+
+            <EditText
+                    android:id="@+id/minimumVibrationIntervalEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/minimumVibrationIntervalDesc"
+                    android:inputType="number"/>
+
+        </RelativeLayout>
+
 
         <!-- SECTION: Regex -->
         <TextView

@@ -33,7 +33,9 @@ import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +69,7 @@ public class PebbleTalkerService extends Service
     ProcessedNotification curSendingNotification;
     private Queue<ProcessedNotification> sendingQueue = new LinkedList<ProcessedNotification>();
     private SparseArray<ProcessedNotification> sentNotifications = new SparseArray<ProcessedNotification>();
+    private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
 
     private LocationLookup locationLookup;
     private int closingAttempts = 0;
@@ -179,7 +182,7 @@ public class PebbleTalkerService extends Service
         }
 
         PebbleDictionary data = new PebbleDictionary();
-        List<Byte> vibrationPattern = AppSetting.parseVibrationPattern(settingStorage);
+        List<Byte> vibrationPattern = getVibrationPattern(notification.source.getPackage(), settingStorage);
 
         byte[] configBytes = new byte[6 + vibrationPattern.size()];
 
@@ -981,6 +984,34 @@ public class PebbleTalkerService extends Service
 
         }
 	}
+
+    private List<Byte> getVibrationPattern(String pkg, AppSettingStorage settingStorage)
+    {
+        Long lastVibration = lastAppVibration.get(pkg);
+        int minInterval = 0;
+
+        try
+        {
+            minInterval = Integer.parseInt(settingStorage.getString(AppSetting.MINIMUM_VIBRATION_INTERVAL));
+        }
+        catch (NumberFormatException e)
+        {
+        }
+
+        if (minInterval == 0 || lastVibration == null ||
+           (System.currentTimeMillis() - lastVibration) > minInterval * 1000)
+        {
+            lastAppVibration.put(pkg, System.currentTimeMillis());
+            return AppSetting.parseVibrationPattern(settingStorage);
+        }
+        else
+        {
+            ArrayList<Byte> list = new ArrayList<Byte>(2);
+            list.add((byte) 0);
+            list.add((byte) 0);
+            return list;
+        }
+    }
 
     private boolean isWatchConnected()
     {
