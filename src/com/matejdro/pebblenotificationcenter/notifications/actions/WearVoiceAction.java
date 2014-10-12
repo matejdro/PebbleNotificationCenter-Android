@@ -114,7 +114,7 @@ public class WearVoiceAction extends NotificationAction
             {
                 cannedResponseList.add(choice);
                 if (cannedResponseList.size() >= 20)
-                    return;
+                    break;
             }
         }
 
@@ -124,7 +124,7 @@ public class WearVoiceAction extends NotificationAction
             {
                 cannedResponseList.add(choice.toString());
                 if (cannedResponseList.size() >= 20)
-                    return;
+                    break;
             }
         }
 
