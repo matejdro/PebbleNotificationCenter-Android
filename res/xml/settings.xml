@@ -103,6 +103,10 @@
         <Preference
             android:key="notifierLicense"
             android:title="Open source Licenses" />
+        <Preference
+                android:key="donateButton"
+                android:title="Donate"
+                android:summary="Buy me a Coke if you really like my app!"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
