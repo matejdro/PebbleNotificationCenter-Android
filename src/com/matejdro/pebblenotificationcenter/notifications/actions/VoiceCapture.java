@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by Matej on 28.9.2014.
  */
-public class VoiceAction implements RecognitionListener
+public class VoiceCapture implements RecognitionListener
 {
     private static int VOICE_NOTIFICATION_ID = 54321;
 
@@ -25,7 +25,7 @@ public class VoiceAction implements RecognitionListener
     private PebbleTalkerService service;
     private SpeechRecognizer recognizer;
 
-    public VoiceAction(PendingIntent resultIntent, String resultKey, PebbleTalkerService service)
+    public VoiceCapture(PendingIntent resultIntent, String resultKey, PebbleTalkerService service)
     {
         this.resultIntent = resultIntent;
         this.resultKey = resultKey;
@@ -183,7 +183,7 @@ public class VoiceAction implements RecognitionListener
         @Override
         public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
         {
-            new VoiceAction(resultIntent, resultKey, service).startVoice();
+            new VoiceCapture(resultIntent, resultKey, service).startVoice();
         }
 
         @Override
@@ -236,7 +236,7 @@ public class VoiceAction implements RecognitionListener
         public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
         {
             service.processDismissUpwards(VOICE_NOTIFICATION_ID, service.getPackageName(), null, false);
-            WearAction.sendWearReply(text, service, resultIntent, resultKey);
+            WearVoiceAction.sendWearReply(text, service, resultIntent, resultKey);
         }
 
         @Override

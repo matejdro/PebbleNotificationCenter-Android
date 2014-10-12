@@ -85,9 +85,9 @@ public class ActionParser
                     NotificationAction action = null;
 
                     if (obj instanceof  Bundle)
-                        action = WearAction.parseFromBundle((Bundle) obj);
+                        action = WearVoiceAction.parseFromBundle((Bundle) obj);
                     else if (obj instanceof Notification.Action)
-                        action = WearAction.parseFromAction((Notification.Action) obj);
+                        action = WearVoiceAction.parseFromAction((Notification.Action) obj);
 
                     if (action != null)
                         storage.add(action);

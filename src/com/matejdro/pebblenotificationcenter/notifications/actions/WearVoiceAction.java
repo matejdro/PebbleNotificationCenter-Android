@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
-public class WearAction extends NotificationAction
+public class WearVoiceAction extends NotificationAction
 {
     private PendingIntent actionIntent;
     private String voiceKey;
@@ -33,7 +33,7 @@ public class WearAction extends NotificationAction
     private ProcessedNotification parent;
     private boolean firstItemIsVoice;
 
-    public WearAction(String actionText, PendingIntent intent, String voiceKey, String[] appProvidedChoices)
+    public WearVoiceAction(String actionText, PendingIntent intent, String voiceKey, String[] appProvidedChoices)
     {
         super(actionText);
         this.actionIntent = intent;
@@ -65,7 +65,7 @@ public class WearAction extends NotificationAction
                 choicesString[i] = choices[i].toString();
         }
 
-        return new WearAction(title, actionIntent, key, choicesString);
+        return new WearVoiceAction(title, actionIntent, key, choicesString);
     }
 
     @TargetApi(value = Build.VERSION_CODES.L)
@@ -92,7 +92,7 @@ public class WearAction extends NotificationAction
                 choicesString[i] = choices[i].toString();
         }
 
-        return new WearAction(title, actionIntent, key, choicesString);
+        return new WearVoiceAction(title, actionIntent, key, choicesString);
     }
 
     @Override
@@ -148,23 +148,23 @@ public class WearAction extends NotificationAction
     }
 
 
-    public static final Creator<WearAction> CREATOR = new Creator<WearAction>()
+    public static final Creator<WearVoiceAction> CREATOR = new Creator<WearVoiceAction>()
     {
         @Override
-        public WearAction createFromParcel(Parcel parcel)
+        public WearVoiceAction createFromParcel(Parcel parcel)
         {
             String text = (String) parcel.readValue(String.class.getClassLoader());
             PendingIntent intent = (PendingIntent) parcel.readValue(PendingIntent.class.getClassLoader());
             String key = parcel.readString();
             String[] choices = parcel.createStringArray();
 
-            return new WearAction(text, intent, key, choices);
+            return new WearVoiceAction(text, intent, key, choices);
         }
 
         @Override
-        public WearAction[] newArray(int i)
+        public WearVoiceAction[] newArray(int i)
         {
-            return new WearAction[0];
+            return new WearVoiceAction[0];
         }
     };
 
@@ -207,7 +207,7 @@ public class WearAction extends NotificationAction
         public void itemPicked(PebbleTalkerService service, int id)
         {
             if (id == 0 && firstItemIsVoice)
-                new VoiceAction(actionIntent, voiceKey, service).startVoice();
+                new VoiceCapture(actionIntent, voiceKey, service).startVoice();
             else
                 sendWearReply(cannedResponseList.get(id), service, actionIntent, voiceKey);
         }
