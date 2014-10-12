@@ -656,6 +656,7 @@ public class PebbleTalkerService extends Service
         {
             Timber.d("Unknown ID!");
 
+            dismissOnPebble(id, false);
             notificationTransferCompleted();
             return;
         }
@@ -666,6 +667,7 @@ public class PebbleTalkerService extends Service
         {
             Timber.d("Too much chunks!");
 
+            dismissOnPebble(id, false);
             notificationTransferCompleted();
             return;
         }
@@ -692,6 +694,7 @@ public class PebbleTalkerService extends Service
         {
             Timber.d("Unknown ID!");
 
+            dismissOnPebble(id, false);
             notificationTransferCompleted();
             return;
         }
