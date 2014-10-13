@@ -8,16 +8,7 @@ public class TimeUtil {
     if (start == null || stop == null)
         return false;
 
-    int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-    int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
-    int currentTime = currentHour * 100 + currentMinute;
-    int startTime = start.get(Calendar.HOUR_OF_DAY) * 100 + start.get(Calendar.MINUTE);
-    int stopTime = stop.get(Calendar.HOUR_OF_DAY) * 100 + stop.get(Calendar.MINUTE);
-
-    if (currentTime < startTime || (currentTime > stopTime && currentTime < startTime)) {
-      return false;
-    }
-    return true;
+    return current.getTimeInMillis() >= start.getTimeInMillis() && current.getTimeInMillis() <= stop.getTimeInMillis();
   }
 
   static public boolean hasTimePassed(Date last, long timePassed) {

@@ -318,12 +318,15 @@ public class SunriseSunsetCalculator {
 	{
 		double latitude = settings.getFloat(PebbleNotificationCenter.LATITUDE, 0);
 		double longitude = settings.getFloat(PebbleNotificationCenter.LONGITUDE, 0);
+
+
 		Location location = new Location(latitude, longitude);
 		SunriseSunsetCalculator sunriseSunsetCalculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
-		boolean betweenSunsetSunrise = TimeUtil.isBetweenTimes(Calendar.getInstance(),
+
+		boolean sunUp = TimeUtil.isBetweenTimes(Calendar.getInstance(),
 				sunriseSunsetCalculator.getCivilSunriseCalendarForDate(Calendar.getInstance()),
 				sunriseSunsetCalculator.getCivilSunsetCalendarForDate(Calendar.getInstance()));
 
-		return betweenSunsetSunrise;
+		return !sunUp;
 	}
 }
