@@ -8,6 +8,7 @@ public class ProcessedNotification
 {
 	public int id;
 	public List<String> textChunks = new ArrayList<String>(13);
-    public PebbleNotification source;
     public ActionList activeActionList;
+
+    public PebbleNotification source;
 }

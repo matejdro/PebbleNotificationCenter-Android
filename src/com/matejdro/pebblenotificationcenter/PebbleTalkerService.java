@@ -408,21 +408,6 @@ public class PebbleTalkerService extends Service
 
         if (!notificationSource.isListNotification())
         {
-
-            if (notificationSource.getAndroidID() != null)
-            {
-                //Preventing spamming of equal notifications
-                for (int i = 0; i < sentNotifications.size(); i++)
-                {
-                    ProcessedNotification comparing = sentNotifications.valueAt(i);
-                    if (notificationSource.hasIdenticalContent(comparing.source))
-                    {
-                        Timber.d("notify failed - same notification exists");
-                        return;
-                    }
-                }
-            }
-
             if (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
                 return;
 
@@ -1025,7 +1010,7 @@ public class PebbleTalkerService extends Service
         }
     }
 
-    private static boolean canDisplayWearGroupNotification(PebbleNotification notification, AppSettingStorage settingStorage)
+    private boolean canDisplayWearGroupNotification(PebbleNotification notification, AppSettingStorage settingStorage)
     {
         boolean groupNotificationEnabled = settingStorage.getBoolean(AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
         if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && groupNotificationEnabled)
@@ -1035,6 +1020,20 @@ public class PebbleTalkerService extends Service
         else if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE && !groupNotificationEnabled)
         {
             return false; //Don't send group notifications, they are not enabled.
+        }
+
+        if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
+        {
+            //Prevent re-sending of the first message.
+            for (int i = 0; i < sentNotifications.size(); i++)
+            {
+                ProcessedNotification comparing = sentNotifications.valueAt(i);
+                if (notification.hasIdenticalContent(comparing.source))
+                {
+                    Timber.d("group notify failed - same notification exists");
+                    return false;
+                }
+            }
         }
 
         return true;
