@@ -3,6 +3,7 @@ package com.matejdro.pebblenotificationcenter.notifications;
 import android.app.Notification;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompatSideChannelService;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 
 /**
@@ -13,7 +14,7 @@ public class SideChannelNotificationListener extends NotificationCompatSideChann
     @Override
     public void notify(String packageName, int id, String tag, Notification notification)
     {
-        NotificationHandler.newNotification(this, packageName, notification, id, tag, true);
+        NotificationHandler.newNotification(this, new NotificationKey(packageName, id, tag), notification,  true);
     }
 
     @Override

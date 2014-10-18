@@ -142,19 +142,17 @@ public class PebbleTalkerService extends Service
                 String jsonPacket = intent.getStringExtra("packet");
                 receivedPacketFromPebble(jsonPacket);
             }
-            else if (intent.hasExtra("dismissUpwardsId"))
+            else if (intent.hasExtra("dismissUpwardsKey"))
             {
-                int id = intent.getIntExtra("dismissUpwardsId", 0);
-                String pkg = intent.getStringExtra("pkg");
-                String tag = intent.getStringExtra("tag");
+                NotificationKey key = intent.getParcelableExtra("dismissUpwardsKey");
 
-                processDismissUpwards(id, pkg, tag, false);
+                processDismissUpwards(key, false);
             }
             else if (intent.hasExtra("dismissUpwardsPackage"))
             {
                 String pkg = intent.getStringExtra("dismissUpwardsPackage");
 
-                processDismissUpwards(pkg, false);
+                processDismissUpwardsWholePackage(pkg, false);
             }
             else if (intent.hasExtra("PebbleConnected"))
             {
@@ -182,7 +180,7 @@ public class PebbleTalkerService extends Service
         }
 
         PebbleDictionary data = new PebbleDictionary();
-        List<Byte> vibrationPattern = getVibrationPattern(notification.source.getPackage(), settingStorage);
+        List<Byte> vibrationPattern = getVibrationPattern(notification.source.getKey().getPackage(), settingStorage);
 
         byte[] configBytes = new byte[6 + vibrationPattern.size()];
 
@@ -235,18 +233,18 @@ public class PebbleTalkerService extends Service
         commStarted();
     }
 
-    public void processDismissUpwards(Integer androidId, String pkg, String tag, boolean dontClose)
+    public void processDismissUpwards(NotificationKey key, boolean dontClose)
     {
-        Timber.d("got dismiss: " + pkg + " " + androidId + " " + tag);
+        Timber.d("got dismiss: " + key);
 
-        if (androidId == null)
+        if (key.getAndroidId() == null)
             return;
 
         AppSettingStorage settingsStorage;
-        if (pkg == null)
+        if (key.getPackage() == null)
             settingsStorage = defaultSettingsStorage;
         else
-            settingsStorage = new SharedPreferencesAppStorage(this, pkg, defaultSettingsStorage, true);
+            settingsStorage = new SharedPreferencesAppStorage(this, key.getPackage(), defaultSettingsStorage, true);
 
         boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
         if (!syncDismissUp)
@@ -256,7 +254,7 @@ public class PebbleTalkerService extends Service
         {
             ProcessedNotification notification = sentNotifications.valueAt(i);
 
-            if (!notification.source.isListNotification() && notification.source.isSameNotification(androidId, pkg, tag))
+            if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
                 Timber.tag("NC Upwards debug");
                 Timber.d("	rem notifications check: %b %d", commBusy, sendingQueue.size());
@@ -276,7 +274,7 @@ public class PebbleTalkerService extends Service
         {
             ProcessedNotification notification = iterator.next();
 
-            if (!notification.source.isListNotification() && notification.source.isSameNotification(androidId, pkg, tag))
+            if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
                 iterator.remove();
             }
@@ -285,7 +283,7 @@ public class PebbleTalkerService extends Service
         {
             ProcessedNotification notification = sentNotifications.valueAt(i);
 
-            if (!notification.source.isListNotification() && notification.source.isSameNotification(androidId, pkg, tag))
+            if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
                 sentNotifications.removeAt(i);
                 i--;
@@ -293,7 +291,7 @@ public class PebbleTalkerService extends Service
         }
     }
 
-    public void processDismissUpwards(String pkg, boolean dontClose)
+    public void processDismissUpwardsWholePackage(String pkg, boolean dontClose)
     {
         Timber.d("got package dismiss: " + pkg );
 
@@ -311,7 +309,7 @@ public class PebbleTalkerService extends Service
         {
             ProcessedNotification notification = sentNotifications.valueAt(i);
 
-            if (!notification.source.isListNotification() && notification.source.getPackage().equals(pkg))
+            if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
             {
                 Timber.tag("NC Upwards debug");
                 Timber.d("	rem notifications check: %b %d", commBusy, sendingQueue.size());
@@ -331,7 +329,7 @@ public class PebbleTalkerService extends Service
         {
             ProcessedNotification notification = iterator.next();
 
-            if (!notification.source.isListNotification() && notification.source.getPackage().equals(pkg))
+            if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
             {
                 iterator.remove();
             }
@@ -340,7 +338,7 @@ public class PebbleTalkerService extends Service
         {
             ProcessedNotification notification = sentNotifications.valueAt(i);
 
-            if (!notification.source.isListNotification() && notification.source.getPackage().equals(pkg))
+            if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
             {
                 sentNotifications.removeAt(i);
                 i--;
@@ -497,7 +495,7 @@ public class PebbleTalkerService extends Service
             return;
         }
 
-        processDismissUpwards(notificationSource.getAndroidID(), notificationSource.getPackage(), notificationSource.getTag(), true);
+        processDismissUpwards(notificationSource.getKey(), true);
 
         sentNotifications.put(notification.id, notification);
 
@@ -791,7 +789,7 @@ public class PebbleTalkerService extends Service
         if (!notification.source.isDismissable())
             return;
 
-        JellybeanNotificationListener.dismissNotification(notification.source.getPackage(), notification.source.getTag(), notification.source.getAndroidID());
+        JellybeanNotificationListener.dismissNotification(notification.source.getKey());
 
     }
 

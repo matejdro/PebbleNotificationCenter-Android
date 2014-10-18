@@ -106,7 +106,7 @@ public class ActionParser
                     if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                         return;
 
-                    PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, pebbleNotification.getPackage(), (Notification) page, 0, null, false);
+                    PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, pebbleNotification.getKey(), (Notification) page, false);
                     pageNotification.setForceSwitch(true);
                     pageNotification.setScrollToEnd(true);
                     pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), PebbleTalkerService.TEXT_LIMIT));

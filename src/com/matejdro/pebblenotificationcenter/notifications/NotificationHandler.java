@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter.notifications;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.service.notification.StatusBarNotification;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
@@ -27,28 +30,28 @@ import timber.log.Timber;
 public class NotificationHandler {
 	public static boolean active = false;
 
-	public static void newNotification(Context context, String pack, Notification notification, Integer id, String tag, boolean isDismissible)
+	public static void newNotification(Context context, NotificationKey key, Notification notification, boolean isDismissible)
 	{
-		Timber.i("Processing notification from package %s", pack);
+		Timber.i("Processing notification from package %s", key.getPackage());
 
 		SettingsMemoryStorage settings = PebbleNotificationCenter.getInMemorySettings();
 		SharedPreferences preferences = settings.getSharedPreferences();
-        AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, pack, settings.getDefaultSettingsStorage(), true);
+        AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, key.getPackage(), settings.getDefaultSettingsStorage(), true);
 
 		boolean enableOngoing = settingStorage.getBoolean(AppSetting.SEND_ONGOING_NOTIFICATIONS);
 		boolean isOngoing = (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0;
 		
 		if (isOngoing && !enableOngoing) {
-			Timber.d("Discarding notification from %s because FLAG_ONGOING_EVENT is set.", pack);
+			Timber.d("Discarding notification from %s because FLAG_ONGOING_EVENT is set.", key.getPackage());
 			return;
 		}
 
 		if (!settingStorage.canAppSendNotifications()) {
-			Timber.d("Discarding notification from %s because package is not selected", pack);
+			Timber.d("Discarding notification from %s because package is not selected", key.getPackage());
 			return;
 		}
 
-        PebbleNotification pebbleNotification = getPebbleNotificationFromAndroidNotification(context, pack, notification, id, tag, isDismissible);
+        PebbleNotification pebbleNotification = getPebbleNotificationFromAndroidNotification(context, key, notification, isDismissible);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
         {
             parseWearGroupData(notification, pebbleNotification);
@@ -56,7 +59,7 @@ public class NotificationHandler {
 
         if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
             if (pebbleNotification.getText().length() == 0 && (pebbleNotification.getTitle() == null || pebbleNotification.getSubtitle().length() == 0)) {
-                Timber.d("Discarding notification from %s because it is empty", pack);
+                Timber.d("Discarding notification from %s because it is empty", key.getPackage());
                 return;
             }
         }
@@ -76,11 +79,11 @@ public class NotificationHandler {
         context.startService(startIntent);
     }
 
-    public static PebbleNotification getPebbleNotificationFromAndroidNotification(Context context, String pack, Notification notification, Integer id, String tag, boolean isDismissible)
+    public static PebbleNotification getPebbleNotificationFromAndroidNotification(Context context, NotificationKey key, Notification notification, boolean isDismissible)
     {
-        final String title = getAppName(context, pack);
+        final String title = getAppName(context, key.getPackage());
 
-        NotificationParser parser = new NotificationParser(context, pack, notification);
+        NotificationParser parser = new NotificationParser(context, key.getPackage(), notification);
 
         String secondaryTitle = parser.title;
         String text = parser.text.trim();
@@ -89,16 +92,22 @@ public class NotificationHandler {
             text = notification.tickerText.toString();
         }
 
-        PebbleNotification pebbleNotification = new PebbleNotification(title, text, pack);
+        PebbleNotification pebbleNotification = new PebbleNotification(title, text, key);
         pebbleNotification.setSubtitle(secondaryTitle);
         pebbleNotification.setDismissable(isDismissible);
-        pebbleNotification.setAndroidID(id);
-        pebbleNotification.setTag(tag);
-
 
         ActionParser.loadActions(notification, pebbleNotification, context);
 
         return pebbleNotification;
+    }
+
+    @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
+    public static NotificationKey getKeyFromSbn(StatusBarNotification notification)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            return new NotificationKey(notification.getKey());
+        else
+            return new NotificationKey(notification.getPackageName(), notification.getId(), notification.getTag());
     }
 
 

@@ -33,7 +33,7 @@ public class CustomNotificationCatcher extends BroadcastReceiver {
                     noHistory = true;
                 }
 
-                PebbleNotification notification = new PebbleNotification(title, text, AppSetting.VIRTUAL_APP_THIRD_PARTY);
+                PebbleNotification notification = new PebbleNotification(title, text, new NotificationKey(AppSetting.VIRTUAL_APP_THIRD_PARTY, null, null));
                 notification.setNoHistory(noHistory);
                 if (data.has("subtitle"))
                     notification.setSubtitle(data.getString("subtitle"));

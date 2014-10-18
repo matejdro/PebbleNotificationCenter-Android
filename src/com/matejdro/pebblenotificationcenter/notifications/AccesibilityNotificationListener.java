@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.app.Notification;
 import android.os.Parcelable;
 import android.view.accessibility.AccessibilityEvent;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 
 public class AccesibilityNotificationListener extends AccessibilityService {
 	public static AccesibilityNotificationListener instance;
@@ -31,7 +32,7 @@ public class AccesibilityNotificationListener extends AccessibilityService {
 		
 		Notification notification = (Notification) parcelable;
 		
-		NotificationHandler.newNotification(this, event.getPackageName().toString(), notification, null, null, false);
+		NotificationHandler.newNotification(this, new NotificationKey(event.getPackageName().toString(), null, null), notification, false);
 	}
 
 	@Override

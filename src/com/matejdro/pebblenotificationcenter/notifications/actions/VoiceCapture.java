@@ -7,7 +7,9 @@ import android.os.Parcel;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.R;
@@ -18,7 +20,7 @@ import java.util.ArrayList;
  */
 public class VoiceCapture implements RecognitionListener
 {
-    private static int VOICE_NOTIFICATION_ID = 54321;
+    private static NotificationKey VOICE_NOTIFICATION_KEY = new NotificationKey(PebbleNotificationCenter.PACKAGE, 12345, null);
 
     private PendingIntent resultIntent;
     private String resultKey;
@@ -35,8 +37,7 @@ public class VoiceCapture implements RecognitionListener
 
     public void startVoice()
     {
-        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), service.getString(R.string.voiceInputSpeakInstructions), service.getPackageName());
-        notification.setAndroidID(VOICE_NOTIFICATION_ID);
+        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), service.getString(R.string.voiceInputSpeakInstructions), VOICE_NOTIFICATION_KEY);
         notification.setForceSwitch(true);
         service.processNotification(notification);
 
@@ -121,9 +122,8 @@ public class VoiceCapture implements RecognitionListener
                 resultsText = resultsText.concat("\n\n");
         }
 
-        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle),  service.getString(R.string.voiceInputResultNotificationText, resultsText), service.getPackageName());
+        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle),  service.getString(R.string.voiceInputResultNotificationText, resultsText), VOICE_NOTIFICATION_KEY);
         notification.setSubtitle(service.getString(R.string.voiceInputResultNotificationSubtitle));
-        notification.setAndroidID(VOICE_NOTIFICATION_ID);
         notification.setForceSwitch(true);
         notification.setForceActionMenu(true);
 
@@ -154,9 +154,8 @@ public class VoiceCapture implements RecognitionListener
 
     private void sendErrorNotification(String error)
     {
-        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), service.getString(R.string.voiceInputErrorNotificationText, error), service.getPackageName());
+        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), service.getString(R.string.voiceInputErrorNotificationText, error), VOICE_NOTIFICATION_KEY);
         notification.setSubtitle(service.getString(R.string.voiceInputErrorNotificationSubtitle));
-        notification.setAndroidID(VOICE_NOTIFICATION_ID);
         notification.setForceSwitch(true);
         notification.setForceActionMenu(true);
 
@@ -235,7 +234,7 @@ public class VoiceCapture implements RecognitionListener
         @Override
         public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
         {
-            service.processDismissUpwards(VOICE_NOTIFICATION_ID, service.getPackageName(), null, false);
+            service.processDismissUpwards(VOICE_NOTIFICATION_KEY, false);
             WearVoiceAction.sendWearReply(text, service, resultIntent, resultKey);
         }
 

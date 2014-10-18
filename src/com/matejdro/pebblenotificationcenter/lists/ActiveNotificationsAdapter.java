@@ -37,7 +37,7 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 			StatusBarNotification sbn = sbns[i];
 			Notification notification = sbn.getNotification();
 
-            PebbleNotification pn = NotificationHandler.getPebbleNotificationFromAndroidNotification(service, sbn.getPackageName(), notification, sbn.getId(), sbn.getTag(), sbn.isClearable());
+            PebbleNotification pn = NotificationHandler.getPebbleNotificationFromAndroidNotification(service, NotificationHandler.getKeyFromSbn(sbn), notification, sbn.isClearable());
             pn.setListNotification(true);
 
             notifications[i] = pn;

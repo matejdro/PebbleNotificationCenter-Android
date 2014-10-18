@@ -13,9 +13,7 @@ import java.util.ArrayList;
  */
 public class PebbleNotification implements Parcelable
 {
-    private Integer androidID;
-    private String pkg;
-    private String tag;
+    private NotificationKey key;
     private String title;
     private String subtitle;
     private String text;
@@ -35,14 +33,13 @@ public class PebbleNotification implements Parcelable
     public static final int WEAR_GROUP_TYPE_GROUP_SUMMARY = 2;
     private int wearGroupType;
 
-    public PebbleNotification(String title, String text, String pkg)
+    public PebbleNotification(String title, String text, NotificationKey key)
     {
         this.title = title == null ? "" : title;
         this.text = text == null ? "" : text;
-        this.pkg = pkg;
         this.subtitle = "";
 
-        androidID = null;
+        this.key = key;
         postTime = System.currentTimeMillis();
         dismissable = false;
         noHistory = false;
@@ -52,36 +49,6 @@ public class PebbleNotification implements Parcelable
         scrollToEnd = false;
 
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
-    }
-
-    public Integer getAndroidID()
-    {
-        return androidID;
-    }
-
-    public void setAndroidID(Integer androidID)
-    {
-        this.androidID = androidID;
-    }
-
-    public String getPackage()
-    {
-        return pkg;
-    }
-
-    public void setPackage(String pkg)
-    {
-        this.pkg = pkg;
-    }
-
-    public String getTag()
-    {
-        return tag;
-    }
-
-    public void setTag(String tag)
-    {
-        this.tag = tag;
     }
 
     public String getTitle()
@@ -138,10 +105,10 @@ public class PebbleNotification implements Parcelable
     {
         if (settingStorage == null)
         {
-            if (pkg == null)
+            if (key.getPackage() == null)
                 settingStorage = PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage();
             else
-                settingStorage = new SharedPreferencesAppStorage(context, pkg, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
+                settingStorage = new SharedPreferencesAppStorage(context, key.getPackage(), PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
         }
 
         return settingStorage;
@@ -227,6 +194,16 @@ public class PebbleNotification implements Parcelable
         this.scrollToEnd = scrollToEnd;
     }
 
+    public NotificationKey getKey()
+    {
+        return key;
+    }
+
+    public void setKey(NotificationKey key)
+    {
+        this.key = key;
+    }
+
     public boolean isInSameGroup(PebbleNotification comparing)
     {
         if (getWearGroupType() == WEAR_GROUP_TYPE_DISABLED || comparing.getWearGroupType() == WEAR_GROUP_TYPE_DISABLED)
@@ -237,12 +214,12 @@ public class PebbleNotification implements Parcelable
 
     public boolean hasIdenticalContent(PebbleNotification comparing)
     {
-        return getPackage().equals(comparing.getPackage()) && comparing.text.equals(text) && comparing.title.equals(title) && comparing.subtitle.equals(subtitle);
+        return key.getPackage().equals(comparing.key.getPackage()) && comparing.text.equals(text) && comparing.title.equals(title) && comparing.subtitle.equals(subtitle);
     }
 
-    public boolean isSameNotification(Integer androidId, String pkg, String tag)
+    public boolean isSameNotification(NotificationKey comparing)
     {
-        return this.androidID != null && this.androidID.equals(androidId) && this.pkg != null && this.pkg.equals(pkg) && (this.tag == null || this.tag.equals(tag));
+        return key.equals(comparing);
     }
 
 
@@ -257,8 +234,7 @@ public class PebbleNotification implements Parcelable
     {
         parcel.writeValue(title);
         parcel.writeValue(text);
-        parcel.writeValue(pkg);
-        parcel.writeValue(androidID);
+        parcel.writeValue(key);
         parcel.writeByte((byte) (dismissable ? 1 : 0));
         parcel.writeByte((byte) (noHistory ? 1 : 0));
         parcel.writeByte((byte) (forceActionMenu ? 1 : 0));
@@ -266,7 +242,6 @@ public class PebbleNotification implements Parcelable
         parcel.writeByte((byte) (forceSwitch ? 1 : 0));
         parcel.writeByte((byte) (scrollToEnd ? 1 : 0));
         parcel.writeLong(postTime);
-        parcel.writeValue(tag);
         parcel.writeValue(subtitle);
         parcel.writeValue(text);
         parcel.writeValue(actions);
@@ -281,10 +256,9 @@ public class PebbleNotification implements Parcelable
         {
             String title = (String) parcel.readValue(String.class.getClassLoader());
             String text = (String) parcel.readValue(String.class.getClassLoader());
-            String pkg = (String) parcel.readValue(String.class.getClassLoader());
+            NotificationKey key = (NotificationKey) parcel.readValue(getClass().getClassLoader());
 
-            PebbleNotification notification = new PebbleNotification(title, text, pkg);
-            notification.androidID = (Integer) parcel.readValue(getClass().getClassLoader());
+            PebbleNotification notification = new PebbleNotification(title, text, key);
             notification.dismissable = parcel.readByte() == 1;
             notification.noHistory = parcel.readByte() == 1;
             notification.forceActionMenu = parcel.readByte() == 1;
@@ -292,7 +266,6 @@ public class PebbleNotification implements Parcelable
             notification.forceSwitch = parcel.readByte() == 1;
             notification.scrollToEnd = parcel.readByte() == 1;
             notification.postTime = parcel.readLong();
-            notification.tag = (String) parcel.readValue(getClass().getClassLoader());
             notification.subtitle = (String) parcel.readValue(getClass().getClassLoader());
             notification.text = (String) parcel.readValue(getClass().getClassLoader());
             notification.actions = (ArrayList) parcel.readValue(getClass().getClassLoader());

@@ -1,7 +1,9 @@
 package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.os.Parcel;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.R;
@@ -33,15 +35,15 @@ public class TaskerAction extends NotificationAction
         }
 
         TaskerIntent intent = new TaskerIntent(actionText);
-        intent.addLocalVariable("%ncappname", NotificationHandler.getAppName(service, notification.source.getPackage()));
-        intent.addLocalVariable("%ncapppkg", notification.source.getPackage());
-        intent.addLocalVariable("%ncid", Integer.toString(notification.source.getAndroidID()));
+        intent.addLocalVariable("%ncappname", NotificationHandler.getAppName(service, notification.source.getKey().getPackage()));
+        intent.addLocalVariable("%ncapppkg", notification.source.getKey().getPackage());
+        intent.addLocalVariable("%ncid", Integer.toString(notification.source.getKey().getAndroidId()));
         intent.addLocalVariable("%nctitle", notification.source.getTitle());
         intent.addLocalVariable("%ncsubtitle", notification.source.getSubtitle());
         intent.addLocalVariable("%nctext", notification.source.getText());
 
-        if (notification.source.getTag() != null)
-            intent.addLocalVariable("%nctag", notification.source.getTag());
+        if (notification.source.getKey().getTag() != null)
+            intent.addLocalVariable("%nctag", notification.source.getKey().getTag());
         else
             intent.addLocalVariable("%nctag", "");
 
@@ -96,7 +98,7 @@ public class TaskerAction extends NotificationAction
                 break;
         }
 
-        PebbleNotification notification = new PebbleNotification(service.getString(R.string.taskerActionErrorNotificationTitle), text, service.getPackageName());
+        PebbleNotification notification = new PebbleNotification(service.getString(R.string.taskerActionErrorNotificationTitle), text, new NotificationKey(PebbleNotificationCenter.PACKAGE, null, null));
         notification.setSubtitle(service.getString(R.string.taskerActionErrorNotificationSubtitle));
         notification.setForceSwitch(true);
 

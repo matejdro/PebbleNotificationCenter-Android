@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import timber.log.Timber;
 
@@ -45,7 +46,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 			@Override
 			public void run() {
-				NotificationHandler.newNotification(JellybeanNotificationListener.this, sbn.getPackageName(), sbn.getNotification(), sbn.getId(), sbn.getTag(), true);
+				NotificationHandler.newNotification(JellybeanNotificationListener.this, NotificationHandler.getKeyFromSbn(sbn), sbn.getNotification(), true);
 			}
 		});
 	}
@@ -66,6 +67,22 @@ public class JellybeanNotificationListener extends NotificationListenerService {
         if (instance != null)
 		    instance.cancelNotification(pkg, tag, id);
 	}
+
+    @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
+    public static void dismissNotification(NotificationKey key)
+    {
+        Timber.d("dismissing " + key + " " + (instance != null));
+
+        if (instance == null)
+            return;
+
+        System.out.println(key.getLolipopKey());
+
+        if (key.getLolipopKey() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            instance.cancelNotification(key.getLolipopKey());
+        else
+            instance.cancelNotification(key.getPackage(), key.getTag(), key.getAndroidId());
+    }
 
 	public static StatusBarNotification[] getCurrentNotifications()
 	{

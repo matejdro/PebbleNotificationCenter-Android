@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
@@ -40,7 +41,7 @@ public class TaskerReceiver extends BroadcastReceiver
             String body = bundle.getString("body");
             boolean noHistory = !bundle.getBoolean("storeInHistory");
 
-            PebbleNotification notification = new PebbleNotification(title, body, AppSetting.VIRTUAL_APP_TASKER_RECEIVER);
+            PebbleNotification notification = new PebbleNotification(title, body, new NotificationKey(AppSetting.VIRTUAL_APP_TASKER_RECEIVER, null, null));
             notification.setSubtitle(subtitle);
             notification.setNoHistory(noHistory);
 
