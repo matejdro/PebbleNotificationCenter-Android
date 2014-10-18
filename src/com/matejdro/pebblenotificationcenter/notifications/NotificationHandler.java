@@ -110,9 +110,14 @@ public class NotificationHandler {
             return new NotificationKey(notification.getPackageName(), notification.getId(), notification.getTag());
     }
 
-
     public static void parseWearGroupData(Notification notification, PebbleNotification pebbleNotification)
     {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            parseWearGroupDataLolipop(notification, pebbleNotification);
+            return;
+        }
+
         Bundle extras = NotificationParser.getExtras(notification);
         if (extras == null)
             return;
@@ -124,6 +129,25 @@ public class NotificationHandler {
         boolean summary = extras.getBoolean("android.support.isGroupSummary", false);
 
         if (summary && hasPages(extras))
+            return;
+
+        pebbleNotification.setWearGroupKey(groupKey);
+
+        if (summary)
+        {
+            pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY);
+        }
+        else
+            pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE);
+    }
+
+    @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
+    private static void parseWearGroupDataLolipop(Notification notification, PebbleNotification pebbleNotification)
+    {
+        String groupKey = notification.getGroup();
+        boolean summary = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
+
+        if (summary && hasPages(NotificationParser.getExtras(notification)))
             return;
 
         pebbleNotification.setWearGroupKey(groupKey);
