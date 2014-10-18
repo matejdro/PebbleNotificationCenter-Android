@@ -20,10 +20,10 @@ public class SideChannelNotificationListener extends NotificationCompatSideChann
     @Override
     public void cancel(String packageName, int id, String tag)
     {
+        NotificationKey key = new NotificationKey(packageName, id, tag);
+
         Intent intent = new Intent(this, PebbleTalkerService.class);
-        intent.putExtra("dismissUpwardsId", id);
-        intent.putExtra("pkg", packageName);
-        intent.putExtra("tag", tag);
+        intent.putExtra("dismissUpwardsKey", key);
         startService(intent);
     }
 
