@@ -256,7 +256,7 @@ public class PebbleNotification implements Parcelable
         {
             String title = (String) parcel.readValue(String.class.getClassLoader());
             String text = (String) parcel.readValue(String.class.getClassLoader());
-            NotificationKey key = (NotificationKey) parcel.readValue(getClass().getClassLoader());
+            NotificationKey key = (NotificationKey) parcel.readValue(((Object) this).getClass().getClassLoader());
 
             PebbleNotification notification = new PebbleNotification(title, text, key);
             notification.dismissable = parcel.readByte() == 1;
@@ -266,10 +266,10 @@ public class PebbleNotification implements Parcelable
             notification.forceSwitch = parcel.readByte() == 1;
             notification.scrollToEnd = parcel.readByte() == 1;
             notification.postTime = parcel.readLong();
-            notification.subtitle = (String) parcel.readValue(getClass().getClassLoader());
-            notification.text = (String) parcel.readValue(getClass().getClassLoader());
-            notification.actions = (ArrayList) parcel.readValue(getClass().getClassLoader());
-            notification.wearGroupKey = (String) parcel.readValue(getClass().getClassLoader());
+            notification.subtitle = (String) parcel.readValue(((Object) this).getClass().getClassLoader());
+            notification.text = (String) parcel.readValue(((Object) this).getClass().getClassLoader());
+            notification.actions = (ArrayList) parcel.readValue(((Object) this).getClass().getClassLoader());
+            notification.wearGroupKey = (String) parcel.readValue(((Object) this).getClass().getClassLoader());
             notification.wearGroupType = parcel.readInt();
 
             return notification;
