@@ -145,6 +145,9 @@ public class NotificationHandler {
     private static void parseWearGroupDataLolipop(Notification notification, PebbleNotification pebbleNotification)
     {
         String groupKey = notification.getGroup();
+        if (groupKey == null)
+            return;
+
         boolean summary = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
 
         if (summary && hasPages(NotificationParser.getExtras(notification)))
