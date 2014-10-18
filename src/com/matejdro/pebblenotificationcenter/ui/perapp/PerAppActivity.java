@@ -65,6 +65,7 @@ public class PerAppActivity extends Activity
         linkViewToCheckbox(R.id.loadPhoneActionsView, R.id.loadPhoneActionsCheck);
         linkViewToCheckbox(R.id.enableVoiceReplyView, R.id.enableVoiceReplyCheck);
         linkViewToCheckbox(R.id.useWearGroupNotificationsView, R.id.useWearGroupNotificationsCheck);
+        linkViewToCheckbox(R.id.respectInterruptFilterView, R.id.respectInterruptFilterCheck);
 
         linkCheckboxToSetting(R.id.sendOngoingCheck, AppSetting.SEND_ONGOING_NOTIFICATIONS);
         linkCheckboxToSetting(R.id.sendBlankCheck, AppSetting.SEND_BLANK_NOTIFICATIONS);
@@ -80,6 +81,7 @@ public class PerAppActivity extends Activity
         linkCheckboxToSetting(R.id.loadPhoneActionsCheck, AppSetting.LOAD_PHONE_ACTIONS);
         linkCheckboxToSetting(R.id.enableVoiceReplyCheck, AppSetting.ENABLE_VOICE_REPLY);
         linkCheckboxToSetting(R.id.useWearGroupNotificationsCheck, AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
+        linkCheckboxToSetting(R.id.respectInterruptFilterCheck, AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER);
 
         linkSpinnerToSetting(R.id.selectPressActionSpinner, AppSetting.SELECT_PRESS_ACTION, R.array.settingSelectButtonAction);
         linkSpinnerToSetting(R.id.selecttHoldActionSpinner, AppSetting.SELECT_HOLD_ACTION, R.array.settingSelectButtonAction);

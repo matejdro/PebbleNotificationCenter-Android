@@ -60,13 +60,20 @@ public class JellybeanNotificationListener extends NotificationListenerService {
         startService(intent);
 	}
 
-	public static void dismissNotification(String pkg, String tag, int id)
-	{
-        Timber.d("dismissing " + pkg + " " + tag + " " + id + " " + (instance != null));
+    @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
+    public static boolean isNotificationFilteredByDoNotInterrupt(NotificationKey key)
+    {
+        if (instance == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || key.getLolipopKey() == null)
+            return false;
 
-        if (instance != null)
-		    instance.cancelNotification(pkg, tag, id);
-	}
+        RankingMap rankingMap = instance.getCurrentRanking();
+        Ranking ranking = new Ranking();
+        if (!rankingMap.getRanking(key.getLolipopKey(), ranking))
+            return false;
+
+        return !ranking.matchesInterruptionFilter();
+    }
+
 
     @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
     public static void dismissNotification(NotificationKey key)

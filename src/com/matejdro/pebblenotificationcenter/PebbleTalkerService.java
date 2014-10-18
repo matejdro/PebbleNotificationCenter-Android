@@ -459,6 +459,12 @@ public class PebbleTalkerService extends Service
                 return;
             }
 
+            if (settingStorage.getBoolean(AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER) && JellybeanNotificationListener.isNotificationFilteredByDoNotInterrupt(notificationSource.getKey()))
+            {
+                Timber.d("notify failed - interrupt filter");
+                return;
+            }
+
             updateCurrentlyRunningApp();
             System.out.println("prev" + previousUUID);
             int pebbleAppMode = 0;
@@ -479,6 +485,7 @@ public class PebbleTalkerService extends Service
                 Timber.d("notify failed - pebble app");
                 return;
             }
+
         }
 
         Random rnd = new Random();

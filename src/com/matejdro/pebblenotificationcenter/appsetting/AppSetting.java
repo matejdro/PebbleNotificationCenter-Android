@@ -16,6 +16,7 @@ public enum AppSetting
     DISMISS_UPRWADS("syncDismissUp", true),
     SAVE_TO_HISTORY("saveToHistory", true),
     USE_WEAR_GROUP_NOTIFICATIONS("useWearGroupNotifications", true),
+    RESPECT_ANDROID_INTERRUPT_FILTER("respectAndroidInterruptFilter", false),
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),
     INBOX_REVERSE("inboxReverse", false),
     DISPLAY_ONLY_NEWEST("inboxDisplayOnlyNewest", false),

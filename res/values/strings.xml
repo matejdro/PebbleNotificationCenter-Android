@@ -393,5 +393,10 @@
         notification, it won\'t vibrate for notifications from this app for next 10 seconds. Useful for group chat notifications where
         lots of messages can be sent in very short time. Set to 0 to disable.
     </string>
+    <string name="settingRespectInterruptFilter">Respect Android\'s \"Don\'t interrupt\" setting</string>
+    <string name="settingRespectInterruptFilterDescription">If \"Don\'t interrupt\" setting is enabled in your Android
+        settings, notifications that are set to not interrupt you also won\'t be sent to the Pebble. Only works on
+        android 5.0 and newer.
+    </string>
 
 </resources>
