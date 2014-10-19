@@ -152,14 +152,23 @@ public class QuietHoursItem extends BaseSettingItem
         {
             nameText.setTextColor(activity.getResources().getColor(R.color.text_enabled));
             descriptionText.setTextColor(activity.getResources().getColor(R.color.text_enabled));
+            enabledText.setTextColor(activity.getResources().getColor(R.color.text_enabled));
+            startText.setTextColor(activity.getResources().getColor(R.color.text_enabled));
+            endText.setTextColor(activity.getResources().getColor(R.color.text_enabled));
         }
         else
         {
             nameText.setTextColor(activity.getResources().getColor(R.color.text_disabled));
             descriptionText.setTextColor(activity.getResources().getColor(R.color.text_disabled));
+            enabledText.setTextColor(activity.getResources().getColor(R.color.text_disabled));
+            startText.setTextColor(activity.getResources().getColor(R.color.text_disabled));
+            endText.setTextColor(activity.getResources().getColor(R.color.text_disabled));
         }
 
         enabledCheckBox.setEnabled(enabled);
+        startButton.setEnabled(enabled);
+        endButton.setEnabled(enabled);
+
     }
 
     public void updateStartButtonText()
