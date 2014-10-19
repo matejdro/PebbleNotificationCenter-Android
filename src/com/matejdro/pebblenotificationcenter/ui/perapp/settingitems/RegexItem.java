@@ -1,21 +1,22 @@
-package com.matejdro.pebblenotificationcenter.ui.perapp;
+package com.matejdro.pebblenotificationcenter.ui.perapp.settingitems;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.EditText;
 import com.matejdro.pebblenotificationcenter.R;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * Created by Matej on 16.9.2014.
+ * Created by Matej on 19.10.2014.
  */
-public class RegexList extends ListSetting
+public class RegexItem extends ListItem
 {
-    public RegexList(Activity activity, int listLayoutId, int listAddButtonId, int listEmptyTextId)
+    public RegexItem(AppSettingStorage settingsStorage, AppSetting associatedSetting, int textResource, int descriptionResource)
     {
-        super(activity, listLayoutId, listAddButtonId, listEmptyTextId);
+        super(settingsStorage, associatedSetting, textResource, descriptionResource);
     }
 
     @Override
@@ -144,4 +145,3 @@ public class RegexList extends ListSetting
         }
     }
 }
-

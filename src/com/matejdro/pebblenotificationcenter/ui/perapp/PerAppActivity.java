@@ -1,17 +1,17 @@
 package com.matejdro.pebblenotificationcenter.ui.perapp;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.matejdro.pebblenotificationcenter.R;
@@ -19,7 +19,19 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
-import com.matejdro.pebblenotificationcenter.util.TextUtil;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ActivityResultItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.AppEnabledCheckboxItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.BaseSettingItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CannedResponsesItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CheckBoxItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.EditTextItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.RegexItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.SpinnerItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.TaskerTaskListItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.UseDefaultCheckBoxItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.VibrationPatternItem;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Matej on 16.9.2014.
@@ -29,11 +41,9 @@ public class PerAppActivity extends Activity
     protected AppSettingStorage settingsStorage;
     protected String appPackage;
     protected String appName;
+    private boolean defaultSettings;
 
-    private RegexList includingRegexList;
-    private RegexList excludingRegexList;
-    private CannedResponseList cannedResponseList;
-    private TaskerTaskList taskerTaskList;
+    public List<SettingsCategory> settings = new ArrayList<SettingsCategory>();
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -49,87 +59,11 @@ public class PerAppActivity extends Activity
 
         ((TextView) findViewById(R.id.appName)).setText(appName);
 
-        linkViewToCheckbox(R.id.isAppSelectedView, R.id.isAppSelectedCheck);
-        linkViewToCheckbox(R.id.useDefaultView, R.id.useDefaultCheck);
-        linkViewToCheckbox(R.id.sendOngoingView, R.id.sendOngoingCheck);
-        linkViewToCheckbox(R.id.sendBlankView, R.id.sendBlankCheck);
-        linkViewToCheckbox(R.id.switchToRecentView, R.id.switchToRecentCheck);
-        linkViewToCheckbox(R.id.overrideQuietView, R.id.overrideQuietCheck);
-        linkViewToCheckbox(R.id.saveToHistoryView, R.id.saveToHistoryCheck);
-        linkViewToCheckbox(R.id.dismissUpwardsView, R.id.dismissUpwardsCheck);
-        linkViewToCheckbox(R.id.alternateInboxParsingView, R.id.alternateInboxParsingCheck);
-        linkViewToCheckbox(R.id.reverseInboxView, R.id.reverseInboxCheck);
-        linkViewToCheckbox(R.id.displayFirstOnlyView, R.id.displayFirstOnlyCheck);
-        linkViewToCheckbox(R.id.inboxUseSubtextView, R.id.inboxUseSubtextCheck);
-        linkViewToCheckbox(R.id.loadWearActionsView, R.id.loadWearActionsCheck);
-        linkViewToCheckbox(R.id.loadPhoneActionsView, R.id.loadPhoneActionsCheck);
-        linkViewToCheckbox(R.id.enableVoiceReplyView, R.id.enableVoiceReplyCheck);
-        linkViewToCheckbox(R.id.useWearGroupNotificationsView, R.id.useWearGroupNotificationsCheck);
-        linkViewToCheckbox(R.id.respectInterruptFilterView, R.id.respectInterruptFilterCheck);
-
-        linkCheckboxToSetting(R.id.sendOngoingCheck, AppSetting.SEND_ONGOING_NOTIFICATIONS);
-        linkCheckboxToSetting(R.id.sendBlankCheck, AppSetting.SEND_BLANK_NOTIFICATIONS);
-        linkCheckboxToSetting(R.id.switchToRecentCheck, AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION);
-        linkCheckboxToSetting(R.id.overrideQuietCheck, AppSetting.IGNORE_QUIET_HOURS);
-        linkCheckboxToSetting(R.id.dismissUpwardsCheck, AppSetting.DISMISS_UPRWADS);
-        linkCheckboxToSetting(R.id.saveToHistoryCheck, AppSetting.SAVE_TO_HISTORY);
-        linkCheckboxToSetting(R.id.alternateInboxParsingCheck, AppSetting.USE_ALTERNATE_INBOX_PARSER);
-        linkCheckboxToSetting(R.id.reverseInboxCheck, AppSetting.INBOX_REVERSE);
-        linkCheckboxToSetting(R.id.displayFirstOnlyCheck, AppSetting.DISPLAY_ONLY_NEWEST);
-        linkCheckboxToSetting(R.id.inboxUseSubtextCheck, AppSetting.INBOX_USE_SUB_TEXT);
-        linkCheckboxToSetting(R.id.loadWearActionsCheck, AppSetting.LOAD_WEAR_ACTIONS);
-        linkCheckboxToSetting(R.id.loadPhoneActionsCheck, AppSetting.LOAD_PHONE_ACTIONS);
-        linkCheckboxToSetting(R.id.enableVoiceReplyCheck, AppSetting.ENABLE_VOICE_REPLY);
-        linkCheckboxToSetting(R.id.useWearGroupNotificationsCheck, AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
-        linkCheckboxToSetting(R.id.respectInterruptFilterCheck, AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER);
-
-        linkSpinnerToSetting(R.id.selectPressActionSpinner, AppSetting.SELECT_PRESS_ACTION, R.array.settingSelectButtonAction);
-        linkSpinnerToSetting(R.id.selecttHoldActionSpinner, AppSetting.SELECT_HOLD_ACTION, R.array.settingSelectButtonAction);
-        linkSpinnerToSetting(R.id.dismissOnPhoneSpinner, AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility);
-        linkSpinnerToSetting(R.id.dismissOnPebbleSpinner, AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION, R.array.settingActionVisibility);
-        linkSpinnerToSetting(R.id.openOnPhoneSpinner, AppSetting.OPEN_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility);
-
-        //Two special checkboxes that are not linked to AppSetting
-        CheckBox checkBox = (CheckBox) findViewById(R.id.isAppSelectedCheck);
-        checkBox.setChecked(settingsStorage.isAppChecked());
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-            {
-                settingsStorage.setAppChecked(b);
-            }
-        });
-
-        final View useDefaultParent = findViewById(R.id.useDefaultView);
-        checkBox = (CheckBox) findViewById(R.id.useDefaultCheck);
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-            {
-                settingsStorage.setAppUseDefaultSettings(b);
-                useDefaultParent.setBackgroundColor(b ? 0xFFFFAAAA : 0x00000000);
-            }
-        });
-        checkBox.setChecked(settingsStorage.shouldAppUseDefaultSettings());
-
-
-        ((EditText) findViewById(R.id.vibrationPatternEdit)).setText(settingsStorage.getString(AppSetting.VIBRATION_PATTERN));
-        ((EditText) findViewById(R.id.periodicVibrationEdit)).setText(settingsStorage.getString(AppSetting.PERIODIC_VIBRATION));
-        ((EditText) findViewById(R.id.minimumVibrationIntervalEdit)).setText(settingsStorage.getString(AppSetting.MINIMUM_VIBRATION_INTERVAL));
-
-        taskerTaskList = new TaskerTaskList(this, R.id.taskerActionsList, R.id.taskerActionsAddButton, R.id.taskerActionsEmptyText);
-        taskerTaskList.addAll(settingsStorage.getStringList(AppSetting.TASKER_ACTIONS));
-        cannedResponseList = new CannedResponseList(this, R.id.cannedResponsesList, R.id.cannedResponsesAddButton, R.id.cannedResponsestEmptyText);
-        cannedResponseList.addAll(settingsStorage.getStringList(AppSetting.CANNED_RESPONSES));
-        includingRegexList = new RegexList(this, R.id.includingRegexList, R.id.includingRegexAddButton, R.id.includingRegexListEmptyText);
-        includingRegexList.addAll(settingsStorage.getStringList(AppSetting.INCLUDED_REGEX));
-        excludingRegexList = new RegexList(this, R.id.excludingRegexList, R.id.excludingRegexAddButton, R.id.excludingRegexListEmptyText);
-        excludingRegexList.addAll(settingsStorage.getStringList(AppSetting.EXCLUDED_REGEX));
+        loadAppSettings();
+        attachSettings();
     }
 
-    public AppSettingStorage initAppSettingStorage()
+    protected AppSettingStorage initAppSettingStorage()
     {
         AppSettingStorage settingsStorage = null;
 
@@ -140,57 +74,135 @@ public class PerAppActivity extends Activity
         if (appPackage.equals(AppSetting.VIRTUAL_APP_DEFAULT_SETTINGS))
         {
             settingsStorage = defaultAppSettingsStorage;
-            findViewById(R.id.isAppSelectedView).setVisibility(View.GONE);
-            findViewById(R.id.isAppSelectedSeparator).setVisibility(View.GONE);
-            findViewById(R.id.useDefaultView).setVisibility(View.GONE);
+            defaultSettings = true;
 
         } else
         {
             settingsStorage = new SharedPreferencesAppStorage(this, appPackage, defaultAppSettingsStorage, false);
+            defaultSettings = false;
         }
 
         return settingsStorage;
+    }
 
+    private void loadAppSettings()
+    {
+        if (!defaultSettings)
+        {
+            List<BaseSettingItem> category = new ArrayList<BaseSettingItem>();
+            category.add(new AppEnabledCheckboxItem(settingsStorage, R.string.settingAppSelected, R.string.settingAppSelectedDescription));
+            category.add(new UseDefaultCheckBoxItem(settingsStorage, R.string.settingUseDefaultSettings, R.string.settingUseDefaultSettingsDescription));
+            settings.add(new SettingsCategory(null, category));
+        }
+
+        //General settings
+        List<BaseSettingItem> category = new ArrayList<BaseSettingItem>();
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.SEND_ONGOING_NOTIFICATIONS, R.string.settingSendOngoing, R.string.settingSendOngoingDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.SEND_BLANK_NOTIFICATIONS, R.string.settingSendBlankNotifications, R.string.settingSendBlankNotificationsDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER, R.string.settingRespectInterruptFilter, R.string.settingRespectInterruptFilterDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION, R.string.settingSwitchToRecent, R.string.settingSwitchToRecentDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.IGNORE_QUIET_HOURS, R.string.settingIgnoreQuietHours, R.string.settingIgnoreQuietHoursDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.SAVE_TO_HISTORY, R.string.settingSaveToHistory, R.string.settingSaveToHistoryDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.DISMISS_UPRWADS, R.string.settingDismissUpwards, R.string.settingDismissUpwardsDescripition));
+        settings.add(new SettingsCategory(0, category));
+
+        //Actions
+        category = new ArrayList<BaseSettingItem>();
+        category.add(new SpinnerItem(settingsStorage, AppSetting.SELECT_PRESS_ACTION, R.array.settingSelectButtonAction, R.string.settingSelectPress, R.string.settingSelectHoldDescription));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.SELECT_HOLD_ACTION, R.array.settingSelectButtonAction, R.string.settingSelectHold, R.string.settingSelectHoldDescription));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingDismissOnPhone, 0));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingDismissOnPebble, 0));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.OPEN_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingOpenOnPhonePosition, 0));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.LOAD_WEAR_ACTIONS, R.string.settingLoadWearActions, R.string.settingLoadWearActionsDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.LOAD_PHONE_ACTIONS, R.string.settingLoadPhoneActions, R.string.settingLoadPhoneActionsDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_VOICE_REPLY, R.string.settingEnableVoiceReply, R.string.settingEnableVoiceReplyDescription));
+        category.add(new CannedResponsesItem(settingsStorage, AppSetting.CANNED_RESPONSES, R.string.settingCannedResponses, R.string.settingCannedResponsesDescription));
+        category.add(new TaskerTaskListItem(settingsStorage, AppSetting.TASKER_ACTIONS, R.string.settingTaskerActions, R.string.settingTaskerActionsDescription));
+        settings.add(new SettingsCategory(R.string.settingCategoryActions, category));
+
+        //Inbox parsing
+        category = new ArrayList<BaseSettingItem>();
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.USE_WEAR_GROUP_NOTIFICATIONS, R.string.settingUseWearGroupNotifications, R.string.settingUseWearGroupNotificationsDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.USE_ALTERNATE_INBOX_PARSER, R.string.settingAlternateInboxParser, R.string.settingAlternateInboxParserDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.INBOX_REVERSE, R.string.settingReverseInbox, R.string.settingReverseInboxDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.DISPLAY_ONLY_NEWEST, R.string.settingDisplayFirstOnly, R.string.settingDisplayFirstOnlyDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.INBOX_USE_SUB_TEXT, R.string.settingInboxUseSubtext, R.string.settingInboxUseSubtextDescription));
+        settings.add(new SettingsCategory(R.string.settingsCategoryInboxParsing, category));
+
+        //Vibration
+        category = new ArrayList<BaseSettingItem>();
+        category.add(new VibrationPatternItem(settingsStorage, R.string.settingVibrationPattern, R.string.settingVibrationPatternDescription));
+        category.add(new EditTextItem(settingsStorage, AppSetting.PERIODIC_VIBRATION, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingPeriodicVibration, R.string.settingPeriodicVibrationDescription));
+        category.add(new EditTextItem(settingsStorage, AppSetting.MINIMUM_VIBRATION_INTERVAL, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingMinimumVibrationInterval, R.string.settingMinimumVibrationIntervalDescription));
+        settings.add(new SettingsCategory(R.string.settingsCategoryVibration, category));
+
+        //Regex
+        category = new ArrayList<BaseSettingItem>();
+        category.add(new RegexItem(settingsStorage, AppSetting.EXCLUDED_REGEX, R.string.settingExcludingRegex, R.string.settingExcludingRegexDescription));
+        category.add(new RegexItem(settingsStorage, AppSetting.INCLUDED_REGEX, R.string.settingIncludingRegex, R.string.settingExcludingRegexDescription));
+        settings.add(new SettingsCategory(R.string.settingsCategoryRegularExpressions, category));
+    }
+
+    public void attachSettings()
+    {
+        LinearLayout root = (LinearLayout) findViewById(R.id.perAppSettingsList);
+        for (SettingsCategory category : settings)
+        {
+            if (category.categoryNameResource != null)
+            {
+                View header = getLayoutInflater().inflate(R.layout.setting_category_header, null);
+                if (category.categoryNameResource != 0)
+                    ((TextView) header.findViewById(R.id.categoryHeaderText)).setText(category.categoryNameResource);
+
+                root.addView(header);
+            }
+
+            for (int i = 0; i < category.settings.size(); i++)
+            {
+                root.addView(category.settings.get(i).getView(this));
+
+                if (i < category.settings.size() - 1)
+                {
+                    getLayoutInflater().inflate(R.layout.setting_separator, root, true);
+                }
+            }
+        }
     }
 
     @Override
     public void onBackPressed()
     {
-        save();
+        if (!save())
+            return;
 
         super.onBackPressed();
     }
 
-    protected void save()
+    protected boolean save()
     {
-        settingsStorage.setString(AppSetting.PERIODIC_VIBRATION, ((EditText) findViewById(R.id.periodicVibrationEdit)).getText().toString());
-        settingsStorage.setString(AppSetting.MINIMUM_VIBRATION_INTERVAL, ((EditText) findViewById(R.id.minimumVibrationIntervalEdit)).getText().toString());
-
-        String vibrationPattern = ((EditText) findViewById(R.id.vibrationPatternEdit)).getText().toString();
-        if (!validateVibrationPattern(vibrationPattern))
+        for (SettingsCategory category : settings)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.invalidVibrationPattern);
-            builder.setPositiveButton(R.string.ok, null);
-            builder.show();
-
-            return;
+            for (BaseSettingItem item : category.settings)
+            {
+                if (!item.onClose())
+                    return false;
+            }
         }
-        settingsStorage.setString(AppSetting.VIBRATION_PATTERN, vibrationPattern);
 
-        settingsStorage.setStringList(AppSetting.TASKER_ACTIONS, taskerTaskList.getInternalStorage());
-        settingsStorage.setStringList(AppSetting.CANNED_RESPONSES, cannedResponseList.getInternalStorage());
-        settingsStorage.setStringList(AppSetting.INCLUDED_REGEX, includingRegexList.getInternalStorage());
-        settingsStorage.setStringList(AppSetting.EXCLUDED_REGEX, excludingRegexList.getInternalStorage());
+        return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (resultCode != RESULT_OK)
-            return;
-
-        taskerTaskList.onActivityResult(data);
+        for (SettingsCategory category : settings)
+        {
+            for (BaseSettingItem item : category.settings)
+            {
+                if (item instanceof ActivityResultItem)
+                    ((ActivityResultItem) item).onActivityResult(requestCode, resultCode, data);
+            }
+        }
     }
 
     private void linkViewToCheckbox(int viewId, int checkBoxId)
@@ -247,21 +259,15 @@ public class PerAppActivity extends Activity
         });
     }
 
-
-    private static boolean validateVibrationPattern(String pattern)
+    public class SettingsCategory
     {
-        if (pattern.trim().isEmpty())
-            return false;
-
-        String split[] = pattern.split(",");
-
-        for (String s : split)
+        public SettingsCategory(Integer categoryNameResource, List<BaseSettingItem> settings)
         {
-            if (!TextUtil.isInteger(s.trim()))
-                return false;
+            this.categoryNameResource = categoryNameResource;
+            this.settings = settings;
         }
 
-        return true;
+        public Integer categoryNameResource;
+        public List<BaseSettingItem> settings;
     }
-
 }

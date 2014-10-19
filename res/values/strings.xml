@@ -377,7 +377,7 @@
         button.
     </string>
     <string name="settingDismissOnPhone">Dismiss on phone action position</string>
-    <string name="dismissOnPebblePosition">Dismiss on Pebble action position</string>
+    <string name="settingDismissOnPebble">Dismiss on Pebble action position</string>
     <string name="settingOpenOnPhonePosition">Open on phone action position</string>
     <string name="dismissOnPebble">Dismiss - Pebble</string>
     <string name="dismissOnPhone">Dismiss - Phone</string>

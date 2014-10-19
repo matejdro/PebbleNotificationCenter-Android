@@ -121,6 +121,7 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
     public void setAppUseDefaultSettings(boolean val)
     {
         editor.putBoolean("useDefaultSettings", val);
+        editor.apply();
     }
 
     public static String filterAppName(String name)
