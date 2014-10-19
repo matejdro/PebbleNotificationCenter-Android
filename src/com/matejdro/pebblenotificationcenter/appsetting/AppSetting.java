@@ -12,7 +12,15 @@ public enum AppSetting
     SEND_ONGOING_NOTIFICATIONS("enableOngoing", false),
     SEND_BLANK_NOTIFICATIONS("sendBlank", false),
     SWITCH_TO_MOST_RECENT_NOTIFICATION("autoSwitch", false),
-    IGNORE_QUIET_HOURS("ignoreQuietHours", false),
+
+    QUIET_TIME_ENABLED("enableQuietTime", false),
+    QUIET_TIME_START_HOUR("quiteTimeStartHour", 0),
+    QUIET_TIME_START_MINUTE("quiteTimeStartMinute", 0),
+    QUIET_TIME_END_HOUR("quiteTimeStartHour", 0),
+    QUIET_TIME_END_MINUTE("quiteTimeEndMinute", 0),
+
+
+
     DISMISS_UPRWADS("syncDismissUp", true),
     SAVE_TO_HISTORY("saveToHistory", true),
     USE_WEAR_GROUP_NOTIFICATIONS("useWearGroupNotifications", true),

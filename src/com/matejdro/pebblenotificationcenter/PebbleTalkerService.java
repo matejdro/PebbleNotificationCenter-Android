@@ -430,7 +430,7 @@ public class PebbleTalkerService extends Service
 
             }
 
-            if (settings.getBoolean("enableQuietTime", false) && !settingStorage.getBoolean(AppSetting.IGNORE_QUIET_HOURS))
+            if (settings.getBoolean("enableQuietTime", false))
             {
                 int startHour = settings.getInt("quiteTimeStartHour", 0);
                 int startMinute = settings.getInt("quiteTimeStartMinute", 0);

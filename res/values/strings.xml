@@ -216,10 +216,6 @@
     <string name="settingSwitchToRecentDescription">When this is checked and new notification comes from this app, it
         will switch to that notification instead of queuing it.
     </string>
-    <string name="settingIgnoreQuietHours">Ignore quiet hours</string>
-    <string name="settingIgnoreQuietHoursDescription">When this is checked, notifications from this app will show up on
-        your Pebble regardless of the time.
-    </string>
     <string name="settingDismissUpwards">Dismiss Upwards</string>
     <string name="settingDismissUpwardsDescripition">When checked and you dismiss notification on the phone, it will
         also disappear on the Pebble. Only works on Android 4.3 and newer.
@@ -397,6 +393,10 @@
     <string name="settingRespectInterruptFilterDescription">If \"Don\'t interrupt\" setting is enabled in your Android
         settings, notifications that are set to not interrupt you also won\'t be sent to the Pebble. Only works on
         Android 5.0 and newer.
+    </string>
+    <string name="settingQuietHours">Quiet hours</string>
+    <string name="settingQuietHoursDescription">When quiet hours are enabled, Pebble won\'t receive messages from this
+        app in specified time.
     </string>
 
 </resources>

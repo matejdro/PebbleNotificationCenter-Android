@@ -25,6 +25,7 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.BaseSettingI
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CannedResponsesItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CheckBoxItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.EditTextItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.QuietHoursItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.RegexItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.SpinnerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.TaskerTaskListItem;
@@ -101,7 +102,7 @@ public class PerAppActivity extends Activity
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SEND_BLANK_NOTIFICATIONS, R.string.settingSendBlankNotifications, R.string.settingSendBlankNotificationsDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER, R.string.settingRespectInterruptFilter, R.string.settingRespectInterruptFilterDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION, R.string.settingSwitchToRecent, R.string.settingSwitchToRecentDescription));
-        category.add(new CheckBoxItem(settingsStorage, AppSetting.IGNORE_QUIET_HOURS, R.string.settingIgnoreQuietHours, R.string.settingIgnoreQuietHoursDescription));
+        category.add(new QuietHoursItem(settingsStorage, R.string.settingQuietHours, R.string.settingQuietHoursDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SAVE_TO_HISTORY, R.string.settingSaveToHistory, R.string.settingSaveToHistoryDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.DISMISS_UPRWADS, R.string.settingDismissUpwards, R.string.settingDismissUpwardsDescripition));
         settings.add(new SettingsCategory(0, category));

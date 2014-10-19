@@ -22,18 +22,6 @@
             android:key="noNotificationsSilent"
             android:summary="Disable new notifications popping up when phone is in vibrate or in silent mode"
             android:title="Disable notify when in silent mode" />
-        
-        <CheckBoxPreference
-            android:key="enableQuietTime"
-            android:title="Enable quiet time" />
-
-        <Preference
-            android:key="quietTimeStart"
-            android:title="Quiet from" />
-        <Preference
-            android:key="quietTimeEnd"
-            android:title="Quiet to" />
-
     </PreferenceCategory>
     <PreferenceCategory android:title="Watchapp" >
         <EditTextPreference

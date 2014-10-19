@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <!-- Ignore quite hours -->
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/AppSettingParent"
+            android:id="@+id/quietHoursView">
+
+        <TextView
+                android:id="@+id/name"
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingsName"
+                android:text="@string/settingQuietHours"
+                />
+
+        <TextView
+                android:id="@+id/description"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/name"
+                android:layout_alignParentLeft="true"
+                style="@style/AppSettingsDesc"
+                android:text="@string/settingQuietHoursDescription"
+                />
+
+        <TextView
+                android:id="@+id/enabledText"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/description"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentLeft="true"
+                style="@style/AppSettingsDesc"
+                android:text="Enabled: "
+                android:textSize="15sp"
+                />
+
+        <CheckBox
+                android:id="@+id/enabledCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/enabledText"
+                android:layout_alignBaseline="@id/enabledText"/>
+
+
+
+        <TextView
+                android:id="@+id/startText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/enabledText"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentLeft="true"
+                style="@style/AppSettingsDesc"
+                android:text="Start:"
+                android:textSize="15sp"
+                />
+
+        <Button
+                android:id="@+id/startButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/startText"
+                android:layout_below="@id/enabledText"
+                android:text="10:00 AM"/>
+
+        <TextView
+                android:id="@+id/endText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/startText"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/startButton"
+                style="@style/AppSettingsDesc"
+                android:text="End:"
+                android:textSize="15sp"
+                />
+
+        <Button
+                android:id="@+id/endButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/endText"
+                android:layout_alignBaseline="@id/startButton"
+                android:text="10:00 AM"/>
+
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>
