@@ -204,6 +204,49 @@
                 style="@style/AppSettingSeparator"
                 />
 
+        <!-- Respect interrupt filter -->
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/AppSettingParent"
+                android:id="@+id/respectInterruptFilterView">
+
+            <CheckBox
+                    android:id="@+id/respectInterruptFilterCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+
+            <TextView
+                    android:id="@+id/respectInterruptFilterName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/respectInterruptFilterCheck"
+                    style="@style/AppSettingsName"
+                    android:text="@string/settingRespectInterruptFilter"
+                    />
+
+            <TextView
+                    android:id="@+id/respectInterruptFilterDesc"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/respectInterruptFilterName"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/respectInterruptFilterCheck"
+                    style="@style/AppSettingsDesc"
+                    android:text="@string/settingRespectInterruptFilterDescription"
+                    />
+
+        </RelativeLayout>
+        <View
+                android:layout_width="fill_parent"
+                style="@style/AppSettingSeparator"
+                />
+
         <!-- Switch to most recent notification -->
         <RelativeLayout
                 android:layout_width="fill_parent"
@@ -371,50 +414,6 @@
                     />
 
         </RelativeLayout>
-        <View
-                android:layout_width="fill_parent"
-                style="@style/AppSettingSeparator"
-                />
-
-        <!-- Respect interrupt filter -->
-        <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                style="@style/AppSettingParent"
-                android:id="@+id/respectInterruptFilterView">
-
-            <CheckBox
-                    android:id="@+id/respectInterruptFilterCheck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    />
-
-            <TextView
-                    android:id="@+id/respectInterruptFilterName"
-                    android:layout_alignParentLeft="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/respectInterruptFilterCheck"
-                    style="@style/AppSettingsName"
-                    android:text="@string/settingRespectInterruptFilter"
-                    />
-
-            <TextView
-                    android:id="@+id/respectInterruptFilterDesc"
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/respectInterruptFilterName"
-                    android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@id/respectInterruptFilterCheck"
-                    style="@style/AppSettingsDesc"
-                    android:text="@string/settingRespectInterruptFilterDescription"
-                    />
-
-        </RelativeLayout>
-
         <!-- SECTION: Actions -->
         <TextView
                 android:layout_width="wrap_content"
