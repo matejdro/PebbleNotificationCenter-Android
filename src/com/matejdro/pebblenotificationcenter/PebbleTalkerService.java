@@ -430,14 +430,14 @@ public class PebbleTalkerService extends Service
 
             }
 
-            if (settings.getBoolean("enableQuietTime", false))
+            if (settingStorage.getBoolean(AppSetting.QUIET_TIME_ENABLED))
             {
-                int startHour = settings.getInt("quiteTimeStartHour", 0);
-                int startMinute = settings.getInt("quiteTimeStartMinute", 0);
+                int startHour = settingStorage.getInt(AppSetting.QUIET_TIME_START_HOUR);
+                int startMinute = settingStorage.getInt(AppSetting.QUIET_TIME_START_MINUTE);
                 int startTime = startHour * 60 + startMinute;
 
-                int endHour = settings.getInt("quiteTimeEndHour", 23);
-                int endMinute = settings.getInt("quiteTimeEndMinute", 59);
+                int endHour = settingStorage.getInt(AppSetting.QUIET_TIME_END_HOUR);
+                int endMinute = settingStorage.getInt(AppSetting.QUIET_TIME_END_MINUTE);
                 int endTime = endHour * 60 + endMinute;
 
                 Calendar calendar = Calendar.getInstance();
