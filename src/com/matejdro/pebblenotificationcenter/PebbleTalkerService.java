@@ -226,7 +226,7 @@ public class PebbleTalkerService extends Service
 
         data.addUint8(0, (byte) 4);
         data.addInt32(1, id);
-        if (dontClose)
+        if (dontClose || !sendingQueue.isEmpty())
             data.addUint8(2, (byte) 1);
 
         PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
@@ -352,7 +352,7 @@ public class PebbleTalkerService extends Service
         Timber.tag("NC Upwards debug");
         Timber.d("	dismiss success: %b %d", data.contains(2), notificationRemovalQueue.size());
 
-        if (data.contains(2) && sendingQueue.isEmpty())
+        if (data.contains(2))
         {
             closeApp();
             return;
