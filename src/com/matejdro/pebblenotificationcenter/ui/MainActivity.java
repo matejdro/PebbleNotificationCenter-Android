@@ -1,6 +1,5 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
@@ -11,22 +10,23 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
-import com.matejdro.pebblenotificationcenter.util.ConfigBackup;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
+import com.matejdro.pebblenotificationcenter.util.ConfigBackup;
 
 
-public class MainActivity extends FragmentActivity /*implements ActionBar.TabListener*/ {
+public class MainActivity extends ActionBarActivity /*implements ActionBar.TabListener*/ {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
@@ -49,7 +49,7 @@ public class MainActivity extends FragmentActivity /*implements ActionBar.TabLis
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the action bar.
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
 
         // Specify that the Home/Up button should not be enabled, since there is no hierarchical
         // parent.

@@ -2,5 +2,6 @@
 <resources>
     <color name="text_enabled">#000000</color>
     <color name="text_disabled">#cccccc</color>
-
+    <color name="pebble_light_red">#ff0000</color>
+    <color name="pebble_dark_red">#BC0000</color>
 </resources>
