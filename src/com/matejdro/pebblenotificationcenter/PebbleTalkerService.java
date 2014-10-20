@@ -352,7 +352,7 @@ public class PebbleTalkerService extends Service
         Timber.tag("NC Upwards debug");
         Timber.d("	dismiss success: %b %d", data.contains(2), notificationRemovalQueue.size());
 
-        if (data.contains(2))
+        if (data.contains(2) && sendingQueue.isEmpty())
         {
             closeApp();
             return;
