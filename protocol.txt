@@ -68,6 +68,11 @@ Pebble --> Phone
 		1 = Unique notification id (int32)	
 		2 = Send responses from this index beyond (If this is missing, packet acts as ACK that everything came through)
 
+	Packet 14 - Dismiss notification
+	Requests phone to dismiss notification
+	Additional data:
+		1 = Unique notification id (int32)
+
 Phone --> Pebble
 
 	Packet 0 - New notification packet

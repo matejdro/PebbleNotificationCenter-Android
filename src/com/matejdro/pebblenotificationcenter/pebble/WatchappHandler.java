@@ -10,7 +10,7 @@ import android.net.Uri;
 import com.matejdro.pebblenotificationcenter.R;
 
 public class WatchappHandler {
-    public static final int SUPPORTED_PROTOCOL = 17;
+    public static final int SUPPORTED_PROTOCOL = 18;
 
     public static boolean isFirstRun(SharedPreferences settings)
     {

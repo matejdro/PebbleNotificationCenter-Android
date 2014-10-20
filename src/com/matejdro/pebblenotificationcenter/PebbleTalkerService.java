@@ -773,8 +773,19 @@ public class PebbleTalkerService extends Service
 
             notification.source.getActions().get(action).executeAction(this, notification);
         }
+    }
 
+    private void pebbleDismissRequested(PebbleDictionary data)
+    {
+        int id = data.getInteger(1).intValue();
 
+        Timber.d("Dismiss requested from Pebble");
+
+        ProcessedNotification notification = sentNotifications.get(id);
+        if (notification == null)
+            return;
+
+        dismissOnPhone(notification);
     }
 
     public void dismissOnPhone(ProcessedNotification notification)
@@ -973,6 +984,9 @@ public class PebbleTalkerService extends Service
         case 13:
         case 3:
             actionListPacket(id, data);
+            break;
+        case 14:
+            pebbleDismissRequested(data);
             break;
 
         }
