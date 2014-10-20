@@ -181,6 +181,7 @@ public abstract class ListItem extends BaseSettingItem
     @Override
     public boolean onClose()
     {
+        settingsStorage.setStringList(associatedSetting, storage);
         return true;
     }
 

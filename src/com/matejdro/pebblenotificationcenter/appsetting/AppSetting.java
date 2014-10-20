@@ -39,6 +39,8 @@ public enum AppSetting
     ENABLE_VOICE_REPLY("enableVoiceReply", true),
     CANNED_RESPONSES("cannedResponses", null),
     TASKER_ACTIONS("taskerActions", null),
+    INTENT_ACTIONS_NAMES("intentActionsNames", null),
+    INTENT_ACTIONS_ACTIONS("intentActionsActions", null),
     VIBRATION_PATTERN("vibrationPattern", "500"),
     PERIODIC_VIBRATION("settingPeriodicVibration", "20"),
     MINIMUM_VIBRATION_INTERVAL("minimumVibrationInterval", "0"),

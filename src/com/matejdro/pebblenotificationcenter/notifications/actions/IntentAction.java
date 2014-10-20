@@ -1,32 +1,44 @@
 package com.matejdro.pebblenotificationcenter.notifications.actions;
 
-import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Parcel;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Matej on 22.9.2014.
  */
 public class IntentAction extends NotificationAction
 {
-    private PendingIntent actionIntent;
-    public IntentAction(String actionText,  PendingIntent intent)
+    private String intentAction;
+
+    public IntentAction(String actionName, String intentAction)
     {
-        super(actionText);
-        this.actionIntent = intent;
+        super(actionName);
+        this.intentAction = intentAction;
     }
 
     @Override
     public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
-        try
-        {
-            actionIntent.send();
-        } catch (PendingIntent.CanceledException e)
-        {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(intentAction);
+
+        intent.putExtra("ncappname", NotificationHandler.getAppName(service, notification.source.getKey().getPackage()));
+        intent.putExtra("ncapppkg", notification.source.getKey().getPackage());
+        intent.putExtra("ncid", Integer.toString(notification.source.getKey().getAndroidId()));
+        intent.putExtra("nctitle", notification.source.getTitle());
+        intent.putExtra("ncsubtitle", notification.source.getSubtitle());
+        intent.putExtra("nctext", notification.source.getText());
+
+        if (notification.source.getKey().getTag() != null)
+            intent.putExtra("nctag", notification.source.getKey().getTag());
+
+        service.sendBroadcast(intent);
     }
 
     @Override
@@ -39,8 +51,7 @@ public class IntentAction extends NotificationAction
     public void writeToParcel(Parcel parcel, int i)
     {
         parcel.writeValue(actionText);
-
-        parcel.writeValue(actionIntent);
+        parcel.writeValue(intentAction);
     }
 
     public static final Creator<IntentAction> CREATOR = new Creator<IntentAction>()
@@ -48,10 +59,10 @@ public class IntentAction extends NotificationAction
         @Override
         public IntentAction createFromParcel(Parcel parcel)
         {
-            String text = (String) parcel.readValue(String.class.getClassLoader());
-            PendingIntent intent = (PendingIntent) parcel.readValue(PendingIntent.class.getClassLoader());
+            String name = (String) parcel.readValue(String.class.getClassLoader());
+            String action = (String) parcel.readValue(String.class.getClassLoader());
 
-            return new IntentAction(text, intent);
+            return new IntentAction(name, action);
         }
 
         @Override
@@ -60,4 +71,21 @@ public class IntentAction extends NotificationAction
             return new IntentAction[0];
         }
     };
+
+    public static void addIntentActions(AppSettingStorage settings, ArrayList<NotificationAction> storage)
+    {
+        if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+            return;
+
+        List<String> names = settings.getStringList(AppSetting.INTENT_ACTIONS_NAMES);
+        List<String> actions = settings.getStringList(AppSetting.INTENT_ACTIONS_ACTIONS);
+
+        for (int i = 0; i < names.size(); i++)
+        {
+            storage.add(new IntentAction(names.get(i), actions.get(i)));
+
+            if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                return;
+        }
+    }
 }

@@ -25,6 +25,7 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.BaseSettingI
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CannedResponsesItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CheckBoxItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.EditTextItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.IntentActionsItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.QuietHoursItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.RegexItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.SpinnerItem;
@@ -119,6 +120,7 @@ public class PerAppActivity extends Activity
         category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_VOICE_REPLY, R.string.settingEnableVoiceReply, R.string.settingEnableVoiceReplyDescription));
         category.add(new CannedResponsesItem(settingsStorage, AppSetting.CANNED_RESPONSES, R.string.settingCannedResponses, R.string.settingCannedResponsesDescription));
         category.add(new TaskerTaskListItem(settingsStorage, AppSetting.TASKER_ACTIONS, R.string.settingTaskerActions, R.string.settingTaskerActionsDescription));
+        category.add(new IntentActionsItem(settingsStorage, AppSetting.INTENT_ACTIONS_NAMES, R.string.settingBroadcastIntentActions, R.string.settingBroadcastIntentActionsDescription));
         settings.add(new SettingsCategory(R.string.settingCategoryActions, category));
 
         //Inbox parsing

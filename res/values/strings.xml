@@ -398,5 +398,11 @@
     <string name="settingQuietHoursDescription">When quiet hours are enabled, Pebble won\'t receive messages from this
         app in specified time.
     </string>
+    <string name="noIntents">No intents</string>
+    <string name="intentExtras">Extras</string>
+    <string name="settingBroadcastIntentActions">Broadcast intent actions</string>
+    <string name="settingBroadcastIntentActionsDescription">Use this when you want to trigger something in tasker-like
+        apps or other 3rd party apps that support intent events.
+    </string>
 
 </resources>

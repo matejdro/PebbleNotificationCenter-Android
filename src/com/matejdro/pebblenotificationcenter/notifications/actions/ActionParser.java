@@ -39,9 +39,10 @@ public class ActionParser
         if (settingStorage.getInt(AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_BEFORE_APP_OPTIONS)
             actions.add(new DismissOnPebbleAction(context));
         if (notification.contentIntent != null && settingStorage.getInt(AppSetting.OPEN_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_BEFORE_APP_OPTIONS)
-            actions.add(new IntentAction(context.getString(R.string.openOnPhone), notification.contentIntent));
+            actions.add(new PendingIntentAction(context.getString(R.string.openOnPhone), notification.contentIntent));
 
         TaskerAction.addTaskerTasks(settingStorage, actions);
+        IntentAction.addIntentActions(settingStorage, actions);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
@@ -57,7 +58,7 @@ public class ActionParser
         if (settingStorage.getInt(AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS)
             actions.add(new DismissOnPebbleAction(context));
         if (notification.contentIntent != null && settingStorage.getInt(AppSetting.OPEN_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS)
-            actions.add(new IntentAction(context.getString(R.string.openOnPhone), notification.contentIntent));
+            actions.add(new PendingIntentAction(context.getString(R.string.openOnPhone), notification.contentIntent));
 
         pebbleNotification.setActions(actions);
 
@@ -135,7 +136,7 @@ public class ActionParser
             if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                 break;
 
-            storage.add(new IntentAction(action.title.toString(), action.actionIntent));
+            storage.add(new PendingIntentAction(action.title.toString(), action.actionIntent));
         }
     }
 

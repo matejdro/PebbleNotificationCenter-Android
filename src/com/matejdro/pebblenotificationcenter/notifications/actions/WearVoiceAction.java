@@ -50,7 +50,7 @@ public class WearVoiceAction extends NotificationAction
         Parcelable[] remoteInputs = (Parcelable[]) bundle.getParcelableArray("remoteInputs");
         if (remoteInputs == null || remoteInputs.length == 0)
         {
-            return new IntentAction(title, actionIntent);
+            return new PendingIntentAction(title, actionIntent);
         }
 
         Bundle firstRemoteInput = (Bundle) remoteInputs[0];
@@ -77,7 +77,7 @@ public class WearVoiceAction extends NotificationAction
         RemoteInput[] remoteInputs = action.getRemoteInputs();
         if (remoteInputs == null || remoteInputs.length == 0)
         {
-            return new IntentAction(title, actionIntent);
+            return new PendingIntentAction(title, actionIntent);
         }
 
         RemoteInput firstRemoteInput =  remoteInputs[0];

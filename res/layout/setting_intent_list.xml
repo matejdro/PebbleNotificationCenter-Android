@@ -12,6 +12,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/AppSettingsName"
+                android:text="@string/settingBroadcastIntentActions"
                 />
 
         <TextView
@@ -22,6 +23,8 @@
                 android:layout_below="@id/name"
                 android:layout_alignParentLeft="true"
                 style="@style/AppSettingsDesc"
+                android:text="@string/settingBroadcastIntentActionsDescription"
+
                 />
 
     <Button
@@ -42,7 +45,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="5dp"
-            android:text="@string/taskerActionsVariablesButton"/>
+            android:text="@string/intentExtras"/>
 
     <LinearLayout
             android:id="@+id/listContainer"
@@ -57,6 +60,6 @@
             android:layout_below="@id/addButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/taskerActionsNoTasks"
+            android:text="@string/noIntents"
             android:textStyle="italic"/>
 </RelativeLayout>
