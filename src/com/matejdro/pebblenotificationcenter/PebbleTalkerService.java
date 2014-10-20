@@ -991,11 +991,6 @@ public class PebbleTalkerService extends Service
         {
         }
 
-        System.out.println("mininterval " + minInterval);
-        System.out.println("last " + lastVibration);
-        if (lastVibration != null)
-            System.out.println("diff " + (System.currentTimeMillis() - lastVibration));
-
         if (minInterval == 0 || lastVibration == null ||
            (System.currentTimeMillis() - lastVibration) > minInterval * 1000)
         {
