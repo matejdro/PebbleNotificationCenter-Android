@@ -180,7 +180,7 @@ public class PebbleTalkerService extends Service
         }
 
         PebbleDictionary data = new PebbleDictionary();
-        List<Byte> vibrationPattern = getVibrationPattern(notification.source.getKey().getPackage(), settingStorage);
+        List<Byte> vibrationPattern = getVibrationPattern(notification, settingStorage);
 
         byte[] configBytes = new byte[6 + vibrationPattern.size()];
 
@@ -717,6 +717,9 @@ public class PebbleTalkerService extends Service
     {
         Timber.d("Transfer completed...");
 
+        if (curSendingNotification.vibrated)
+            lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+
         curSendingNotification = null;
 
         Timber.d("csn null: " + (curSendingNotification == null));
@@ -975,9 +978,9 @@ public class PebbleTalkerService extends Service
         }
 	}
 
-    private List<Byte> getVibrationPattern(String pkg, AppSettingStorage settingStorage)
+    private List<Byte> getVibrationPattern(ProcessedNotification notification, AppSettingStorage settingStorage)
     {
-        Long lastVibration = lastAppVibration.get(pkg);
+        Long lastVibration = lastAppVibration.get(notification.source.getKey().getPackage());
         int minInterval = 0;
 
         try
@@ -988,10 +991,15 @@ public class PebbleTalkerService extends Service
         {
         }
 
+        System.out.println("mininterval " + minInterval);
+        System.out.println("last " + lastVibration);
+        if (lastVibration != null)
+            System.out.println("diff " + (System.currentTimeMillis() - lastVibration));
+
         if (minInterval == 0 || lastVibration == null ||
            (System.currentTimeMillis() - lastVibration) > minInterval * 1000)
         {
-            lastAppVibration.put(pkg, System.currentTimeMillis());
+            notification.vibrated = true;
             return AppSetting.parseVibrationPattern(settingStorage);
         }
         else
