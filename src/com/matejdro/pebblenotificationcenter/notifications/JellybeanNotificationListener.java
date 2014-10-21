@@ -55,6 +55,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 	public void onNotificationRemoved(StatusBarNotification sbn) {
         NotificationKey key = NotificationHandler.getKeyFromSbn(sbn);
 
+
         Intent intent = new Intent(this, PebbleTalkerService.class);
         intent.putExtra("dismissUpwardsKey", key);
         startService(intent);
@@ -82,8 +83,6 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
         if (instance == null)
             return;
-
-        System.out.println(key.getLolipopKey());
 
         if (key.getLolipopKey() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             instance.cancelNotification(key.getLolipopKey());
