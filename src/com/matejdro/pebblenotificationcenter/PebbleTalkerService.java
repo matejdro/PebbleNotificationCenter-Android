@@ -388,10 +388,6 @@ public class PebbleTalkerService extends Service
         if (notificationSource.getTitle().trim().equals(notificationSource.getSubtitle().trim()))
             notificationSource.setSubtitle("");
 
-        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), TEXT_LIMIT));
-        notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
-        notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
-
         ProcessedNotification notification = new ProcessedNotification();
         notification.source = notificationSource;
         AppSettingStorage settingStorage = notificationSource.getSettingStorage(this);
@@ -401,8 +397,13 @@ public class PebbleTalkerService extends Service
                 settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
                 canDisplayWearGroupNotification(notification.source, settingStorage))
         {
-            historyDb.storeNotification(System.currentTimeMillis(), notificationSource.getTitle(), notificationSource.getSubtitle(), notificationSource.getText());
+            historyDb.storeNotification(System.currentTimeMillis(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), TEXT_LIMIT, true));
         }
+
+        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), TEXT_LIMIT));
+        notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
+        notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
+
 
         if (!notificationSource.isListNotification())
         {
