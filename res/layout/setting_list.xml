@@ -4,7 +4,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 style="@style/AppSettingParent"
-                android:id="@+id/parentView">
+                android:id="@+id/parentView"
+                android:background="@drawable/list_background"
+                android:clickable="true">
 
         <TextView
                 android:id="@+id/name"

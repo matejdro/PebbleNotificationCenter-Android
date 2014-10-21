@@ -52,6 +52,16 @@ public class EditTextItem extends BaseSettingItem
         nameText.setText(textResource);
         descriptionText.setText(descriptionResource);
 
+        view.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (enabled)
+                    editText.requestFocus();
+            }
+        });
+
         editText.setInputType(inputType);
         editText.setText(settingsStorage.getString(associatedSetting));
         editText.addTextChangedListener(new TextWatcher()

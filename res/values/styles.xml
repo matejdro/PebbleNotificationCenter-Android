@@ -8,6 +8,10 @@
 
     </style>
 
+    <style name="AppSettingsBackground">
+        <item name="android:background">@android:color/white</item>
+    </style>
+
     <style name="AppSettingParent">
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
@@ -34,7 +38,7 @@
     </style>
 
     <style name="AppSettingsSectionText">
-        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginTop">5dp</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingLeft">10dp</item>

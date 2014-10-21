@@ -54,6 +54,16 @@ public class SpinnerItem extends BaseSettingItem
         else
             descriptionText.setText(descriptionResource);
 
+        view.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (enabled)
+                    spinner.performClick();
+            }
+        });
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, spinnerItemsList, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
