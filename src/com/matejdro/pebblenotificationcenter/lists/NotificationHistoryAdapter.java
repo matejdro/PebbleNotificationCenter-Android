@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter.lists;
 
 import android.content.Intent;
 import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import java.util.ArrayList;
@@ -30,8 +31,9 @@ public class NotificationHistoryAdapter extends NotificationListAdapter {
             long sendingDate = cursor.getLong(0);
             String title = cursor.getString(1);
             String text = cursor.getString(3) + "\n\nSent on " + getFormattedDate(sendingDate);
+            NotificationKey key = new NotificationKey(null, null, null);
 
-            PebbleNotification notification = new PebbleNotification(title, text, null);
+            PebbleNotification notification = new PebbleNotification(title, text, key);
 			notification.setSubtitle(cursor.getString(2));
 			notification.setPostTime(sendingDate);
             notification.setListNotification(true);
