@@ -14,10 +14,10 @@ public enum AppSetting
     SWITCH_TO_MOST_RECENT_NOTIFICATION("autoSwitch", false),
 
     QUIET_TIME_ENABLED("enableQuietTime", false),
-    QUIET_TIME_START_HOUR("quiteTimeStartHour", 0),
-    QUIET_TIME_START_MINUTE("quiteTimeStartMinute", 0),
-    QUIET_TIME_END_HOUR("quiteTimeEndHour", 0),
-    QUIET_TIME_END_MINUTE("quiteTimeEndMinute", 0),
+    QUIET_TIME_START_HOUR("quietTimeStartHour", 0),
+    QUIET_TIME_START_MINUTE("quietTimeStartMinute", 0),
+    QUIET_TIME_END_HOUR("quietTimeEndHour", 0),
+    QUIET_TIME_END_MINUTE("quietTimeEndMinute", 0),
 
 
 
