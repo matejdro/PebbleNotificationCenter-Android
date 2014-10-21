@@ -16,7 +16,7 @@ public enum AppSetting
     QUIET_TIME_ENABLED("enableQuietTime", false),
     QUIET_TIME_START_HOUR("quiteTimeStartHour", 0),
     QUIET_TIME_START_MINUTE("quiteTimeStartMinute", 0),
-    QUIET_TIME_END_HOUR("quiteTimeStartHour", 0),
+    QUIET_TIME_END_HOUR("quiteTimeEndHour", 0),
     QUIET_TIME_END_MINUTE("quiteTimeEndMinute", 0),
 
 
