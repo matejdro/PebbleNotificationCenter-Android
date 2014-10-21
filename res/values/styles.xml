@@ -2,10 +2,8 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <!--<item name="colorPrimary">@android:color/white</item>-->
-        <!--<item name="colorPrimaryDark">@color/pebble_dark_red</item>-->
-        <!--<item name="colorAccent">@color/material_green_A200</item>-->
-
+        <item name="colorPrimary">#EEEEEE</item>
+        <item name="colorPrimaryDark">#888888</item>
     </style>
 
     <style name="AppSettingsBackground">
