@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import com.crashlytics.android.Crashlytics;
+import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.R;
@@ -107,7 +108,7 @@ public class ActionParser
                     if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                         return;
 
-                    PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, pebbleNotification.getKey(), (Notification) page, false);
+                    PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, new NotificationKey(null, null, null), (Notification) page, false);
                     pageNotification.setForceSwitch(true);
                     pageNotification.setScrollToEnd(true);
                     pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), PebbleTalkerService.TEXT_LIMIT));
