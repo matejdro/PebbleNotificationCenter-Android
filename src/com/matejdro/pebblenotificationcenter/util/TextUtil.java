@@ -2,7 +2,11 @@ package com.matejdro.pebblenotificationcenter.util;
 
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 
 public class TextUtil
@@ -103,4 +107,24 @@ public class TextUtil
             return false;
         }
     }
+
+    public static boolean containsRegexes(String text, List<String> regexes)
+    {
+        for (String regex : regexes)
+        {
+            try
+            {
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(text);
+                if (matcher.find())
+                    return true;
+            }
+            catch (PatternSyntaxException e)
+            {
+            }
+        }
+
+        return false;
+    }
+
 }

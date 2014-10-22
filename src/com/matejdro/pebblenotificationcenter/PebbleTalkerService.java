@@ -407,6 +407,23 @@ public class PebbleTalkerService extends Service
 
         if (!notificationSource.isListNotification())
         {
+            if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
+                if (notificationSource.getText().trim().isEmpty() && (notificationSource.getSubtitle() == null || notificationSource.getSubtitle().trim().isEmpty())) {
+                    Timber.d("Discarding notification from %s because it is empty", notificationSource.getKey().getPackage());
+                    return;
+                }
+            }
+
+            String combinedText = notificationSource.getTitle() + " " + notificationSource.getSubtitle() + " " + notificationSource.getText();
+
+            List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
+            if (regexList.size() > 0 && !TextUtil.containsRegexes(combinedText, regexList))
+                return;
+
+            regexList = settingStorage.getStringList(AppSetting.EXCLUDED_REGEX);
+            if (TextUtil.containsRegexes(combinedText, regexList))
+                return;
+
             if (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
                 return;
 

@@ -21,10 +21,6 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import timber.log.Timber;
 
 public class NotificationHandler {
@@ -56,23 +52,6 @@ public class NotificationHandler {
         {
             parseWearGroupData(notification, pebbleNotification);
         }
-
-        if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
-            if (pebbleNotification.getText().length() == 0 && (pebbleNotification.getTitle() == null || pebbleNotification.getSubtitle().length() == 0)) {
-                Timber.d("Discarding notification from %s because it is empty", key.getPackage());
-                return;
-            }
-        }
-
-        String combinedText = pebbleNotification.getTitle() + " " + pebbleNotification.getSubtitle() + " " + pebbleNotification.getText();
-
-        List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
-        if (regexList.size() > 0 && !containsRegexes(combinedText, regexList))
-            return;
-
-        regexList = settingStorage.getStringList(AppSetting.EXCLUDED_REGEX);
-        if (containsRegexes(combinedText, regexList))
-            return;
 
         Intent startIntent = new Intent(context, PebbleTalkerService.class);
         startIntent.putExtra("notification", pebbleNotification);
@@ -194,26 +173,6 @@ public class NotificationHandler {
 		return applicationName;
 
 	}
-
-    public static boolean containsRegexes(String text, List<String> regexes)
-    {
-        for (String regex : regexes)
-        {
-            try
-            {
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(text);
-                if (matcher.find())
-                    return true;
-            }
-            catch (PatternSyntaxException e)
-            {
-            }
-        }
-
-        return false;
-    }
-
 
 	public static boolean isNotificationListenerSupported()
 	{
