@@ -98,6 +98,8 @@ public abstract class ListItem extends BaseSettingItem
             }
         });
 
+        view.setBackgroundResource(R.drawable.list_background);
+
         return view;
     }
 
