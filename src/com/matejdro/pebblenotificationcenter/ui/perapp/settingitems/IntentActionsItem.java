@@ -131,7 +131,7 @@ public class IntentActionsItem extends ListItem
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-                builder.setMessage(R.string.taskerVariablesDescription);
+                builder.setMessage(R.string.intentExtrasDescription);
                 builder.setPositiveButton(R.string.ok, null);
 
                 builder.show();

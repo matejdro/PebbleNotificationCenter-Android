@@ -357,6 +357,16 @@
     %ncsubtitle = Subtitle of the notification\n\n
     %nctext = Text of the notification
     </string>
+    <string name="intentExtrasDescription" formatted="false">
+        Intent triggered by NC will contain those extras:\n\n
+        ncappname = name of the app that sent notification\n\n
+        ncappppkg = package of the app that sent notification\n\n
+        ncid = ID of the notification\n\n
+        nctag = Tag of the notification\n\n
+        nctitle = Title of the notification\n\n
+        ncsubtitle = Subtitle of the notification\n\n
+        nctext = Text of the notification
+    </string>
     <string name="voiceInputErrorNotificationSubtitle">Error</string>
     <string name="taskerActionsVariablesButton">Variables</string>
     <string name="taskerActionErrorNotificationTitle">Tasker Action</string>
