@@ -57,11 +57,6 @@ public class NotificationParser {
 		if (extras == null)
 			return false;
 
-        for (String key : extras.keySet())
-        {
-            System.out.println(key + " " + extras.get(key));
-        }
-
         if (extras.get(Notification.EXTRA_TEXT_LINES) != null && extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES).length > 0)
         {
             if (parseInboxNotification(context, pkg, extras))
