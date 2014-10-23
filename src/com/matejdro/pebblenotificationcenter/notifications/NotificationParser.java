@@ -57,6 +57,11 @@ public class NotificationParser {
 		if (extras == null)
 			return false;
 
+        for (String key : extras.keySet())
+        {
+            System.out.println(key + " " + extras.get(key));
+        }
+
         if (extras.get(Notification.EXTRA_TEXT_LINES) != null && extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES).length > 0)
         {
             if (parseInboxNotification(context, pkg, extras))
@@ -86,6 +91,10 @@ public class NotificationParser {
                 text += formatCharSequence(line) + "\n\n";
             }
             text = text.trim();
+        }
+        else if (extras.get(Notification.EXTRA_BIG_TEXT) != null)
+        {
+            text = formatCharSequence(extras.getCharSequence(Notification.EXTRA_BIG_TEXT));
         }
         else
         {
