@@ -32,7 +32,6 @@ public class VoiceCapture implements RecognitionListener
     private PebbleTalkerService service;
     private SpeechRecognizer recognizer;
     private boolean waitingForBluetooth;
-    private boolean bluetoothMode;
 
     public VoiceCapture(PendingIntent resultIntent, String resultKey, PebbleTalkerService service)
     {
@@ -41,7 +40,6 @@ public class VoiceCapture implements RecognitionListener
         this.service = service;
 
         waitingForBluetooth = false;
-        bluetoothMode = false;
     }
 
     public void startVoice()
