@@ -1,7 +1,11 @@
 package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.speech.RecognitionListener;
@@ -13,6 +17,7 @@ import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.R;
+import com.matejdro.pebblenotificationcenter.util.BluetoothHeadsetListener;
 import java.util.ArrayList;
 
 /**
@@ -26,20 +31,23 @@ public class VoiceCapture implements RecognitionListener
     private String resultKey;
     private PebbleTalkerService service;
     private SpeechRecognizer recognizer;
+    private boolean waitingForBluetooth;
+    private boolean bluetoothMode;
 
     public VoiceCapture(PendingIntent resultIntent, String resultKey, PebbleTalkerService service)
     {
         this.resultIntent = resultIntent;
         this.resultKey = resultKey;
         this.service = service;
-    }
 
+        waitingForBluetooth = false;
+        bluetoothMode = false;
+    }
 
     public void startVoice()
     {
-        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), service.getString(R.string.voiceInputSpeakInstructions), VOICE_NOTIFICATION_KEY);
-        notification.setForceSwitch(true);
-        service.processNotification(notification);
+        if (waitingForBluetooth)
+            return;
 
         if (recognizer != null)
         {
@@ -47,6 +55,41 @@ public class VoiceCapture implements RecognitionListener
             recognizer.destroy();
         }
 
+        if (BluetoothHeadsetListener.isHeadsetConnected(service))
+        {
+            sendStatusNotification(service.getString(R.string.voiceInputBluetoothWait));
+
+            AudioManager audioManager = (AudioManager) service.getSystemService(Context.AUDIO_SERVICE);
+            audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+            audioManager.startBluetoothSco();
+            audioManager.setBluetoothScoOn(true);
+
+            service.registerReceiver(new BluetoothAudioListener(), new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED));
+            waitingForBluetooth = true;
+        }
+        else
+        {
+            sendStatusNotification(service.getString(R.string.voiceInputSpeakInstructions));
+            startRecognizing();
+        }
+    }
+
+    public void stopVoice()
+    {
+        recognizer.stopListening();
+        recognizer.destroy();
+
+        AudioManager audioManager = (AudioManager) service.getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager.isBluetoothScoOn())
+        {
+            audioManager.setMode(AudioManager.MODE_NORMAL);
+            audioManager.stopBluetoothSco();
+            audioManager.setBluetoothScoOn(false);
+        }
+    }
+
+    public void startRecognizing()
+    {
         recognizer = SpeechRecognizer.createSpeechRecognizer(service);
         Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -85,6 +128,8 @@ public class VoiceCapture implements RecognitionListener
     @Override
     public void onError(int i)
     {
+        stopVoice();
+
         switch (i)
         {
             case SpeechRecognizer.ERROR_NETWORK:
@@ -104,6 +149,8 @@ public class VoiceCapture implements RecognitionListener
     @Override
     public void onResults(Bundle bundle)
     {
+        stopVoice();
+
         ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         int size = Math.min(matches.size(), 10);
 
@@ -122,7 +169,7 @@ public class VoiceCapture implements RecognitionListener
                 resultsText = resultsText.concat("\n\n");
         }
 
-        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle),  service.getString(R.string.voiceInputResultNotificationText, resultsText), VOICE_NOTIFICATION_KEY);
+        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), service.getString(R.string.voiceInputResultNotificationText, resultsText), VOICE_NOTIFICATION_KEY);
         notification.setSubtitle(service.getString(R.string.voiceInputResultNotificationSubtitle));
         notification.setForceSwitch(true);
         notification.setForceActionMenu(true);
@@ -137,7 +184,6 @@ public class VoiceCapture implements RecognitionListener
         notification.setActions(actions);
 
         service.processNotification(notification);
-
     }
 
     @Override
@@ -163,6 +209,14 @@ public class VoiceCapture implements RecognitionListener
         actions.add(new RetryAction(resultIntent, resultKey));
         actions.add(new DismissOnPebbleAction(service.getString(R.string.cancel)));
         notification.setActions(actions);
+
+        service.processNotification(notification);
+    }
+
+    private void sendStatusNotification(String text)
+    {
+        PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), text, VOICE_NOTIFICATION_KEY);
+        notification.setForceSwitch(true);
 
         service.processNotification(notification);
     }
@@ -272,7 +326,21 @@ public class VoiceCapture implements RecognitionListener
                 return new VoiceConfirmAction[0];
             }
         };
+    }
 
+    private class BluetoothAudioListener extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, AudioManager.SCO_AUDIO_STATE_DISCONNECTED);
+            if (state == AudioManager.SCO_AUDIO_STATE_CONNECTED)
+            {
+                startRecognizing();
+                context.unregisterReceiver(this);
+                sendStatusNotification(service.getString(R.string.voiceInputSpeakNow));
+            }
+        }
     }
 
 }

@@ -414,5 +414,8 @@
     <string name="settingBroadcastIntentActionsDescription">Use this when you want to trigger something in tasker-like
         apps or other 3rd party apps that support intent events.
     </string>
+    <string name="voiceInputBluetoothWait">Please wait for BT headset</string>
+    <string name="voiceInputSpeakNow">Speak now</string>
+
 
 </resources>
