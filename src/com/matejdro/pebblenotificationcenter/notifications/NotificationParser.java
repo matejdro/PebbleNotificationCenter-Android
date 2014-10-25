@@ -168,24 +168,36 @@ public class NotificationParser {
         StyleSpan[] spans = spannableString.getSpans(0, spannableString.length(), StyleSpan.class);
 
 
-       int addedLength = 0;
+        int amountOfBoldspans = 0;
 
        for (int i = spans.length - 1; i >= 0; i--)
        {
           StyleSpan span = spans[i];
           if (span.getStyle() == Typeface.BOLD)
           {
-              text = insertString(text, "\n",  spannableString.getSpanEnd(span));
-              addedLength++;
+              amountOfBoldspans++;
           }
        }
+
+        if (amountOfBoldspans == 1)
+        {
+            for (int i = spans.length - 1; i >= 0; i--)
+            {
+                StyleSpan span = spans[i];
+                if (span.getStyle() == Typeface.BOLD)
+                {
+                    text = insertString(text, "\n",  spannableString.getSpanEnd(span));
+                    break;
+                }
+            }
+        }
 
         return text;
     }
 
     private static String insertString(String text, String insert, int pos)
     {
-        return text.substring(0, pos).trim().concat(insert).concat(text.substring(pos).trim());
+        return text.substring(0, pos).trim().concat(insert).trim().concat(text.substring(pos)).trim();
     }
 
 	private void getExtraData(Notification notification) {
