@@ -2,6 +2,7 @@ package timber.log;
 
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import com.matejdro.pebblenotificationcenter.util.LogWriter;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
@@ -177,35 +178,51 @@ public final class Timber {
         }
 
         @Override public void d(String message, Object... args) {
-            Log.d("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)));
+            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+            Log.d("PebbleNotificationCenter", text);
+            LogWriter.write("D ".concat(text));
         }
 
         @Override public void d(Throwable t, String message, Object... args) {
-            Log.d("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)), t);
+            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+            Log.d("PebbleNotificationCenter", text, t);
+            LogWriter.write("D ".concat(text));
         }
 
         @Override public void i(String message, Object... args) {
-            Log.i("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)));
+            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+            Log.i("PebbleNotificationCenter", text);
+            LogWriter.write("I ".concat(text));
         }
 
         @Override public void i(Throwable t, String message, Object... args) {
-            Log.i("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)), t);
+            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+            Log.i("PebbleNotificationCenter", text, t);
+            LogWriter.write("I ".concat(text));
         }
 
         @Override public void w(String message, Object... args) {
-            Log.w("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)));
+            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+            Log.w("PebbleNotificationCenter", text);
+            LogWriter.write("W ".concat(text));
         }
 
         @Override public void w(Throwable t, String message, Object... args) {
-            Log.w("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)), t);
+            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+            Log.w("PebbleNotificationCenter", text, t);
+            LogWriter.write("W ".concat(text));
         }
 
         @Override public void e(String message, Object... args) {
-            Log.e("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)));
+            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+            Log.e("PebbleNotificationCenter", text);
+            LogWriter.write("E ".concat(text));
         }
 
         @Override public void e(Throwable t, String message, Object... args) {
-            Log.e("PebbleNotificationCenter", "[".concat(createTag()).concat("] ").concat(String.format(message, args)), t);
+            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+            Log.e("PebbleNotificationCenter", text, t);
+            LogWriter.write("E ".concat(text));
         }
 
         @Override public void tag(String tag) {

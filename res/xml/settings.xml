@@ -88,6 +88,10 @@
         <Preference 
             android:key="version"
             android:title="Installed version"/>
+        <CheckBoxPreference
+            android:key="enableLogWriter"
+            android:title="Enable debug logging"
+            android:summary="Enable logging to PebbleNotificationCenter\\log.txt. Use when debugging." />
         <Preference
             android:key="notifierLicense"
             android:title="Open source Licenses" />

@@ -484,7 +484,7 @@ public class PebbleTalkerService extends Service
             }
 
             updateCurrentlyRunningApp();
-            System.out.println("prev" + previousUUID);
+            Timber.d("prev" + previousUUID);
             int pebbleAppMode = 0;
             if (previousUUID != null)
                 pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, previousUUID);
@@ -560,7 +560,7 @@ public class PebbleTalkerService extends Service
 
     private void closeApp()
     {
-        Timber.d("CloseApp " + previousUUID);
+        Timber.d("CloseApp " + previousUUID + " " + closingAttempts);
         commBusy = false;
 
         //startAppOnPebble seems to fail sometimes so I fallback to regular closing if it fails 2 times.

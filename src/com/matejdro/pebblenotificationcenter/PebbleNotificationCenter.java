@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter;
 
 import android.content.pm.ApplicationInfo;
 import com.crashlytics.android.Crashlytics;
+import com.matejdro.pebblenotificationcenter.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import timber.log.Timber;
 import timber.log.Timber.DebugTree;
@@ -42,6 +43,7 @@ public class PebbleNotificationCenter extends android.app.Application {
         Timber.d("Timber.plant()");
 
         settingsMemoryStorage = new SettingsMemoryStorage(this);
+        LogWriter.init();
     }
     	
 	public static SettingsMemoryStorage getInMemorySettings()
