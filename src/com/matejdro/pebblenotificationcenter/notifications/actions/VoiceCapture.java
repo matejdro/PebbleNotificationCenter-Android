@@ -19,6 +19,7 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.util.BluetoothHeadsetListener;
 import java.util.ArrayList;
+import timber.log.Timber;
 
 /**
  * Created by Matej on 28.9.2014.
@@ -44,6 +45,8 @@ public class VoiceCapture implements RecognitionListener
 
     public void startVoice()
     {
+        Timber.d("startVoice");
+
         if (waitingForBluetooth)
             return;
 
@@ -55,6 +58,8 @@ public class VoiceCapture implements RecognitionListener
 
         if (BluetoothHeadsetListener.isHeadsetConnected(service))
         {
+            Timber.d("BT Wait");
+
             sendStatusNotification(service.getString(R.string.voiceInputBluetoothWait));
 
             AudioManager audioManager = (AudioManager) service.getSystemService(Context.AUDIO_SERVICE);
@@ -67,6 +72,8 @@ public class VoiceCapture implements RecognitionListener
         }
         else
         {
+            Timber.d("Regular voice start");
+
             sendStatusNotification(service.getString(R.string.voiceInputSpeakInstructions));
             startRecognizing();
         }
@@ -74,6 +81,8 @@ public class VoiceCapture implements RecognitionListener
 
     public void stopVoice()
     {
+        Timber.d("stopVoice");
+
         recognizer.stopListening();
         recognizer.destroy();
 
@@ -88,6 +97,8 @@ public class VoiceCapture implements RecognitionListener
 
     public void startRecognizing()
     {
+        Timber.d("startRecognizing");
+
         recognizer = SpeechRecognizer.createSpeechRecognizer(service);
         Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -128,6 +139,8 @@ public class VoiceCapture implements RecognitionListener
     @Override
     public void onError(int i)
     {
+        Timber.d("voiceError " + i);
+
         stopVoice();
 
         switch (i)
@@ -153,6 +166,8 @@ public class VoiceCapture implements RecognitionListener
 
         ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         int size = Math.min(matches.size(), 10);
+
+        Timber.d("voiceResults " + size);
 
         if (size == 0)
         {
