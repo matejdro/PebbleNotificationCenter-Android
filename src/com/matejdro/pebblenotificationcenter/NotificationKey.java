@@ -60,6 +60,12 @@ public class NotificationKey implements Parcelable
         if (this.lolipopKey != null && comparing.lolipopKey != null)
             return lolipopKey.equals(comparing.lolipopKey);
 
+        if (pkg == null || comparing.pkg == null)
+            return false;
+
+        if (androidId == null || comparing.androidId == null)
+            return false;
+
         return pkg.equals(comparing.pkg) && androidId.equals(comparing.androidId) && ((tag == null && comparing.tag == null) || (tag != null && tag.equals(comparing.tag)));
     }
 

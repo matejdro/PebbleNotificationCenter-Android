@@ -735,8 +735,11 @@ public class PebbleTalkerService extends Service
     {
         Timber.d("Transfer completed...");
 
-        if (curSendingNotification.vibrated)
-            lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+        if (curSendingNotification != null)
+        {
+            if (curSendingNotification.vibrated)
+                lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+        }
 
         curSendingNotification = null;
 
