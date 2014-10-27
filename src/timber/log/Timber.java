@@ -1,10 +1,7 @@
 package timber.log;
 
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import com.matejdro.pebblenotificationcenter.util.LogWriter;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,145 +10,82 @@ import java.util.regex.Pattern;
 public final class Timber {
     /** Log a debug message with optional format args. */
     public static void d(String message, Object... args) {
-        TREE_OF_SOULS.d(message, args);
+        TREE_OF_SOULS.d(message);
     }
 
     /** Log a debug exception and a message with optional format args. */
     public static void d(Throwable t, String message, Object... args) {
-        TREE_OF_SOULS.d(t, message, args);
+        TREE_OF_SOULS.d(t, message);
     }
 
     /** Log an info message with optional format args. */
     public static void i(String message, Object... args) {
-        TREE_OF_SOULS.i(message, args);
+        TREE_OF_SOULS.i(message);
     }
 
     /** Log an info exception and a message with optional format args. */
     public static void i(Throwable t, String message, Object... args) {
-        TREE_OF_SOULS.i(t, message, args);
+        TREE_OF_SOULS.i(t, message);
     }
 
     /** Log a warning message with optional format args. */
     public static void w(String message, Object... args) {
-        TREE_OF_SOULS.w(message, args);
+        TREE_OF_SOULS.w(message);
     }
 
     /** Log a warning exception and a message with optional format args. */
     public static void w(Throwable t, String message, Object... args) {
-        TREE_OF_SOULS.w(t, message, args);
+        TREE_OF_SOULS.w(t, message);
     }
 
     /** Log an error message with optional format args. */
     public static void e(String message, Object... args) {
-        TREE_OF_SOULS.e(message, args);
+        TREE_OF_SOULS.e(message);
     }
 
     /** Log an error exception and a message with optional format args. */
     public static void e(Throwable t, String message, Object... args) {
-        TREE_OF_SOULS.e(t, message, args);
+        TREE_OF_SOULS.e(t, message);
     }
 
     /** Set a one-time tag for use on the next logging call. */
     public static Tree tag(String tag) {
-        for (int index = 0, size = TAGGED_TREES.size(); index < size; index++) {
-            ((TaggedTree) FOREST.get(TAGGED_TREES.keyAt(index))).tag(tag);
-        }
+        TREE_OF_SOULS.tag(tag);
+
         return TREE_OF_SOULS;
     }
 
-    /** Add a new logging tree. */
-    public static void plant(Tree tree) {
-        if (tree instanceof TaggedTree) {
-            TAGGED_TREES.append(FOREST.size(), true);
-        }
-        FOREST.add(tree);
-    }
-
-    static final List<Tree> FOREST = new CopyOnWriteArrayList<Tree>();
-    static final SparseBooleanArray TAGGED_TREES = new SparseBooleanArray();
-
-    /** A {@link Tree} that delegates to all planted trees in the {@link #FOREST forest}. */
-    private static final Tree TREE_OF_SOULS = new Tree() {
-        @Override public void d(String message, Object... args) {
-            for (Tree tree : FOREST) {
-                tree.d(message, args);
-            }
-        }
-
-        @Override public void d(Throwable t, String message, Object... args) {
-            for (Tree tree : FOREST) {
-                tree.d(t, message, args);
-            }
-        }
-
-        @Override public void i(String message, Object... args) {
-            for (Tree tree : FOREST) {
-                tree.i(message, args);
-            }
-        }
-
-        @Override public void i(Throwable t, String message, Object... args) {
-            for (Tree tree : FOREST) {
-                tree.i(t, message, args);
-            }
-        }
-
-        @Override public void w(String message, Object... args) {
-            for (Tree tree : FOREST) {
-                tree.w(message, args);
-            }
-        }
-
-        @Override public void w(Throwable t, String message, Object... args) {
-            for (Tree tree : FOREST) {
-                tree.w(t, message, args);
-            }
-        }
-
-        @Override public void e(String message, Object... args) {
-            for (Tree tree : FOREST) {
-                tree.e(message, args);
-            }
-        }
-
-        @Override public void e(Throwable t, String message, Object... args) {
-            for (Tree tree : FOREST) {
-                tree.e(t, message, args);
-            }
-        }
-    };
+    private static final TaggedTree TREE_OF_SOULS = new DebugTree();
 
     private Timber() {
     }
 
-    /** A facade for handling logging calls. Install instances via {@link #plant}. */
     public interface Tree {
         /** Log a debug message with optional format args. */
-        void d(String message, Object... args);
+        void d(String message);
 
         /** Log a debug exception and a message with optional format args. */
-        void d(Throwable t, String message, Object... args);
+        void d(Throwable t, String message);
 
         /** Log an info message with optional format args. */
-        void i(String message, Object... args);
+        void i(String message);
 
         /** Log an info exception and a message with optional format args. */
-        void i(Throwable t, String message, Object... args);
+        void i(Throwable t, String message);
 
         /** Log a warning message with optional format args. */
-        void w(String message, Object... args);
+        void w(String message);
 
         /** Log a warning exception and a message with optional format args. */
-        void w(Throwable t, String message, Object... args);
+        void w(Throwable t, String message);
 
         /** Log an error message with optional format args. */
-        void e(String message, Object... args);
+        void e(String message);
 
         /** Log an error exception and a message with optional format args. */
-        void e(Throwable t, String message, Object... args);
+        void e(Throwable t, String message);
     }
 
-    /** A facade for attaching tags to logging calls. Install instances via {@link #plant} */
     public interface TaggedTree extends Tree {
         /** Set a one-time tag for use on the next logging call. */
         void tag(String tag);
@@ -177,83 +111,56 @@ public final class Timber {
             return tag.substring(tag.lastIndexOf('.') + 1);
         }
 
-        @Override public void d(String message, Object... args) {
-            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+        @Override public void d(String message) {
+            String text = "[".concat(createTag()).concat("] ").concat(message);
             Log.d("PebbleNotificationCenter", text);
             LogWriter.write("D ".concat(text));
         }
 
-        @Override public void d(Throwable t, String message, Object... args) {
-            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+        @Override public void d(Throwable t, String message) {
+            String text = "[".concat(createTag()).concat("] ").concat(message);
             Log.d("PebbleNotificationCenter", text, t);
             LogWriter.write("D ".concat(text));
         }
 
-        @Override public void i(String message, Object... args) {
-            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+        @Override public void i(String message) {
+            String text = "[".concat(createTag()).concat("] ").concat(message);
             Log.i("PebbleNotificationCenter", text);
             LogWriter.write("I ".concat(text));
         }
 
-        @Override public void i(Throwable t, String message, Object... args) {
-            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+        @Override public void i(Throwable t, String message) {
+            String text = "[".concat(createTag()).concat("] ").concat(message);
             Log.i("PebbleNotificationCenter", text, t);
             LogWriter.write("I ".concat(text));
         }
 
-        @Override public void w(String message, Object... args) {
-            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+        @Override public void w(String message) {
+            String text = "[".concat(createTag()).concat("] ").concat(message);
             Log.w("PebbleNotificationCenter", text);
             LogWriter.write("W ".concat(text));
         }
 
-        @Override public void w(Throwable t, String message, Object... args) {
-            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+        @Override public void w(Throwable t, String message) {
+            String text = "[".concat(createTag()).concat("] ").concat(message);
             Log.w("PebbleNotificationCenter", text, t);
             LogWriter.write("W ".concat(text));
         }
 
-        @Override public void e(String message, Object... args) {
-            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+        @Override public void e(String message) {
+            String text = "[".concat(createTag()).concat("] ").concat(message);
             Log.e("PebbleNotificationCenter", text);
             LogWriter.write("E ".concat(text));
         }
 
-        @Override public void e(Throwable t, String message, Object... args) {
-            String text = "[".concat(createTag()).concat("] ").concat(String.format(message, args));
+        @Override public void e(Throwable t, String message) {
+            String text = "[".concat(createTag()).concat("] ").concat(message);
             Log.e("PebbleNotificationCenter", text, t);
             LogWriter.write("E ".concat(text));
         }
 
         @Override public void tag(String tag) {
             nextTag = tag;
-        }
-    }
-
-    /** A {@link Tree} which does nothing. Useful for extending. */
-    public static class HollowTree implements Tree {
-        @Override public void d(String message, Object... args) {
-        }
-
-        @Override public void d(Throwable t, String message, Object... args) {
-        }
-
-        @Override public void i(String message, Object... args) {
-        }
-
-        @Override public void i(Throwable t, String message, Object... args) {
-        }
-
-        @Override public void w(String message, Object... args) {
-        }
-
-        @Override public void w(Throwable t, String message, Object... args) {
-        }
-
-        @Override public void e(String message, Object... args) {
-        }
-
-        @Override public void e(Throwable t, String message, Object... args) {
         }
     }
 }
