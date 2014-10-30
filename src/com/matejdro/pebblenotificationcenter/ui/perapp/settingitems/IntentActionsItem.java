@@ -68,7 +68,8 @@ public class IntentActionsItem extends ListItem
     @Override
     public boolean onClose()
     {
-        settingsStorage.setStringList(AppSetting.INTENT_ACTIONS_ACTIONS, actions);
+        if (changed)
+            settingsStorage.setStringList(AppSetting.INTENT_ACTIONS_ACTIONS, actions);
         return super.onClose();
     }
 

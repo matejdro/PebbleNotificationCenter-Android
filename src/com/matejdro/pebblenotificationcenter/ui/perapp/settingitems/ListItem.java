@@ -25,6 +25,7 @@ public abstract class ListItem extends BaseSettingItem
     private TextView nameText;
     private TextView descriptionText;
     protected boolean enabled = true;
+    protected boolean changed = false;
 
     protected PerAppActivity activity;
 
@@ -46,6 +47,8 @@ public abstract class ListItem extends BaseSettingItem
         this.associatedSetting = associatedSetting;
         this.textResource = textResource;
         this.descriptionResource = descriptionResource;
+
+        changed = false;
     }
 
     @Override
@@ -119,6 +122,8 @@ public abstract class ListItem extends BaseSettingItem
 
     public void remove(int id)
     {
+        changed = true;
+
         View textView = listViews.get(id);
         listContainer.removeView(textView);
         listViews.remove(id);
@@ -142,6 +147,8 @@ public abstract class ListItem extends BaseSettingItem
 
     public void add(String text)
     {
+        changed = true;
+
         TextView listItem = createViewItem(text);
         View separator = createSeparatorView();
 
@@ -158,6 +165,8 @@ public abstract class ListItem extends BaseSettingItem
 
     public void update(int id, String text)
     {
+        changed = true;
+
         storage.set(id, text);
         listViews.get(id).setText(text);
     }
@@ -178,12 +187,15 @@ public abstract class ListItem extends BaseSettingItem
         List<String> entries = settingsStorage.getStringList(associatedSetting);
         for (String item : entries)
             add(item);
+
+        changed = false;
     }
 
     @Override
     public boolean onClose()
     {
-        settingsStorage.setStringList(associatedSetting, storage);
+        if (changed)
+            settingsStorage.setStringList(associatedSetting, storage);
         return true;
     }
 
