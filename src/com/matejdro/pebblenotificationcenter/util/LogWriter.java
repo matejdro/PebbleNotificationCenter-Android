@@ -61,6 +61,9 @@ public class LogWriter
 
     private static void close()
     {
+        if (writer == null)
+            return;
+
         try
         {
             writer.close();
