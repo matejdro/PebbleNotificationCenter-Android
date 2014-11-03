@@ -20,6 +20,7 @@ import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 /**
  * Created by Matej on 22.9.2014.
@@ -67,57 +68,64 @@ public class ActionParser
 
     public static void parseWearActions(Context context, Notification notification, PebbleNotification pebbleNotification, List<NotificationAction> storage)
     {
-        if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
-            return;
-
-        Bundle extras = NotificationParser.getExtras(notification);
-
-        if (extras.containsKey("android.wearable.EXTENSIONS"))
+        try
         {
-            Bundle wearExtras = extras.getBundle("android.wearable.EXTENSIONS");
-
-            if (wearExtras.containsKey("actions"))
-            {
-                ArrayList<?> actionList = (ArrayList<?>) wearExtras.get("actions");
-                for (Object obj : actionList)
-                {
-                    if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
-                        break;
-
-                    NotificationAction action = null;
-
-                    if (obj instanceof  Bundle)
-                        action = WearVoiceAction.parseFromBundle((Bundle) obj);
-                    else if (obj instanceof Notification.Action)
-                        action = WearVoiceAction.parseFromAction((Notification.Action) obj);
-
-                    if (action != null)
-                        storage.add(action);
-                }
-            }
-
             if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                 return;
 
-            if (wearExtras.containsKey("pages"))
+            Bundle extras = NotificationParser.getExtras(notification);
+
+            if (extras.containsKey("android.wearable.EXTENSIONS"))
             {
-                Parcelable[] pages = wearExtras.getParcelableArray("pages");
-                int counter = 1;
-                for (Parcelable page : pages)
+                Bundle wearExtras = extras.getBundle("android.wearable.EXTENSIONS");
+
+                if (wearExtras.containsKey("actions"))
                 {
-                    if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
-                        return;
+                    ArrayList<?> actionList = (ArrayList<?>) wearExtras.get("actions");
+                    for (Object obj : actionList)
+                    {
+                        if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                            break;
 
-                    PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, new NotificationKey(null, null, null), (Notification) page, false);
-                    pageNotification.setForceSwitch(true);
-                    pageNotification.setScrollToEnd(true);
-                    pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), PebbleTalkerService.TEXT_LIMIT));
+                        NotificationAction action = null;
 
-                    storage.add(new NotifyAction(context.getString(R.string.wearPageAction, counter), pageNotification));
+                        if (obj instanceof  Bundle)
+                            action = WearVoiceAction.parseFromBundle((Bundle) obj);
+                        else if (obj instanceof Notification.Action)
+                            action = WearVoiceAction.parseFromAction((Notification.Action) obj);
 
-                    counter++;
+                        if (action != null)
+                            storage.add(action);
+                    }
+                }
+
+                if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                    return;
+
+                if (wearExtras.containsKey("pages"))
+                {
+                    Parcelable[] pages = wearExtras.getParcelableArray("pages");
+                    int counter = 1;
+                    for (Parcelable page : pages)
+                    {
+                        if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                            return;
+
+                        PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, new NotificationKey(null, null, null), (Notification) page, false);
+                        pageNotification.setForceSwitch(true);
+                        pageNotification.setScrollToEnd(true);
+                        pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), PebbleTalkerService.TEXT_LIMIT));
+
+                        storage.add(new NotifyAction(context.getString(R.string.wearPageAction, counter), pageNotification));
+
+                        counter++;
+                    }
                 }
             }
+        }
+        catch (RuntimeException e) //Some phones (or apps?) seems to throw this when unparceling data.
+        {
+            Timber.w("Got RuntimeException at parseWearActions!");
         }
     }
 
@@ -136,6 +144,9 @@ public class ActionParser
         {
             if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                 break;
+
+            if (action.actionIntent == null)
+                continue;
 
             storage.add(new PendingIntentAction(action.title.toString(), action.actionIntent));
         }

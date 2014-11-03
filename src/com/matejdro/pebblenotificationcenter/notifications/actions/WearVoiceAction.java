@@ -45,8 +45,14 @@ public class WearVoiceAction extends NotificationAction
 
     public static NotificationAction parseFromBundle(Bundle bundle)
     {
+        if (bundle.get("title") == null)
+            return null;
+
         String title = bundle.getCharSequence("title").toString() + " (Wear)";
         PendingIntent actionIntent = bundle.getParcelable("actionIntent");
+
+        if (actionIntent == null)
+            return null;
 
         Parcelable[] remoteInputs = (Parcelable[]) bundle.getParcelableArray("remoteInputs");
         if (remoteInputs == null || remoteInputs.length == 0)
@@ -74,6 +80,9 @@ public class WearVoiceAction extends NotificationAction
     {
         String title = action.title.toString() + " (Wear)";
         PendingIntent actionIntent = action.actionIntent;
+
+        if (actionIntent == null)
+            return null;
 
         RemoteInput[] remoteInputs = action.getRemoteInputs();
         if (remoteInputs == null || remoteInputs.length == 0)
