@@ -12,7 +12,6 @@ import timber.log.Timber;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class JellybeanNotificationListener extends NotificationListenerService {
-	private Handler handler;
 	public static JellybeanNotificationListener instance;
 	
 	@Override
@@ -28,7 +27,6 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 	public void onCreate() {
         Timber.d("Creating Notification Listener...");
 
-		handler = new Handler();
 		instance = this;
 
 		NotificationHandler.active = true;
@@ -42,13 +40,8 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 	@Override
 	public void onNotificationPosted(final StatusBarNotification sbn) {
-        handler.post(new Runnable() {
-
-			@Override
-			public void run() {
-				NotificationHandler.newNotification(JellybeanNotificationListener.this, NotificationHandler.getKeyFromSbn(sbn), sbn.getNotification(), true);
-			}
-		});
+        Timber.d("Got new jellybean notification");
+        NotificationHandler.newNotification(JellybeanNotificationListener.this, NotificationHandler.getKeyFromSbn(sbn), sbn.getNotification(), true);
 	}
 
 	@Override

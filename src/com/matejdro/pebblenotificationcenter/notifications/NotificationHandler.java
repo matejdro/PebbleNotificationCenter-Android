@@ -28,7 +28,7 @@ public class NotificationHandler {
 
 	public static void newNotification(Context context, NotificationKey key, Notification notification, boolean isDismissible)
 	{
-		Timber.i("Processing notification from package %s", key.getPackage());
+		Timber.i("Processing notification from package " + key.getPackage());
 
 		SettingsMemoryStorage settings = PebbleNotificationCenter.getInMemorySettings();
 		SharedPreferences preferences = settings.getSharedPreferences();
@@ -38,12 +38,12 @@ public class NotificationHandler {
 		boolean isOngoing = (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0;
 		
 		if (isOngoing && !enableOngoing) {
-			Timber.d("Discarding notification from %s because FLAG_ONGOING_EVENT is set.", key.getPackage());
+			Timber.d("Discarding notification because FLAG_ONGOING_EVENT is set.");
 			return;
 		}
 
 		if (!settingStorage.canAppSendNotifications()) {
-			Timber.d("Discarding notification from %s because package is not selected", key.getPackage());
+			Timber.d("Discarding notification because package is not selected");
 			return;
 		}
 
@@ -106,8 +106,11 @@ public class NotificationHandler {
 
         String groupKey = extras.getString("android.support.groupKey");
         boolean summary = extras.getBoolean("android.support.isGroupSummary", false);
+        boolean hasPages = hasPages(extras);
 
-        if (summary && hasPages(extras))
+        Timber.d("wear group: " + summary + " " + hasPages + " " + groupKey);
+
+        if (summary && hasPages)
             return;
 
         pebbleNotification.setWearGroupKey(groupKey);

@@ -256,8 +256,6 @@ public class PebbleTalkerService extends Service
 
             if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
-                Timber.tag("NC Upwards debug");
-                Timber.d("	rem notifications check: %b %d", commBusy, sendingQueue.size());
                 if (commBusy)
                 {
                     notificationRemovalQueue.add(notification.id);
@@ -311,8 +309,6 @@ public class PebbleTalkerService extends Service
 
             if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
             {
-                Timber.tag("NC Upwards debug");
-                Timber.d("	rem notifications check: %b %d", commBusy, sendingQueue.size());
                 if (commBusy)
                 {
                     notificationRemovalQueue.add(notification.id);
@@ -349,8 +345,7 @@ public class PebbleTalkerService extends Service
 
     private void dismissOnPebbleSucceeded(PebbleDictionary data)
     {
-        Timber.tag("NC Upwards debug");
-        Timber.d("	dismiss success: %b %d", data.contains(2), notificationRemovalQueue.size());
+        Timber.d("	dismiss success: " + data.contains(2) + " " + notificationRemovalQueue.size());
 
         if (data.contains(2))
         {
@@ -409,7 +404,7 @@ public class PebbleTalkerService extends Service
         {
             if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
                 if (notificationSource.getText().trim().isEmpty() && (notificationSource.getSubtitle() == null || notificationSource.getSubtitle().trim().isEmpty())) {
-                    Timber.d("Discarding notification from %s because it is empty", notificationSource.getKey().getPackage());
+                    Timber.d("Discarding notification because it is empty");
                     return;
                 }
             }
@@ -755,7 +750,7 @@ public class PebbleTalkerService extends Service
         int id = data.getInteger(1).intValue();
         boolean hold = data.contains(2);
 
-        Timber.d("Select button pressed on Pebble, Hold: %b", hold);
+        Timber.d("Select button pressed on Pebble, Hold: " + hold);
 
 
         ProcessedNotification notification = sentNotifications.get(id);
@@ -959,7 +954,7 @@ public class PebbleTalkerService extends Service
 
         int id = data.getUnsignedInteger(0).intValue();
 
-        Timber.d("Pebble packet %d", id);
+        Timber.d("Pebble packet " + id);
 
         if (id != 7)
             closingAttempts = 0;

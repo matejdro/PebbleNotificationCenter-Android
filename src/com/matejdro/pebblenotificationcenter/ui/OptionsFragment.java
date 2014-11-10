@@ -48,7 +48,6 @@ public class OptionsFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
 				boolean appMode = position == 1;
-				Timber.d("Configuring %s to %b", PebbleNotificationCenter.APP_INCLUSION_MODE, appMode);
 				editor.putBoolean(PebbleNotificationCenter.APP_INCLUSION_MODE, appMode);
 				editor.apply();
 			}

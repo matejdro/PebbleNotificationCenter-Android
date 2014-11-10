@@ -9,42 +9,42 @@ import java.util.regex.Pattern;
 // From https://github.com/JakeWharton/timber
 public final class Timber {
     /** Log a debug message with optional format args. */
-    public static void d(String message, Object... args) {
+    public static void d(String message) {
         TREE_OF_SOULS.d(message);
     }
 
     /** Log a debug exception and a message with optional format args. */
-    public static void d(Throwable t, String message, Object... args) {
+    public static void d(Throwable t, String message) {
         TREE_OF_SOULS.d(t, message);
     }
 
     /** Log an info message with optional format args. */
-    public static void i(String message, Object... args) {
+    public static void i(String message) {
         TREE_OF_SOULS.i(message);
     }
 
     /** Log an info exception and a message with optional format args. */
-    public static void i(Throwable t, String message, Object... args) {
+    public static void i(Throwable t, String message) {
         TREE_OF_SOULS.i(t, message);
     }
 
     /** Log a warning message with optional format args. */
-    public static void w(String message, Object... args) {
+    public static void w(String message) {
         TREE_OF_SOULS.w(message);
     }
 
     /** Log a warning exception and a message with optional format args. */
-    public static void w(Throwable t, String message, Object... args) {
+    public static void w(Throwable t, String message) {
         TREE_OF_SOULS.w(t, message);
     }
 
     /** Log an error message with optional format args. */
-    public static void e(String message, Object... args) {
+    public static void e(String message) {
         TREE_OF_SOULS.e(message);
     }
 
     /** Log an error exception and a message with optional format args. */
-    public static void e(Throwable t, String message, Object... args) {
+    public static void e(Throwable t, String message) {
         TREE_OF_SOULS.e(t, message);
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompatSideChannelService;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import timber.log.Timber;
 
 /**
  * Created by Matej on 29.9.2014.
@@ -14,6 +15,7 @@ public class SideChannelNotificationListener extends NotificationCompatSideChann
     @Override
     public void notify(String packageName, int id, String tag, Notification notification)
     {
+        Timber.d("Got new side channel notification");
         NotificationHandler.newNotification(this, new NotificationKey(packageName, id, tag), notification,  true);
     }
 

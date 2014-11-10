@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.os.Parcelable;
 import android.view.accessibility.AccessibilityEvent;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
+import timber.log.Timber;
 
 public class AccesibilityNotificationListener extends AccessibilityService {
 	public static AccesibilityNotificationListener instance;
@@ -31,8 +32,9 @@ public class AccesibilityNotificationListener extends AccessibilityService {
 			return;
 		
 		Notification notification = (Notification) parcelable;
-		
-		NotificationHandler.newNotification(this, new NotificationKey(event.getPackageName().toString(), null, null), notification, false);
+
+        Timber.d("Got new accessibility notification");
+        NotificationHandler.newNotification(this, new NotificationKey(event.getPackageName().toString(), null, null), notification, false);
 	}
 
 	@Override

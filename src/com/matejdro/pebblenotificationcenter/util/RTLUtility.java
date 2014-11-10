@@ -70,13 +70,13 @@ public class RTLUtility {
 	public String format(String text, int max){
 		if (false == isRTL(text)) return text;
 
-        Timber.d("Reverting string %s", text);
+        Timber.d("Reverting string " + text);
        
         ArrayList<String> fragments = getFragments(text);
         
         String str = reorgRTLString(fragments, max, true);
 
-        Timber.d("String reverted %s", str);
+        Timber.d("String reverted " + str);
         return str;
     }
 	
