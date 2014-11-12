@@ -241,7 +241,6 @@ public class PebbleAppListFragment extends Fragment {
 
                 for (PebbleApp app : apps)
                 {
-                    System.out.println(app.getName() + " " + app.getUuid());
                     app.setNotificationMode(PreferencesUtil.getPebbleAppNotificationMode(preferences, app.getUuid()));
                 }
             }

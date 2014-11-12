@@ -23,6 +23,7 @@ public class SideChannelNotificationListener extends NotificationCompatSideChann
     public void cancel(String packageName, int id, String tag)
     {
         NotificationKey key = new NotificationKey(packageName, id, tag);
+        Timber.d("Dismiss side channel " + key);
 
         Intent intent = new Intent(this, PebbleTalkerService.class);
         intent.putExtra("dismissUpwardsKey", key);

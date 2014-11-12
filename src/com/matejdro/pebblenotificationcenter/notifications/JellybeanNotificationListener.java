@@ -47,6 +47,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
         NotificationKey key = NotificationHandler.getKeyFromSbn(sbn);
+        Timber.d("Got jellybean dismiss " + key);
 
 
         Intent intent = new Intent(this, PebbleTalkerService.class);
@@ -72,7 +73,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
     @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
     public static void dismissNotification(NotificationKey key)
     {
-        Timber.d("dismissing " + key + " " + (instance != null));
+        Timber.d("dismissing from phone " + key + " " + (instance != null));
 
         if (instance == null)
             return;

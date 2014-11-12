@@ -28,7 +28,7 @@ public class NotificationHandler {
 
 	public static void newNotification(Context context, NotificationKey key, Notification notification, boolean isDismissible)
 	{
-		Timber.i("Processing notification from package " + key.getPackage());
+		Timber.i("Processing notification " + key);
 
 		SettingsMemoryStorage settings = PebbleNotificationCenter.getInMemorySettings();
 		SharedPreferences preferences = settings.getSharedPreferences();

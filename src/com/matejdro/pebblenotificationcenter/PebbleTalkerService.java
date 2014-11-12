@@ -399,7 +399,6 @@ public class PebbleTalkerService extends Service
         notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
         notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
 
-
         if (!notificationSource.isListNotification())
         {
             if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
