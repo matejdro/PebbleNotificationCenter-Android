@@ -131,11 +131,15 @@ public class NotificationHandler {
             return;
 
         boolean summary = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
+        boolean hasPages = hasPages(NotificationParser.getExtras(notification));
 
-        if (summary && hasPages(NotificationParser.getExtras(notification)))
+        if (summary && hasPages)
             return;
 
+        Timber.d("wear group: " + summary + " " + hasPages + " " + groupKey);
+
         pebbleNotification.setWearGroupKey(groupKey);
+
 
         if (summary)
         {

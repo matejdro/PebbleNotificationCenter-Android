@@ -256,13 +256,10 @@ public class PebbleTalkerService extends Service
 
             if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
-                if (commBusy)
-                {
-                    notificationRemovalQueue.add(notification.id);
-                    continue;
-                }
+                dismissUpwards(notification, dontClose);
 
-                dismissOnPebble(notification.id, dontClose);
+                sentNotifications.removeAt(i);
+                i--;
             }
         }
 
@@ -275,16 +272,6 @@ public class PebbleTalkerService extends Service
             if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
                 iterator.remove();
-            }
-        }
-        for (int i = 0; i < sentNotifications.size(); i++)
-        {
-            ProcessedNotification notification = sentNotifications.valueAt(i);
-
-            if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
-            {
-                sentNotifications.removeAt(i);
-                i--;
             }
         }
     }
@@ -309,13 +296,11 @@ public class PebbleTalkerService extends Service
 
             if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
             {
-                if (commBusy)
-                {
-                    notificationRemovalQueue.add(notification.id);
-                    continue;
-                }
+                dismissUpwards(notification, dontClose);
 
-                dismissOnPebble(notification.id, dontClose);
+                sentNotifications.removeAt(i);
+                i--;
+
             }
         }
 
@@ -330,17 +315,33 @@ public class PebbleTalkerService extends Service
                 iterator.remove();
             }
         }
-        for (int i = 0; i < sentNotifications.size(); i++)
-        {
-            ProcessedNotification notification = sentNotifications.valueAt(i);
+    }
 
-            if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
+    public void dismissUpwards(ProcessedNotification notification, boolean dontClose)
+    {
+        //Dismiss from Pebble
+        if (commBusy)
+            notificationRemovalQueue.add(notification.id);
+        else
+            dismissOnPebble(notification.id, dontClose);
+
+        //Also dismiss related group messages from this notification (some apps have trouble with dismissing to side channel directly)
+        if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+        {
+            for (int i = 0; i < sentNotifications.size(); i++)
             {
-                sentNotifications.removeAt(i);
-                i--;
+                ProcessedNotification compare = sentNotifications.valueAt(i);
+
+                if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
+                {
+                    processDismissUpwards(compare.source.getKey(), dontClose);
+                    i = -1; //processDismissUpwards will ususally remove some entries so we should start from beginning
+                }
             }
         }
+
     }
+
 
 
     private void dismissOnPebbleSucceeded(PebbleDictionary data)
