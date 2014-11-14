@@ -16,7 +16,7 @@
     <style name="AppSettingsBackground">
         <item name="android:background">@android:color/white</item>
     </style>
-    
+
     <style name="AppSettingParent">
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
