@@ -1,15 +1,22 @@
 <resources>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Base.Theme.AppCompat.Light">
         <item name="colorPrimary">#EEEEEE</item>
         <item name="colorPrimaryDark">#888888</item>
+
+        <item name="android:actionModeCutDrawable">@drawable/ic_content_content_cut</item>
+        <item name="android:actionModeCopyDrawable">@drawable/ic_content_content_copy</item>
+        <item name="android:actionModePasteDrawable">@drawable/ic_content_content_paste</item>
+        <item name="android:actionModeSelectAllDrawable">@drawable/ic_content_select_all</item>
+        <item name="android:actionModeShareDrawable">@drawable/ic_social_share</item>
+
     </style>
 
     <style name="AppSettingsBackground">
         <item name="android:background">@android:color/white</item>
     </style>
-
+    
     <style name="AppSettingParent">
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
