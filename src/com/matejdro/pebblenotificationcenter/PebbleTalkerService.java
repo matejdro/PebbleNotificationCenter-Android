@@ -214,6 +214,8 @@ public class PebbleTalkerService extends Service
         data.addString(5, notification.source.getTitle());
         data.addString(6, notification.source.getSubtitle());
 
+        notification.sent = true;
+
         PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
         commStarted();
     }
@@ -221,6 +223,10 @@ public class PebbleTalkerService extends Service
     public void dismissOnPebble(Integer id, boolean dontClose)
     {
         Timber.d("Dismissing upwards...");
+
+        ProcessedNotification notification = sentNotifications.get(id);
+        if (notification != null && !notification.sent)
+            return;
 
         PebbleDictionary data = new PebbleDictionary();
 

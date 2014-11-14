@@ -10,6 +10,7 @@ public class ProcessedNotification
 	public List<String> textChunks = new ArrayList<String>(13);
     public ActionList activeActionList;
     public boolean vibrated = false;
+    public boolean sent = false;
 
     public PebbleNotification source;
 }
