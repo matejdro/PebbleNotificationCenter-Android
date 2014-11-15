@@ -63,7 +63,7 @@ public class NotificationParser {
                 return true;
         }
 
-		if ((extras.get(Notification.EXTRA_TEXT) == null && extras.get(Notification.EXTRA_TEXT_LINES) == null))
+		if (extras.get(Notification.EXTRA_TEXT) == null && extras.get(Notification.EXTRA_TEXT_LINES) == null && extras.get(Notification.EXTRA_BIG_TEXT) == null)
 		{
 			return false;
 		}
