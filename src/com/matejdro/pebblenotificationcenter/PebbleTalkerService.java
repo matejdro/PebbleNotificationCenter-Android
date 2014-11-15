@@ -394,29 +394,13 @@ public class PebbleTalkerService extends Service
         notification.source = notificationSource;
         AppSettingStorage settingStorage = notificationSource.getSettingStorage(this);
 
-        if (!notificationSource.isListNotification() &&
-                !notificationSource.isHistoryDisabled() &&
-                settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
-                canDisplayWearGroupNotification(notification.source, settingStorage))
-        {
-            historyDb.storeNotification(System.currentTimeMillis(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), TEXT_LIMIT, true));
-        }
-
         notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), TEXT_LIMIT));
         notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
         notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
 
         if (!notificationSource.isListNotification())
         {
-            if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
-                if (notificationSource.getText().trim().isEmpty() && (notificationSource.getSubtitle() == null || notificationSource.getSubtitle().trim().isEmpty())) {
-                    Timber.d("Discarding notification because it is empty");
-                    return;
-                }
-            }
-
             String combinedText = notificationSource.getTitle() + " " + notificationSource.getSubtitle() + " " + notificationSource.getText();
-
             List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
             if (regexList.size() > 0 && !TextUtil.containsRegexes(combinedText, regexList))
                 return;
@@ -424,6 +408,21 @@ public class PebbleTalkerService extends Service
             regexList = settingStorage.getStringList(AppSetting.EXCLUDED_REGEX);
             if (TextUtil.containsRegexes(combinedText, regexList))
                 return;
+
+            if (!notificationSource.isHistoryDisabled() &&
+                    settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
+                    canDisplayWearGroupNotification(notification.source, settingStorage))
+            {
+                historyDb.storeNotification(System.currentTimeMillis(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), TEXT_LIMIT, true));
+            }
+
+            if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
+                if (notificationSource.getText().trim().isEmpty() && (notificationSource.getSubtitle() == null || notificationSource.getSubtitle().trim().isEmpty())) {
+                    Timber.d("Discarding notification because it is empty");
+                    return;
+                }
+            }
+
 
             if (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
                 return;
