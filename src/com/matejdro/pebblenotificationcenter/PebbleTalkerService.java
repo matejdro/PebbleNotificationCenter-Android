@@ -70,6 +70,7 @@ public class PebbleTalkerService extends Service
     private Queue<ProcessedNotification> sendingQueue = new LinkedList<ProcessedNotification>();
     private SparseArray<ProcessedNotification> sentNotifications = new SparseArray<ProcessedNotification>();
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
+    private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
 
     private LocationLookup locationLookup;
     private int closingAttempts = 0;
@@ -483,6 +484,25 @@ public class PebbleTalkerService extends Service
                 return;
             }
 
+            int minNotificationInterval = 0;
+            try
+            {
+                minNotificationInterval = Integer.parseInt(settingStorage.getString(AppSetting.MINIMUM_NOTIFICATION_INTERVAL));
+            }
+            catch (NumberFormatException e)
+            {
+            }
+
+            if (minNotificationInterval > 0) {
+                    Long lastNotification = lastAppNotification.get(notification.source.getKey().getPackage());
+                    if (lastNotification != null) {
+                        if ((System.currentTimeMillis() - lastNotification) < minNotificationInterval * 1000) {
+                            Timber.d("notification ignored - minimum interval not passed!");
+                            return;
+                        }
+                    }
+               }
+
             updateCurrentlyRunningApp();
             Timber.d("prev" + previousUUID);
             int pebbleAppMode = 0;
@@ -740,6 +760,8 @@ public class PebbleTalkerService extends Service
             if (curSendingNotification.vibrated)
                 lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
         }
+
+        lastAppNotification.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
 
         curSendingNotification = null;
 
