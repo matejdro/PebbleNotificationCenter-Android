@@ -145,7 +145,7 @@ public class ActionParser
             if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                 break;
 
-            if (action.actionIntent == null)
+            if (action.actionIntent == null || action.title == null)
                 continue;
 
             storage.add(new PendingIntentAction(action.title.toString(), action.actionIntent));
