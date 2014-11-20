@@ -221,6 +221,9 @@ public class WearVoiceAction extends NotificationAction
                 new VoiceCapture(actionIntent, voiceKey, service).startVoice();
             else
             {
+                if (cannedResponseList.size() <= id)
+                    return;
+                
                 sendWearReply(cannedResponseList.get(id), service, actionIntent, voiceKey);
                 service.processDismissUpwards(parent.source.getKey(), false);
                 if (NotificationHandler.isNotificationListenerSupported())
