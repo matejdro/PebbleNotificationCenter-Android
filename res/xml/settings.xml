@@ -10,10 +10,6 @@
             android:summary="Disable new notifications popping up. You can still see them by launching app manually."
             android:title="Disable popup entirely" />
         <CheckBoxPreference
-            android:key="noNotificationsScreenOn"
-            android:summary="Disable new notifications popping up when screen is on."
-            android:title="Disable notify with screen on" />
-        <CheckBoxPreference
             android:key="noNotificationsNoPebble"
             android:summary="When unchecked, Notification Center will still collect notifications and send them after Pebble reconnects."
             android:title="Disable notify when Pebble is disconnected" />

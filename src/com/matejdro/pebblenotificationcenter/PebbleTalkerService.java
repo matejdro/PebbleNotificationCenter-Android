@@ -431,7 +431,7 @@ public class PebbleTalkerService extends Service
             if (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
                 return;
 
-            if (settings.getBoolean("noNotificationsScreenOn", false))
+            if (settingStorage.getBoolean(AppSetting.DISABLE_NOTIFY_SCREEN_OIN))
             {
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 if (pm.isScreenOn())

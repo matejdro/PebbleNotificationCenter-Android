@@ -12,14 +12,13 @@ public enum AppSetting
     SEND_ONGOING_NOTIFICATIONS("enableOngoing", false),
     SEND_BLANK_NOTIFICATIONS("sendBlank", false),
     SWITCH_TO_MOST_RECENT_NOTIFICATION("autoSwitch", false),
+    DISABLE_NOTIFY_SCREEN_OIN("noNotificationsScreenOn", false),
 
     QUIET_TIME_ENABLED("enableQuietTime", false),
     QUIET_TIME_START_HOUR("quietTimeStartHour", 0),
     QUIET_TIME_START_MINUTE("quietTimeStartMinute", 0),
     QUIET_TIME_END_HOUR("quietTimeEndHour", 0),
     QUIET_TIME_END_MINUTE("quietTimeEndMinute", 0),
-
-
 
     DISMISS_UPRWADS("syncDismissUp", true),
     SAVE_TO_HISTORY("saveToHistory", true),
