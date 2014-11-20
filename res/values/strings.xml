@@ -178,7 +178,7 @@
     <string name="replacement">Replacement:</string>
     <string name="enterChracter">You need to enter one character or unicode code for it!</string>
     <string name="importNoFiles">No dictionary files found.\n\nPlace your replacement dictionary .txt files into NotificationCenter folder on your phone\'s storage and try again.</string>
-    <string name="pebbleAppsDescription">In this view you can disable Notification Center when specific app is open on Pebble. It is useful to prevent NC from interrupting apps like sleep tracking or stopwatch. You can also switch to native Pebble notifications which means many NC features won\'t work, but it also won\'t close currently running app. For this feature to work, you need to enable Developer Connection Pebble app settings.</string>
+    <string name="pebbleAppsDescription">NC is like any other app on Pebble - when notification comes, it will close whatever app was active. This is fine most of the time, but for some apps you might not want this (for example you wouldn\'t want to interrupt running stopwatch). \n\n This view allows you to set NC to produce native Pebble notifications or simply turn off notifications if specific app is open on Pebble. \n\n For this feature to work, you need to enable Developer Connection Pebble app settings.</string>
     <string name="pebbleAppLoadingError">Error while loading app list. Is your Pebble connected and Developer Connection
         enabled?
     </string>
