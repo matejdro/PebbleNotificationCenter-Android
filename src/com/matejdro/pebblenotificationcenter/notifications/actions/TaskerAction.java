@@ -94,7 +94,7 @@ public class TaskerAction extends NotificationAction
                 text = service.getString(R.string.taskerActionErrorNotInstalled);
                 break;
             default:
-                text = service.getString(R.string.taskerActionErrorUnknown);
+                text = service.getString(R.string.taskerActionErrorUnknown, error.toString());
                 break;
         }
 

@@ -373,7 +373,7 @@
     <string name="taskerActionErrorNotificationSubtitle">Error</string>
     <string name="taskerActionErrorNoExternalAccess">Tasker\'s External Access is turned off.</string>
     <string name="taskerActionErrorNotInstalled">Tasker is not installed</string>
-    <string name="taskerActionErrorUnknown">Unknown error.</string>
+    <string name="taskerActionErrorUnknown">Unknown error (%s).</string>
     <string name="openOnPhone">Open on phone</string>
     <string name="settingSelectPress">SELECT press action</string>
     <string name="settingSelectPressDescription">
