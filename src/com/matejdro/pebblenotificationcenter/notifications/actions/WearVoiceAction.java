@@ -17,6 +17,7 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.lists.actions.ActionList;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
+import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -222,7 +223,8 @@ public class WearVoiceAction extends NotificationAction
             {
                 sendWearReply(cannedResponseList.get(id), service, actionIntent, voiceKey);
                 service.processDismissUpwards(parent.source.getKey(), false);
-                JellybeanNotificationListener.dismissNotification(parent.source.getKey());
+                if (NotificationHandler.isNotificationListenerSupported())
+                    JellybeanNotificationListener.dismissNotification(parent.source.getKey());
             }
         }
     }
