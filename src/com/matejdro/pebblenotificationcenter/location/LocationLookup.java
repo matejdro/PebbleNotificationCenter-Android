@@ -39,7 +39,11 @@ public class LocationLookup {
       LocationManager locationManager =
           (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
       String locationProvider = LocationManager.NETWORK_PROVIDER;
+
+      if (!locationManager.isProviderEnabled(locationProvider))
+        return;
       // Or use LocationManager.GPS_PROVIDER
+
 
       Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
       if (lastKnownLocation == null) {
