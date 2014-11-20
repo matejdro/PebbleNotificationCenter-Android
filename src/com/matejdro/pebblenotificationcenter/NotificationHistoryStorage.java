@@ -4,9 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
+import timber.log.Timber;
 
 public class NotificationHistoryStorage extends SQLiteOpenHelper {
 
@@ -38,8 +40,16 @@ public class NotificationHistoryStorage extends SQLiteOpenHelper {
 		values.put("Subtitle", subtitle);
 		values.put("Text", text);
 
-		getWritableDatabase().insert("notifications", null, values);
-	}	
+		try
+		{
+			getWritableDatabase().insert("notifications", null, values);
+		}
+		catch (SQLiteCantOpenDatabaseException e)
+		{
+			Timber.e(e, "Database open exception!");
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public synchronized void close() {
