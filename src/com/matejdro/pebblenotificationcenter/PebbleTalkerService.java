@@ -395,10 +395,6 @@ public class PebbleTalkerService extends Service
         notification.source = notificationSource;
         AppSettingStorage settingStorage = notificationSource.getSettingStorage(this);
 
-        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), TEXT_LIMIT));
-        notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
-        notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
-
         if (!notificationSource.isListNotification())
         {
             String combinedText = notificationSource.getTitle() + " " + notificationSource.getSubtitle() + " " + notificationSource.getText();
@@ -416,7 +412,14 @@ public class PebbleTalkerService extends Service
             {
                 historyDb.storeNotification(System.currentTimeMillis(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), TEXT_LIMIT, true));
             }
+        }
 
+        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), TEXT_LIMIT));
+        notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
+        notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
+
+        if (!notificationSource.isListNotification())
+        {
             if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
                 if (notificationSource.getText().trim().isEmpty() && (notificationSource.getSubtitle() == null || notificationSource.getSubtitle().trim().isEmpty())) {
                     Timber.d("Discarding notification because it is empty");
