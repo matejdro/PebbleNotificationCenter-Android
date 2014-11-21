@@ -97,7 +97,27 @@ public class TaskerReceiver extends BroadcastReceiver
 
                 editor.apply();
             }
+        }
+        else if (action == 3)
+        {
+            try
+            {
+                String pkg = bundle.getString("package");
+                int id = Integer.parseInt(bundle.getString("id"));
+                String tag = bundle.getString("tag");
+                if (tag.isEmpty())
+                    tag = null;
 
+                NotificationKey key = new NotificationKey(pkg, id, tag);
+
+                intent = new Intent(context, PebbleTalkerService.class);
+                intent.putExtra("dismissUpwardsKey", key);
+                context.startService(intent);
+            }
+            catch (NumberFormatException e)
+            {
+                return;
+            }
         }
     }
 

@@ -34,4 +34,11 @@
             android:text="@string/taskerActionAppSetting"
             android:onClick="appSetting"/>
 
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="200dp"
+            android:text="Dismiss from Pebble"
+            android:onClick="dismiss"/>
+
 </LinearLayout>

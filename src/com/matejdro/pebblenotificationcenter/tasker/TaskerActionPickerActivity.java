@@ -11,7 +11,7 @@ import com.matejdro.pebblenotificationcenter.R;
  */
 public class TaskerActionPickerActivity extends Activity
 {
-    private static final Class[] actions = new Class[] {TaskerNotificationActivity.class, TaskerGlobalSettingsActivity.class, TaskerAppListActivity.class};
+    private static final Class[] actions = new Class[] {TaskerNotificationActivity.class, TaskerGlobalSettingsActivity.class, TaskerAppListActivity.class, TaskerDismissActivity.class};
     private static final int TASKER_ACTION_REQUEST = 1;
 
     @Override
@@ -54,6 +54,11 @@ public class TaskerActionPickerActivity extends Activity
     public void appSetting(View view)
     {
         loadNextScreen(TaskerAppListActivity.class, null);
+    }
+
+    public void dismiss(View view)
+    {
+        loadNextScreen(TaskerDismissActivity.class, null);
     }
 
     private void loadNextScreen(Class cls, Bundle existingData)

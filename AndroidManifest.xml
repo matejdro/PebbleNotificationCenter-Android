@@ -102,6 +102,7 @@
         <activity android:name=".tasker.TaskerGlobalSettingsActivity"/>
         <activity android:name=".tasker.TaskerAppListActivity"/>
         <activity android:name=".tasker.TaskerAppSettingsActivity"/>
+        <activity android:name=".tasker.TaskerDismissActivity"/>
 
         <receiver android:name=".tasker.TaskerReceiver"
             android:exported="true" >
