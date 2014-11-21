@@ -7,7 +7,7 @@
     <PreferenceCategory android:title="New notification popup" >
         <CheckBoxPreference
             android:key="noNotifications"
-            android:summary="Disable new notifications popping up. You can still see them by launching app manually."
+            android:summary="Disable new notifications popping up. You can still see them by launching app manually and opening Active or History. Syncs with &quot;Notifications ON/OFF%quot; switch on Pebble"
             android:title="Disable popup entirely" />
         <CheckBoxPreference
             android:key="noNotificationsNoPebble"
@@ -20,6 +20,10 @@
             android:title="Disable notify when in silent mode" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Watchapp" >
+        <CheckBoxPreference
+                android:key="noVibration"
+                android:summary="One-click toggle to completely enable/disable vibration. Syncs with &quot;Vibration ON/OFF&quot; switch on Pebble."
+                android:title="Disable vibration entirely" />
         <EditTextPreference
             android:defaultValue="0"
             android:key="watchappTimeout"

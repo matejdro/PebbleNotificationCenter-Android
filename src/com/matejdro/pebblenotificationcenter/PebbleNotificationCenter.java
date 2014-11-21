@@ -22,6 +22,8 @@ public class PebbleNotificationCenter extends android.app.Application {
     public static final String NO_NOTIFY_VIBRATE = "noNotificationsSilent";
     public static final String INVERT_COLORS = "invertColors";
     public static final String NOTIFICATIONS_DISABLED = "noNotifications";
+    public static final String VIBRATION_DISABLED = "noVibration";
+
 
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";

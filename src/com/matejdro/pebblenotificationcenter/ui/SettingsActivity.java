@@ -84,7 +84,6 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("deprecation")
 	private void setPopupOptionsEnabled(boolean popupEnabled, boolean timeEnabled)
 	{		
-		findPreference("noNotificationsScreenOn").setEnabled(popupEnabled);
 		findPreference("noNotificationsNoPebble").setEnabled(popupEnabled);
 		findPreference("noNotificationsSilent").setEnabled(popupEnabled);
 	}

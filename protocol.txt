@@ -53,6 +53,8 @@ Pebble --> Phone
     Additional data:
         1 = ID of the setting - uint8. Possible settings:
             0 = Disable notifications 1 or 0 - value is uint8
+            1 = Disable vibration 1 or 0 - value is uint8
+         
         2 = Value of the setting (type depends on the setting)
 
 	Packet 12 - SELECT button pressed
@@ -119,12 +121,14 @@ Phone --> Pebble
 			[3] = Timeout in seconds (first byte)
 			[4] = Timeout in seconds (second byte)
 			[7] = Flags
+				First bit (0x01) = Vibration enabled
 				Second bit (0x02) = Display closing screen (needed for "switch to last app" feature)
 				Third bit (0x04) = Is active notifications menu supported?
 				Fourth bit (0x08) = Is notification waiting to be sent?
 				Fifth bit (0x10) = Enable LCD light when notification arrives
 				Sixth bit (0x20) = Don't vibrate when charging
 				Seventh bit (0x40) = Inverse mode
+				Eight bit (0x80) = Enable notifications
 			[8] = Compatible watchapp version (first byte)
 			[9] = Compatible watchapp version (second byte)
 			[10] = Shake action

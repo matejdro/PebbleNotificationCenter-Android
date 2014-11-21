@@ -928,6 +928,7 @@ public class PebbleTalkerService extends Service
         flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.DONT_VIBRATE_WHEN_CHARGING, true) ? 0x20 : 0);
         flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.INVERT_COLORS, false) ? 0x40 : 0);
         flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false) ? 0x80 : 0);
+        flags |= (byte) (settings.getBoolean(PebbleNotificationCenter.VIBRATION_DISABLED, false) ? 0x01 : 0);
 
 
         configBytes[7] = flags;
@@ -957,6 +958,10 @@ public class PebbleTalkerService extends Service
             case 0: //Notifications disabled
                 boolean value = data.getUnsignedIntegerAsLong(2) != 0;
                 editor.putBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, value);
+                break;
+            case 1: //Vibration disabled
+                value = data.getUnsignedIntegerAsLong(2) != 0;
+                editor.putBoolean(PebbleNotificationCenter.VIBRATION_DISABLED, value);
                 break;
         }
 
