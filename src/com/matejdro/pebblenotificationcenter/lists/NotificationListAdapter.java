@@ -25,7 +25,7 @@ public abstract class NotificationListAdapter {
 	
 	public void gotRequest(PebbleDictionary data)
 	{
-		int id = data.getUnsignedInteger(1).intValue();
+		int id = data.getUnsignedIntegerAsLong(1).intValue();
 		sendNotification(id);
 	}
 	

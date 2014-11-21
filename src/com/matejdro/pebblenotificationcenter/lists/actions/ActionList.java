@@ -25,7 +25,7 @@ public abstract class ActionList
         }
         else if (id == 3)
         {
-            int pickedIndex = dictionary.getUnsignedInteger(2).intValue();
+            int pickedIndex = dictionary.getUnsignedIntegerAsLong(2).intValue();
             service.commWentIdle();
             itemPicked(service, pickedIndex);
         }

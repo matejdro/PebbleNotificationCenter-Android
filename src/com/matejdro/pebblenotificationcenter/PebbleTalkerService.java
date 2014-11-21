@@ -663,7 +663,7 @@ public class PebbleTalkerService extends Service
 
     private void menuPicked(PebbleDictionary data)
     {
-        int index = data.getUnsignedInteger(1).intValue();
+        int index = data.getUnsignedIntegerAsLong(1).intValue();
         if (index == 1 || !NotificationHandler.isNotificationListenerSupported())
         {
             listHandler = new NotificationHistoryAdapter(this, historyDb);
@@ -692,7 +692,7 @@ public class PebbleTalkerService extends Service
             return;
         }
 
-        int chunk = data.getUnsignedInteger(2).intValue();
+        int chunk = data.getUnsignedIntegerAsLong(2).intValue();
 
         if (notification.textChunks.size() <= chunk)
         {
@@ -951,11 +951,11 @@ public class PebbleTalkerService extends Service
     {
         Editor editor = settings.edit();
 
-        int id = data.getUnsignedInteger(1).intValue();
+        int id = data.getUnsignedIntegerAsLong(1).intValue();
         switch (id)
         {
             case 0: //Notifications disabled
-                boolean value = data.getUnsignedInteger(2) != 0;
+                boolean value = data.getUnsignedIntegerAsLong(2) != 0;
                 editor.putBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, value);
                 break;
         }
@@ -982,7 +982,7 @@ public class PebbleTalkerService extends Service
             return;
         }
 
-        int id = data.getUnsignedInteger(0).intValue();
+        int id = data.getUnsignedIntegerAsLong(0).intValue();
 
         Timber.d("Pebble packet " + id);
 

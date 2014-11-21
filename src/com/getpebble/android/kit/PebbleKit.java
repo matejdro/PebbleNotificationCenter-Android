@@ -7,9 +7,11 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Base64;
+import android.util.Log;
+import com.getpebble.android.kit.Constants.*;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import org.json.JSONException;
-import timber.log.Timber;
 
 import java.util.UUID;
 
@@ -18,15 +20,22 @@ import static com.getpebble.android.kit.Constants.*;
 /**
  * A helper class providing methods for interacting with third-party Pebble Smartwatch applications. Pebble-enabled
  * Android applications may use this class to assist in sending/receiving data between the watch and the phone.
- *
- * @author zulak@getpebble.com
  */
 public final class PebbleKit {
 
+    /**
+     * The Constant NAME_MAX_LENGTH.
+     */
     private static final int NAME_MAX_LENGTH = 32;
-    private static final int ICON_MAX_DIMENSIONS = 32;
-    private static final String WATCH_CONNECTION_STATUS_URI = "content://com.getpebble.android.provider/state";
 
+    /**
+     * The Constant ICON_MAX_DIMENSIONS.
+     */
+    private static final int ICON_MAX_DIMENSIONS = 32;
+
+    /**
+     * Instantiates a new pebble kit.
+     */
     private PebbleKit() {
 
     }
@@ -39,8 +48,7 @@ public final class PebbleKit {
      * @param context
      *         The context used to send the broadcast. (Protip: pass in the ApplicationContext here.)
      * @param appType
-     *         The watch-app to be configured. Options are either {@link PebbleAppType#SPORTS} or {@link
-     *         PebbleAppType#GOLF}.
+     *         The watch-app to be configured. Options are either
      * @param name
      *         The custom name to be applied to the watch-app. Names must be less than 32 characters in length.
      * @param icon
@@ -48,18 +56,19 @@ public final class PebbleKit {
      *         in either dimension.
      *
      * @throws IllegalArgumentException
-     *         Thrown if the specified name or icon are invalid.
+     *         Thrown if the specified name or icon are invalid. {@link PebbleAppType#SPORTS} or {@link
+     *         PebbleAppType#GOLF}.
      */
-    public static void customizeWatchApp(final Context context, final PebbleAppType appType, final String name,
-                                         final Bitmap icon)
-            throws IllegalArgumentException {
+    public static void customizeWatchApp(final Context context, final PebbleAppType appType,
+                                         final String name, final Bitmap icon) throws IllegalArgumentException {
 
         if (appType == null) {
             throw new IllegalArgumentException("app type cannot be null");
         }
 
         if (name.length() > NAME_MAX_LENGTH) {
-            throw new IllegalArgumentException(String.format("app name exceeds maximum length (%d)", NAME_MAX_LENGTH));
+            throw new IllegalArgumentException(String.format(
+                    "app name exceeds maximum length (%d)", NAME_MAX_LENGTH));
         }
 
         if (icon.getHeight() > ICON_MAX_DIMENSIONS || icon.getWidth() > ICON_MAX_DIMENSIONS) {
@@ -86,18 +95,21 @@ public final class PebbleKit {
      * @return true if an active connection to the watch currently exists, otherwise false. This method will also return
      *         false if the Pebble application is not installed on the user's handset.
      */
-    public static boolean isWatchConnected(Context context) {
-        Cursor cursor = context.getContentResolver().query(Uri.parse(WATCH_CONNECTION_STATUS_URI), null, null, null, null);
-        if (cursor == null) {
-            return false;
-        } else if (!cursor.moveToNext()) {
-            cursor.close();
-            return false;
-        } else {
-            boolean isConnected = cursor.getInt(0) == 1;
-            cursor.close();
-            return isConnected;
-        }
+    public static boolean isWatchConnected(final Context context) {
+		Cursor c = null;
+		try {
+			c = context.getContentResolver().query(
+							Uri.parse("content://com.getpebble.android.provider/state"), null, null,
+							null, null);
+			if (c == null || !c.moveToNext()) {
+				return false;
+			}
+			return c.getInt(KIT_STATE_COLUMN_CONNECTED) == 1;
+		} finally {
+			if (c != null) {
+				c.close();
+			}
+		}
     }
 
     /**
@@ -113,12 +125,84 @@ public final class PebbleKit {
      *         no Pebble is currently connected to the handset.
      */
     public static boolean areAppMessagesSupported(final Context context) {
-        Cursor c = context.getContentResolver().query(Uri.parse("content://com.getpebble.android.provider/state"),
-                null, null, null, null);
-        if (c == null || !c.moveToNext()) {
-            return false;
-        }
-        return c.getInt(1) == 1;
+        Cursor c = null;
+		try {
+            c = context.getContentResolver().query(
+                        Uri.parse("content://com.getpebble.android.provider/state"), null, null,
+                        null, null);
+			if (c == null || !c.moveToNext()) {
+				return false;
+			}
+			return c.getInt(KIT_STATE_COLUMN_APPMSG_SUPPORT) == 1;
+		} finally {
+			if (c != null) {
+				c.close();
+			}
+		}
+    }
+
+    
+    /**
+     * Get the version information of the firmware running on a connected watch.
+     *
+     * @param context
+     *         The Android context used to perform the query.
+     *         <p/>
+     *         <em>Protip:</em> You probably want to use your ApplicationContext here.
+     *
+     * @return null if the watch is disconnected or we can't get the version. Otherwise,
+     *         a FirmwareVersionObject containing info on the watch FW version
+     */
+    public static FirmwareVersionInfo getWatchFWVersion(final Context context) {
+        Cursor c = null;
+		try {
+            c = context.getContentResolver().query(
+                        Uri.parse("content://com.getpebble.android.provider/state"), null, null,
+                        null, null);
+			if (c == null || !c.moveToNext()) {
+				return null;
+			}
+			
+			int majorVersion = c.getInt(KIT_STATE_COLUMN_VERSION_MAJOR);
+			int minorVersion = c.getInt(KIT_STATE_COLUMN_VERSION_MINOR);
+			int pointVersion = c.getInt(KIT_STATE_COLUMN_VERSION_POINT);
+			String versionTag = c.getString(KIT_STATE_COLUMN_VERSION_TAG);
+			
+			return new FirmwareVersionInfo(majorVersion, minorVersion, pointVersion, versionTag);
+		} finally {
+			if (c != null) {
+				c.close();
+			}
+		}
+    }
+
+    /**
+     * Synchronously query the Pebble application to see if the connected watch is running a firmware version that
+     * supports PebbleKit data logging.
+     *
+     * @param context
+     *         The Android context used to perform the query.
+     *         <p/>
+     *         <em>Protip:</em> You probably want to use your ApplicationContext here.
+     *
+     * @return true if the watch supports PebbleKit messages, otherwise false. This method will always return false if
+     *         no Pebble is currently connected to the handset.
+     */
+    public static boolean isDataLoggingSupported(final Context context) {
+        Cursor c = null;
+		try {
+            c = context.getContentResolver().query(
+                        Uri.parse("content://com.getpebble.android.provider/state"),
+                        null, null, null, null);
+			if (c == null || !c.moveToNext()) {
+				return false;
+			}
+			return c.getInt(KIT_STATE_COLUMN_DATALOGGING_SUPPORT) == 1;
+		} finally {
+			if (c != null) {
+				c.close();
+			}
+		}
     }
 
     /**
@@ -169,7 +253,6 @@ public final class PebbleKit {
         final Intent stopAppIntent = new Intent(INTENT_APP_STOP);
         stopAppIntent.putExtra(APP_UUID, watchappUuid);
         context.sendBroadcast(stopAppIntent);
-        Timber.d("Sent close app command !!");
     }
 
     /**
@@ -191,8 +274,8 @@ public final class PebbleKit {
      * @throws IllegalArgumentException
      *         Thrown in the specified PebbleDictionary or UUID is invalid.
      */
-    public static void sendDataToPebble(final Context context, final UUID watchappUuid, final PebbleDictionary data)
-            throws IllegalArgumentException {
+    public static void sendDataToPebble(final Context context, final UUID watchappUuid,
+                                        final PebbleDictionary data) throws IllegalArgumentException {
 
         sendDataToPebbleWithTransactionId(context, watchappUuid, data, -1);
     }
@@ -211,7 +294,6 @@ public final class PebbleKit {
      * @param data
      *         A dictionary containing one-or-more key-value pairs. For more information about the types of data that
      *         can be stored, see {@link PebbleDictionary}.
-     *
      * @param transactionId
      *         An integer uniquely identifying the transaction. This can be used to correlate messages sent to the
      *         Pebble and ACK/NACKs received from the Pebble.
@@ -219,8 +301,8 @@ public final class PebbleKit {
      * @throws IllegalArgumentException
      *         Thrown in the specified PebbleDictionary or UUID is invalid.
      */
-    public static void sendDataToPebbleWithTransactionId(final Context context, final UUID watchappUuid,
-                                                         final PebbleDictionary data, final int transactionId)
+    public static void sendDataToPebbleWithTransactionId(final Context context,
+                                                         final UUID watchappUuid, final PebbleDictionary data, final int transactionId)
             throws IllegalArgumentException {
 
         if (watchappUuid == null) {
@@ -243,8 +325,8 @@ public final class PebbleKit {
     }
 
     /**
-     * Send a message to the connected watch acknowledging the receipt of a PebbleDictionary.  To avoid protocol
-     * timeouts on the watch, applications <em>must</em> ACK or NACK all received messages.
+     * Send a message to the connected watch acknowledging the receipt of a PebbleDictionary. To avoid protocol timeouts
+     * on the watch, applications <em>must</em> ACK or NACK all received messages.
      *
      * @param context
      *         The context used to send the broadcast.
@@ -259,8 +341,8 @@ public final class PebbleKit {
             throws IllegalArgumentException {
 
         if ((transactionId & ~0xff) != 0) {
-            throw new IllegalArgumentException(
-                    String.format("transaction id must be between (0, 255); got '%d'", transactionId));
+            throw new IllegalArgumentException(String.format(
+                    "transaction id must be between (0, 255); got '%d'", transactionId));
         }
 
         final Intent ackIntent = new Intent(INTENT_APP_ACK);
@@ -285,8 +367,8 @@ public final class PebbleKit {
             throws IllegalArgumentException {
 
         if ((transactionId & ~0xff) != 0) {
-            throw new IllegalArgumentException(
-                    String.format("transaction id must be between (0, 255); got '%d'", transactionId));
+            throw new IllegalArgumentException(String.format(
+                    "transaction id must be between (0, 255); got '%d'", transactionId));
         }
 
         final Intent nackIntent = new Intent(INTENT_APP_NACK);
@@ -355,6 +437,7 @@ public final class PebbleKit {
         return registerBroadcastReceiverInternal(context, INTENT_APP_RECEIVE, receiver);
     }
 
+
     /**
      * A convenience function to assist in programatically registering a broadcast receiver for the 'RECEIVE_ACK'
      * intent.
@@ -397,8 +480,20 @@ public final class PebbleKit {
         return registerBroadcastReceiverInternal(context, INTENT_APP_RECEIVE_NACK, receiver);
     }
 
-    private static BroadcastReceiver registerBroadcastReceiverInternal(final Context context, final String action,
-                                                                       final BroadcastReceiver receiver) {
+    /**
+     * Register broadcast receiver internal.
+     *
+     * @param context
+     *         the context
+     * @param action
+     *         the action
+     * @param receiver
+     *         the receiver
+     *
+     * @return the broadcast receiver
+     */
+    private static BroadcastReceiver registerBroadcastReceiverInternal(final Context context,
+                                                                       final String action, final BroadcastReceiver receiver) {
         if (receiver == null) {
             return null;
         }
@@ -412,8 +507,18 @@ public final class PebbleKit {
      * A special-purpose BroadcastReceiver that makes it easy to handle 'RECEIVE' intents broadcast from pebble.apk.
      */
     public static abstract class PebbleDataReceiver extends BroadcastReceiver {
+
+        /**
+         * The subscribed uuid.
+         */
         private final UUID subscribedUuid;
 
+        /**
+         * Instantiates a new pebble data receiver.
+         *
+         * @param subscribedUuid
+         *         the subscribed uuid
+         */
         protected PebbleDataReceiver(final UUID subscribedUuid) {
             this.subscribedUuid = subscribedUuid;
         }
@@ -429,7 +534,8 @@ public final class PebbleKit {
          * @param data
          *         A dictionary of one-or-more key-value pairs received from the connected watch.
          */
-        public abstract void receiveData(final Context context, final int transactionId, final PebbleDictionary data);
+        public abstract void receiveData(final Context context, final int transactionId,
+                                         final PebbleDictionary data);
 
         /**
          * {@inheritDoc}
@@ -438,7 +544,8 @@ public final class PebbleKit {
         public void onReceive(final Context context, final Intent intent) {
             final UUID receivedUuid = (UUID) intent.getSerializableExtra(APP_UUID);
 
-            // Pebble-enabled apps are expected to be good citizens and only inspect broadcasts containing their UUID
+            // Pebble-enabled apps are expected to be good citizens and only inspect broadcasts
+            // containing their UUID
             if (!subscribedUuid.equals(receivedUuid)) {
                 return;
             }
@@ -464,8 +571,18 @@ public final class PebbleKit {
      * .apk.
      */
     public static abstract class PebbleAckReceiver extends BroadcastReceiver {
+
+        /**
+         * The subscribed uuid.
+         */
         private final UUID subscribedUuid;
 
+        /**
+         * Instantiates a new pebble ack receiver.
+         *
+         * @param subscribedUuid
+         *         the subscribed uuid
+         */
         protected PebbleAckReceiver(final UUID subscribedUuid) {
             this.subscribedUuid = subscribedUuid;
         }
@@ -497,8 +614,18 @@ public final class PebbleKit {
      * .apk.
      */
     public static abstract class PebbleNackReceiver extends BroadcastReceiver {
+
+        /**
+         * The subscribed uuid.
+         */
         private final UUID subscribedUuid;
 
+        /**
+         * Instantiates a new pebble nack receiver.
+         *
+         * @param subscribedUuid
+         *         the subscribed uuid
+         */
         protected PebbleNackReceiver(final UUID subscribedUuid) {
             this.subscribedUuid = subscribedUuid;
         }
@@ -522,6 +649,289 @@ public final class PebbleKit {
             final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
             receiveNack(context, transactionId);
 
+        }
+    }
+
+    /**
+     * A special-purpose BroadcastReceiver that makes it easy to handle 'DATA_AVAILABLE' data logging intents broadcast from pebble.apk.
+     */
+    public static abstract class PebbleDataLogReceiver extends BroadcastReceiver {
+
+        /**
+         * The subscribed uuid.
+         */
+        private final UUID subscribedUuid;
+
+        /**
+         * The last data ID we've seen. Ignore subsequent intents for this same ID.
+         */
+        private int lastDataId;
+
+        /**
+         * Instantiates a new pebble nack receiver.
+         *
+         * @param subscribedUuid
+         *         the subscribed uuid
+         */
+        protected PebbleDataLogReceiver(final UUID subscribedUuid) {
+            this.subscribedUuid = subscribedUuid;
+        }
+
+        /**
+         * Handle an UnsignedInteger data unit that was logged the watch and broadcast by pebble.apk.
+         *
+         * @param context
+         *         The BroadcastReceiver's context.
+         * @param logUuid
+         *         The UUID that uniquely identifies a data log.
+         * @param timestamp
+         *         The timestamp when a data log was first created.
+         * @param tag
+         *         The user-defined tag for the corresponding data log.
+         * @param data
+         *         The unit of data that was logged on the watch.
+         * @throws UnsupportedOperationException
+         *         Thrown if data is received and this handler is not implemented.
+         */
+        public void receiveData(final Context context, UUID logUuid,
+                                final Long timestamp, final Long tag,
+                                final Long data) {
+            throw new UnsupportedOperationException("UnsignedInteger handler not implemented");
+
+        }
+
+        /**
+         * Handle a byte array data unit that was logged the watch and broadcast by pebble.apk.
+         *
+         * @param context
+         *         The BroadcastReceiver's context.
+         * @param logUuid
+         *         The UUID that uniquely identifies a data log.
+         * @param timestamp
+         *         The timestamp when a data log was first created.
+         * @param tag
+         *         The user-defined tag for the corresponding data log.
+         * @param data
+         *         The unit of data that was logged on the watch.
+         * @throws UnsupportedOperationException
+         *         Thrown if data is received and this handler is not implemented.
+         */
+        public void receiveData(final Context context, UUID logUuid,
+                                final Long timestamp, final Long tag,
+                                final byte[] data) {
+            throw new UnsupportedOperationException("Byte array handler not implemented");
+        }
+
+        /**
+         * Handle an int data unit that was logged the watch and broadcast by pebble.apk.
+         *
+         * @param context
+         *         The BroadcastReceiver's context.
+         * @param logUuid
+         *         The UUID that uniquely identifies a data log.
+         * @param timestamp
+         *         The timestamp when a data log was first created.
+         * @param tag
+         *         The user-defined tag for the corresponding data log.
+         * @param data
+         *         The unit of data that was logged on the watch.
+         * @throws UnsupportedOperationException
+         *         Thrown if data is received and this handler is not implemented.
+         */
+        public void receiveData(final Context context, UUID logUuid,
+                                final Long timestamp, final Long tag, final int data) {
+            throw new UnsupportedOperationException("int handler not implemented");
+
+        }
+
+        /**
+         * Called when a session has been finished on the watch and all data has been transmitted by pebble.apk
+         *
+         * @param context
+         *         The BroadcastReceiver's context.
+         * @param logUuid
+         *         The UUID that uniquely identifies a data log.
+         * @param timestamp
+         *         The timestamp when a data log was first created.
+         * @param tag
+         *         The user-defined tag for the corresponding data log.
+         */
+        public void onFinishSession(final Context context, UUID logUuid, final Long timestamp,
+                                    final Long tag) {
+            // Do nothing by default
+        }
+
+        private void handleReceiveDataIntent(final Context context, final Intent intent, final UUID logUuid,
+                                             final Long timestamp, final Long tag) {
+            final int dataId = intent.getIntExtra(PBL_DATA_ID, -1);
+            if (dataId < 0) throw new IllegalArgumentException();
+
+            Log.i("pebble", "DataID: " + dataId + " LastDataID: " + lastDataId);
+
+            if (dataId == lastDataId) {
+                // If we see the same dataId multiple times, just ignore it.
+                return;
+            }
+
+            final PebbleDataType type = PebbleDataType.fromByte(intent.getByteExtra(PBL_DATA_TYPE, PebbleDataType.INVALID.ord));
+            if (type == null) throw new IllegalArgumentException();
+
+            switch (type) {
+                case BYTES:
+                    byte[] bytes = Base64.decode(intent.getStringExtra(PBL_DATA_OBJECT), Base64.NO_WRAP);
+                    if (bytes == null) {
+                        throw new IllegalArgumentException();
+                    }
+
+                    receiveData(context, logUuid, timestamp, tag, bytes);
+                    break;
+                case UINT:
+                    Long uint = (Long) intent.getSerializableExtra(PBL_DATA_OBJECT);
+                    if (uint == null) {
+                        throw new IllegalArgumentException();
+                    }
+
+                    receiveData(context, logUuid, timestamp, tag, uint);
+                    break;
+                case INT:
+                    Integer i = (Integer) intent.getSerializableExtra(PBL_DATA_OBJECT);
+                    if (i == null) {
+                        throw new IllegalArgumentException();
+                    }
+
+                    receiveData(context, logUuid, timestamp, tag, i.intValue());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid type:" + type.toString());
+            }
+
+            lastDataId = dataId;
+
+            final Intent ackIntent = new Intent(INTENT_DL_ACK_DATA);
+            ackIntent.putExtra(DATA_LOG_UUID, logUuid);
+            ackIntent.putExtra(PBL_DATA_ID, dataId);
+            context.sendBroadcast(ackIntent);
+        }
+
+        private void handleFinishSessionIntent(final Context context, final Intent intent, final UUID logUuid,
+                                               final Long timestamp, final Long tag) {
+            onFinishSession(context, logUuid, timestamp, tag);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            final UUID receivedUuid = (UUID) intent.getSerializableExtra(APP_UUID);
+            // Pebble-enabled apps are expected to be good citizens and only inspect broadcasts
+            // containing their UUID
+            if (!subscribedUuid.equals(receivedUuid)) {
+                return;
+            }
+
+            try {
+                final UUID logUuid;
+                final Long timestamp;
+                final Long tag;
+
+                logUuid = (UUID) intent.getSerializableExtra(DATA_LOG_UUID);
+                if (logUuid == null) throw new IllegalArgumentException();
+
+                timestamp = (Long) intent.getSerializableExtra(DATA_LOG_TIMESTAMP);
+                if (timestamp == null) throw new IllegalArgumentException();
+
+                tag = (Long) intent.getSerializableExtra(DATA_LOG_TAG);
+                if (tag == null) throw new IllegalArgumentException();
+
+                if (intent.getAction() == INTENT_DL_RECEIVE_DATA) {
+                    handleReceiveDataIntent(context, intent, logUuid, timestamp, tag);
+                } else if (intent.getAction() == INTENT_DL_FINISH_SESSION) {
+                    handleFinishSessionIntent(context, intent, logUuid, timestamp, tag);
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+    }
+
+    /**
+     * A convenience function to assist in programatically registering a broadcast receiver for the 'DATA_AVAILABLE'
+     * intent.
+     * <p/>
+     * To avoid leaking memory, activities registering BroadcastReceivers <em>must</em> unregister them in the
+     * Activity's {@link android.app.Activity#onPause()} method.
+     *
+     * @param context
+     *         The context in which to register the BroadcastReceiver.
+     * @param receiver
+     *         The receiver to be registered.
+     *
+     * @return The registered receiver.
+     *
+     * @see Constants#INTENT_DL_RECEIVE_DATA
+     */
+    public static BroadcastReceiver registerDataLogReceiver(final Context context,
+                                                            final PebbleDataLogReceiver receiver) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(INTENT_DL_RECEIVE_DATA);
+        filter.addAction(INTENT_DL_FINISH_SESSION);
+        context.registerReceiver(receiver, filter);
+
+        return receiver;
+    }
+
+    /**
+     * A convenience function to emit an intent to pebble.apk to request the data logs for a particular app. If data
+     * is available, pebble.apk will advertise the data via 'INTENT_DL_RECEIVE_DATA' intents.
+     * <p/>
+     * To avoid leaking memory, activities registering BroadcastReceivers <em>must</em> unregister them in the
+     * Activity's {@link android.app.Activity#onPause()} method.
+     *
+     * @param context
+     *         The context in which to register the BroadcastReceiver.
+     * @param appUuid
+     *         The app for which to request data logs.
+     *
+     * @return The registered receiver.
+     *
+     * @see Constants#INTENT_DL_RECEIVE_DATA
+     * @see Constants#INTENT_DL_REQUEST_DATA
+     */
+    public static void requestDataLogsForApp(final Context context, final UUID appUuid) {
+        final Intent requestIntent = new Intent(INTENT_DL_REQUEST_DATA);
+        requestIntent.putExtra(APP_UUID, appUuid);
+        context.sendBroadcast(requestIntent);
+    }
+    
+    public static class FirmwareVersionInfo {
+        private final int major;
+        private final int minor;
+        private final int point;
+        private final String tag;
+        
+        FirmwareVersionInfo(int major, int minor, int point, String tag) {
+            this.major = major;
+            this.minor = minor;
+            this.point = point;
+            this.tag = tag;
+        }
+        
+        public final int getMajor() {
+            return major;
+        }
+        
+        public final int getMinor() {
+            return minor;
+        }
+        
+        public final int getPoint() {
+            return point;
+        }
+        
+        public final String getTag() {
+            return tag;
         }
     }
 }
