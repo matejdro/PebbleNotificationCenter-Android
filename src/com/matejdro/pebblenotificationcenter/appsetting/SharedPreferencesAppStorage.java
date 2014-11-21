@@ -21,7 +21,7 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
     public SharedPreferencesAppStorage(Context context, String appPackage, DefaultAppSettingsStorage defaultConfig, boolean obeyDefaultSettingsOption)
     {
         this.defaultConfig = defaultConfig;
-        appConfig = context.getSharedPreferences("app_".concat(filterAppName(appPackage)), Context.MODE_PRIVATE);
+        appConfig = context.getSharedPreferences(getSharedPreferencesName(appPackage), Context.MODE_PRIVATE);
         editor = appConfig.edit();
         this.appPackage = appPackage;
         this.obeyDefaultSettingsOption = obeyDefaultSettingsOption;
@@ -124,8 +124,18 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
         editor.apply();
     }
 
+    public static String getSharedPreferencesName(String pkg)
+    {
+        return "app_".concat(filterAppName(pkg));
+    }
+
     public static String filterAppName(String name)
     {
         return name.replaceAll("[^0-9a-zA-Z ]", "_");
+    }
+
+    public String getAppPackage()
+    {
+        return appPackage;
     }
 }

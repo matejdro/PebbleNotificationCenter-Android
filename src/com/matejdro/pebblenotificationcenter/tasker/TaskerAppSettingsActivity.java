@@ -48,6 +48,15 @@ public class TaskerAppSettingsActivity extends PerAppActivity
     }
 
     @Override
+    protected void loadAppSettings()
+    {
+        super.loadAppSettings();
+
+        if (!defaultSettings)
+            settings.get(0).settings.remove(1); //Remove reset to default button - does not work in tasker
+    }
+
+    @Override
     public boolean save()
     {
         if (!super.save())

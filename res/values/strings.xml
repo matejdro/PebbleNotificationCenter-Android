@@ -202,8 +202,10 @@
     <string name="PebbleWatchfaceSimplicity">Simplicity watchface</string>
     <string name="PebbleWatchfaceAnalog">Classic analog watchface</string>
     <string name="PebbleWatchfaceText">Text watchface</string>
-    <string name="settingUseDefaultSettings">Use default settings for that app</string>
-    <string name="settingUseDefaultSettingsDescription">If checked, bottom settings won\'t be in effect and this app will use default settings</string>
+    <string name="settingResetToDefault">Reset to default settings</string>
+    <string name="settingResetToDefaultDescription">When you press this button, all below settings will reset to default settings and will automatically sync with default settings until you change them manually.</string>
+    <string name="settingResetToDefaultButton">RESET</string>
+
     <string name="settingSendOngoing">Send ongoing notifications</string>
     <string name="settingSendOngoingDescription">Send notifications that are not just one time event, but something
         ongoing (for example ongoing file download or app instalation)

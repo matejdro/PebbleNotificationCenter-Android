@@ -27,7 +27,7 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.QuietHoursIt
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.RegexItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.SpinnerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.TaskerTaskListItem;
-import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.UseDefaultCheckBoxItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ResetDefaultsButtonItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.VibrationPatternItem;
 import com.matejdro.pebblenotificationcenter.util.ViewUtil;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class PerAppActivity extends Activity
     protected AppSettingStorage settingsStorage;
     protected String appPackage;
     protected String appName;
-    private boolean defaultSettings;
+    protected boolean defaultSettings;
 
     public List<SettingsCategory> settings = new ArrayList<SettingsCategory>();
 
@@ -85,13 +85,13 @@ public class PerAppActivity extends Activity
         return settingsStorage;
     }
 
-    private void loadAppSettings()
+    protected void loadAppSettings()
     {
         if (!defaultSettings)
         {
             List<BaseSettingItem> category = new ArrayList<BaseSettingItem>();
             category.add(new AppEnabledCheckboxItem(settingsStorage, R.string.settingAppSelected, R.string.settingAppSelectedDescription));
-            category.add(new UseDefaultCheckBoxItem(settingsStorage, R.string.settingUseDefaultSettings, R.string.settingUseDefaultSettingsDescription));
+            category.add(new ResetDefaultsButtonItem(settingsStorage, R.string.settingResetToDefault, R.string.settingResetToDefaultDescription, R.string.settingResetToDefaultButton));
             settings.add(new SettingsCategory(null, category));
         }
 
