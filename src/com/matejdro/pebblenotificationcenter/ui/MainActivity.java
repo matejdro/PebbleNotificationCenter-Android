@@ -88,11 +88,10 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
 			startActivity(intent);
 			return true;
 		case R.id.action_test_notification:
-            String longText = "ReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongTextReallyLongText";
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 			NotificationCompat.Builder mBuilder =
               new NotificationCompat.Builder(this).setSmallIcon(R.drawable.icon)
-                  .setContentTitle("Test Notification").setContentText("See notifcation on pebble" + longText)
+                  .setContentTitle("Test Notification").setContentText("See notifcation on pebble")
                   .setSubText("Hello World");
           mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
             break;

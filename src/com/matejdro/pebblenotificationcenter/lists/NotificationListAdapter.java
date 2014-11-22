@@ -67,7 +67,7 @@ public abstract class NotificationListAdapter {
 			data.addString(5, "");
 			data.addString(6, "");
 			
-			service.pebbleCommunication.sendPacket(data);
+			PebbleKit.sendDataToPebble(service, DataReceiver.pebbleAppUUID, data);
 
 			return;
 		}
@@ -84,7 +84,7 @@ public abstract class NotificationListAdapter {
 
 		Timber.i("Sending notification " + index + " " + data.getString(4));
 		
-		service.pebbleCommunication.sendPacket(data);
+		PebbleKit.sendDataToPebble(service, DataReceiver.pebbleAppUUID, data);
 	}
 	
 	public String getFormattedDate(long date)
