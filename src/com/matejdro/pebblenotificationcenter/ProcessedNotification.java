@@ -11,6 +11,7 @@ public class ProcessedNotification
     public ActionList activeActionList;
     public boolean vibrated = false;
     public boolean sent = false;
+    public int lastSentChunk = 0;
 
     public PebbleNotification source;
 }

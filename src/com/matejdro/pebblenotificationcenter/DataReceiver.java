@@ -25,10 +25,18 @@ public class DataReceiver extends BroadcastReceiver {
         intent.putExtra("packet", jsonPacket);
         context.startService(intent);
 	}
+
+	public void receivedAck(Context context, int transactionId)
+	{
+		Intent intent = new Intent(context, PebbleTalkerService.class);
+		intent.putExtra("ack", transactionId);
+		context.startService(intent);
+	}
 	
 	
 
 	public void onReceive(final Context context, final Intent intent) {
+		System.out.println("onrec " + intent.getAction());
         if ("com.getpebble.action.PEBBLE_CONNECTED".equals(intent.getAction()))
         {
             Intent startIntent = new Intent(context, PebbleTalkerService.class);
@@ -38,6 +46,14 @@ public class DataReceiver extends BroadcastReceiver {
             return;
         }
 
+		final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
+
+		if ("com.getpebble.action.app.RECEIVE_ACK".equals(intent.getAction()))
+		{
+			receivedAck(context, transactionId);
+			return;
+		}
+
 		final UUID receivedUuid = (UUID) intent.getSerializableExtra(APP_UUID);
 
 		// Pebble-enabled apps are expected to be good citizens and only inspect broadcasts containing their UUID
@@ -45,7 +61,6 @@ public class DataReceiver extends BroadcastReceiver {
 			return;
 		}
 
-		final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
 		final String jsonData = intent.getStringExtra(MSG_DATA);
 		if (jsonData == null || jsonData.isEmpty()) {
 			return;

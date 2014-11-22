@@ -28,7 +28,10 @@ import com.matejdro.pebblenotificationcenter.location.LocationLookup;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.pebble.DeliveryListener;
+import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
+import com.matejdro.pebblenotificationcenter.pebble.PebblePacket;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
@@ -72,6 +75,8 @@ public class PebbleTalkerService extends Service
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
 
+    public PebbleCommunication pebbleCommunication;
+
     private LocationLookup locationLookup;
     private int closingAttempts = 0;
 
@@ -113,6 +118,8 @@ public class PebbleTalkerService extends Service
 
         locationLookup = new LocationLookup(this.getApplicationContext());
         locationLookup.lookup();
+        pebbleCommunication = new PebbleCommunication(this);
+
         super.onCreate();
     }
 
@@ -159,14 +166,18 @@ public class PebbleTalkerService extends Service
             {
                 pebbleReconnected();
             }
+            else if (intent.hasExtra("ack"))
+            {
+                pebbleCommunication.receivedAck(intent.getIntExtra("ack", 0));
+            }
         }
 
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void send(ProcessedNotification notification)
+    private void send(final ProcessedNotification notification)
     {
-        Timber.d("Send " + notification.id + " " + notification.source.getTitle() + " " + notification.source.getSubtitle());
+        Timber.d("Send " + notification.id + " " + notification.source.getTitle() + " " + notification.source.getSubtitle() + " " + notification.textChunks.size());
 
         curSendingNotification = notification;
 
@@ -217,8 +228,22 @@ public class PebbleTalkerService extends Service
 
         notification.sent = true;
 
-        PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
-        commStarted();
+        PebblePacket packet = new PebblePacket(data, new DeliveryListener()
+        {
+            @Override
+            public boolean packetDelivered()
+            {
+                if (notification.textChunks.size() > 0)
+                {
+                    sendMoreText(notification);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        pebbleCommunication.sendPacket(packet);
+        //commStarted();
     }
 
     public void dismissOnPebble(Integer id, boolean dontClose)
@@ -236,7 +261,7 @@ public class PebbleTalkerService extends Service
         if (dontClose || !sendingQueue.isEmpty())
             data.addUint8(2, (byte) 1);
 
-        PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
+        pebbleCommunication.sendPacket(data);
         commStarted();
     }
 
@@ -676,43 +701,35 @@ public class PebbleTalkerService extends Service
 
     }
 
-    private void moreTextRequested(PebbleDictionary data)
+    private void sendMoreText(final ProcessedNotification notification)
     {
         Timber.d("More text requested...");
 
-        int id = data.getInteger(1).intValue();
+        int nextChunk = notification.lastSentChunk++;
 
-        ProcessedNotification notification = sentNotifications.get(id);
-        if (notification == null)
-        {
-            Timber.d("Unknown ID!");
-
-            dismissOnPebble(id, false);
-            notificationTransferCompleted();
-            return;
-        }
-
-        int chunk = data.getUnsignedIntegerAsLong(2).intValue();
-
-        if (notification.textChunks.size() <= chunk)
-        {
-            Timber.d("Too much chunks!");
-
-            dismissOnPebble(id, false);
-            notificationTransferCompleted();
-            return;
-        }
-
-        data = new PebbleDictionary();
-
+        PebbleDictionary data = new PebbleDictionary();
         data.addUint8(0, (byte) 1);
-        data.addInt32(1, id);
-        data.addUint8(2, (byte) chunk);
-        data.addString(3, notification.textChunks.get(chunk));
+        data.addInt32(1, notification.id);
+        data.addUint8(2, (byte) nextChunk);
+        data.addString(3, notification.textChunks.get(nextChunk));
 
         Timber.d("Sending more text...");
 
-        PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
+        PebblePacket packet = new PebblePacket(data, new DeliveryListener()
+        {
+            @Override
+            public boolean packetDelivered()
+            {
+                if (notification.textChunks.size() > notification.lastSentChunk)
+                {
+                    sendMoreText(notification);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        pebbleCommunication.sendPacket(packet);
         commStarted();
     }
 
@@ -749,7 +766,7 @@ public class PebbleTalkerService extends Service
 
         data.addBytes(3, textData);
 
-        PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
+        pebbleCommunication.sendPacket(data);
         commStarted();
     }
 
@@ -943,7 +960,7 @@ public class PebbleTalkerService extends Service
 
         Timber.d("Sending config...");
 
-        PebbleKit.sendDataToPebble(this, DataReceiver.pebbleAppUUID, data);
+        pebbleCommunication.sendPacket(data);
 
         commBusy = false;
     }
@@ -999,9 +1016,9 @@ public class PebbleTalkerService extends Service
 		case 0:
 			appOpened();
 			break;
-		case 1:
-			moreTextRequested(data);
-			break;
+//		case 1:
+//			moreTextRequested(data);
+//			break;
 		case 2:
 			notificationTransferCompleted();
 			break;

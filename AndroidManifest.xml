@@ -63,6 +63,9 @@
                 <action android:name="com.getpebble.action.app.RECEIVE" />
             </intent-filter>
             <intent-filter>
+                <action android:name="com.getpebble.action.app.RECEIVE_ACK" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="com.getpebble.action.PEBBLE_CONNECTED" />
             </intent-filter>
         </receiver>

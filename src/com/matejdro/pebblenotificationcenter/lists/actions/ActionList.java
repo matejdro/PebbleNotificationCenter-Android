@@ -55,7 +55,7 @@ public abstract class ActionList
 
         data.addBytes(3, textData);
 
-        PebbleKit.sendDataToPebble(service, DataReceiver.pebbleAppUUID, data);
+        service.pebbleCommunication.sendPacket(data);
         service.commStarted();
     }
 
