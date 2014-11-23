@@ -762,9 +762,11 @@ public class PebbleTalkerService extends Service
         {
             if (curSendingNotification.vibrated)
                 lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+
+            lastAppNotification.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+
         }
 
-        lastAppNotification.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
 
         curSendingNotification = null;
 
