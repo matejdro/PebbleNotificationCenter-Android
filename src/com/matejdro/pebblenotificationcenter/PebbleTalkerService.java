@@ -1101,7 +1101,7 @@ public class PebbleTalkerService extends Service
             for (int i = 0; i < sentNotifications.size(); i++)
             {
                 ProcessedNotification comparing = sentNotifications.valueAt(i);
-                if (notification.hasIdenticalContent(comparing.source))
+                if (comparing.source.getWearGroupType() != PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && notification.hasIdenticalContent(comparing.source))
                 {
                     Timber.d("group notify failed - same notification exists");
                     return false;
