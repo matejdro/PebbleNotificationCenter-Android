@@ -251,7 +251,7 @@ public class PebbleTalkerService extends Service
         if (key.getPackage() == null)
             settingsStorage = defaultSettingsStorage;
         else
-            settingsStorage = new SharedPreferencesAppStorage(this, key.getPackage(), defaultSettingsStorage, true);
+            settingsStorage = new SharedPreferencesAppStorage(this, key.getPackage(), defaultSettingsStorage);
 
         boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
         if (!syncDismissUp)
@@ -291,7 +291,7 @@ public class PebbleTalkerService extends Service
         if (pkg == null)
             settingsStorage = defaultSettingsStorage;
         else
-            settingsStorage = new SharedPreferencesAppStorage(this, pkg, defaultSettingsStorage, true);
+            settingsStorage = new SharedPreferencesAppStorage(this, pkg, defaultSettingsStorage);
 
         boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
         if (!syncDismissUp)

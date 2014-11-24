@@ -85,18 +85,6 @@ public class DefaultAppSettingsStorage implements AppSettingStorage
         return false;
     }
 
-    @Override
-    public boolean shouldAppUseDefaultSettings()
-    {
-        return false;
-    }
-
-    @Override
-    public void setAppUseDefaultSettings(boolean app)
-    {
-
-    }
-
     public boolean canAppSendNotifications(String pkg)
     {
         //Notification Center should always be enabled as some features depend on it. I also don't see any reason why would somebody disable it.

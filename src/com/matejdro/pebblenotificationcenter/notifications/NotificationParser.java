@@ -109,7 +109,7 @@ public class NotificationParser {
     @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
     public boolean parseInboxNotification(Context context, String pkg, Bundle extras)
     {
-        AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, pkg, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
+        AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, pkg, PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage());
         if (!settingStorage.getBoolean(AppSetting.USE_ALTERNATE_INBOX_PARSER))
             return false;
 

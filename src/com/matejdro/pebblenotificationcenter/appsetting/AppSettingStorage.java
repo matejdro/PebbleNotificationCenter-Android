@@ -24,7 +24,4 @@ public interface AppSettingStorage
     public boolean isAppChecked();
     public void setAppChecked(boolean checked);
     public boolean canAppSendNotifications();
-
-    public boolean shouldAppUseDefaultSettings();
-    public void setAppUseDefaultSettings(boolean app);
 }

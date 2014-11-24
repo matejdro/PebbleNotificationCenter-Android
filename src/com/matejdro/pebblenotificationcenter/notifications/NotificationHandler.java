@@ -32,7 +32,7 @@ public class NotificationHandler {
 
 		SettingsMemoryStorage settings = PebbleNotificationCenter.getInMemorySettings();
 		SharedPreferences preferences = settings.getSharedPreferences();
-        AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, key.getPackage(), settings.getDefaultSettingsStorage(), true);
+        AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, key.getPackage(), settings.getDefaultSettingsStorage());
 
 		boolean enableOngoing = settingStorage.getBoolean(AppSetting.SEND_ONGOING_NOTIFICATIONS);
 		boolean isOngoing = (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0;

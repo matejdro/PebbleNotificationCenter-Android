@@ -18,19 +18,18 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
     private String appPackage;
     private boolean obeyDefaultSettingsOption;
 
-    public SharedPreferencesAppStorage(Context context, String appPackage, DefaultAppSettingsStorage defaultConfig, boolean obeyDefaultSettingsOption)
+    public SharedPreferencesAppStorage(Context context, String appPackage, DefaultAppSettingsStorage defaultConfig)
     {
         this.defaultConfig = defaultConfig;
         appConfig = context.getSharedPreferences(getSharedPreferencesName(appPackage), Context.MODE_PRIVATE);
         editor = appConfig.edit();
         this.appPackage = appPackage;
-        this.obeyDefaultSettingsOption = obeyDefaultSettingsOption;
     }
 
     @Override
     public String getString(AppSetting setting)
     {
-        if (!appConfig.contains(setting.getKey()) || (shouldAppUseDefaultSettings() && obeyDefaultSettingsOption))
+        if (!appConfig.contains(setting.getKey()))
             return defaultConfig.getString(setting);
 
         return appConfig.getString(setting.getKey(), null);
@@ -39,7 +38,7 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
     @Override
     public boolean getBoolean(AppSetting setting)
     {
-        if (!appConfig.contains(setting.getKey()) || (shouldAppUseDefaultSettings() && obeyDefaultSettingsOption))
+        if (!appConfig.contains(setting.getKey()))
             return defaultConfig.getBoolean(setting);
 
         return appConfig.getBoolean(setting.getKey(), false);
@@ -48,7 +47,7 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
     @Override
     public int getInt(AppSetting setting)
     {
-        if (!appConfig.contains(setting.getKey()) || (shouldAppUseDefaultSettings() && obeyDefaultSettingsOption))
+        if (!appConfig.contains(setting.getKey()))
             return defaultConfig.getInt(setting);
 
         return appConfig.getInt(setting.getKey(), 0);
@@ -57,7 +56,7 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
     @Override
     public List<String> getStringList(AppSetting setting)
     {
-        if (!appConfig.contains(setting.getKey()) || (shouldAppUseDefaultSettings() && obeyDefaultSettingsOption))
+        if (!appConfig.contains(setting.getKey()))
             return defaultConfig.getStringList(setting);
 
         List<String> list = new ArrayList<String>();
@@ -109,19 +108,6 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
     public boolean canAppSendNotifications()
     {
         return defaultConfig.canAppSendNotifications(appPackage);
-    }
-
-    @Override
-    public boolean shouldAppUseDefaultSettings()
-    {
-        return appConfig.getBoolean("useDefaultSettings", true);
-    }
-
-    @Override
-    public void setAppUseDefaultSettings(boolean val)
-    {
-        editor.putBoolean("useDefaultSettings", val);
-        editor.apply();
     }
 
     public static String getSharedPreferencesName(String pkg)

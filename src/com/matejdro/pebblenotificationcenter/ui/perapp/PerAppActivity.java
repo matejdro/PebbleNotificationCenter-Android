@@ -78,7 +78,7 @@ public class PerAppActivity extends Activity
 
         } else
         {
-            settingsStorage = new SharedPreferencesAppStorage(this, appPackage, defaultAppSettingsStorage, false);
+            settingsStorage = new SharedPreferencesAppStorage(this, appPackage, defaultAppSettingsStorage);
             defaultSettings = false;
         }
 

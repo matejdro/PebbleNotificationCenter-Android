@@ -108,7 +108,7 @@ public class PebbleNotification implements Parcelable
             if (key.getPackage() == null)
                 settingStorage = PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage();
             else
-                settingStorage = new SharedPreferencesAppStorage(context, key.getPackage(), PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage(), true);
+                settingStorage = new SharedPreferencesAppStorage(context, key.getPackage(), PebbleNotificationCenter.getInMemorySettings().getDefaultSettingsStorage());
         }
 
         return settingStorage;

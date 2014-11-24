@@ -101,19 +101,4 @@ public class BundleAppSettingsStorage implements AppSettingStorage
     {
         throw new UnsupportedOperationException(); //This class is never supposed to be used with actual notifications
     }
-
-    @Override
-    public boolean shouldAppUseDefaultSettings()
-    {
-        if (storage.containsKey("setting_useDefaultSettings"))
-            return  storage.getBoolean("setting_useDefaultSettings");
-
-        return original.shouldAppUseDefaultSettings();
-    }
-
-    @Override
-    public void setAppUseDefaultSettings(boolean val)
-    {
-        storage.putBoolean("setting_useDefaultSettings", val);
-    }
 }
