@@ -688,7 +688,7 @@ public class PebbleTalkerService extends Service
             Timber.d("Unknown ID!");
 
             dismissOnPebble(id, false);
-            notificationTransferCompleted();
+            notificationTransferCompleted(true);
             return;
         }
 
@@ -699,7 +699,7 @@ public class PebbleTalkerService extends Service
             Timber.d("Too much chunks!");
 
             dismissOnPebble(id, false);
-            notificationTransferCompleted();
+            notificationTransferCompleted(true);
             return;
         }
 
@@ -726,7 +726,7 @@ public class PebbleTalkerService extends Service
             Timber.d("Unknown ID!");
 
             dismissOnPebble(id, false);
-            notificationTransferCompleted();
+            notificationTransferCompleted(true);
             return;
         }
 
@@ -754,7 +754,7 @@ public class PebbleTalkerService extends Service
     }
 
 
-    private void notificationTransferCompleted()
+    private void notificationTransferCompleted(boolean sendNext)
     {
         Timber.d("Transfer completed...");
 
@@ -764,17 +764,18 @@ public class PebbleTalkerService extends Service
                 lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
 
             lastAppNotification.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
-
         }
-
 
         curSendingNotification = null;
 
         Timber.d("csn null: " + (curSendingNotification == null));
         Timber.d("queue size: " + sendingQueue.size());
 
-        if (commWentIdle())
-            return;
+        if (sendNext)
+            commWentIdle();
+        else
+            commBusy = false;
+
     }
 
     private void pebbleSelectPressed(PebbleDictionary data)
@@ -784,10 +785,13 @@ public class PebbleTalkerService extends Service
 
         Timber.d("Select button pressed on Pebble, Hold: " + hold);
 
-
         ProcessedNotification notification = sentNotifications.get(id);
         if (notification == null)
             return;
+
+        if (notification == curSendingNotification)
+            notificationTransferCompleted(false);
+
 
         if (notification.source.getActions() == null || notification.source.getActions().size() == 0)
         {
@@ -1005,7 +1009,7 @@ public class PebbleTalkerService extends Service
 			moreTextRequested(data);
 			break;
 		case 2:
-			notificationTransferCompleted();
+			notificationTransferCompleted(true);
 			break;
 		case 4:
 			if (listHandler != null) listHandler.gotRequest(data);
