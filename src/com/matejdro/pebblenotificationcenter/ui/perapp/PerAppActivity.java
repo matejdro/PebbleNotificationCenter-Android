@@ -141,8 +141,8 @@ public class PerAppActivity extends Activity
 
         //Regex
         category = new ArrayList<BaseSettingItem>();
+        category.add(new RegexItem(settingsStorage, AppSetting.INCLUDED_REGEX, R.string.settingIncludingRegex, R.string.settingIncludingRegexDescription));
         category.add(new RegexItem(settingsStorage, AppSetting.EXCLUDED_REGEX, R.string.settingExcludingRegex, R.string.settingExcludingRegexDescription));
-        category.add(new RegexItem(settingsStorage, AppSetting.INCLUDED_REGEX, R.string.settingIncludingRegex, R.string.settingExcludingRegexDescription));
         settings.add(new SettingsCategory(R.string.settingsCategoryRegularExpressions, category));
     }
 
