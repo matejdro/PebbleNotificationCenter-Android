@@ -7,6 +7,7 @@ import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import java.util.UUID;
 import org.json.JSONException;
+import timber.log.Timber;
 
 import static com.getpebble.android.kit.Constants.APP_UUID;
 import static com.getpebble.android.kit.Constants.MSG_DATA;
@@ -38,6 +39,19 @@ public class DataReceiver extends BroadcastReceiver {
             return;
         }
 
+		final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
+
+		if ("com.getpebble.action.app.RECEIVE_NACK".equals(intent.getAction()))
+		{
+			Timber.d("NACK " + transactionId);
+			return;
+		}
+		else if ("com.getpebble.action.app.RECEIVE_ACK".equals(intent.getAction()))
+		{
+			Timber.d("ACK " + transactionId);
+			return;
+		}
+
 		final UUID receivedUuid = (UUID) intent.getSerializableExtra(APP_UUID);
 
 		// Pebble-enabled apps are expected to be good citizens and only inspect broadcasts containing their UUID
@@ -45,7 +59,7 @@ public class DataReceiver extends BroadcastReceiver {
 			return;
 		}
 
-		final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
+
 		final String jsonData = intent.getStringExtra(MSG_DATA);
 		if (jsonData == null || jsonData.isEmpty()) {
 			return;
