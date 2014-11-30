@@ -7,7 +7,6 @@ import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import java.util.UUID;
 import org.json.JSONException;
-import timber.log.Timber;
 
 import static com.getpebble.android.kit.Constants.APP_UUID;
 import static com.getpebble.android.kit.Constants.MSG_DATA;
@@ -26,10 +25,23 @@ public class DataReceiver extends BroadcastReceiver {
         intent.putExtra("packet", jsonPacket);
         context.startService(intent);
 	}
-	
-	
+
+	public void receivedAck(Context context, int transactionId)
+	{
+		Intent intent = new Intent(context, PebbleTalkerService.class);
+		intent.putExtra("ack", transactionId);
+		context.startService(intent);
+	}
+
+	public void receivedNack(Context context, int transactionId)
+	{
+		Intent intent = new Intent(context, PebbleTalkerService.class);
+		intent.putExtra("nack", transactionId);
+		context.startService(intent);
+	}
 
 	public void onReceive(final Context context, final Intent intent) {
+		System.out.println("onrec " + intent.getAction());
         if ("com.getpebble.action.PEBBLE_CONNECTED".equals(intent.getAction()))
         {
             Intent startIntent = new Intent(context, PebbleTalkerService.class);
@@ -41,14 +53,14 @@ public class DataReceiver extends BroadcastReceiver {
 
 		final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
 
-		if ("com.getpebble.action.app.RECEIVE_NACK".equals(intent.getAction()))
+		if ("com.getpebble.action.app.RECEIVE_ACK".equals(intent.getAction()))
 		{
-			Timber.d("NACK " + transactionId);
+			receivedAck(context, transactionId);
 			return;
 		}
-		else if ("com.getpebble.action.app.RECEIVE_ACK".equals(intent.getAction()))
+		if ("com.getpebble.action.app.RECEIVE_NACK".equals(intent.getAction()))
 		{
-			Timber.d("ACK " + transactionId);
+			receivedNack(context, transactionId);
 			return;
 		}
 
@@ -58,7 +70,6 @@ public class DataReceiver extends BroadcastReceiver {
 		if (!pebbleAppUUID.equals(receivedUuid)) {
 			return;
 		}
-
 
 		final String jsonData = intent.getStringExtra(MSG_DATA);
 		if (jsonData == null || jsonData.isEmpty()) {
