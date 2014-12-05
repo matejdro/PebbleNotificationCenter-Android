@@ -36,12 +36,12 @@ public class NotificationActionList extends ActionList
     }
 
     @Override
-    public void itemPicked(PebbleTalkerService service, int id)
+    public boolean itemPicked(PebbleTalkerService service, int id)
     {
         NotificationAction action = notification.source.getActions().get(id);
         if (action == null)
-            return;
+            return false;
 
-        action.executeAction(service, notification);
+        return action.executeAction(service, notification);
     }
 }

@@ -6,6 +6,7 @@ import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblenotificationcenter.DataReceiver;
 import com.matejdro.pebblenotificationcenter.pebble.modules.CommModule;
+import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -26,37 +27,44 @@ public class PebbleCommunication
     {
         this.context = context;
         queuedModules = new LinkedList<CommModule>();
-        commBusy = true;
+        commBusy = false;
     }
 
     public void sendToPebble(PebbleDictionary packet)
     {
+        lastSentPacket = (lastSentPacket + 1) % 255;
         Timber.d("SENT " + lastSentPacket);
+
         PebbleKit.sendDataToPebbleWithTransactionId(context, DataReceiver.pebbleAppUUID, packet, lastSentPacket);
 
-        lastSentPacket = (lastSentPacket + 1) % 255;
         commBusy = true;
     }
 
     public void sendNext()
     {
-        if (!commBusy)
+        Timber.d("SendNext " + commBusy);
+
+        if (commBusy)
             return;
 
-        while (queuedModules.size() > 0)
+        while (!queuedModules.isEmpty())
         {
             CommModule nextModule = queuedModules.peek();
 
+            Timber.d("SendNextModule " + nextModule.getClass().getSimpleName());
+
             if (nextModule.sendNextMessage())
-                break;
+                return;
 
             queuedModules.removeFirst();
         }
+
+        Timber.d("Comm idle!");
     }
 
     public void receivedAck(int transactionId)
     {
-        System.out.println("ACK " + transactionId);
+        Timber.d("ACK " + transactionId);
 
         if (transactionId != lastSentPacket)
         {
@@ -70,15 +78,23 @@ public class PebbleCommunication
 
     public void receivedNack(int transactionId)
     {
-        System.out.println("NACK " + transactionId);
+        Timber.d("NACK " + transactionId);
 
         commBusy = false;
         //TODO better nack handling. At the moment NACK usually just means that app on Pebble closed which means I should stop spamming it with messages.
     }
 
+    public void resetBusy()
+    {
+        commBusy = false;
+    }
+
     public void queueModule(CommModule module)
     {
-        queuedModules.add(module);
+        if (queuedModules.contains(module))
+            return;
+
+        queuedModules.addLast(module);
     }
 
     /*
@@ -86,6 +102,9 @@ public class PebbleCommunication
      */
     public void queueModulePriority(CommModule module)
     {
+        if (queuedModules.contains(module))
+            return;
+
         queuedModules.addFirst(module);
     }
 }

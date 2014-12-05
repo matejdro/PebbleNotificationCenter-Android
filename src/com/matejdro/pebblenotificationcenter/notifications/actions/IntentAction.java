@@ -24,7 +24,7 @@ public class IntentAction extends NotificationAction
     }
 
     @Override
-    public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
         Intent intent = new Intent(intentAction);
 
@@ -39,6 +39,7 @@ public class IntentAction extends NotificationAction
             intent.putExtra("nctag", notification.source.getKey().getTag());
 
         service.sendBroadcast(intent);
+        return false;
     }
 
     @Override

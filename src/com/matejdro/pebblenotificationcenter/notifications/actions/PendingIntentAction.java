@@ -18,7 +18,7 @@ public class PendingIntentAction extends NotificationAction
     }
 
     @Override
-    public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
         try
         {
@@ -27,6 +27,8 @@ public class PendingIntentAction extends NotificationAction
         {
             e.printStackTrace();
         }
+
+        return false;
     }
 
     @Override

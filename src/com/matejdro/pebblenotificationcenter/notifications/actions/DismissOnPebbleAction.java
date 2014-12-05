@@ -5,6 +5,7 @@ import android.os.Parcel;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.R;
+import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 
 /**
  * Created by Matej on 22.9.2014.
@@ -22,9 +23,10 @@ public class DismissOnPebbleAction extends NotificationAction
     }
 
     @Override
-    public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
-        service.dismissOnPebble(notification.id, false);
+        DismissUpwardsModule.get(service).queueDismiss(notification.id);
+        return true;
     }
 
     @Override

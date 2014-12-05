@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
+import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
 import java.util.UUID;
 import org.json.JSONException;
 
@@ -22,6 +23,7 @@ public class DataReceiver extends BroadcastReceiver {
 		PebbleKit.sendAckToPebble(context, transactionId);
 
         Intent intent = new Intent(context, PebbleTalkerService.class);
+		intent.setAction(PebbleTalkerService.INTENT_PEBBLE_PACKET);
         intent.putExtra("packet", jsonPacket);
         context.startService(intent);
 	}
@@ -29,23 +31,24 @@ public class DataReceiver extends BroadcastReceiver {
 	public void receivedAck(Context context, int transactionId)
 	{
 		Intent intent = new Intent(context, PebbleTalkerService.class);
-		intent.putExtra("ack", transactionId);
+		intent.setAction(PebbleTalkerService.INTENT_PEBBLE_ACK);
+		intent.putExtra("transactionId", transactionId);
 		context.startService(intent);
 	}
 
 	public void receivedNack(Context context, int transactionId)
 	{
 		Intent intent = new Intent(context, PebbleTalkerService.class);
-		intent.putExtra("nack", transactionId);
+		intent.setAction(PebbleTalkerService.INTENT_PEBBLE_NACK);
+		intent.putExtra("transactionId", transactionId);
 		context.startService(intent);
 	}
 
 	public void onReceive(final Context context, final Intent intent) {
-		System.out.println("onrec " + intent.getAction());
         if ("com.getpebble.action.PEBBLE_CONNECTED".equals(intent.getAction()))
         {
             Intent startIntent = new Intent(context, PebbleTalkerService.class);
-            startIntent.putExtra("PebbleConnected", true);
+            startIntent.setAction(SystemModule.INTENT_PEBBLE_CONNECTED);
             context.startService(startIntent);
 
             return;

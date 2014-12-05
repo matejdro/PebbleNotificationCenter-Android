@@ -6,19 +6,21 @@ Pebble --> Phone
 
 		Packet 0 - Init packet
 		Sent from Pebble when app is opened. Phone should respond to  that by sending config.
-		No additional data
+		Additional data:
+			2 = Watchapp version - uint16
 
 		Packet 1 - Menu picked
 		Sent when user picks entry in main menu
 		Additional data:
-			1 = Picked entry (0 = Current, 1 = History) - uint8
+			2 = Picked entry (0 = Current, 1 = History) - uint8
 
 		Packet 2 - Config change
 	    Send when Pebble wants to change config on the phone
 	    Additional data:
-	        1 = ID of the setting - uint8. Possible settings:
-	            0 = Disable notifications 1 or 0 - value is uint8
-	            1 = Disable vibration 1 or 0 - value is uint8
+	        2 = ID of the setting - uint8. Possible settings:
+	            0: Disable notifications 1 or 0 - value is uint8
+	            1: Disable vibration 1 or 0 - value is uint8
+	        3 = Value of the setting
 
     	Packet 3 - Close app
 		Informs android app that it should close watchapp or switch to previous app depending on settings.
@@ -29,30 +31,33 @@ Pebble --> Phone
 
 		Packet 0 - Request notification data at list index
 		Additional data:
-			1 = list position of entry - uint16
+			2 = list position of entry - uint16
 
-		Packet 1 - Send next notification
+		Packet 1 - Send notification at
 		Used when user double presses UP/DOWN on list notification
 		Additional data:
-			1 = Next or previous (1 = Next, -1 = Previous) - int8
+			2 = list entry to send - uint16
+
+		Packet 2 - Send next notification
+		Used when user double presses UP/DOWN on list notification
+		Additional data:
+			2 = Next or previous (1 = Next, -1 = Previous) - int8
 
 	MODULE 4 - ACTIONS
 		
 		Packet 0 - SELECT button pressed
 		Sent when user presses SELECT button on notification
 		Additional data:
-			1 = Unique notification id (int32)
-			2 = If present, button was held instead of just pressed.
+			2 = Unique notification id (int32)
+			3 = If present, button was held instead of just pressed.
 
 		Packet 1 - Dismiss notification
 		Requests phone to dismiss notification
 		Additional data:
-			1 = Unique notification id (int32)
+			2 = Unique notification id (int32)
 
-
-		Packet 3 - Action list item picked
+		Packet 2 - Action list item picked
 		Additional data:
-			1 = Unique id of currelty active notification - int32
 			2 = index of picked item - uint8					
 
 Phone --> Pebble
@@ -62,10 +67,17 @@ Phone --> Pebble
 
 	MODULE 0 - SYSTEM
 
+			Packet 0 - Pebble settings (Invalid Version)
+			Sent instead of the regular settings packet if watchapp protocol version mismatches phone protocol version
+			Additional data:
+				2 = Config (byte array)
+					[8] = Compatible watchapp version (first byte)
+					[9] = Compatible watchapp version (second byte)
+
 			Packet 0 - Pebble settings
 			Sends all settings to Pebble
 			Additional data:
-				1 = Config (byte array)
+				2 = Config (byte array)
 					[0] = Title font (0-17)
 					[1] = Subtitle font (0-17)
 					[2] = Body font (0-17)
@@ -75,7 +87,7 @@ Phone --> Pebble
 						First bit (0x01) = Vibration enabled
 						Second bit (0x02) = Display closing screen (needed for "switch to last app" feature)
 						Third bit (0x04) = Is active notifications menu supported?
-						Fourth bit (0x08) = Is notification waiting to be sent?
+						Fourth bit (0x08) = Is there notification waiting
 						Fifth bit (0x10) = Enable LCD light when notification arrives
 						Sixth bit (0x20) = Don't vibrate when charging
 						Seventh bit (0x40) = Inverse mode
@@ -86,57 +98,59 @@ Phone --> Pebble
 					[11] = Periodic vibration timeout in seconds (first byte)
 					[12] = Periodic vibration timeout in seconds (second byte)
 
+			Packet 1 - Hide hourglass
+			Hides hourglass from Notifications window (when action was performed successfully but there is nothing else to tell Pebble)
+			No additional data
+
 	MODULE 1 - NOTIFICATION SENDING
 
 		Packet 0 - New notification packet
 		Phone sends it to display notification.
 		Additional data:
-			1 = Unique notification id (int32)
-			2 = Config/meta bytes - byte array
+			2 = Unique notification id (int32)
+			3 = Config/meta bytes - byte array
 				[0] = Flags
-					First bit (0x01) = Is notification dismissable
 					Second bit (0x02) = Notification type (1 = from history, 0 = live)
 					Third bit (0x04) = Switch to most recent notification
 					Fouth bit (0x08) = Scroll to the end automatically
-				[1] = Amount of chunks text is split into
-				[2] = Periodic vibration interval
+				[1] = Periodic vibration interval (first byte)
+				[2] = Periodic vibration interval (second byte)				
 				[3] = Number of bytes in vibration pattern
 				[4,5,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
-			5 = Title (max 30 bytes) - cstring
-			6 = Subtitle (max 30 bytes) - cstring
+			4 = Title (max 30 bytes) - cstring
+			5 = Subtitle (max 30 bytes) - cstring
 		
 		Packet 1 - More notification text packet
-		Send additional text (after Packet 1 from Pebble)
+		Send additional text (after above packet from Pebble)
 		Additional data:
-			1 = Unique notification id (int32)
-			2 = chunk index - uint8
+			2 = Unique notification id (int32)
 			3 = Text (up to 80 bytes) - cstring
 
 	MODULE 2 - NOTIFICATION LIST
 
 		Packet 0 - Notification list data
-		Send either after app was launched (in case of Android < 4.3), when option is picked in main menu or when populating list.
+		Send when option is picked in main menu or when populating list.
 		Additional data:
-			1 = Offset of this list entry - uint16
-			2 = Number of all entries in this menu - uint16
-			3 - Type of this notification (1 = ongoing, 0 = normal) - uint8
-			4 - Title of this noification (up to 20 bytes) - cstring
-			5 - Subtitle of this notification (up to 20 bytes) - cstring
-			6 - Date string (up to 20 bytes) - cstring
+			2 = Offset of this list entry - uint16
+			3 = Number of all entries in this menu - uint16
+			4 - Type of this notification (1 = ongoing, 0 = normal) - uint8
+			5 - Title of this noification (up to 20 bytes) - cstring
+			6 - Subtitle of this notification (up to 20 bytes) - cstring
+			7 - Date string (up to 20 bytes) - cstring
 	
 	MODULE 3 - DISMISS UPWARDS
 
 		Packet 0 - Dismiss notification
 		Removes notification from Pebble
 		Additional data:
-			1 = Unique notification id (int32)		
+			2 = Unique notification id (int32)		
 
 	MODULE 4 - ACTIONS
 
 	    Packet 0 - Action list names - Names of items in action list
 	    Additional data:
-	        1 = Number of all actions (uint8)
-	        2 = Index of the first canned reponse in this packet (uint8)
-	        3 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
+	        2 = Number of all actions (uint8)
+	        3 = Index of the first canned reponse in this packet (uint8)
+	        4 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
 
 

@@ -10,6 +10,7 @@ import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import java.util.ArrayList;
 import java.util.List;
 import net.dinglisch.android.tasker.TaskerIntent;
@@ -25,13 +26,13 @@ public class TaskerAction extends NotificationAction
     }
 
     @Override
-    public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
         TaskerIntent.Status status = TaskerIntent.testStatus(service);
         if (status != TaskerIntent.Status.OK)
         {
             sendErrorNotification(service, status);
-            return;
+            return true;
         }
 
         TaskerIntent intent = new TaskerIntent(actionText);
@@ -48,6 +49,7 @@ public class TaskerAction extends NotificationAction
             intent.addLocalVariable("%nctag", "");
 
         service.sendBroadcast(intent);
+        return false;
     }
 
     @Override
@@ -102,7 +104,7 @@ public class TaskerAction extends NotificationAction
         notification.setSubtitle(service.getString(R.string.taskerActionErrorNotificationSubtitle));
         notification.setForceSwitch(true);
 
-        service.processNotification(notification);
+        NotificationSendingModule.notify(notification, service);
     }
 
 

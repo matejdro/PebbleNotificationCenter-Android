@@ -18,6 +18,8 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.lists.actions.ActionList;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.pebble.modules.ActionsModule;
+import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,7 +109,7 @@ public class WearVoiceAction extends NotificationAction
     }
 
     @Override
-    public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
         parent = notification;
         cannedResponseList = new ArrayList<String>();
@@ -139,8 +141,8 @@ public class WearVoiceAction extends NotificationAction
             }
         }
 
-        notification.activeActionList = new WearCannedResponseList();
-        notification.activeActionList.showList(service, notification);
+        ActionsModule.get(service).showList(new WearCannedResponseList());
+        return true;
     }
 
     @Override
@@ -215,20 +217,22 @@ public class WearVoiceAction extends NotificationAction
         }
 
         @Override
-        public void itemPicked(PebbleTalkerService service, int id)
+        public boolean itemPicked(PebbleTalkerService service, int id)
         {
             if (id == 0 && firstItemIsVoice)
                 new VoiceCapture(actionIntent, voiceKey, service).startVoice();
             else
             {
                 if (cannedResponseList.size() <= id)
-                    return;
+                    return false;
 
                 sendWearReply(cannedResponseList.get(id), service, actionIntent, voiceKey);
-                service.processDismissUpwards(parent.source.getKey(), false);
+                DismissUpwardsModule.dismissNotification(service, parent.source.getKey());
                 if (NotificationHandler.isNotificationListenerSupported())
                     JellybeanNotificationListener.dismissNotification(parent.source.getKey());
             }
+
+            return true;
         }
     }
 }

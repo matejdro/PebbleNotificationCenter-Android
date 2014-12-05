@@ -20,6 +20,7 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import timber.log.Timber;
 
@@ -53,9 +54,7 @@ public class NotificationHandler {
             parseWearGroupData(notification, pebbleNotification);
         }
 
-        Intent startIntent = new Intent(context, PebbleTalkerService.class);
-        startIntent.putExtra("notification", pebbleNotification);
-        context.startService(startIntent);
+        NotificationSendingModule.notify(pebbleNotification, context);
     }
 
     public static PebbleNotification getPebbleNotificationFromAndroidNotification(Context context, NotificationKey key, Notification notification, boolean isDismissible)

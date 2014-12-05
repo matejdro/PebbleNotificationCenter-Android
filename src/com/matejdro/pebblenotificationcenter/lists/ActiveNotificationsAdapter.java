@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter.lists;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
@@ -9,20 +10,19 @@ import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import java.util.Arrays;
 import java.util.Comparator;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
-public class ActiveNotificationsAdapter extends NotificationListAdapter {
+public class ActiveNotificationsAdapter implements NotificationListAdapter {
 	private PebbleNotification[] notifications;
 	
-	public ActiveNotificationsAdapter(PebbleTalkerService service) {
-		super(service);
-		
-		loadNotifications();
+	public ActiveNotificationsAdapter(Context context) {
+		loadNotifications(context);
 	}
 	
-	private void loadNotifications()
+	private void loadNotifications(Context context)
 	{
 		StatusBarNotification[] sbns = JellybeanNotificationListener.getCurrentNotifications();
         if (sbns == null)
@@ -37,7 +37,7 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 			StatusBarNotification sbn = sbns[i];
 			Notification notification = sbn.getNotification();
 
-            PebbleNotification pn = NotificationHandler.getPebbleNotificationFromAndroidNotification(service, NotificationHandler.getKeyFromSbn(sbn), notification, sbn.isClearable());
+            PebbleNotification pn = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, NotificationHandler.getKeyFromSbn(sbn), notification, sbn.isClearable());
             pn.setListNotification(true);
 
             notifications[i] = pn;
@@ -57,15 +57,6 @@ public class ActiveNotificationsAdapter extends NotificationListAdapter {
 		return notifications.length;
 	}
 
-	@Override
-	public void notificationPicked(int index) {
-		PebbleNotification pn = notifications[index];
-
-        Intent startIntent = new Intent(service, PebbleTalkerService.class);
-        startIntent.putExtra("notification", pn);
-        service.startService(startIntent);
-	}
-	
 	private static class NotificationComparable implements Comparator<PebbleNotification>
 	{
 

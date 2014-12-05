@@ -17,6 +17,8 @@ import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.R;
+import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.util.BluetoothHeadsetListener;
 import java.util.ArrayList;
 import timber.log.Timber;
@@ -81,8 +83,6 @@ public class VoiceCapture implements RecognitionListener
 
     public void stopVoice()
     {
-        Timber.d("stopVoice");
-
         recognizer.stopListening();
         recognizer.destroy();
 
@@ -198,7 +198,7 @@ public class VoiceCapture implements RecognitionListener
         actions.add(new DismissOnPebbleAction(service.getString(R.string.cancel)));
         notification.setActions(actions);
 
-        service.processNotification(notification);
+        NotificationSendingModule.notify(notification, service);
     }
 
     @Override
@@ -225,7 +225,7 @@ public class VoiceCapture implements RecognitionListener
         actions.add(new DismissOnPebbleAction(service.getString(R.string.cancel)));
         notification.setActions(actions);
 
-        service.processNotification(notification);
+        NotificationSendingModule.notify(notification, service);
     }
 
     private void sendStatusNotification(String text)
@@ -233,7 +233,7 @@ public class VoiceCapture implements RecognitionListener
         PebbleNotification notification = new PebbleNotification(service.getString(R.string.voiceInputNotificationTitle), text, VOICE_NOTIFICATION_KEY);
         notification.setForceSwitch(true);
 
-        service.processNotification(notification);
+        NotificationSendingModule.notify(notification, service);
     }
 
     private static class RetryAction extends NotificationAction
@@ -249,9 +249,10 @@ public class VoiceCapture implements RecognitionListener
         }
 
         @Override
-        public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
+        public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
         {
             new VoiceCapture(resultIntent, resultKey, service).startVoice();
+            return true;
         }
 
         @Override
@@ -301,10 +302,11 @@ public class VoiceCapture implements RecognitionListener
         }
 
         @Override
-        public void executeAction(PebbleTalkerService service, ProcessedNotification notification)
+        public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
         {
-            service.processDismissUpwards(VOICE_NOTIFICATION_KEY, false);
+            DismissUpwardsModule.dismissNotification(service, VOICE_NOTIFICATION_KEY);
             WearVoiceAction.sendWearReply(text, service, resultIntent, resultKey);
+            return true;
         }
 
         @Override

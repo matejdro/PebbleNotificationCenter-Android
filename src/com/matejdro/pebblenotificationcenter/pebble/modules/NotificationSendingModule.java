@@ -1,6 +1,7 @@
 package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.PowerManager;
 import com.getpebble.android.kit.PebbleKit;
@@ -12,13 +13,18 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
-import com.matejdro.pebblenotificationcenter.pebble.DeliveryListener;
-import com.matejdro.pebblenotificationcenter.pebble.PebblePacket;
+import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
+import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
 import timber.log.Timber;
@@ -28,15 +34,20 @@ import timber.log.Timber;
  */
 public class NotificationSendingModule extends CommModule
 {
-    //This used to be UUID for all system apps, but now they all get their separate UUID it seems
-    public static final UUID UNKNOWN_UUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
-    public static final UUID MAIN_MENU_UUID = UUID.fromString("dec0424c-0625-4878-b1f2-147e57e83688");
+    public static final int MODULE_NOTIFICATION_SENDING = 1;
+    public static final String INTENT_NOTIFICATION = "Notification";
 
     public static final int TEXT_LIMIT = 900;
+
+    private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
+    private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
+    private ProcessedNotification curSendingNotification;
+    private Queue<ProcessedNotification> sendingQueue = new LinkedList<ProcessedNotification>();
 
     public NotificationSendingModule(PebbleTalkerService service)
     {
         super(service);
+        service.registerIntent(INTENT_NOTIFICATION, this);
     }
 
     public void processNotification(PebbleNotification notificationSource)
@@ -68,7 +79,7 @@ public class NotificationSendingModule extends CommModule
 
         ProcessedNotification notification = new ProcessedNotification();
         notification.source = notificationSource;
-        AppSettingStorage settingStorage = notificationSource.getSettingStorage(this);
+        AppSettingStorage settingStorage = notificationSource.getSettingStorage(getService());
 
         if (!notificationSource.isListNotification())
         {
@@ -85,7 +96,7 @@ public class NotificationSendingModule extends CommModule
                     settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
                     canDisplayWearGroupNotification(notification.source, settingStorage))
             {
-                historyDb.storeNotification(System.currentTimeMillis(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), TEXT_LIMIT, true));
+                getService().getHistoryDatabase().storeNotification(System.currentTimeMillis(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), TEXT_LIMIT, true));
             }
         }
 
@@ -103,12 +114,12 @@ public class NotificationSendingModule extends CommModule
             }
 
 
-            if (settings.getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
+            if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
                 return;
 
             if (settingStorage.getBoolean(AppSetting.DISABLE_NOTIFY_SCREEN_OIN))
             {
-                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                PowerManager pm = (PowerManager) getService().getSystemService(Context.POWER_SERVICE);
                 if (pm.isScreenOn())
                 {
                     Timber.d("notify failed - screen is on");
@@ -116,9 +127,9 @@ public class NotificationSendingModule extends CommModule
                 }
             }
 
-            if (settings.getBoolean(PebbleNotificationCenter.NO_NOTIFY_VIBRATE, false))
+            if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.NO_NOTIFY_VIBRATE, false))
             {
-                AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                AudioManager am = (AudioManager) getService().getSystemService(Context.AUDIO_SERVICE);
                 if (am.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
                 {
                     Timber.d("notify failed - ringer is silent");
@@ -150,7 +161,7 @@ public class NotificationSendingModule extends CommModule
                 }
             }
 
-            if (settings.getBoolean("noNotificationsNoPebble", false) && !isWatchConnected())
+            if (getService().getGlobalSettings().getBoolean("noNotificationsNoPebble", false) && !PebbleKit.isWatchConnected(getService()))
             {
                 Timber.d("notify failed - watch not connected");
                 return;
@@ -180,28 +191,6 @@ public class NotificationSendingModule extends CommModule
                     }
                 }
             }
-
-            updateCurrentlyRunningApp();
-            Timber.d("prev" + previousUUID);
-            int pebbleAppMode = 0;
-            if (previousUUID != null)
-                pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, previousUUID);
-            else
-                pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(settings, UNKNOWN_UUID);
-
-            if (pebbleAppMode == 1) //Pebble native notification
-            {
-                String nativeTitle = notificationSource.getTitle();
-                String nativeText = notificationSource.getSubtitle() + "\n\n" + notificationSource.getText();
-
-                devConn.sendNotification(nativeTitle, nativeText);
-                return;
-            } else if (pebbleAppMode == 2) //No notification
-            {
-                Timber.d("notify failed - pebble app");
-                return;
-            }
-
         }
 
         Random rnd = new Random();
@@ -209,46 +198,90 @@ public class NotificationSendingModule extends CommModule
         {
             notification.id = rnd.nextInt();
         }
-        while (sentNotifications.get(notification.id) != null);
+        while (getService().sentNotifications.get(notification.id) != null);
+
+        DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey());
 
         if (!notification.source.isListNotification() && !canDisplayWearGroupNotification(notification.source, settingStorage))
         {
-            sentNotifications.put(notification.id, notification);
+            getService().sentNotifications.put(notification.id, notification);
             Timber.d("notify failed - group");
             return;
         }
 
-        processDismissUpwards(notificationSource.getKey(), true);
+        getService().sentNotifications.put(notification.id, notification);
 
-        sentNotifications.put(notification.id, notification);
+        Timber.d("notify internal 2");
 
-        String text = notificationSource.getText();
+        //Different type of notification depending on Pebble app
+        SystemModule systemModule = SystemModule.get(getService());
+        systemModule.updateCurrentlyRunningApp();
 
+        Timber.d("notify internal 3");
+
+        UUID currentApp = systemModule.getCurrentRunningApp();
+        if (currentApp == null)
+            currentApp = SystemModule.UNKNOWN_UUID;
+        int pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(getService().getGlobalSettings(), currentApp);
+
+        if (pebbleAppMode == 0) //NC Notification
+        {
+            sendNCNotification(notification);
+        }
+        else if (pebbleAppMode == 1) //Pebble native notification
+        {
+            sendNativeNotification(notification);
+        }
+        else if (pebbleAppMode == 2) //No notification
+        {
+            Timber.d("notify failed - pebble app");
+        }
+    }
+
+    private void sendNativeNotification(ProcessedNotification notification)
+    {
+        String nativeTitle = notification.source.getTitle();
+        String nativeText = notification.source.getSubtitle() + "\n\n" + notification.source.getText();
+
+        getService().getDeveloperConnection().sendNotification(nativeTitle, nativeText);
+    }
+
+    private void sendNCNotification(ProcessedNotification notification)
+    {
+        Timber.d("SendNC");
+        //Split text into chunks
+        String text = notification.source.getText();
         while (text.length() > 0)
         {
-            String chunk = TextUtil.trimString(text, 80, false);
+            String chunk = TextUtil.trimString(text, 100, false);
             notification.textChunks.add(chunk);
             text = text.substring(chunk.length());
         }
 
-        openApp();
+        Timber.d("BeginSend " + notification.id + " " + notification.source.getTitle() + " " + notification.source.getSubtitle() + " " + notification.textChunks.size());
 
-        if (commBusy)
+        SystemModule.get(getService()).openApp();
+
+        if (curSendingNotification != null && !curSendingNotification.source.isListNotification())
         {
-            Timber.d("notify queued");
             sendingQueue.add(notification);
-        } else
-            send(notification);
-    }
-
-
-    private void send(final ProcessedNotification notification)
-    {
-        Timber.d("Send " + notification.id + " " + notification.source.getTitle() + " " + notification.source.getSubtitle() + " " + notification.textChunks.size());
+            return;
+        }
 
         curSendingNotification = notification;
 
-        AppSettingStorage settingStorage = notification.source.getSettingStorage(this);
+        PebbleCommunication communication = getService().getPebbleCommunication();
+        communication.queueModulePriority(this);
+        communication.sendNext();
+    }
+
+    private void sendInitialNotificationPacket()
+    {
+        Timber.d("Initial notify packet");
+
+        curSendingNotification.nextChunkToSend = 0;
+
+        AppSettingStorage settingStorage = curSendingNotification.source.getSettingStorage(getService());
 
         int periodicVibrationInterval = 0;
         try
@@ -259,104 +292,101 @@ public class NotificationSendingModule extends CommModule
         }
 
         PebbleDictionary data = new PebbleDictionary();
-        List<Byte> vibrationPattern = getVibrationPattern(notification, settingStorage);
+        List<Byte> vibrationPattern = getVibrationPattern(curSendingNotification, settingStorage);
 
-        byte[] configBytes = new byte[6 + vibrationPattern.size()];
+        byte[] configBytes = new byte[4 + vibrationPattern.size()];
 
         byte flags = 0;
-        flags |= (byte) (notification.source.isDismissable() ? 0x01 : 0);
-        flags |= (byte) (notification.source.isListNotification() ? 0x2 : 0);
-        flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || notification.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
-        flags |= (byte) (notification.source.shouldScrollToEnd() ? 0x8 : 0);
+        flags |= (byte) (curSendingNotification.source.isListNotification() ? 0x2 : 0);
+        flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || curSendingNotification.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
+        flags |= (byte) (curSendingNotification.source.shouldScrollToEnd() ? 0x8 : 0);
 
-        configBytes[0] = Byte.parseByte(settings.getString("textSize", "0"));
-        configBytes[1] = flags;
+        configBytes[0] = flags;
+        configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
 
         configBytes[3] = (byte) vibrationPattern.size();
         for (int i = 0; i < vibrationPattern.size(); i++)
             configBytes[4 + i] = vibrationPattern.get(i);
 
-        int timeout = 0;
-        try
-        {
-            timeout = Math.min(30000, Integer.parseInt(settings.getString("watchappTimeout", "0")));
-        } catch (NumberFormatException e)
-        {
-        }
+        data.addUint8(0, (byte) 1);
+        data.addUint8(1, (byte) 0);
+        data.addInt32(2, curSendingNotification.id);
+        data.addBytes(3, configBytes);
+        data.addString(4, curSendingNotification.source.getTitle());
+        data.addString(5, curSendingNotification.source.getSubtitle());
+        data.addUint8(999, (byte) 1);
 
-        data.addUint8(0, (byte) 0);
-        data.addInt32(1, notification.id);
-        data.addBytes(2, configBytes);
-        data.addUint16(3, (short) timeout);
-        data.addUint8(4, (byte) notification.textChunks.size());
-        data.addString(5, notification.source.getTitle());
-        data.addString(6, notification.source.getSubtitle());
-
-        notification.sent = true;
-
-        PebblePacket packet = new PebblePacket(data, new DeliveryListener()
-        {
-            @Override
-            public boolean packetDelivered()
-            {
-                if (notification.textChunks.size() > 0)
-                {
-                    sendMoreText(notification);
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        pebbleCommunication(packet);
-        //commStarted();
+        getService().getPebbleCommunication().sendToPebble(data);
     }
 
-    private void sendMoreText(final ProcessedNotification notification)
+    private void sendMoreText()
     {
-        Timber.d("More text requested...");
-
-        System.out.println(notification.lastSentChunk + " " + notification.textChunks.size());
+        Timber.d("Sending more text...");
 
         PebbleDictionary data = new PebbleDictionary();
         data.addUint8(0, (byte) 1);
-        data.addInt32(1, notification.id);
-        data.addUint8(2, (byte) notification.lastSentChunk);
-        data.addString(3, notification.textChunks.get(notification.lastSentChunk));
+        data.addUint8(1, (byte) 1);
+        data.addInt32(2, curSendingNotification.id);
+        data.addString(3, curSendingNotification.textChunks.get(curSendingNotification.nextChunkToSend));
 
-        notification.lastSentChunk++;
-
-        Timber.d("Sending more text...");
-
-        PebblePacket packet = new PebblePacket(data, new DeliveryListener()
-        {
-            @Override
-            public boolean packetDelivered()
-            {
-                if (notification.textChunks.size() > notification.lastSentChunk)
-                {
-                    sendMoreText(notification);
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        pebbleCommunication.sendPacket(packet);
-        commStarted();
+        getService().getPebbleCommunication().sendToPebble(data);
+        curSendingNotification.nextChunkToSend++;
     }
 
     @Override
     public boolean sendNextMessage()
     {
-        return false;
+        if (curSendingNotification == null && !sendingQueue.isEmpty())
+            curSendingNotification = sendingQueue.poll();
+
+        if (curSendingNotification == null)
+            return false;
+
+        if (curSendingNotification.nextChunkToSend == -1)
+        {
+            sendInitialNotificationPacket();
+        }
+        else if (curSendingNotification.nextChunkToSend < curSendingNotification.textChunks.size())
+        {
+            sendMoreText();
+        }
+        else
+        {
+            curSendingNotification = null;
+            return sendNextMessage();
+        }
+
+
+        return true;
     }
 
     @Override
     public void gotMessageFromPebble(PebbleDictionary message)
     {
+    }
 
+    @Override
+    public void gotIntent(Intent intent)
+    {
+        PebbleNotification notification = intent.getParcelableExtra("notification");
+        if (notification == null)
+            return;
+
+        processNotification(notification);
+    }
+
+    @Override
+    public void pebbleAppOpened()
+    {
+        if (curSendingNotification != null)
+        {
+            curSendingNotification.nextChunkToSend = -1;
+            sendingQueue.add(curSendingNotification);
+            curSendingNotification = null;
+
+            getService().getPebbleCommunication().queueModule(this);
+        }
     }
 
     private List<Byte> getVibrationPattern(ProcessedNotification notification, AppSettingStorage settingStorage)
@@ -387,18 +417,6 @@ public class NotificationSendingModule extends CommModule
         }
     }
 
-    private boolean isWatchConnected()
-    {
-        try
-        {
-            return PebbleKit.isWatchConnected(this);
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-    }
-
     private boolean canDisplayWearGroupNotification(PebbleNotification notification, AppSettingStorage settingStorage)
     {
         boolean groupNotificationEnabled = settingStorage.getBoolean(AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
@@ -414,9 +432,9 @@ public class NotificationSendingModule extends CommModule
         if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
         {
             //Prevent re-sending of the first message.
-            for (int i = 0; i < sentNotifications.size(); i++)
+            for (int i = 0; i < getService().sentNotifications.size(); i++)
             {
-                ProcessedNotification comparing = sentNotifications.valueAt(i);
+                ProcessedNotification comparing = getService().sentNotifications.valueAt(i);
                 if (comparing.source.getWearGroupType() != PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && notification.hasIdenticalContent(comparing.source))
                 {
                     Timber.d("group notify failed - same notification exists");
@@ -426,5 +444,43 @@ public class NotificationSendingModule extends CommModule
         }
 
         return true;
+    }
+
+    public boolean isAnyNotificationWaiting()
+    {
+        return curSendingNotification != null || !sendingQueue.isEmpty();
+    }
+
+    public void removeNotificationFromSendingQueue(PebbleNotification notificationToRemove)
+    {
+        Iterator<ProcessedNotification> iterator = sendingQueue.iterator();
+        while (iterator.hasNext())
+        {
+            ProcessedNotification notification = iterator.next();
+
+            if (!notification.source.isSameNotification(notificationToRemove.getKey()))
+            {
+                iterator.remove();
+            }
+        }
+    }
+
+    public ProcessedNotification getCurrrentSendingNotification()
+    {
+        return curSendingNotification;
+    }
+
+    public static void notify(PebbleNotification notification, Context context)
+    {
+        Intent intent = new Intent(context, PebbleTalkerService.class);
+        intent.setAction(INTENT_NOTIFICATION);
+        intent.putExtra("notification", notification);
+
+        context.startService(intent);
+    }
+
+    public static NotificationSendingModule get(PebbleTalkerService service)
+    {
+        return (NotificationSendingModule) service.getModule(MODULE_NOTIFICATION_SENDING);
     }
 }

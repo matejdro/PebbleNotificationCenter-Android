@@ -20,6 +20,8 @@ import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleApp;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
+import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -236,7 +238,7 @@ public class PebbleAppListFragment extends Fragment {
 
                 Collections.sort(apps, new PebbleAppComparator());
 
-                PebbleApp otherApp = new PebbleApp(context.getString(R.string.PebbleAppsOther), PebbleTalkerService.UNKNOWN_UUID);
+                PebbleApp otherApp = new PebbleApp(context.getString(R.string.PebbleAppsOther), SystemModule.UNKNOWN_UUID);
                 apps.add(otherApp);
 
                 for (PebbleApp app : apps)

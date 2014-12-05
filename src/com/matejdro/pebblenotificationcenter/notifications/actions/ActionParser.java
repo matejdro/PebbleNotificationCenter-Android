@@ -16,6 +16,7 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class ActionParser
                         PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, new NotificationKey(null, null, null), (Notification) page, false);
                         pageNotification.setForceSwitch(true);
                         pageNotification.setScrollToEnd(true);
-                        pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), PebbleTalkerService.TEXT_LIMIT));
+                        pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), NotificationSendingModule.TEXT_LIMIT));
 
                         storage.add(new NotifyAction(context.getString(R.string.wearPageAction, counter), pageNotification));
 

@@ -8,6 +8,7 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 import timber.log.Timber;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -50,9 +51,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
         Timber.d("Got jellybean dismiss " + key);
 
 
-        Intent intent = new Intent(this, PebbleTalkerService.class);
-        intent.putExtra("dismissUpwardsKey", key);
-        startService(intent);
+        DismissUpwardsModule.dismissNotification(this, key);
 	}
 
     @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)

@@ -28,5 +28,8 @@ public abstract class NotificationAction implements Parcelable
         return actionText;
     }
 
-    public abstract void executeAction(PebbleTalkerService service, ProcessedNotification notification);
+    /*
+        @return true if action definitely sent something towards Pebble
+     */
+    public abstract boolean executeAction(PebbleTalkerService service, ProcessedNotification notification);
 }

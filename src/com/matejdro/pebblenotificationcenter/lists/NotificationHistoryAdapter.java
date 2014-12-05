@@ -1,27 +1,29 @@
 package com.matejdro.pebblenotificationcenter.lists;
 
+import android.content.Context;
 import android.content.Intent;
 import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.pebble.modules.ListModule;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
 
-public class NotificationHistoryAdapter extends NotificationListAdapter {
+public class NotificationHistoryAdapter implements NotificationListAdapter {
 	private List<PebbleNotification> notifications;
 	private NotificationHistoryStorage storage;
 	
-	public NotificationHistoryAdapter(PebbleTalkerService service, NotificationHistoryStorage storage) {
-		super(service);
+	public NotificationHistoryAdapter(Context context, NotificationHistoryStorage storage) {
 		this.storage = storage;
 		
-		loadNotifications();
+		loadNotifications(context);
 	}
 	
-	public void loadNotifications()
+	public void loadNotifications(Context context)
 	{
 		Cursor cursor = storage.getReadableDatabase().rawQuery("SELECT PostTime, Title, Subtitle, Text FROM notifications ORDER BY PostTime DESC LIMIT 150", null);
 		notifications = new ArrayList<PebbleNotification>(cursor.getCount());
@@ -30,7 +32,7 @@ public class NotificationHistoryAdapter extends NotificationListAdapter {
 		{
             long sendingDate = cursor.getLong(0);
             String title = cursor.getString(1);
-            String text = cursor.getString(3) + "\n\nSent on " + getFormattedDate(sendingDate);
+            String text = cursor.getString(3) + "\n\nSent on " + ListModule.getFormattedDate(context, sendingDate);
             NotificationKey key = new NotificationKey(null, null, null);
 
             PebbleNotification notification = new PebbleNotification(title, text, key);
@@ -50,14 +52,5 @@ public class NotificationHistoryAdapter extends NotificationListAdapter {
 	@Override
 	public int getNumOfNotifications() {
 		return notifications.size();
-	}
-
-	@Override
-	public void notificationPicked(int index) {
-        PebbleNotification notification = notifications.get(index);
-
-        Intent startIntent = new Intent(service, PebbleTalkerService.class);
-        startIntent.putExtra("notification", notification);
-        service.startService(startIntent);
 	}
 }

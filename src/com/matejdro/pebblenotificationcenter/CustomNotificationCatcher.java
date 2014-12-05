@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,9 +39,7 @@ public class CustomNotificationCatcher extends BroadcastReceiver {
                 if (data.has("subtitle"))
                     notification.setSubtitle(data.getString("subtitle"));
 
-                Intent startIntent = new Intent(context, PebbleTalkerService.class);
-                startIntent.putExtra("notification", notification);
-                context.startService(startIntent);
+				NotificationSendingModule.notify(notification, context);
 			}
 			catch (JSONException e)
 			{

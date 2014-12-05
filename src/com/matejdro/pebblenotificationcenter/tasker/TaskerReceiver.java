@@ -13,6 +13,8 @@ import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
+import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 
 public class TaskerReceiver extends BroadcastReceiver
 {
@@ -45,9 +47,7 @@ public class TaskerReceiver extends BroadcastReceiver
             notification.setSubtitle(subtitle);
             notification.setNoHistory(noHistory);
 
-            Intent startIntent = new Intent(context, PebbleTalkerService.class);
-            startIntent.putExtra("notification", notification);
-            context.startService(startIntent);
+            NotificationSendingModule.notify(notification, context);
         }
         else if (action == 1) //Global setting modify
         {
@@ -110,9 +110,7 @@ public class TaskerReceiver extends BroadcastReceiver
 
                 NotificationKey key = new NotificationKey(pkg, id, tag);
 
-                intent = new Intent(context, PebbleTalkerService.class);
-                intent.putExtra("dismissUpwardsKey", key);
-                context.startService(intent);
+                DismissUpwardsModule.dismissNotification(context, key);
             }
             catch (NumberFormatException e)
             {
