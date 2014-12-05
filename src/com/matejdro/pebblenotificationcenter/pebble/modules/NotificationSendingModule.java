@@ -382,8 +382,6 @@ public class NotificationSendingModule extends CommModule
         if (curSendingNotification != null)
         {
             curSendingNotification.nextChunkToSend = -1;
-            sendingQueue.add(curSendingNotification);
-            curSendingNotification = null;
 
             getService().getPebbleCommunication().queueModule(this);
         }
