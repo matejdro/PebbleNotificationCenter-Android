@@ -138,18 +138,26 @@ public class SystemModule extends CommModule
         getService().getPebbleCommunication().sendToPebble(data);
     }
 
-    private void sendConfigInvalidVersion()
+    private void sendConfigInvalidVersion(int version)
     {
         PebbleDictionary data = new PebbleDictionary();
-
-        data.addUint8(0, (byte) 0);
-        data.addUint8(1, (byte) 0);
 
         byte[] configBytes = new byte[13];
         configBytes[8] = (byte) (WatchappHandler.SUPPORTED_PROTOCOL >>> 0x08);
         configBytes[9] = (byte) WatchappHandler.SUPPORTED_PROTOCOL;
 
-        data.addBytes(2, configBytes);
+        if (version == 0) //Pre-2.4 protocol
+        {
+            data.addUint8(0, (byte) 3);
+            data.addBytes(1, configBytes);
+
+        }
+        else
+        {
+            data.addUint8(0, (byte) 0);
+            data.addUint8(1, (byte) 0);
+            data.addBytes(2, configBytes);
+        }
 
         Timber.d("Sending version mismatch config...");
 
@@ -176,6 +184,8 @@ public class SystemModule extends CommModule
 
         Timber.d("Version " + version);
 
+        final int finalVersion = version;
+
         if (version == WatchappHandler.SUPPORTED_PROTOCOL)
         {
             runOnNext = new Callable<Boolean>()
@@ -195,7 +205,7 @@ public class SystemModule extends CommModule
                 @Override
                 public Boolean call()
                 {
-                    sendConfigInvalidVersion();
+                    sendConfigInvalidVersion(finalVersion);
                     return true;
                 }
             };
@@ -275,7 +285,9 @@ public class SystemModule extends CommModule
     @Override
     public void gotMessageFromPebble(PebbleDictionary message)
     {
-        int id = message.getUnsignedIntegerAsLong(1).intValue();
+        int id = 0;
+        if (message.contains(1)) //Open message from older Pebble app does not have entry at 1.
+            id = message.getUnsignedIntegerAsLong(1).intValue();
 
         Timber.d("system packet " + id);
 
