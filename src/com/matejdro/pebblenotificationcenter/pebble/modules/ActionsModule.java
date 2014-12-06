@@ -160,6 +160,23 @@ public class ActionsModule extends CommModule
             SystemModule.get(getService()).hideHourglass();
     }
 
+    private void gotMessageDismissNotification(PebbleDictionary data)
+    {
+        int id = data.getInteger(2).intValue();
+
+        Timber.d("Got dismiss request from Pebble");
+
+        ProcessedNotification notification = getService().sentNotifications.get(id);
+        if (notification == null)
+        {
+            Timber.d("Invalid notification!");
+            SystemModule.get(getService()).hideHourglass();
+            return;
+        }
+
+        DismissOnPhoneAction.dismissOnPhone(notification, getService());
+    }
+
     @Override
     public void gotMessageFromPebble(PebbleDictionary message)
     {
@@ -170,7 +187,7 @@ public class ActionsModule extends CommModule
                 gotMessageSelectPressed(message);
                 break;
             case 1:
-                //gotMessageNotificationRequest(message);
+                gotMessageDismissNotification(message);
                 break;
             case 2:
                 gotMessageActionItemPicked(message);
