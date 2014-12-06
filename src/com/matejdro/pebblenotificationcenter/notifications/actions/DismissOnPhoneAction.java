@@ -33,7 +33,7 @@ public class DismissOnPhoneAction extends NotificationAction
 
     public static void dismissOnPhone(ProcessedNotification notification, PebbleTalkerService service)
     {
-        DismissUpwardsModule.get(service).queueDismiss(notification.id);
+        DismissUpwardsModule.dismissPebbleID(service, notification.id);
 
         //Group messages can't be dismissed (they are not even displayed), so I should find relevat message in actual notification tray
         if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)

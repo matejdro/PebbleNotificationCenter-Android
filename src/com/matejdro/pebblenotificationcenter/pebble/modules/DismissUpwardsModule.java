@@ -23,6 +23,7 @@ public class DismissUpwardsModule extends CommModule
 {
     public static final int MODULE_DISMISS_UPWARDS = 3;
     public static final String INTENT_DISMISS_NOTIFICATION = "DismissOneNotification";
+    public static final String INTENT_DISMISS_PEBBLE_ID = "DismissPebbleID";
     public static final String INTENT_DISMISS_PACKAGE = "DismissOneNotification";
 
     private Queue<Integer> dismissQueue = new LinkedList<Integer>();
@@ -72,7 +73,7 @@ public class DismissUpwardsModule extends CommModule
 
     public void dismissUpwards(ProcessedNotification notification)
     {
-        queueDismiss(notification.id);
+        dismissPebbleID(getService(), notification.id);
         getService().sentNotifications.remove(notification.id);
         NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.source);
 
@@ -159,6 +160,11 @@ public class DismissUpwardsModule extends CommModule
             String pkg = intent.getStringExtra("package");
             processDismissUpwardsWholePackage(pkg);
         }
+        else if (intent.getAction().equals(INTENT_DISMISS_PEBBLE_ID))
+        {
+            int id = intent.getIntExtra("id", -1);
+            queueDismiss(id);
+        }
     }
 
     @Override
@@ -184,6 +190,15 @@ public class DismissUpwardsModule extends CommModule
     @Override
     public void gotMessageFromPebble(PebbleDictionary message)
     {
+    }
+
+    public static void dismissPebbleID(Context context, int id)
+    {
+        Intent intent = new Intent(context, PebbleTalkerService.class);
+        intent.setAction(INTENT_DISMISS_PEBBLE_ID);
+        intent.putExtra("id", id);
+
+        context.startService(intent);
     }
 
     public static void dismissNotification(Context context, NotificationKey key)

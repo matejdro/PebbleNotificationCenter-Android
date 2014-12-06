@@ -25,7 +25,7 @@ public class DismissOnPebbleAction extends NotificationAction
     @Override
     public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
-        DismissUpwardsModule.get(service).queueDismiss(notification.id);
+        DismissUpwardsModule.dismissPebbleID(service, notification.id);
         return true;
     }
 
