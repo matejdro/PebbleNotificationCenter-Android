@@ -34,6 +34,7 @@ public class DismissUpwardsModule extends CommModule
 
         service.registerIntent(INTENT_DISMISS_NOTIFICATION, this);
         service.registerIntent(INTENT_DISMISS_PACKAGE, this);
+        service.registerIntent(INTENT_DISMISS_PEBBLE_ID, this);
     }
 
     private void sendDismiss(Integer id)
