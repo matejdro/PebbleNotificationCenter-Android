@@ -107,7 +107,7 @@ public class DismissUpwardsModule extends CommModule
     {
         Timber.d("got dismiss: " + key);
 
-        if (key.getAndroidId() == null)
+        if (key == null || key.getAndroidId() == null)
             return;
 
         AppSettingStorage settingsStorage;
@@ -136,11 +136,10 @@ public class DismissUpwardsModule extends CommModule
     {
         Timber.d("got dismiss package: " + pkg);
 
-        AppSettingStorage settingsStorage;
         if (pkg == null)
-            settingsStorage = getService().getDefaultSettingsStorage();
-        else
-            settingsStorage = new SharedPreferencesAppStorage(getService(), pkg, getService().getDefaultSettingsStorage());
+            return;
+
+        AppSettingStorage settingsStorage = new SharedPreferencesAppStorage(getService(), pkg, getService().getDefaultSettingsStorage());
 
         boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
         if (!syncDismissUp)

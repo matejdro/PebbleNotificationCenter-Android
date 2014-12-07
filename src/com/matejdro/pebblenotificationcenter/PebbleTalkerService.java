@@ -117,7 +117,7 @@ public class PebbleTalkerService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-       if (intent.getAction() != null)
+       if (intent != null && intent.getAction() != null)
        {
            if (intent.getAction().equals(INTENT_PEBBLE_PACKET))
            {
