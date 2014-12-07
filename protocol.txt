@@ -113,10 +113,13 @@ Phone --> Pebble
 					Second bit (0x02) = Notification type (1 = from history, 0 = live)
 					Third bit (0x04) = Switch to most recent notification
 					Fouth bit (0x08) = Scroll to the end automatically
+					Fifth bit (0x10) = Does pressing SELECT opens action menu?
+					Sixth bit (0x20) = Does holding SELECT opens action menu?
 				[1] = Periodic vibration interval (first byte)
-				[2] = Periodic vibration interval (second byte)				
-				[3] = Number of bytes in vibration pattern
-				[4,5,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
+				[2] = Periodic vibration interval (second byte)
+				[3] = Number of items in action menu (uint8)				
+				[4] = Number of bytes in vibration pattern
+				[5,6,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
 			4 = Title (max 30 bytes) - cstring
 			5 = Subtitle (max 30 bytes) - cstring
 		
@@ -149,8 +152,7 @@ Phone --> Pebble
 
 	    Packet 0 - Action list names - Names of items in action list
 	    Additional data:
-	        2 = Number of all actions (uint8)
-	        3 = Index of the first canned reponse in this packet (uint8)
-	        4 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
+	        2 = Index of the first canned reponse in this packet (uint8)
+	        3 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
 
 

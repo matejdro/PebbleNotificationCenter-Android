@@ -294,20 +294,28 @@ public class NotificationSendingModule extends CommModule
         PebbleDictionary data = new PebbleDictionary();
         List<Byte> vibrationPattern = getVibrationPattern(curSendingNotification, settingStorage);
 
-        byte[] configBytes = new byte[4 + vibrationPattern.size()];
+        byte[] configBytes = new byte[5 + vibrationPattern.size()];
 
         byte flags = 0;
         flags |= (byte) (curSendingNotification.source.isListNotification() ? 0x2 : 0);
         flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || curSendingNotification.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
         flags |= (byte) (curSendingNotification.source.shouldScrollToEnd() ? 0x8 : 0);
+        flags |= (byte) ((curSendingNotification.source.shouldForceActionMenu() || settingStorage.getInt(AppSetting.SELECT_PRESS_ACTION) == 2) ? 0x10 : 0);
+        flags |= (byte) (settingStorage.getInt(AppSetting.SELECT_HOLD_ACTION) == 2 ? 0x20 : 0);
+
+        System.out.println(Integer.toBinaryString(flags));
+
+        int amountOfActions = 0;
+        if (curSendingNotification.source.getActions() != null)
+            amountOfActions = curSendingNotification.source.getActions().size();
 
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
-
-        configBytes[3] = (byte) vibrationPattern.size();
+        configBytes[3] = (byte) amountOfActions;
+        configBytes[4] = (byte) vibrationPattern.size();
         for (int i = 0; i < vibrationPattern.size(); i++)
-            configBytes[4 + i] = vibrationPattern.get(i);
+            configBytes[5 + i] = vibrationPattern.get(i);
 
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 0);

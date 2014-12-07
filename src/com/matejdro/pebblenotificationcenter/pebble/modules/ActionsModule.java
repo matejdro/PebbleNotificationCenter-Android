@@ -47,8 +47,7 @@ public class ActionsModule extends CommModule
 
         int segmentSize = Math.min(listSize - nextListItemToSend, 4);
 
-        data.addUint8(2, (byte) listSize);
-        data.addUint8(3, (byte) nextListItemToSend);
+        data.addUint8(2, (byte) nextListItemToSend);
 
         byte[] textData = new byte[segmentSize * 19];
 
@@ -60,7 +59,7 @@ public class ActionsModule extends CommModule
             textData[19 * (i + 1) -1 ] = 0;
         }
 
-        data.addBytes(4, textData);
+        data.addBytes(3, textData);
 
         getService().getPebbleCommunication().sendToPebble(data);
 
