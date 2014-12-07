@@ -200,7 +200,7 @@ public class NotificationSendingModule extends CommModule
         }
         while (getService().sentNotifications.get(notification.id) != null);
 
-        DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey());
+        DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey(), false);
 
         if (!notification.source.isListNotification() && !canDisplayWearGroupNotification(notification.source, settingStorage))
         {

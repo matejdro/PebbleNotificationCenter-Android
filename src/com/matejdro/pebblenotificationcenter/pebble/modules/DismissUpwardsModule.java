@@ -72,28 +72,38 @@ public class DismissUpwardsModule extends CommModule
         return true;
     }
 
-    public void dismissUpwards(ProcessedNotification notification)
+    /*
+        @param deep Also remove notification from sending queue and try to find similar wear notifications
+     */
+    public void dismissUpwards(ProcessedNotification notification, boolean deep)
     {
         dismissPebbleID(getService(), notification.id);
         getService().sentNotifications.remove(notification.id);
-        NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.source);
 
-        //Also dismiss related group messages from this notification (some apps have trouble with dismissing to side channel directly)
-        if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+        if (deep)
         {
-            for (int i = 0; i < getService().sentNotifications.size(); i++)
-            {
-                ProcessedNotification compare = getService().sentNotifications.valueAt(i);
+            NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.source);
 
-                if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
+            //Also dismiss related group messages from this notification (some apps have trouble with dismissing to side channel directly)
+            if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+            {
+                for (int i = 0; i < getService().sentNotifications.size(); i++)
                 {
-                    dismissNotification(getService(), compare.source.getKey());
+                    ProcessedNotification compare = getService().sentNotifications.valueAt(i);
+
+                    if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
+                    {
+                        dismissNotification(getService(), compare.source.getKey());
+                    }
                 }
             }
         }
     }
 
-    public void processDismissUpwards(NotificationKey key)
+    /*
+        @param deep Also remove notification from sending queue and try to find similar wear notifications
+     */
+    public void processDismissUpwards(NotificationKey key, boolean deep)
     {
         Timber.d("got dismiss: " + key);
 
@@ -116,7 +126,7 @@ public class DismissUpwardsModule extends CommModule
 
             if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
-                dismissUpwards(notification);
+                dismissUpwards(notification, deep);
                 i--;
             }
         }
@@ -142,7 +152,7 @@ public class DismissUpwardsModule extends CommModule
 
             if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
             {
-                dismissUpwards(notification);
+                dismissUpwards(notification, true);
                 i--;
             }
         }
@@ -154,7 +164,7 @@ public class DismissUpwardsModule extends CommModule
         if (intent.getAction().equals(INTENT_DISMISS_NOTIFICATION))
         {
             NotificationKey key = (NotificationKey) intent.getParcelableExtra("key");
-            processDismissUpwards(key);
+            processDismissUpwards(key, true);
         }
         else if (intent.getAction().equals(INTENT_DISMISS_PACKAGE))
         {
