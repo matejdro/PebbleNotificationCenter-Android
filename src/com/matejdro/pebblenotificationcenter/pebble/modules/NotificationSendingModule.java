@@ -277,7 +277,7 @@ public class NotificationSendingModule extends CommModule
 
     private void sendInitialNotificationPacket()
     {
-        Timber.d("Initial notify packet");
+        Timber.d("Initial notify packet " + curSendingNotification.id);
 
         curSendingNotification.nextChunkToSend = 0;
 
@@ -332,7 +332,7 @@ public class NotificationSendingModule extends CommModule
 
     private void sendMoreText()
     {
-        Timber.d("Sending more text...");
+        Timber.d("Sending more text... " + curSendingNotification.id + " " + curSendingNotification.nextChunkToSend);
 
         PebbleDictionary data = new PebbleDictionary();
         data.addUint8(0, (byte) 1);

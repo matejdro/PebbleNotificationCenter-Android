@@ -101,7 +101,7 @@ public class ActionsModule extends CommModule
         ProcessedNotification notification = getService().sentNotifications.get(id);
         if (notification == null)
         {
-            Timber.d("Invalid notification!");
+            Timber.d("Invalid notification " + id);
             SystemModule.get(getService()).hideHourglass();
             return;
         }
