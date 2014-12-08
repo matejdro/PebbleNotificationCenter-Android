@@ -296,18 +296,20 @@ public class NotificationSendingModule extends CommModule
 
         byte[] configBytes = new byte[5 + vibrationPattern.size()];
 
+        int amountOfActions = 0;
+        if (curSendingNotification.source.getActions() != null)
+            amountOfActions = curSendingNotification.source.getActions().size();
+
         byte flags = 0;
         flags |= (byte) (curSendingNotification.source.isListNotification() ? 0x2 : 0);
         flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || curSendingNotification.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
         flags |= (byte) (curSendingNotification.source.shouldScrollToEnd() ? 0x8 : 0);
-        flags |= (byte) ((curSendingNotification.source.shouldForceActionMenu() || settingStorage.getInt(AppSetting.SELECT_PRESS_ACTION) == 2) ? 0x10 : 0);
-        flags |= (byte) (settingStorage.getInt(AppSetting.SELECT_HOLD_ACTION) == 2 ? 0x20 : 0);
 
-        System.out.println(Integer.toBinaryString(flags));
-
-        int amountOfActions = 0;
-        if (curSendingNotification.source.getActions() != null)
-            amountOfActions = curSendingNotification.source.getActions().size();
+        if (amountOfActions > 0)
+        {
+            flags |= (byte) ((curSendingNotification.source.shouldForceActionMenu() || settingStorage.getInt(AppSetting.SELECT_PRESS_ACTION) == 2) ? 0x10 : 0);
+            flags |= (byte) (settingStorage.getInt(AppSetting.SELECT_HOLD_ACTION) == 2 ? 0x20 : 0);
+        }
 
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
