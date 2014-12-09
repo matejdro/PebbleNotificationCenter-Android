@@ -87,12 +87,18 @@ public class PebbleCommunication
     public void receivedNack(int transactionId)
     {
         Timber.d("NACK " + transactionId);
+        if (transactionId != lastSentPacket)
+        {
+            Timber.w("Got invalid NACK");
+            return;
+        }
 
         commBusy = false;
 
         // Retry sending packet once. If we got NACK 2 times in a row, it probably means Pebble app was closed.
         if (!retriedNack)
         {
+            Timber.d("Retrying last message...");
             sendToPebble(lastPacket);
             retriedNack = true;
         }
