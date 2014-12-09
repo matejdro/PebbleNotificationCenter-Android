@@ -238,6 +238,15 @@ public class NotificationSendingModule extends CommModule
         }
     }
 
+    private void notificationTransferCompleted()
+    {
+        if (curSendingNotification.vibrated)
+            lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+        lastAppNotification.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+
+        curSendingNotification = null;
+    }
+
     private void sendNativeNotification(ProcessedNotification notification)
     {
         String nativeTitle = notification.source.getTitle();
@@ -363,7 +372,7 @@ public class NotificationSendingModule extends CommModule
         }
         else
         {
-            curSendingNotification = null;
+            notificationTransferCompleted();
             return sendNextMessage();
         }
 
@@ -409,6 +418,9 @@ public class NotificationSendingModule extends CommModule
         catch (NumberFormatException e)
         {
         }
+
+        Timber.d("MinInterval: " + minInterval);
+        Timber.d("LastVib: " + lastVibration);
 
         if (minInterval == 0 || lastVibration == null ||
                 (System.currentTimeMillis() - lastVibration) > minInterval * 1000)
