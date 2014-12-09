@@ -28,7 +28,8 @@ public class WatchappHandler {
             }
         }).show();
 
-
+        editor.putBoolean("FirstRun", true);
+        editor.apply();
 	}
 
     public static void openPebbleApp(Context context, SharedPreferences.Editor editor)
@@ -39,9 +40,6 @@ public class WatchappHandler {
         try
         {
             context.startActivity(intent);
-
-            editor.putBoolean("FirstRun", true);
-            editor.apply();
         }
         catch (ActivityNotFoundException e)
         {
