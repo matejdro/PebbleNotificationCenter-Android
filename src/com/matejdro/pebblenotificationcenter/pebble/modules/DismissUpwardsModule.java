@@ -52,7 +52,7 @@ public class DismissUpwardsModule extends CommModule
 
     public void queueDismiss(Integer id)
     {
-        Timber.d("Sending dismiss packet for notification " + id);
+        Timber.d("Queueing dismiss packet for notification " + id);
         dismissQueue.add(id);
 
         PebbleCommunication communication = getService().getPebbleCommunication();
