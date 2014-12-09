@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.app.NotificationCompat;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
@@ -32,7 +33,6 @@ public class NotificationHandler {
 		Timber.i("Processing notification " + key);
 
 		SettingsMemoryStorage settings = PebbleNotificationCenter.getInMemorySettings();
-		SharedPreferences preferences = settings.getSharedPreferences();
         AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, key.getPackage(), settings.getDefaultSettingsStorage());
 
 		boolean enableOngoing = settingStorage.getBoolean(AppSetting.SEND_ONGOING_NOTIFICATIONS);
@@ -90,21 +90,12 @@ public class NotificationHandler {
 
     public static void parseWearGroupData(Notification notification, PebbleNotification pebbleNotification)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            parseWearGroupDataLolipop(notification, pebbleNotification);
-            return;
-        }
-
         Bundle extras = NotificationParser.getExtras(notification);
         if (extras == null)
             return;
 
-        if (!extras.containsKey("android.support.groupKey"))
-            return;
-
-        String groupKey = extras.getString("android.support.groupKey");
-        boolean summary = extras.getBoolean("android.support.isGroupSummary", false);
+        String groupKey = NotificationCompat.getGroup(notification);
+        boolean summary = NotificationCompat.isGroupSummary(notification);
         boolean hasPages = hasPages(extras);
 
         Timber.d("wear group: " + summary + " " + hasPages + " " + groupKey);
@@ -120,33 +111,6 @@ public class NotificationHandler {
         }
         else
             pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE);
-    }
-
-    @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
-    private static void parseWearGroupDataLolipop(Notification notification, PebbleNotification pebbleNotification)
-    {
-        String groupKey = notification.getGroup();
-        if (groupKey == null)
-            return;
-
-        boolean summary = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
-        boolean hasPages = hasPages(NotificationParser.getExtras(notification));
-
-        if (summary && hasPages)
-            return;
-
-        Timber.d("wear group: " + summary + " " + hasPages + " " + groupKey);
-
-        pebbleNotification.setWearGroupKey(groupKey);
-
-
-        if (summary)
-        {
-            pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY);
-        }
-        else
-            pebbleNotification.setWearGroupType(PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE);
-
     }
 
     public static boolean hasPages(Bundle extras)
