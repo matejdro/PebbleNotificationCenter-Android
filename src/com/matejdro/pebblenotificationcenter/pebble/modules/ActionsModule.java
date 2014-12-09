@@ -40,6 +40,7 @@ public class ActionsModule extends CommModule
 
     private void sendNextListItems()
     {
+        Timber.d("Sending action list items");
         PebbleDictionary data = new PebbleDictionary();
 
         data.addUint8(0, (byte) 4);
@@ -149,7 +150,7 @@ public class ActionsModule extends CommModule
         int action = message.getUnsignedIntegerAsLong(2).intValue();
         Timber.d("Action picked message " + action);
 
-        if (action >= list.getNumberOfItems())
+        if (list == null || action >= list.getNumberOfItems())
         {
             Timber.w("Action is higher than list has items!");
             SystemModule.get(getService()).hideHourglass();
