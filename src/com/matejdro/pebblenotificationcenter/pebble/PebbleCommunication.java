@@ -20,14 +20,19 @@ public class PebbleCommunication
     private Context context;
 
     private Deque<CommModule> queuedModules;
-    private int lastSentPacket = 0;
+    private int lastSentPacket;
     private boolean commBusy;
+
+    private PebbleDictionary lastPacket;
+    private boolean retriedNack;
 
     public PebbleCommunication(Context context)
     {
         this.context = context;
         queuedModules = new LinkedList<CommModule>();
         commBusy = false;
+        lastSentPacket = 0;
+        retriedNack = false;
     }
 
     public void sendToPebble(PebbleDictionary packet)
@@ -35,9 +40,12 @@ public class PebbleCommunication
         lastSentPacket = (lastSentPacket + 1) % 255;
         Timber.d("SENT " + lastSentPacket);
 
+        this.lastPacket = packet;
+
         PebbleKit.sendDataToPebbleWithTransactionId(context, DataReceiver.pebbleAppUUID, packet, lastSentPacket);
 
         commBusy = true;
+        retriedNack = false;
     }
 
     public void sendNext()
@@ -81,7 +89,13 @@ public class PebbleCommunication
         Timber.d("NACK " + transactionId);
 
         commBusy = false;
-        //TODO better nack handling. At the moment NACK usually just means that app on Pebble closed which means I should stop spamming it with messages.
+
+        // Retry sending packet once. If we got NACK 2 times in a row, it probably means Pebble app was closed.
+        if (!retriedNack)
+        {
+            sendToPebble(lastPacket);
+            retriedNack = true;
+        }
     }
 
     public void resetBusy()
