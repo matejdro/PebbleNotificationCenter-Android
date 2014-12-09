@@ -230,6 +230,12 @@ public class PebbleTalkerService extends Service
         Timber.d("Pebble packet for " + destination);
 
         CommModule module = modules.get(destination);
+        if (module == null)
+        {
+            Crashlytics.logException(new NullPointerException("Destination module does not exist: " + destination));
+            return;
+        }
+
         module.gotMessageFromPebble(data);
 
 	}

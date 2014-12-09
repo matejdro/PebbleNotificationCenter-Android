@@ -321,7 +321,7 @@ public class VoiceCapture implements RecognitionListener
             parcel.writeValue(actionText);
             parcel.writeValue(text);
             parcel.writeValue(resultIntent);
-            parcel.writeString(resultKey);
+            parcel.writeValue(resultKey);
         }
 
         public static final Creator<VoiceConfirmAction> CREATOR = new Creator<VoiceConfirmAction>()
@@ -329,10 +329,10 @@ public class VoiceCapture implements RecognitionListener
             @Override
             public VoiceConfirmAction createFromParcel(Parcel parcel)
             {
-                String title = parcel.readString();
-                String text = parcel.readString();
+                String title = (String) parcel.readValue(String.class.getClassLoader());
+                String text = (String) parcel.readValue(String.class.getClassLoader());
                 PendingIntent intent = (PendingIntent) parcel.readValue(PendingIntent.class.getClassLoader());
-                String key = parcel.readString();
+                String key = (String) parcel.readValue(String.class.getClassLoader());
 
                 return new VoiceConfirmAction(title, text, intent, key);
             }
