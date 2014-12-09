@@ -110,6 +110,9 @@ public class NotificationHandler {
 
         Timber.d("wear group: " + summary + " " + hasPages + " " + groupKey);
 
+        if (groupKey == null)
+            return;
+
         if (summary && hasPages)
             return;
 
