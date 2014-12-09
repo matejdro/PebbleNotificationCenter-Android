@@ -52,7 +52,7 @@ public class NotificationHandler {
         //Respect LocalOnly on NC notifications regardless of the settings
         boolean localNotification = NotificationCompat.getLocalOnly(notification);
         if (localNotification &&
-           (key.getPackage().equals(PebbleNotificationCenter.ALTITUDE) || settingStorage.getBoolean(AppSetting.DISABLE_LOCAL_ONLY_NOTIFICATIONS)))
+           (key.getPackage().equals(PebbleNotificationCenter.PACKAGE) || settingStorage.getBoolean(AppSetting.DISABLE_LOCAL_ONLY_NOTIFICATIONS)))
         {
             Timber.d("Discarding notification because it is local only");
             return;
