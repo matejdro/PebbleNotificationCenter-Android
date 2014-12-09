@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompatExtras;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
@@ -47,6 +48,15 @@ public class NotificationHandler {
 			Timber.d("Discarding notification because package is not selected");
 			return;
 		}
+
+        //Respect LocalOnly on NC notifications regardless of the settings
+        boolean localNotification = NotificationCompat.getLocalOnly(notification);
+        if (localNotification &&
+           (key.getPackage().equals(PebbleNotificationCenter.ALTITUDE) || settingStorage.getBoolean(AppSetting.DISABLE_LOCAL_ONLY_NOTIFICATIONS)))
+        {
+            Timber.d("Discarding notification because it is local only");
+            return;
+        }
 
         PebbleNotification pebbleNotification = getPebbleNotificationFromAndroidNotification(context, key, notification, isDismissible);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)

@@ -100,6 +100,7 @@ public class PerAppActivity extends Activity
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SEND_ONGOING_NOTIFICATIONS, R.string.settingSendOngoing, R.string.settingSendOngoingDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SEND_BLANK_NOTIFICATIONS, R.string.settingSendBlankNotifications, R.string.settingSendBlankNotificationsDescription));
         if (version(Build.VERSION_CODES.LOLLIPOP)) category.add(new CheckBoxItem(settingsStorage, AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER, R.string.settingRespectInterruptFilter, R.string.settingRespectInterruptFilterDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.DISABLE_LOCAL_ONLY_NOTIFICATIONS, R.string.settingDisableLocalOnlyNotifications, R.string.settingDisableLocalOnlyNotificationsDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.DISABLE_NOTIFY_SCREEN_OIN, R.string.settingNoNotificationsScreenOn, R.string.settingNoNotificationsScreenOnDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION, R.string.settingSwitchToRecent, R.string.settingSwitchToRecentDescription));
         category.add(new QuietHoursItem(settingsStorage, R.string.settingQuietHours, R.string.settingQuietHoursDescription));

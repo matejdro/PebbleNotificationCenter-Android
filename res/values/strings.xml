@@ -427,6 +427,8 @@
     <string name="voiceInputSpeakNow">Speak now</string>
     <string name="settingNoNotificationsScreenOn">Disable notifications when screen is on</string>
     <string name="settingNoNotificationsScreenOnDescription">Disable new notifications popping up when screen is on. Useful to prevent Pebble buzzing if you are on your phone anyway.</string>
+    <string name="settingDisableLocalOnlyNotifications">Do not send \"Local only\" notifications</string>
+    <string name="settingDisableLocalOnlyNotificationsDescription">Apps can mark notifications as local only, which means they should not leave the phone. When checked, NC will respect that option.</string>
 
 
 </resources>
