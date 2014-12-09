@@ -213,16 +213,20 @@ public class NotificationSendingModule extends CommModule
 
         Timber.d("notify internal 2");
 
-        //Different type of notification depending on Pebble app
-        SystemModule systemModule = SystemModule.get(getService());
-        systemModule.updateCurrentlyRunningApp();
+        int pebbleAppMode = 0;
+        if (!notificationSource.isListNotification())
+        {
+            //Different type of notification depending on Pebble app
+            SystemModule systemModule = SystemModule.get(getService());
+            systemModule.updateCurrentlyRunningApp();
+
+            UUID currentApp = systemModule.getCurrentRunningApp();
+            if (currentApp == null)
+                currentApp = SystemModule.UNKNOWN_UUID;
+            pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(getService().getGlobalSettings(), currentApp);
+        }
 
         Timber.d("notify internal 3");
-
-        UUID currentApp = systemModule.getCurrentRunningApp();
-        if (currentApp == null)
-            currentApp = SystemModule.UNKNOWN_UUID;
-        int pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(getService().getGlobalSettings(), currentApp);
 
         if (pebbleAppMode == 0) //NC Notification
         {

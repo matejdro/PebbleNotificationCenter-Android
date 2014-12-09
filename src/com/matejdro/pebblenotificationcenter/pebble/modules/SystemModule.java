@@ -35,8 +35,6 @@ public class SystemModule extends CommModule
 
     private int closeTries = 0;
 
-    private long lastRunningAppUpdate = 0;
-
     public SystemModule(PebbleTalkerService service)
     {
         super(service);
@@ -318,8 +316,6 @@ public class SystemModule extends CommModule
         {
             currentRunningApp = newApp;
         }
-
-        lastRunningAppUpdate = System.currentTimeMillis();
     }
 
     public UUID getCurrentRunningApp()
@@ -329,9 +325,6 @@ public class SystemModule extends CommModule
 
     public void openApp()
     {
-        if (System.currentTimeMillis() - lastRunningAppUpdate > 5000)
-            updateCurrentlyRunningApp();
-
         PebbleKit.startAppOnPebble(getService(), DataReceiver.pebbleAppUUID);
     }
 
