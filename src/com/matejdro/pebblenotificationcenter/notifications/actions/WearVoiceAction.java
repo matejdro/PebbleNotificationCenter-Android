@@ -126,17 +126,17 @@ public class WearVoiceAction extends NotificationAction
             for (String choice : userProvidedChoices)
             {
                 cannedResponseList.add(choice);
-                if (cannedResponseList.size() >= 20)
+                if (cannedResponseList.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                     break;
             }
         }
 
-        if (cannedResponseList.size() < 20 && appProvidedChoices != null)
+        if (cannedResponseList.size() < NotificationAction.MAX_NUMBER_OF_ACTIONS && appProvidedChoices != null)
         {
             for (CharSequence choice : appProvidedChoices)
             {
                 cannedResponseList.add(choice.toString());
-                if (cannedResponseList.size() >= 20)
+                if (cannedResponseList.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                     break;
             }
         }
