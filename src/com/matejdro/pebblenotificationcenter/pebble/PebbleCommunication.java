@@ -31,7 +31,7 @@ public class PebbleCommunication
         this.context = context;
         queuedModules = new LinkedList<CommModule>();
         commBusy = false;
-        lastSentPacket = 0;
+        lastSentPacket = -1;
         retriedNack = false;
     }
 
@@ -74,7 +74,7 @@ public class PebbleCommunication
     {
         Timber.d("ACK " + transactionId);
 
-        if (transactionId != lastSentPacket)
+        if (transactionId != lastSentPacket || lastPacket == null)
         {
             Timber.w("Got invalid ACK");
             return;
@@ -87,7 +87,7 @@ public class PebbleCommunication
     public void receivedNack(int transactionId)
     {
         Timber.d("NACK " + transactionId);
-        if (transactionId != lastSentPacket)
+        if (transactionId != lastSentPacket || lastPacket == null)
         {
             Timber.w("Got invalid NACK");
             return;
