@@ -171,7 +171,8 @@ public class SystemModule extends CommModule
             }
         };
 
-        WatchappHandler.showUpdateNotification(getService());
+        if (version < WatchappHandler.SUPPORTED_PROTOCOL)
+            WatchappHandler.showUpdateNotification(getService());
     }
 
     private void gotMessagePebbleOpened(PebbleDictionary message)
