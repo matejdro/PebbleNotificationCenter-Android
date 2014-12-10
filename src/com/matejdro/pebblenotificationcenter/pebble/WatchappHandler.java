@@ -62,7 +62,7 @@ public class WatchappHandler extends BroadcastReceiver
     public static void showUpdateNotification(Context context)
     {
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context).setSmallIcon(R.drawable.notificationicon)
+                new NotificationCompat.Builder(context).setSmallIcon(R.drawable.notificationicon).setLocalOnly(true)
                         .setContentTitle("Notification Center watchapp update").setContentText("Click on this notiifcation to update Notification Center watchapp on Pebble")
                         .setContentIntent(PendingIntent.getBroadcast(context, 1, new Intent(INTENT_UPDATE_WATCHAPP), PendingIntent.FLAG_CANCEL_CURRENT));
         NotificationManagerCompat.from(context).notify(1, mBuilder.build());
