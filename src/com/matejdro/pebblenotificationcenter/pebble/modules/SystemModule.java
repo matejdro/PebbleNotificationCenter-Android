@@ -170,6 +170,8 @@ public class SystemModule extends CommModule
                 return true;
             }
         };
+
+        WatchappHandler.showUpdateNotification(getService());
     }
 
     private void gotMessagePebbleOpened(PebbleDictionary message)

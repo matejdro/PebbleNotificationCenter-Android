@@ -122,6 +122,13 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name="com.matejdro.pebblenotificationcenter.pebble.WatchappHandler"
+                  android:exported="true" >
+            <intent-filter>
+                <action android:name="com.matejdro.pebblenotificationcenter.UPDATE_WATCHAPP" />
+            </intent-filter>
+        </receiver>
+
 
         <meta-data android:name="com.crashlytics.ApiKey" android:value="048e0255b748bd3c0abc33c75a2601ff67b550c8"/>
     </application>
