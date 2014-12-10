@@ -7,7 +7,7 @@
     <PreferenceCategory android:title="New notification popup" >
         <CheckBoxPreference
             android:key="noNotifications"
-            android:summary="Disable new notifications popping up. You can still see them by launching app manually and opening Active or History. Syncs with &quot;Notifications ON/OFF%quot; switch on Pebble"
+            android:summary="Disable new notifications popping up. You can still see them by launching app manually and opening Active or History. Syncs with &quot;Notifications ON/OFF&quot; switch on Pebble"
             android:title="Disable popup entirely" />
         <CheckBoxPreference
             android:key="noNotificationsNoPebble"
