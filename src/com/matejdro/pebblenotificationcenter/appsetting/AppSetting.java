@@ -12,7 +12,7 @@ public enum AppSetting
     SEND_ONGOING_NOTIFICATIONS("enableOngoing", false),
     SEND_BLANK_NOTIFICATIONS("sendBlank", false),
     DISABLE_NOTIFY_SCREEN_OIN("noNotificationsScreenOn", false),
-    DISABLE_LOCAL_ONLY_NOTIFICATIONS("disableLocalOnly", true),
+    DISABLE_LOCAL_ONLY_NOTIFICATIONS("disableLocalOnly", false),
 
     QUIET_TIME_ENABLED("enableQuietTime", false),
     QUIET_TIME_START_HOUR("quietTimeStartHour", 0),
