@@ -200,14 +200,14 @@ public class NotificationSendingModule extends CommModule
         }
         while (getService().sentNotifications.get(notification.id) != null);
 
-        DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey(), false);
-
         if (!notification.source.isListNotification() && !canDisplayWearGroupNotification(notification.source, settingStorage))
         {
             getService().sentNotifications.put(notification.id, notification);
             Timber.d("notify failed - group");
             return;
         }
+
+        DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey(), false);
 
         getService().sentNotifications.put(notification.id, notification);
 
@@ -443,6 +443,8 @@ public class NotificationSendingModule extends CommModule
 
     private boolean canDisplayWearGroupNotification(PebbleNotification notification, AppSettingStorage settingStorage)
     {
+        Timber.d("notification " + notification.getText() + " " + notification.getTitle() + " " + notification.getSubtitle());
+        Timber.d("Wear0");
         boolean groupNotificationEnabled = settingStorage.getBoolean(AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
         if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && groupNotificationEnabled)
         {
@@ -452,13 +454,14 @@ public class NotificationSendingModule extends CommModule
         {
             return false; //Don't send group notifications, they are not enabled.
         }
-
+        Timber.d("Wear1");
         if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
         {
             //Prevent re-sending of the first message.
             for (int i = 0; i < getService().sentNotifications.size(); i++)
             {
                 ProcessedNotification comparing = getService().sentNotifications.valueAt(i);
+                Timber.d("comparing " + comparing.source.getText() + " " + comparing.source.getTitle() + " " + comparing.source.getSubtitle() + " " + comparing.source.getWearGroupType());
                 if (comparing.source.getWearGroupType() != PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && notification.hasIdenticalContent(comparing.source))
                 {
                     Timber.d("group notify failed - same notification exists");
