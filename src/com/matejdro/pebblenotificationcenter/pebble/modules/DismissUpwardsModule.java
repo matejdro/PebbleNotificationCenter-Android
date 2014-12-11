@@ -80,11 +80,10 @@ public class DismissUpwardsModule extends CommModule
     {
         dismissPebbleID(getService(), notification.id);
         getService().sentNotifications.remove(notification.id);
+        NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.source);
 
         if (deep)
         {
-            NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.source);
-
             //Also dismiss related group messages from this notification (some apps have trouble with dismissing to side channel directly)
             if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
             {

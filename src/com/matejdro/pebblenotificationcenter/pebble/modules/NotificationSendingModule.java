@@ -482,7 +482,7 @@ public class NotificationSendingModule extends CommModule
         {
             ProcessedNotification notification = iterator.next();
 
-            if (!notification.source.isSameNotification(notificationToRemove.getKey()))
+            if (notification.source.isSameNotification(notificationToRemove.getKey()))
             {
                 iterator.remove();
             }
