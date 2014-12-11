@@ -81,6 +81,7 @@ public class PebbleCommunication
         }
 
         commBusy = false;
+        lastPacket = null;
         sendNext();
     }
 
@@ -101,7 +102,10 @@ public class PebbleCommunication
             Timber.d("Retrying last message...");
             sendToPebble(lastPacket);
             retriedNack = true;
+            return;
         }
+
+        lastPacket = null;
     }
 
     public void resetBusy()
