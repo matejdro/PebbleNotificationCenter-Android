@@ -43,6 +43,11 @@ public class TaskerAction extends NotificationAction
         intent.addLocalVariable("%ncsubtitle", notification.source.getSubtitle());
         intent.addLocalVariable("%nctext", notification.source.getText());
 
+        if (notification.source.getKey().getAndroidId() != null)
+            intent.addLocalVariable("%ncid", Integer.toString(notification.source.getKey().getAndroidId()));
+        else
+            intent.addLocalVariable("%ncid", "");
+
         if (notification.source.getKey().getTag() != null)
             intent.addLocalVariable("%nctag", notification.source.getKey().getTag());
         else
