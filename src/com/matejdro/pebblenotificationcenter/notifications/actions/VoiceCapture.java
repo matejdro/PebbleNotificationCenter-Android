@@ -30,16 +30,14 @@ public class VoiceCapture implements RecognitionListener
 {
     private static NotificationKey VOICE_NOTIFICATION_KEY = new NotificationKey(PebbleNotificationCenter.PACKAGE, 12345, null);
 
-    private PendingIntent resultIntent;
-    private String resultKey;
+    private WearVoiceAction voiceAction;
     private PebbleTalkerService service;
     private SpeechRecognizer recognizer;
     private boolean waitingForBluetooth;
 
-    public VoiceCapture(PendingIntent resultIntent, String resultKey, PebbleTalkerService service)
+    public VoiceCapture(WearVoiceAction voiceAction, PebbleTalkerService service)
     {
-        this.resultIntent = resultIntent;
-        this.resultKey = resultKey;
+        this.voiceAction = voiceAction;
         this.service = service;
 
         waitingForBluetooth = false;
@@ -192,9 +190,9 @@ public class VoiceCapture implements RecognitionListener
         ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>(1);
         for (int i = 0; i < size; i++)
         {
-            actions.add(new VoiceConfirmAction(service.getString(R.string.voiceInputResultActionName, i + 1), matches.get(i), resultIntent, resultKey));
+            actions.add(new VoiceConfirmAction(service.getString(R.string.voiceInputResultActionName, i + 1), matches.get(i), voiceAction));
         }
-        actions.add(new RetryAction(resultIntent, resultKey));
+        actions.add(new RetryAction(voiceAction));
         actions.add(new DismissOnPebbleAction(service.getString(R.string.cancel)));
         notification.setActions(actions);
 
@@ -221,7 +219,7 @@ public class VoiceCapture implements RecognitionListener
         notification.setForceActionMenu(true);
 
         ArrayList<NotificationAction> actions = new ArrayList<NotificationAction>(1);
-        actions.add(new RetryAction(resultIntent, resultKey));
+        actions.add(new RetryAction(voiceAction));
         actions.add(new DismissOnPebbleAction(service.getString(R.string.cancel)));
         notification.setActions(actions);
 
@@ -238,20 +236,18 @@ public class VoiceCapture implements RecognitionListener
 
     private static class RetryAction extends NotificationAction
     {
-        private PendingIntent resultIntent;
-        private String resultKey;
+        WearVoiceAction voiceAction;
 
-        public RetryAction(PendingIntent resultIntent, String resultKey)
+        public RetryAction(WearVoiceAction voiceAction)
         {
             super("Retry");
-            this.resultIntent = resultIntent;
-            this.resultKey = resultKey;
+            this.voiceAction = voiceAction;
         }
 
         @Override
         public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
         {
-            new VoiceCapture(resultIntent, resultKey, service).startVoice();
+            voiceAction.showVoicePrompt(service);
             return true;
         }
 
@@ -264,8 +260,7 @@ public class VoiceCapture implements RecognitionListener
         @Override
         public void writeToParcel(Parcel parcel, int i)
         {
-            parcel.writeValue(resultIntent);
-            parcel.writeString(resultKey);
+            parcel.writeValue(voiceAction);
         }
 
         public static final Creator<RetryAction> CREATOR = new Creator<RetryAction>()
@@ -273,10 +268,9 @@ public class VoiceCapture implements RecognitionListener
             @Override
             public RetryAction createFromParcel(Parcel parcel)
             {
-                PendingIntent intent = (PendingIntent) parcel.readValue(PendingIntent.class.getClassLoader());
-                String key = parcel.readString();
+                WearVoiceAction voiceAction = (WearVoiceAction) parcel.readValue(getClass().getClassLoader());
 
-                return new RetryAction(intent, key);
+                return new RetryAction(voiceAction);
             }
 
             @Override
@@ -290,22 +284,20 @@ public class VoiceCapture implements RecognitionListener
     private static class VoiceConfirmAction extends NotificationAction
     {
         private String text;
-        private PendingIntent resultIntent;
-        private String resultKey;
+        private WearVoiceAction voiceAction;
 
-        public VoiceConfirmAction(String title, String text, PendingIntent resultIntent, String resultKey)
+        public VoiceConfirmAction(String title, String text, WearVoiceAction voiceAction)
         {
             super(title);
             this.text = text;
-            this.resultIntent = resultIntent;
-            this.resultKey = resultKey;
+            this.voiceAction = voiceAction;
         }
 
         @Override
         public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
         {
             DismissUpwardsModule.dismissNotification(service, VOICE_NOTIFICATION_KEY);
-            WearVoiceAction.sendWearReply(text, service, resultIntent, resultKey);
+            voiceAction.sendReply(text, service);
             return true;
         }
 
@@ -320,8 +312,7 @@ public class VoiceCapture implements RecognitionListener
         {
             parcel.writeValue(actionText);
             parcel.writeValue(text);
-            parcel.writeValue(resultIntent);
-            parcel.writeValue(resultKey);
+            parcel.writeValue(voiceAction);
         }
 
         public static final Creator<VoiceConfirmAction> CREATOR = new Creator<VoiceConfirmAction>()
@@ -331,10 +322,9 @@ public class VoiceCapture implements RecognitionListener
             {
                 String title = (String) parcel.readValue(String.class.getClassLoader());
                 String text = (String) parcel.readValue(String.class.getClassLoader());
-                PendingIntent intent = (PendingIntent) parcel.readValue(PendingIntent.class.getClassLoader());
-                String key = (String) parcel.readValue(String.class.getClassLoader());
+                WearVoiceAction voiceAction = (WearVoiceAction) parcel.readValue(WearVoiceAction.class.getClassLoader());
 
-                return new VoiceConfirmAction(title, text, intent, key);
+                return new VoiceConfirmAction(title, text, voiceAction);
             }
 
             @Override

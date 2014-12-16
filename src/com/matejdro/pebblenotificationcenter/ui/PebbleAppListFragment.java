@@ -211,7 +211,7 @@ public class PebbleAppListFragment extends Fragment {
             PebbleDeveloperConnection connection = null;
             try
             {
-                connection = new PebbleDeveloperConnection();
+                connection = new PebbleDeveloperConnection(getActivity());
                 connection.connectBlocking();
 
             } catch (URISyntaxException e)

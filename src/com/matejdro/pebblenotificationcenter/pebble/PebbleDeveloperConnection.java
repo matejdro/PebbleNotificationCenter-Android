@@ -1,8 +1,13 @@
 package com.matejdro.pebblenotificationcenter.pebble;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import com.getpebble.android.kit.Constants;
+import com.matejdro.pebblenotificationcenter.ProcessedNotification;
+import com.matejdro.pebblenotificationcenter.lists.NotificationListAdapter;
+import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.notifications.actions.WearVoiceAction;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -26,8 +31,10 @@ import org.java_websocket.handshake.ServerHandshake;
 public class PebbleDeveloperConnection extends WebSocketClient
 {
     private List<DeveloperConnectionResult> waitingTasks = Collections.synchronizedList(new LinkedList<DeveloperConnectionResult>());
+    private NativeNotificationActionHandler notificationActionHandler;
+    private Context context;
 
-    public PebbleDeveloperConnection() throws URISyntaxException
+    public PebbleDeveloperConnection(Context context) throws URISyntaxException
     {
         super(new URI("ws://127.0.0.1:9000"));
     }
@@ -68,7 +75,11 @@ public class PebbleDeveloperConnection extends WebSocketClient
                     List<UUID> installedUUIDs = PebbleApp.getUUIDListFromByteBuffer(bytes);
                     completeWaitingTasks(DeveloperConnectionTaskType.GET_ALL_INSTALLED_APP_UUID, installedUUIDs);
                 }
-
+            }
+            else if (endpoint == 3010) //Actions
+            {
+                if (notificationActionHandler != null)
+                    notificationActionHandler.handle(bytes);
             }
         }
     }
@@ -143,7 +154,136 @@ public class PebbleDeveloperConnection extends WebSocketClient
         return appList;
     }
 
-    public void sendNotification(String title, String message)
+    public void sendNotification(ProcessedNotification notification)
+    {
+        if (!isOpen())
+            return;
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        DataOutputStream dataStream = new DataOutputStream(stream);
+
+        int numOfActions = 0;
+        if (notification.source.getActions() != null)
+            numOfActions = notification.source.getActions().size();
+
+        try
+        {
+            dataStream.writeByte(1); //Message goes from phone to watch
+            dataStream.writeShort(0); //Size of the messages (placeholder)
+            dataStream.writeShort(3010); //Endpoint - EXTENSIBLE_NOTIFICATION
+            dataStream.writeByte(0); //ADD_NOTIFICATION type
+            dataStream.writeByte(1); //ADD_NOTIFICATION command
+            writeUnsignedIntLittleEndian(dataStream, 0); //flags (none for now)
+            writeUnsignedIntLittleEndian(dataStream, notification.id); //notificaiton id
+            writeUnsignedIntLittleEndian(dataStream, 0); //?
+            writeUnsignedIntLittleEndian(dataStream, (int) (notification.source.getPostTime() / 1000)); //post time
+            dataStream.writeByte(1); //DEFAULT layout
+            dataStream.writeByte(2); //Size of attributes
+            dataStream.writeByte(numOfActions); //Number of actions
+
+            // Write attributes
+            dataStream.writeByte(1); //Title
+            writeUTFPebbleString(dataStream, notification.source.getTitle(), 64);
+
+            String body = notification.source.getText();
+            if (!notification.source.getSubtitle().isEmpty())
+                body = notification.source.getSubtitle() + "\n" + body;
+
+            dataStream.writeByte(3); //Body
+            writeUTFPebbleString(dataStream, body, 512);
+
+            // Write actions
+            if (notification.source.getActions() != null)
+            {
+                for (int i = 0; i < numOfActions; i++)
+                {
+                    NotificationAction action = notification.source.getActions().get(i);
+
+                    dataStream.writeByte(i + 1);
+                    if (action instanceof WearVoiceAction)
+                    {
+                        WearVoiceAction voiceAction = (WearVoiceAction) action;
+                        voiceAction.populateCannedList(context, notification);
+
+                        dataStream.writeByte(3); //Action type. 3 = text
+                        dataStream.writeByte(2); //2 attributes
+
+                        //Text attribute
+                        dataStream.writeByte(1); //Attribute Type = 1 (title)
+                        writeUTFPebbleString(dataStream, action.getActionText(), 64);
+
+                        //Responses attribute
+                        dataStream.writeByte(8); //Attribute Type = 8 (canned responses)
+                        int size = 0;
+                        for (String response : voiceAction.getCannedResponseList())
+                        {
+                            size += Math.min(20, response.length()) + 1;
+                        }
+                        writeUnsignedShortLittleEndian(dataStream, size); //Size of canned response list
+
+                        for (String response : voiceAction.getCannedResponseList())
+                        {
+                            writeNullTerminatedPebbleString(dataStream, response, 20); //Write responses
+                        }
+                    }
+                    else
+                    {
+                        dataStream.writeByte(2); //Action type. 2 = normal
+                        dataStream.writeByte(1); //1 attribute
+                        dataStream.writeByte(1); //Attribute Type = 1 (title)
+                        writeUTFPebbleString(dataStream, action.getActionText(), 64);
+                    }
+                }
+
+            }
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        //Insert size
+        int size = stream.size() - 5; //First 5 bytes do not count
+        byte[] message = stream.toByteArray();
+        message[1] = (byte) (size >> 8);
+        message[2] = (byte) size;
+
+        send(message);
+    }
+
+    public void sendNotificationActionStatus(int notificationId, int actionId, int icon)
+    {
+        if (!isOpen())
+            return;
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        DataOutputStream dataStream = new DataOutputStream(stream);
+
+        try
+        {
+            dataStream.writeByte(1); //Message goes from phone to watch
+            dataStream.writeShort(0); //Size of the messages (placeholder)
+            dataStream.writeShort(3010); //Endpoint - EXTENSIBLE_NOTIFICATION
+            dataStream.writeByte(17); //ACKNACK type
+            writeUnsignedIntLittleEndian(dataStream, notificationId); //notificaiton id
+            dataStream.write(actionId); //Action ID
+            writeUnsignedIntLittleEndian(dataStream, icon); //Icon type
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        //Insert size
+        int size = stream.size() - 5; //First 5 bytes do not count
+        byte[] message = stream.toByteArray();
+        message[1] = (byte) (size >> 8);
+        message[2] = (byte) size;
+
+        send(message);
+    }
+
+
+    public void sendBasicNotification(String title, String message)
     {
         if (!isOpen())
             return;
@@ -165,9 +305,10 @@ public class PebbleDeveloperConnection extends WebSocketClient
             dataStream.writeShort(3000); //Endpoint - NOTIFICATIONS
             dataStream.writeByte(1); //SMS Notification command
 
-            writePebbleString(dataStream, title);
-            writePebbleString(dataStream, message);
-            writePebbleString(dataStream, date);
+
+            writeLegacyPebbleString(dataStream, title);
+            writeLegacyPebbleString(dataStream, message);
+            writeLegacyPebbleString(dataStream, date);
 
         } catch (IOException e)
         {
@@ -177,6 +318,12 @@ public class PebbleDeveloperConnection extends WebSocketClient
 
         send(stream.toByteArray());
     }
+
+    public void registerActionHandler(NativeNotificationActionHandler handler)
+    {
+        this.notificationActionHandler = handler;
+    }
+
 
     private void completeWaitingTasks(DeveloperConnectionTaskType type, Object result)
     {
@@ -306,9 +453,27 @@ public class PebbleDeveloperConnection extends WebSocketClient
         GET_ALL_INSTALLED_APP_UUID
     }
 
+    private static void writeUnsignedIntLittleEndian(DataOutputStream stream, int number) throws IOException
+    {
+        number = number & 0xFFFFFFFF;
+
+        stream.write((byte) number);
+        stream.write((byte) (number >> 8));
+        stream.write((byte) (number >> 16));
+        stream.write((byte) (number >> 24));
+    }
+
+    private static void writeUnsignedShortLittleEndian(DataOutputStream stream, int number) throws IOException
+    {
+        number = number & 0xFFFF;
+
+        stream.write((byte) number);
+        stream.write((byte) (number >> 8));
+    }
+
     public static String getPebbleStringFromByteBuffer(ByteBuffer buffer, int limit)
     {
-        byte[] stringData = new byte[32];
+        byte[] stringData = new byte[limit];
 
         try
         {
@@ -316,10 +481,10 @@ public class PebbleDeveloperConnection extends WebSocketClient
             String string = new String(stringData, "UTF-8");
 
             int end = string.indexOf(0);
-            if (end < 0)
-                return "[ERROR]";
+            if (end >= 0)
+                string = string.substring(0, end);
 
-            return string.substring(0, end);
+            return string;
         } catch (UnsupportedEncodingException e)
         {
             e.printStackTrace();
@@ -328,7 +493,7 @@ public class PebbleDeveloperConnection extends WebSocketClient
         return "[ERROR]";
     }
 
-    public static void writePebbleString(DataOutputStream stream, String string)
+    public static void writeLegacyPebbleString(DataOutputStream stream, String string)
     {
         string = TextUtil.trimString(string, 255, true);
         byte[] stringData = string.getBytes();
@@ -342,6 +507,25 @@ public class PebbleDeveloperConnection extends WebSocketClient
         {
             e.printStackTrace();
         }
+    }
+
+    public static void writeNullTerminatedPebbleString(DataOutputStream stream, String string, int limit) throws IOException
+    {
+        string = TextUtil.trimString(string, limit, true);
+        byte[] stringData = string.getBytes();
+
+        stream.write(stringData);
+        stream.write(0);
+    }
+
+
+    public static void writeUTFPebbleString(DataOutputStream stream, String string, int limit) throws IOException
+    {
+        string = TextUtil.trimString(string, limit, true);
+        byte[] stringData = string.getBytes();
+
+        writeUnsignedShortLittleEndian(stream, stringData.length);
+        stream.write(stringData);
     }
 
 }

@@ -29,6 +29,7 @@ import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotification
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.pebble.DeliveryListener;
+import com.matejdro.pebblenotificationcenter.pebble.NativeNotificationActionHandler;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.pebble.PebblePacket;
@@ -75,6 +76,8 @@ public class PebbleTalkerService extends Service
     public SparseArray<CommModule> modules = new SparseArray<CommModule>();
     public HashMap<String, CommModule> registeredIntents = new HashMap<String, CommModule>();
 
+    private Handler handler;
+
     @Override
     public IBinder onBind(Intent intent)
     {
@@ -110,6 +113,8 @@ public class PebbleTalkerService extends Service
         addModule(new ListModule(this), ListModule.MODULE_LIST);
         addModule(new DismissUpwardsModule(this), DismissUpwardsModule.MODULE_DISMISS_UPWARDS);
         addModule(new ActionsModule(this), ActionsModule.MODULE_ACTIONS);
+
+        handler = new Handler();
 
         super.onCreate();
     }
@@ -185,11 +190,17 @@ public class PebbleTalkerService extends Service
         return locationLookup;
     }
 
+    public void runOnMainThread(Runnable runnable)
+    {
+        handler.post(runnable);
+    }
+
     private void initDeveloperConnection()
     {
         try
         {
-            devConn = new PebbleDeveloperConnection();
+            devConn = new PebbleDeveloperConnection(this);
+            devConn.registerActionHandler(new NativeNotificationActionHandler(this));
             devConn.connectBlocking();
         } catch (InterruptedException e)
         {

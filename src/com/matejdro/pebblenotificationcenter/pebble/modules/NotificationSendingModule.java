@@ -83,7 +83,7 @@ public class NotificationSendingModule extends CommModule
 
         if (!notificationSource.isListNotification())
         {
-            String combinedText = notificationSource.getTitle() + " " + notificationSource.getSubtitle() + " " + notificationSource.getText();
+            String combinedText = notificationSource.getTitle() + "\n" + notificationSource.getSubtitle() + "\n" + notificationSource.getText();
             List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
             if (regexList.size() > 0 && !TextUtil.containsRegexes(combinedText, regexList))
                 return;
@@ -253,10 +253,8 @@ public class NotificationSendingModule extends CommModule
 
     private void sendNativeNotification(ProcessedNotification notification)
     {
-        String nativeTitle = notification.source.getTitle();
-        String nativeText = notification.source.getSubtitle() + "\n\n" + notification.source.getText();
-
-        getService().getDeveloperConnection().sendNotification(nativeTitle, nativeText);
+        Timber.d("Sending native notification...");
+        getService().getDeveloperConnection().sendNotification(notification);
     }
 
     private void sendNCNotification(ProcessedNotification notification)

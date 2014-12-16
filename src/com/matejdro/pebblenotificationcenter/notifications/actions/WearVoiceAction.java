@@ -108,19 +108,17 @@ public class WearVoiceAction extends NotificationAction
         return new WearVoiceAction(title, actionIntent, key, choicesString);
     }
 
-    @Override
-    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public void populateCannedList(Context context, ProcessedNotification notification)
     {
-        parent = notification;
         cannedResponseList = new ArrayList<String>();
 
-        if (notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
+        if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
         {
             cannedResponseList.add("Voice");
             firstItemIsVoice = true;
         }
 
-        ArrayList<String> userProvidedChoices = (ArrayList<String>) notification.source.getSettingStorage(service).getStringList(AppSetting.CANNED_RESPONSES);
+        ArrayList<String> userProvidedChoices = (ArrayList<String>) notification.source.getSettingStorage(context).getStringList(AppSetting.CANNED_RESPONSES);
         if (userProvidedChoices != null)
         {
             for (String choice : userProvidedChoices)
@@ -140,6 +138,35 @@ public class WearVoiceAction extends NotificationAction
                     break;
             }
         }
+    }
+
+    public List<String> getCannedResponseList()
+    {
+        return cannedResponseList;
+    }
+
+    public void showVoicePrompt(final PebbleTalkerService service)
+    {
+        service.runOnMainThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                new VoiceCapture(WearVoiceAction.this, service).startVoice();
+            }
+        });
+    }
+
+    public boolean containsVoiceOption()
+    {
+        return firstItemIsVoice;
+    }
+
+    @Override
+    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    {
+        parent = notification;
+        populateCannedList(service, notification);
 
         ActionsModule.get(service).showList(new WearCannedResponseList());
         return true;
@@ -181,7 +208,7 @@ public class WearVoiceAction extends NotificationAction
         }
     };
 
-    protected static void sendWearReply(String text, Context context, PendingIntent actionIntent, String voiceKey)
+    public void sendReply(String text, Context context)
     {
         try
         {
@@ -220,13 +247,13 @@ public class WearVoiceAction extends NotificationAction
         public boolean itemPicked(PebbleTalkerService service, int id)
         {
             if (id == 0 && firstItemIsVoice)
-                new VoiceCapture(actionIntent, voiceKey, service).startVoice();
+                showVoicePrompt(service);
             else
             {
                 if (cannedResponseList.size() <= id)
                     return false;
 
-                sendWearReply(cannedResponseList.get(id), service, actionIntent, voiceKey);
+                sendReply(cannedResponseList.get(id), service);
                 DismissUpwardsModule.dismissNotification(service, parent.source.getKey());
                 if (NotificationHandler.isNotificationListenerSupported())
                     JellybeanNotificationListener.dismissNotification(parent.source.getKey());
