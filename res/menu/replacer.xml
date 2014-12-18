@@ -3,7 +3,7 @@
         <item
         android:id="@+id/action_new"
         android:icon="@drawable/ic_action_content_new"
-        android:title="Import"
+        android:title="Add new"
         android:orderInCategory="1"
         android:showAsAction="ifRoom"
        	/>
