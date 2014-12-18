@@ -251,6 +251,37 @@ public class PebbleDeveloperConnection extends WebSocketClient
         send(message);
     }
 
+    public void sendNotificationDismiss(int id)
+    {
+        if (!isOpen())
+            return;
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        DataOutputStream dataStream = new DataOutputStream(stream);
+
+        try
+        {
+            dataStream.writeByte(1); //Message goes from phone to watch
+            dataStream.writeShort(0); //Size of the messages (placeholder)
+            dataStream.writeShort(3010); //Endpoint - EXTENSIBLE_NOTIFICATION
+            dataStream.writeByte(1); //REMOVE_NOTIFICATION type
+            writeUnsignedIntLittleEndian(dataStream, id); //notificaiton id
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        //Insert size
+        int size = stream.size() - 5; //First 5 bytes do not count
+        byte[] message = stream.toByteArray();
+        message[1] = (byte) (size >> 8);
+        message[2] = (byte) size;
+
+        send(message);
+    }
+
+
     public void sendNotificationActionStatus(int notificationId, int actionId, int icon)
     {
         if (!isOpen())

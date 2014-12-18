@@ -254,12 +254,27 @@ public class NotificationSendingModule extends CommModule
     private void sendNativeNotification(ProcessedNotification notification)
     {
         Timber.d("Sending native notification...");
-        getService().getDeveloperConnection().sendNotification(notification);
+
+        notification.nativeNotification = true;
+
+        PebbleKit.FirmwareVersionInfo watchfirmware = PebbleKit.getWatchFWVersion(getService());
+        if (watchfirmware.getMajor() > 2 || (watchfirmware.getMajor() == 2 && watchfirmware.getMinor() > 8))
+        {
+            getService().getDeveloperConnection().sendNotification(notification);
+        }
+        else
+        {
+            getService().getDeveloperConnection().sendBasicNotification(notification.source.getText(), notification.source.getSubtitle() + "\n" + notification.source.getText());
+        }
+
     }
 
     private void sendNCNotification(ProcessedNotification notification)
     {
         Timber.d("SendNC");
+
+        notification.nativeNotification = false;
+
         //Split text into chunks
         String text = notification.source.getText();
         while (text.length() > 0)

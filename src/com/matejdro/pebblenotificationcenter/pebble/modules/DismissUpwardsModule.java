@@ -53,11 +53,25 @@ public class DismissUpwardsModule extends CommModule
     public void queueDismiss(Integer id)
     {
         Timber.d("Queueing dismiss packet for notification " + id);
-        dismissQueue.add(id);
 
-        PebbleCommunication communication = getService().getPebbleCommunication();
-        communication.queueModule(this);
-        communication.sendNext();
+        ProcessedNotification notification = getService().sentNotifications.get(id);
+        if (notification == null)
+        {
+            Timber.w("Invalid notification ID!");
+            return;
+        }
+
+        if (notification.nativeNotification)
+        {
+            getService().getDeveloperConnection().sendNotificationDismiss(id);
+        }
+        else
+        {
+            dismissQueue.add(id);
+            PebbleCommunication communication = getService().getPebbleCommunication();
+            communication.queueModule(this);
+            communication.sendNext();
+        }
     }
 
 
@@ -74,11 +88,11 @@ public class DismissUpwardsModule extends CommModule
     }
 
     /*
-        @param deep Also remove notification from sending queue and try to find similar wear notifications
+        @param deep Also try to find similar wear notifications
      */
     public void dismissUpwards(ProcessedNotification notification, boolean deep)
     {
-        dismissPebbleID(getService(), notification.id);
+        queueDismiss(notification.id);
         getService().sentNotifications.remove(notification.id);
         NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.source);
 
