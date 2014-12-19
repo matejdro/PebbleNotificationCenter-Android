@@ -29,6 +29,7 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.SpinnerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.TaskerTaskListItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ResetDefaultsButtonItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.VibrationPatternItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.WritingPhrasesItem;
 import com.matejdro.pebblenotificationcenter.util.ViewUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +119,9 @@ public class PerAppActivity extends Activity
         if (version(Build.VERSION_CODES.JELLY_BEAN)) category.add(new CheckBoxItem(settingsStorage, AppSetting.LOAD_WEAR_ACTIONS, R.string.settingLoadWearActions, R.string.settingLoadWearActionsDescription));
         if (version(Build.VERSION_CODES.JELLY_BEAN)) category.add(new CheckBoxItem(settingsStorage, AppSetting.LOAD_PHONE_ACTIONS, R.string.settingLoadPhoneActions, R.string.settingLoadPhoneActionsDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_VOICE_REPLY, R.string.settingEnableVoiceReply, R.string.settingEnableVoiceReplyDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_WRITING_REPLY, R.string.settingEnableWritingReply, R.string.settingEnableWritingReplyDescription));
         category.add(new CannedResponsesItem(settingsStorage, AppSetting.CANNED_RESPONSES, R.string.settingCannedResponses, R.string.settingCannedResponsesDescription));
+        category.add(new WritingPhrasesItem(settingsStorage, AppSetting.WRITING_PHRASES, R.string.settingWritingPhrases, R.string.settingWritingPhrasesDescription));
         category.add(new TaskerTaskListItem(settingsStorage, AppSetting.TASKER_ACTIONS, R.string.settingTaskerActions, R.string.settingTaskerActionsDescription));
         category.add(new IntentActionsItem(settingsStorage, AppSetting.INTENT_ACTIONS_NAMES, R.string.settingBroadcastIntentActions, R.string.settingBroadcastIntentActionsDescription));
         settings.add(new SettingsCategory(R.string.settingCategoryActions, category));

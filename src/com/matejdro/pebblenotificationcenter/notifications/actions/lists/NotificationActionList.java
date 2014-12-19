@@ -1,8 +1,9 @@
-package com.matejdro.pebblenotificationcenter.lists.actions;
+package com.matejdro.pebblenotificationcenter.notifications.actions.lists;
 
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import java.util.List;
 
 /**
  * Created by Matej on 2.10.2014.

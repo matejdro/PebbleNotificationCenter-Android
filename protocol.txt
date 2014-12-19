@@ -58,7 +58,12 @@ Pebble --> Phone
 
 		Packet 2 - Action list item picked
 		Additional data:
-			2 = index of picked item - uint8					
+			2 = index of picked item - uint8	
+
+		Packet 3 - Reply text
+		Additional data:
+			2 = text (string)					
+				
 
 Phone --> Pebble
 	
@@ -152,8 +157,11 @@ Phone --> Pebble
 
 	    Packet 0 - Action list names - Names of items in action list
 	    Additional data:
-	        2 = Index of the first canned reponse in this packet (uint8)
-	        3 = Amount of all actions in the list (uint8)
-	        4 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
+	        2 = array of uint8
+	        	[0] = Index of the first canned reponse in this packet
+	        	[1] = Amount of all actions in the list
+	        	[2] = Should I display tertiary text window instead of menu (1 or 0)
+
+	        3 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
 
 

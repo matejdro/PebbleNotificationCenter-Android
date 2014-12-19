@@ -15,9 +15,10 @@ import android.os.Parcelable;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
-import com.matejdro.pebblenotificationcenter.lists.actions.ActionList;
+import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.notifications.actions.lists.WritingPhrasesList;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ActionsModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ public class WearVoiceAction extends NotificationAction
     private String[] appProvidedChoices;
     private List<String> cannedResponseList;
     private ProcessedNotification parent;
-    private boolean firstItemIsVoice;
+    private int voiceItemIndex;
+    private int writeItemIndex;
 
     public WearVoiceAction(String actionText, PendingIntent intent, String voiceKey, String[] appProvidedChoices)
     {
@@ -43,7 +45,8 @@ public class WearVoiceAction extends NotificationAction
         this.actionIntent = intent;
         this.voiceKey = voiceKey;
         this.appProvidedChoices = appProvidedChoices;
-        firstItemIsVoice = false;
+        voiceItemIndex = -1;
+        writeItemIndex = -1;
     }
 
     public static NotificationAction parseFromBundle(Bundle bundle)
@@ -110,12 +113,19 @@ public class WearVoiceAction extends NotificationAction
 
     public void populateCannedList(Context context, ProcessedNotification notification)
     {
+        parent = notification;
         cannedResponseList = new ArrayList<String>();
 
         if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
         {
             cannedResponseList.add("Voice");
-            firstItemIsVoice = true;
+            voiceItemIndex = cannedResponseList.size() - 1;
+        }
+
+        if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_WRITING_REPLY))
+        {
+            cannedResponseList.add("Write");
+            writeItemIndex = cannedResponseList.size() - 1;
         }
 
         ArrayList<String> userProvidedChoices = (ArrayList<String>) notification.source.getSettingStorage(context).getStringList(AppSetting.CANNED_RESPONSES);
@@ -157,15 +167,29 @@ public class WearVoiceAction extends NotificationAction
         });
     }
 
+    public void showTertiaryText(PebbleTalkerService service)
+    {
+        ActionsModule.get(service).showList(new WritingPhrasesList(this, service));
+    }
+
     public boolean containsVoiceOption()
     {
-        return firstItemIsVoice;
+        return voiceItemIndex != -1;
+    }
+
+    public boolean containsWriteOption()
+    {
+        return writeItemIndex != -1;
+    }
+
+    public ProcessedNotification getNotification()
+    {
+        return parent;
     }
 
     @Override
     public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
-        parent = notification;
         populateCannedList(service, notification);
 
         ActionsModule.get(service).showList(new WearCannedResponseList());
@@ -246,17 +270,23 @@ public class WearVoiceAction extends NotificationAction
         @Override
         public boolean itemPicked(PebbleTalkerService service, int id)
         {
-            if (id == 0 && firstItemIsVoice)
+            if (id == voiceItemIndex)
+            {
                 showVoicePrompt(service);
+            }
+            else if (id == writeItemIndex)
+            {
+                showTertiaryText(service);
+            }
             else
             {
                 if (cannedResponseList.size() <= id)
                     return false;
 
                 sendReply(cannedResponseList.get(id), service);
-                DismissUpwardsModule.dismissNotification(service, parent.source.getKey());
-                if (NotificationHandler.isNotificationListenerSupported())
-                    JellybeanNotificationListener.dismissNotification(parent.source.getKey());
+//                DismissUpwardsModule.dismissNotification(service, parent.source.getKey());
+//                if (NotificationHandler.isNotificationListenerSupported())
+//                    JellybeanNotificationListener.dismissNotification(parent.source.getKey());
             }
 
             return true;

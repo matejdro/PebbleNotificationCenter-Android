@@ -1,4 +1,4 @@
-package com.matejdro.pebblenotificationcenter.lists.actions;
+package com.matejdro.pebblenotificationcenter.notifications.actions.lists;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
@@ -17,4 +17,9 @@ public abstract class ActionList
      */
     public abstract boolean itemPicked(PebbleTalkerService service, int id);
 
+
+    public boolean isTertiaryTextList()
+    {
+        return false;
+    }
 }

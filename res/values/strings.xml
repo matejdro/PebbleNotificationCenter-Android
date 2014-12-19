@@ -316,6 +316,13 @@
     <string name="cannedResponsesNoResponses">No responses</string>
     <string name="addCannedResponse">Add canned response</string>
     <string name="editCannedResponse">Edit canned response</string>
+    <string name="settingWritingPhrases">Writing phrases</string>
+    <string name="settingWritingPhrasesDescription">
+        When writing messages on your Pebble you can type letter-by-letter or you can add paste whole phrases in.
+        Here you defined which phrases will be available to you (up to 19).
+    </string>
+    <string name="addWritingPhrase">Add phrase</string>
+    <string name="editWritingPhrase">Edit phrase</string>
     <string name="voiceErrorNoInternet">No internet connection.</string>
     <string name="voiceErrorNoSpeech">No speech detected.</string>
     <string name="voiceErrorUnknown">Unknown error.</string>
@@ -332,6 +339,11 @@
         wear actions. Of course Pebble does not have microphone, but you can use your phone\'s mic (sometimes it even
         hears from your pocket) or mic on your headphones.
     </string>
+    <string name="settingEnableWritingReply">Enable writing reply</string>
+
+    <string name="settingEnableWritingReplyDescription">When this setting is enabled, you write reply messages from your Pebble.
+    </string>
+
     <string name="settingUseWearGroupNotifications">Use Wear group notifications</string>
     <string name="settingUseWearGroupNotificationsDescription">Instead of inbox notifications, display group
         notifications for Android Wear. This will display full individual messages instead of just displaying summary of

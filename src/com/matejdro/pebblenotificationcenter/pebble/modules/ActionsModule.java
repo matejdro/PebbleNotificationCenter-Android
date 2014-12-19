@@ -1,24 +1,17 @@
 package com.matejdro.pebblenotificationcenter.pebble.modules;
 
-import android.content.Context;
 import com.getpebble.android.kit.util.PebbleDictionary;
-import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblenotificationcenter.lists.ActiveNotificationsAdapter;
-import com.matejdro.pebblenotificationcenter.lists.NotificationHistoryAdapter;
-import com.matejdro.pebblenotificationcenter.lists.NotificationListAdapter;
-import com.matejdro.pebblenotificationcenter.lists.actions.ActionList;
-import com.matejdro.pebblenotificationcenter.lists.actions.NotificationActionList;
-import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
+import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
+import com.matejdro.pebblenotificationcenter.notifications.actions.lists.NotificationActionList;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPhoneAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.notifications.actions.lists.WritingPhrasesList;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
-import java.text.DateFormat;
-import java.util.Date;
 import timber.log.Timber;
 
 /**
@@ -43,13 +36,16 @@ public class ActionsModule extends CommModule
         Timber.d("Sending action list items");
         PebbleDictionary data = new PebbleDictionary();
 
+        byte[] bytes = new byte[3];
+
         data.addUint8(0, (byte) 4);
         data.addUint8(1, (byte) 0);
 
         int segmentSize = Math.min(listSize - nextListItemToSend, 4);
 
-        data.addUint8(2, (byte) nextListItemToSend);
-        data.addUint8(3, (byte) listSize);
+        bytes[0] = (byte) nextListItemToSend;
+        bytes[1] = (byte) listSize;
+        bytes[2] = (byte) (list.isTertiaryTextList() ? 1 : 0);
 
         byte[] textData = new byte[segmentSize * 19];
 
@@ -61,7 +57,8 @@ public class ActionsModule extends CommModule
             textData[19 * (i + 1) -1 ] = 0;
         }
 
-        data.addBytes(4, textData);
+        data.addBytes(2, bytes);
+        data.addBytes(3, textData);
 
         getService().getPebbleCommunication().sendToPebble(data);
 
@@ -178,6 +175,17 @@ public class ActionsModule extends CommModule
         DismissOnPhoneAction.dismissOnPhone(notification, getService());
     }
 
+    private void gotMessageReplyText(PebbleDictionary data)
+    {
+        if (list == null || !list.isTertiaryTextList())
+            return;
+
+        String text = data.getString(2);
+        ((WritingPhrasesList) list).reply(text);
+
+        SystemModule.get(getService()).hideHourglass();
+    }
+
     @Override
     public void gotMessageFromPebble(PebbleDictionary message)
     {
@@ -192,6 +200,9 @@ public class ActionsModule extends CommModule
                 break;
             case 2:
                 gotMessageActionItemPicked(message);
+                break;
+            case 3:
+                gotMessageReplyText(message);
                 break;
         }
     }

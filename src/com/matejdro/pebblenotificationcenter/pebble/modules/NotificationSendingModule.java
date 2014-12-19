@@ -37,7 +37,7 @@ public class NotificationSendingModule extends CommModule
     public static final int MODULE_NOTIFICATION_SENDING = 1;
     public static final String INTENT_NOTIFICATION = "Notification";
 
-    public static final int TEXT_LIMIT = 900;
+    public static final int TEXT_LIMIT = 850;
 
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();

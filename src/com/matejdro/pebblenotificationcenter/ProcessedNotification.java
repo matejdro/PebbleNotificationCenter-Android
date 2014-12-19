@@ -1,6 +1,5 @@
 package com.matejdro.pebblenotificationcenter;
 
-import com.matejdro.pebblenotificationcenter.lists.actions.ActionList;
 import java.util.ArrayList;
 import java.util.List;
 
