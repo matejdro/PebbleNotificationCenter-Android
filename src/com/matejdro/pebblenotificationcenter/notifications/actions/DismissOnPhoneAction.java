@@ -50,7 +50,7 @@ public class DismissOnPhoneAction extends NotificationAction
             }
         }
 
-        if (!notification.source.isDismissable())
+        if (!notification.source.isDismissable() || notification.source.getKey().getAndroidId() == null)
             return;
 
         JellybeanNotificationListener.dismissNotification(notification.source.getKey());

@@ -39,6 +39,7 @@ public class NotificationHistoryAdapter implements NotificationListAdapter {
 			notification.setSubtitle(cursor.getString(2));
 			notification.setPostTime(sendingDate);
             notification.setListNotification(true);
+			notification.setDismissable(true);
 
 			notifications.add(notification);
 		}
