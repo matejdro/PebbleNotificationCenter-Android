@@ -23,6 +23,7 @@ public enum AppSetting
     SWITCH_TO_MOST_RECENT_NOTIFICATION("autoSwitch", false),
     DISMISS_UPRWADS("syncDismissUp", true),
     SAVE_TO_HISTORY("saveToHistory", true),
+    CUSTOM_TITLE("customTitle", ""),
     USE_WEAR_GROUP_NOTIFICATIONS("useWearGroupNotifications", true),
     RESPECT_ANDROID_INTERRUPT_FILTER("respectAndroidInterruptFilter", false),
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),

@@ -442,6 +442,8 @@
     <string name="settingNoNotificationsScreenOnDescription">Disable new notifications popping up when screen is on. Useful to prevent Pebble buzzing if you are on your phone anyway.</string>
     <string name="settingDisableLocalOnlyNotifications">Do not send \"Local only\" notifications</string>
     <string name="settingDisableLocalOnlyNotificationsDescription">Apps can mark notifications as local only, which means they should not leave the phone. When checked, NC will respect that option. You can use this to quickly filter out notifications that are useless on the watch (for example app updates), but keep in mind that not apps support it and some apps might falsely mark it.</string>
+    <string name="settingCustomTitle">Custom title</string>
+    <string name="settingCustomTitleDescription">Use this title instead of application name. Useful if application\'s name is too long. Leave empty to use default app name. Leave just one space to remove app title altogether.</string>
 
 
 </resources>

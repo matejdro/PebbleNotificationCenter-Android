@@ -54,6 +54,26 @@ public class NotificationSendingModule extends CommModule
     {
         Timber.d("notify internal");
 
+        ProcessedNotification notification = new ProcessedNotification();
+        notification.source = notificationSource;
+        AppSettingStorage settingStorage = notificationSource.getSettingStorage(getService());
+
+        String customTitle = settingStorage.getString(AppSetting.CUSTOM_TITLE);
+
+        if (!customTitle.isEmpty())
+        {
+            if (customTitle.trim().isEmpty()) //Space in title
+            {
+                notificationSource.setTitle(notificationSource.getSubtitle());
+                notificationSource.setSubtitle(null);
+            }
+            else
+            {
+                notificationSource.setTitle(customTitle);
+            }
+        }
+
+
         if (notificationSource.getSubtitle() == null)
         {
             //Attempt to figure out subtitle
@@ -77,9 +97,6 @@ public class NotificationSendingModule extends CommModule
         if (notificationSource.getTitle().trim().equals(notificationSource.getSubtitle().trim()))
             notificationSource.setSubtitle("");
 
-        ProcessedNotification notification = new ProcessedNotification();
-        notification.source = notificationSource;
-        AppSettingStorage settingStorage = notificationSource.getSettingStorage(getService());
 
         if (!notificationSource.isListNotification())
         {
