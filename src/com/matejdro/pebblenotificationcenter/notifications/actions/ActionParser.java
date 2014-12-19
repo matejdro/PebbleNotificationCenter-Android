@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFormatException;
 import android.os.Parcelable;
 import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
@@ -124,9 +125,9 @@ public class ActionParser
                 }
             }
         }
-        catch (RuntimeException e) //Some phones (or apps?) seems to throw this when unparceling data.
+        catch (ParcelFormatException e) //Some phones (or apps?) seems to throw this when unparceling data.
         {
-            Timber.w("Got RuntimeException at parseWearActions!");
+            Timber.w("Got ParcelFormatException at parseWearActions!");
         }
     }
 
