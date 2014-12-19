@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -70,6 +73,8 @@ public class PebbleAppListFragment extends Fragment {
 		
 		new AppLoadingTask().execute();
 
+		this.setHasOptionsMenu(true);
+
 		return inflater.inflate(R.layout.fragment_pebble_app_list, null);
 	}
 
@@ -87,6 +92,46 @@ public class PebbleAppListFragment extends Fragment {
         view = getView().findViewById(R.id.pebbleAppList);
         view.setVisibility(View.GONE);
     }
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.pebbleapps, menu);
+	}
+
+	private void setAll(int option)
+	{
+		if (apps.isEmpty())
+			return;
+
+		editor.putInt("pebble_app_mode_default", option);
+
+		for (PebbleApp app : apps)
+		{
+			app.setNotificationMode(option);
+		}
+
+		listViewAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId())
+		{
+			case R.id.allNC:
+				setAll(0);
+				return true;
+			case R.id.allPebble:
+				setAll(1);
+				return true;
+			case R.id.allNone:
+				setAll(2);
+				return true;
+		}
+
+		return false;
+	}
+
+
 
 	private void showList()
 	{

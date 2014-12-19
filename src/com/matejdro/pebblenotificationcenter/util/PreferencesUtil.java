@@ -83,7 +83,10 @@ public class PreferencesUtil
 		if (uuid.equals(DataReceiver.pebbleAppUUID)) //When NC is open, send NC notifications
 			return 0;
 
-        int mode = preferences.getInt("pebble_app_mode_".concat(uuid.toString()), 0);
+        int mode = preferences.getInt("pebble_app_mode_".concat(uuid.toString()), -1);
+		if (mode == -1)
+			mode = preferences.getInt("pebble_app_mode_default", 0);
+
         if (mode < 0 || mode > 2)
             mode = 0;
 

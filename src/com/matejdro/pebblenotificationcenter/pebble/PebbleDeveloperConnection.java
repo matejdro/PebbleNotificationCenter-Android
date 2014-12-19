@@ -8,6 +8,7 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.lists.NotificationListAdapter;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.WearVoiceAction;
+import com.matejdro.pebblenotificationcenter.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -27,6 +28,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import timber.log.Timber;
 
 public class PebbleDeveloperConnection extends WebSocketClient
 {
@@ -247,6 +249,8 @@ public class PebbleDeveloperConnection extends WebSocketClient
         byte[] message = stream.toByteArray();
         message[1] = (byte) (size >> 8);
         message[2] = (byte) size;
+
+        Timber.d("Sending native notification " + LogWriter.bytesToHex(message));
 
         send(message);
     }
