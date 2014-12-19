@@ -38,6 +38,7 @@ public enum AppSetting
     LOAD_PHONE_ACTIONS("loadPhoneActions", true),
     ENABLE_VOICE_REPLY("enableVoiceReply", true),
     ENABLE_WRITING_REPLY("enableWritingReply", true),
+    DISMISS_AFTER_REPLY("dismissAfterReply", true),
     CANNED_RESPONSES("cannedResponses", null),
     WRITING_PHRASES("writingPhrases", null),
     TASKER_ACTIONS("taskerActions", null),

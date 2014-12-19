@@ -122,6 +122,7 @@ public class PerAppActivity extends Activity
         category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_WRITING_REPLY, R.string.settingEnableWritingReply, R.string.settingEnableWritingReplyDescription));
         category.add(new CannedResponsesItem(settingsStorage, AppSetting.CANNED_RESPONSES, R.string.settingCannedResponses, R.string.settingCannedResponsesDescription));
         category.add(new WritingPhrasesItem(settingsStorage, AppSetting.WRITING_PHRASES, R.string.settingWritingPhrases, R.string.settingWritingPhrasesDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.DISMISS_AFTER_REPLY, R.string.settingDismissAfterReply, R.string.settingDismissAfterReplyDescription));
         category.add(new TaskerTaskListItem(settingsStorage, AppSetting.TASKER_ACTIONS, R.string.settingTaskerActions, R.string.settingTaskerActionsDescription));
         category.add(new IntentActionsItem(settingsStorage, AppSetting.INTENT_ACTIONS_NAMES, R.string.settingBroadcastIntentActions, R.string.settingBroadcastIntentActionsDescription));
         settings.add(new SettingsCategory(R.string.settingCategoryActions, category));

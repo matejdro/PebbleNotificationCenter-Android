@@ -251,6 +251,12 @@ public class WearVoiceAction extends NotificationAction
             e.printStackTrace();
         }
 
+        if (parent.source.getSettingStorage(context).getBoolean(AppSetting.DISMISS_AFTER_REPLY))
+        {
+            DismissUpwardsModule.dismissNotification(context, parent.source.getKey());
+            if (NotificationHandler.isNotificationListenerSupported())
+                JellybeanNotificationListener.dismissNotification(parent.source.getKey());
+        }
     }
 
     public class WearCannedResponseList extends ActionList
@@ -284,9 +290,6 @@ public class WearVoiceAction extends NotificationAction
                     return false;
 
                 sendReply(cannedResponseList.get(id), service);
-//                DismissUpwardsModule.dismissNotification(service, parent.source.getKey());
-//                if (NotificationHandler.isNotificationListenerSupported())
-//                    JellybeanNotificationListener.dismissNotification(parent.source.getKey());
             }
 
             return true;

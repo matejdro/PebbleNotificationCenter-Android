@@ -340,9 +340,10 @@
         hears from your pocket) or mic on your headphones.
     </string>
     <string name="settingEnableWritingReply">Enable writing reply</string>
-
     <string name="settingEnableWritingReplyDescription">When this setting is enabled, you write reply messages from your Pebble.
     </string>
+    <string name="settingDismissAfterReply">Dismiss notification after replying</string>
+    <string name="settingDismissAfterReplyDescription">Some apps do not automatically dismiss notification after you reply to it. By checking this option NC will take care of it.</string>
 
     <string name="settingUseWearGroupNotifications">Use Wear group notifications</string>
     <string name="settingUseWearGroupNotificationsDescription">Instead of inbox notifications, display group
