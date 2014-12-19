@@ -66,6 +66,11 @@
             android:entries="@array/lightNotifications"
             android:entryValues="@array/lightNotificationValues"
             android:defaultValue="2" />
+        <EditTextPreference
+                android:defaultValue="4"
+                android:key="lightTimeout"
+                android:summary="If above setting is on, light will be on for this amount of seconds"
+                android:title="Light timeout"/>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="noVibrateCharge"

@@ -105,11 +105,22 @@ public class SystemModule extends CommModule
                 break;
         }
 
+        int lightTimeout = 4;
+        try
+        {
+            lightTimeout = Math.min(100, Integer.parseInt(getService().getGlobalSettings().getString("lightTimeout", "4")));
+        }
+        catch (NumberFormatException e)
+        {
+
+        }
+
         configBytes[0] = (byte) Integer.parseInt(getService().getGlobalSettings().getString(PebbleNotificationCenter.FONT_TITLE, "6"));
         configBytes[1] = (byte) Integer.parseInt(getService().getGlobalSettings().getString(PebbleNotificationCenter.FONT_SUBTITLE, "5"));
         configBytes[2] = (byte) Integer.parseInt(getService().getGlobalSettings().getString(PebbleNotificationCenter.FONT_BODY, "4"));
         configBytes[3] = (byte) (timeout >>> 0x08);
         configBytes[4] = (byte) timeout;
+        configBytes[5] = (byte) lightTimeout;
 
         byte flags = 0;
         flags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) ? 0x02 : 0);

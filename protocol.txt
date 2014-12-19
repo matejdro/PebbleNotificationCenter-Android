@@ -88,6 +88,7 @@ Phone --> Pebble
 					[2] = Body font (0-17)
 					[3] = Timeout in seconds (first byte)
 					[4] = Timeout in seconds (second byte)
+					[5] = Light timeout in seconds
 					[7] = Flags
 						First bit (0x01) = Vibration enabled
 						Second bit (0x02) = Display closing screen (needed for "switch to last app" feature)
@@ -102,6 +103,7 @@ Phone --> Pebble
 					[10] = Shake action
 					[11] = Periodic vibration timeout in seconds (first byte)
 					[12] = Periodic vibration timeout in seconds (second byte)
+
 
 			Packet 1 - Hide hourglass
 			Hides hourglass from Notifications window (when action was performed successfully but there is nothing else to tell Pebble)

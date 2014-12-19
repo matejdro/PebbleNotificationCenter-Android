@@ -53,6 +53,8 @@ public class SettingsActivity extends PreferenceActivity {
         timeoutPreference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
         timeoutPreference = (EditTextPreference) findPreference("periodicVibrationTimeout");
         timeoutPreference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+        timeoutPreference = (EditTextPreference) findPreference("lightTimeout");
+        timeoutPreference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 
         try
         {
