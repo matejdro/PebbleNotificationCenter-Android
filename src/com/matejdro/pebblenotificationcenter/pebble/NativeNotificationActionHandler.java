@@ -1,7 +1,5 @@
 package com.matejdro.pebblenotificationcenter.pebble;
 
-import android.app.Notification;
-import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
@@ -72,14 +70,20 @@ public class NativeNotificationActionHandler
             if (voiceAction.containsVoiceOption() && replyText.equals("Voice"))
             {
                 voiceAction.showVoicePrompt(service);
-                return;
             }
-
-            voiceAction.sendReply(replyText, service);
+            else
+            {
+                voiceAction.sendReply(replyText, service);
+            }
         }
         else
         {
             action.executeAction(service, notification);
+        }
+
+        if (service.getGlobalSettings().getBoolean("nativeSendSuccessMessage", false))
+        {
+            service.getDeveloperConnection().sendActionACKNACKCheckmark(notificationId, actionId + 1, "Done");
         }
     }
 }

@@ -54,6 +54,8 @@ public class PebbleDeveloperConnection extends WebSocketClient
     @Override
     public void onMessage(ByteBuffer bytes)
     {
+        Timber.d("DevCon message " + LogWriter.bytesToHex(bytes.array()));
+
         int source = bytes.get();
         if (source == 0) //Message from watch
         {
@@ -219,7 +221,7 @@ public class PebbleDeveloperConnection extends WebSocketClient
                         int size = 0;
                         for (String response : voiceAction.getCannedResponseList())
                         {
-                            size += Math.min(20, response.length()) + 1;
+                            size += Math.min(20, response.getBytes().length) + 1;
                         }
                         writeUnsignedShortLittleEndian(dataStream, size); //Size of canned response list
 
@@ -282,11 +284,11 @@ public class PebbleDeveloperConnection extends WebSocketClient
         message[1] = (byte) (size >> 8);
         message[2] = (byte) size;
 
-        send(message);
+       // send(message);
     }
 
 
-    public void sendNotificationActionStatus(int notificationId, int actionId, int icon)
+    public void sendActionACKNACKCheckmark(int notificationId, int actionId, String text)
     {
         if (!isOpen())
             return;
@@ -301,8 +303,11 @@ public class PebbleDeveloperConnection extends WebSocketClient
             dataStream.writeShort(3010); //Endpoint - EXTENSIBLE_NOTIFICATION
             dataStream.writeByte(17); //ACKNACK type
             writeUnsignedIntLittleEndian(dataStream, notificationId); //notificaiton id
-            dataStream.write(actionId); //Action ID
-            writeUnsignedIntLittleEndian(dataStream, icon); //Icon type
+            dataStream.writeByte(actionId); //Action ID
+            dataStream.writeByte(00); //Icon attribute
+            dataStream.writeByte(01); //Checkmark icon
+            dataStream.writeByte(02); //Subtitle attribute
+            writeUTFPebbleString(dataStream, text, 32);
         } catch (IOException e)
         {
             e.printStackTrace();
