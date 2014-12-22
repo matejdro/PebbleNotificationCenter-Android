@@ -54,8 +54,6 @@ public class PebbleDeveloperConnection extends WebSocketClient
     @Override
     public void onMessage(ByteBuffer bytes)
     {
-        Timber.d("DevCon message " + LogWriter.bytesToHex(bytes.array()));
-
         int source = bytes.get();
         if (source == 0) //Message from watch
         {
@@ -284,6 +282,7 @@ public class PebbleDeveloperConnection extends WebSocketClient
         message[1] = (byte) (size >> 8);
         message[2] = (byte) size;
 
+        //Disabled until it actually works just to prevent any problems
        // send(message);
     }
 
