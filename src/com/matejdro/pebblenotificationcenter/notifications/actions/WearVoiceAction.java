@@ -81,7 +81,7 @@ public class WearVoiceAction extends NotificationAction
         return new WearVoiceAction(title, actionIntent, key, choicesString);
     }
 
-    @TargetApi(value = Build.VERSION_CODES.L)
+    @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
     public static NotificationAction parseFromAction(Notification.Action action)
     {
         String title = action.title.toString() + " (Wear)";
