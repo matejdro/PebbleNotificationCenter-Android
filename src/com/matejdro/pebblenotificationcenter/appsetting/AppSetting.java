@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter.appsetting;
 
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public enum AppSetting
     DISMISS_UPRWADS("syncDismissUp", true),
     SAVE_TO_HISTORY("saveToHistory", true),
     CUSTOM_TITLE("customTitle", ""),
+    MAXIMUM_TEXT_LENGTH("maximumTextLength", Integer.toString(NotificationSendingModule.TEXT_LIMIT)),
     USE_WEAR_GROUP_NOTIFICATIONS("useWearGroupNotifications", true),
     RESPECT_ANDROID_INTERRUPT_FILTER("respectAndroidInterruptFilter", false),
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),

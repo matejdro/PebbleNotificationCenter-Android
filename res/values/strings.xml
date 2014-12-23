@@ -444,6 +444,14 @@
     <string name="settingDisableLocalOnlyNotificationsDescription">Apps can mark notifications as local only, which means they should not leave the phone. When checked, NC will respect that option. You can use this to quickly filter out notifications that are useless on the watch (for example app updates), but keep in mind that not apps support it and some apps might falsely mark it.</string>
     <string name="settingCustomTitle">Custom title</string>
     <string name="settingCustomTitleDescription">Use this title instead of application name. Useful if application\'s name is too long. Leave empty to use default app name. Leave just one space to remove app title altogether.</string>
+    <string name="settingMaximumLength">Maximum text length</string>
+    <string name="settingMaximumLengthDescription">
+        NC watchapp can store about 4000 english characters and is limited to displaying 10 notifications at once. Each notification is limited to 2000 characters for performance reasons.\n\n
+
+        That means you can display anywhere between 2 long notifications or 10 short notifications. If app generates notifications that are very long and you generally don\'t read them fully, you can limit length of them to fit as many of them on the watch as possible.\n\n
+
+        Also keep in mind that emoji and non-english characters usually take more space than plain english characters so notifications containing them will take more space.
+    </string>
 
 
 </resources>

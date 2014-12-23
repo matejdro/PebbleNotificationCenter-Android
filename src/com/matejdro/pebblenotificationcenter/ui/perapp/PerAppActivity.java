@@ -108,6 +108,7 @@ public class PerAppActivity extends Activity
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SAVE_TO_HISTORY, R.string.settingSaveToHistory, R.string.settingSaveToHistoryDescription));
         if (version(Build.VERSION_CODES.JELLY_BEAN_MR2)) category.add(new CheckBoxItem(settingsStorage, AppSetting.DISMISS_UPRWADS, R.string.settingDismissUpwards, R.string.settingDismissUpwardsDescripition));
         category.add(new EditTextItem(settingsStorage, AppSetting.CUSTOM_TITLE, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL, R.string.settingCustomTitle, R.string.settingCustomTitleDescription));
+        category.add(new EditTextItem(settingsStorage, AppSetting.MAXIMUM_TEXT_LENGTH, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingMaximumLength, R.string.settingMaximumLengthDescription));
         settings.add(new SettingsCategory(0, category));
 
         //Actions

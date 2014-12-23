@@ -16,6 +16,7 @@ import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotification
 import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
+import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ public class NotificationSendingModule extends CommModule
     public static final int MODULE_NOTIFICATION_SENDING = 1;
     public static final String INTENT_NOTIFICATION = "Notification";
 
-    public static final int TEXT_LIMIT = 850;
+    public static final int TEXT_LIMIT = 2000;
 
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
@@ -97,6 +98,7 @@ public class NotificationSendingModule extends CommModule
         if (notificationSource.getTitle().trim().equals(notificationSource.getSubtitle().trim()))
             notificationSource.setSubtitle("");
 
+        int textLimit = getMaximumTextLength(settingStorage);
 
         if (!notificationSource.isListNotification())
         {
@@ -113,11 +115,11 @@ public class NotificationSendingModule extends CommModule
                     settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
                     canDisplayWearGroupNotification(notification.source, settingStorage))
             {
-                getService().getHistoryDatabase().storeNotification(System.currentTimeMillis(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), TEXT_LIMIT, true));
+                getService().getHistoryDatabase().storeNotification(System.currentTimeMillis(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), textLimit, true));
             }
         }
 
-        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), TEXT_LIMIT));
+        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), textLimit));
         notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
         notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
 
@@ -337,8 +339,6 @@ public class NotificationSendingModule extends CommModule
         PebbleDictionary data = new PebbleDictionary();
         List<Byte> vibrationPattern = getVibrationPattern(curSendingNotification, settingStorage);
 
-        byte[] configBytes = new byte[5 + vibrationPattern.size()];
-
         int amountOfActions = 0;
         if (curSendingNotification.source.getActions() != null)
             amountOfActions = curSendingNotification.source.getActions().size();
@@ -354,13 +354,17 @@ public class NotificationSendingModule extends CommModule
             flags |= (byte) (settingStorage.getInt(AppSetting.SELECT_HOLD_ACTION) == 2 ? 0x20 : 0);
         }
 
+        byte[] configBytes = new byte[7 + vibrationPattern.size()];
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
         configBytes[3] = (byte) amountOfActions;
-        configBytes[4] = (byte) vibrationPattern.size();
+        configBytes[4] = (byte) (curSendingNotification.source.getText().length() >>> 0x08);
+        configBytes[5] = (byte) curSendingNotification.source.getText().length();
+        configBytes[6] = (byte) vibrationPattern.size();
+
         for (int i = 0; i < vibrationPattern.size(); i++)
-            configBytes[5 + i] = vibrationPattern.get(i);
+            configBytes[7 + i] = vibrationPattern.get(i);
 
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 0);
@@ -535,5 +539,21 @@ public class NotificationSendingModule extends CommModule
     public static NotificationSendingModule get(PebbleTalkerService service)
     {
         return (NotificationSendingModule) service.getModule(MODULE_NOTIFICATION_SENDING);
+    }
+
+    public static int getMaximumTextLength(AppSettingStorage storage)
+    {
+        int limit = TEXT_LIMIT;
+
+        try
+        {
+            limit = Math.min(Integer.parseInt(storage.getString(AppSetting.MAXIMUM_TEXT_LENGTH)), TEXT_LIMIT);
+        }
+        catch (NumberFormatException e)
+        {
+
+        }
+
+        return limit;
     }
 }

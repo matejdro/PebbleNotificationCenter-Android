@@ -3,6 +3,7 @@ package com.matejdro.pebblenotificationcenter.pebble;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.TextureView;
 import com.getpebble.android.kit.Constants;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.lists.NotificationListAdapter;
@@ -18,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
@@ -205,25 +207,29 @@ public class PebbleDeveloperConnection extends WebSocketClient
                     if (action instanceof WearVoiceAction)
                     {
                         WearVoiceAction voiceAction = (WearVoiceAction) action;
-                        voiceAction.populateCannedList(context, notification);
+                        voiceAction.populateCannedList(context, notification, true);
 
                         dataStream.writeByte(3); //Action type. 3 = text
                         dataStream.writeByte(2); //2 attributes
 
                         //Text attribute
                         dataStream.writeByte(1); //Attribute Type = 1 (title)
-                        writeUTFPebbleString(dataStream, action.getActionText(), 64);
+                        writeUTFPebbleString(dataStream, TextUtil.prepareString(action.getActionText(), 64), 64);
 
                         //Responses attribute
                         dataStream.writeByte(8); //Attribute Type = 8 (canned responses)
                         int size = 0;
+                        List<String> responses = new ArrayList<String>(voiceAction.getCannedResponseList().size());
                         for (String response : voiceAction.getCannedResponseList())
                         {
+                            response = TextUtil.prepareString(response, 20);
+                            responses.add(response);
+
                             size += Math.min(20, response.getBytes().length) + 1;
                         }
                         writeUnsignedShortLittleEndian(dataStream, size); //Size of canned response list
 
-                        for (String response : voiceAction.getCannedResponseList())
+                        for (String response : responses)
                         {
                             writeNullTerminatedPebbleString(dataStream, response, 20); //Write responses
                         }
