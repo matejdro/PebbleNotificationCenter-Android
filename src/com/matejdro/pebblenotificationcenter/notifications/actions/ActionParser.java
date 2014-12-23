@@ -116,7 +116,7 @@ public class ActionParser
                         PebbleNotification pageNotification = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, new NotificationKey(null, null, null), (Notification) page, false);
                         pageNotification.setForceSwitch(true);
                         pageNotification.setScrollToEnd(true);
-                        pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), NotificationSendingModule.TEXT_LIMIT));
+                        pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), NotificationSendingModule.getMaximumTextLength(pebbleNotification.getSettingStorage(context))));
 
                         storage.add(new NotifyAction(context.getString(R.string.wearPageAction, counter), pageNotification));
 
