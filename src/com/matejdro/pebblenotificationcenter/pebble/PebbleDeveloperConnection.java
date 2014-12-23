@@ -207,7 +207,7 @@ public class PebbleDeveloperConnection extends WebSocketClient
                     if (action instanceof WearVoiceAction)
                     {
                         WearVoiceAction voiceAction = (WearVoiceAction) action;
-                        voiceAction.populateCannedList(context, notification);
+                        voiceAction.populateCannedList(context, notification, true);
 
                         dataStream.writeByte(3); //Action type. 3 = text
                         dataStream.writeByte(2); //2 attributes

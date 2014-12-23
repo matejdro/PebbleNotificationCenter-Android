@@ -111,7 +111,7 @@ public class WearVoiceAction extends NotificationAction
         return new WearVoiceAction(title, actionIntent, key, choicesString);
     }
 
-    public void populateCannedList(Context context, ProcessedNotification notification)
+    public void populateCannedList(Context context, ProcessedNotification notification, boolean nativeMode)
     {
         parent = notification;
         cannedResponseList = new ArrayList<String>();
@@ -122,7 +122,7 @@ public class WearVoiceAction extends NotificationAction
             voiceItemIndex = cannedResponseList.size() - 1;
         }
 
-        if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_WRITING_REPLY))
+        if (!nativeMode && notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_WRITING_REPLY))
         {
             cannedResponseList.add("Write");
             writeItemIndex = cannedResponseList.size() - 1;
@@ -190,7 +190,7 @@ public class WearVoiceAction extends NotificationAction
     @Override
     public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
     {
-        populateCannedList(service, notification);
+        populateCannedList(service, notification, false);
 
         ActionsModule.get(service).showList(new WearCannedResponseList());
         return true;
