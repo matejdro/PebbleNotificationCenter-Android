@@ -2,9 +2,12 @@ package com.matejdro.pebblenotificationcenter.ui;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -108,7 +111,9 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
             case R.id.restoreConfig:
                 restoreConfig();
                 break;
-
+            case R.id.help:
+                openHelpWebpage();
+                break;
             default:
                 return false;
 		}
@@ -250,6 +255,23 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
 
         builder.show();
     }
+
+    public void openHelpWebpage()
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        intent.setData(Uri.parse("https://docs.google.com/document/d/1P6OUhs91ESYrHAC-O5Axz81HSTFuNjQei-4URxmcSIA/pub"));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try
+        {
+            startActivity(intent);
+        }
+        catch (ActivityNotFoundException e)
+        {
+        }
+    }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary

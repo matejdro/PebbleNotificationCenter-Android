@@ -14,28 +14,35 @@
         />
 
     <item
+            android:id="@+id/help"
+            android:title="@string/help"
+            android:orderInCategory="7"
+            />
+
+
+    <item
             android:id="@+id/clearHistory"
             android:title="@string/clearHistory"
-            android:orderInCategory="7"
+            android:orderInCategory="8"
             />
 
     <item
             android:id="@+id/openInPebbleApp"
             android:title="@string/openInPebbleAppStore"
-            android:orderInCategory="8"
+            android:orderInCategory="9"
             />
 
     <item
             android:id="@+id/backupConfig"
             android:title="@string/backupConfigMenuOption"
-            android:orderInCategory="9"
+            android:orderInCategory="10"
             />
 
 
     <item
             android:id="@+id/restoreConfig"
             android:title="@string/restoreConfigMenuOption"
-            android:orderInCategory="9"
+            android:orderInCategory="11"
             />
 
 

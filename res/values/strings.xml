@@ -452,6 +452,7 @@
 
         Also keep in mind that emoji and non-english characters usually take more space than plain english characters so notifications containing them will take more space.
     </string>
+    <string name="help">Help / FAQ</string>
 
 
 </resources>
