@@ -214,7 +214,7 @@ public class PebbleDeveloperConnection extends WebSocketClient
 
                         //Text attribute
                         dataStream.writeByte(1); //Attribute Type = 1 (title)
-                        writeUTFPebbleString(dataStream, action.getActionText(), 64);
+                        writeUTFPebbleString(dataStream, TextUtil.prepareString(action.getActionText(), 64), 64);
 
                         //Responses attribute
                         dataStream.writeByte(8); //Attribute Type = 8 (canned responses)
