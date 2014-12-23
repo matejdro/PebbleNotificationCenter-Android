@@ -223,7 +223,7 @@ public class SystemModule extends CommModule
             };
         }
 
-        SparseArray<CommModule> modules = getService().modules;
+        SparseArray<CommModule> modules = getService().getAllModules();
         for (int i = 0 ; i < modules.size(); i++)
             modules.valueAt(i).pebbleAppOpened();
 

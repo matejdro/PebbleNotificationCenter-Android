@@ -43,8 +43,8 @@ public class PebbleTalkerService extends Service
 
     private LocationLookup locationLookup;
 
-    public SparseArray<CommModule> modules = new SparseArray<CommModule>();
-    public HashMap<String, CommModule> registeredIntents = new HashMap<String, CommModule>();
+    private SparseArray<CommModule> modules = new SparseArray<CommModule>();
+    private HashMap<String, CommModule> registeredIntents = new HashMap<String, CommModule>();
 
     private Handler handler;
 
