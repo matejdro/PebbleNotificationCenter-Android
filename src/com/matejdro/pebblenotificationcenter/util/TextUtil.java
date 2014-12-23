@@ -24,11 +24,6 @@ public class TextUtil
         text = trimString(text, length, true);
         text = fixInternationalCharacters(text);
 
-        if (RTLUtility.getInstance().isRTL(text))
-        {
-            text = RTLUtility.getInstance().format(text, 15);
-        }
-
         return trimString(text, length, true);
     }
 
@@ -42,6 +37,11 @@ public class TextUtil
         for (Map.Entry<String, String> e : replacementTable.entrySet())
         {
             input = input.replace(e.getKey(), e.getValue());
+        }
+
+        if (RTLUtility.getInstance().isRTL(input))
+        {
+            input = RTLUtility.getInstance().format(input, 15);
         }
 
         return input;
@@ -75,7 +75,6 @@ public class TextUtil
 
             if (trailingElipsis)
                 text = text + "...";
-
         }
 
         return text;
