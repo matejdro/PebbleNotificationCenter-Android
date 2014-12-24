@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.matejdro.pebblenotificationcenter"
-    android:versionCode="47"
-    android:versionName="2.37" >
+    android:versionCode="90"
+    android:versionName="2.42" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -14,17 +14,20 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-
     <uses-permission android:name="net.dinglisch.android.tasker.PERMISSION_RUN_TASKS" />
 
-    <uses-feature android:name="android.hardware.microphone" android:required="false" />
-    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false" />
 
     <application
+        android:name=".PebbleNotificationCenter"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:name=".PebbleNotificationCenter"
         android:theme="@style/AppTheme" >
         <service
             android:name="com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener"
@@ -39,12 +42,11 @@
             android:name="com.matejdro.pebblenotificationcenter.notifications.AccesibilityNotificationListener"
             android:enabled="@bool/useAccesibility"
             android:label="Notification Center for Pebble"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-             >
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_config" />
- 
+
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -57,7 +59,8 @@
             </intent-filter>
         </service>
 
-        <receiver android:name="com.matejdro.pebblenotificationcenter.DataReceiver"
+        <receiver
+            android:name="com.matejdro.pebblenotificationcenter.DataReceiver"
             android:exported="true" >
             <intent-filter>
                 <action android:name="com.getpebble.action.app.RECEIVE" />
@@ -85,7 +88,8 @@
         <activity android:name=".ui.SettingsActivity" >
         </activity>
 
-        <receiver android:name="com.matejdro.pebblenotificationcenter.CustomNotificationCatcher"
+        <receiver
+            android:name="com.matejdro.pebblenotificationcenter.CustomNotificationCatcher"
             android:exported="true" >
             <intent-filter>
                 <action android:name="com.getpebble.action.SEND_NOTIFICATION" />
@@ -94,36 +98,48 @@
 
         <activity android:name=".ui.LicenseActivity" >
         </activity>
-
         <activity android:name=".ui.perapp.PerAppActivity" />
-
-        <activity android:name=".tasker.TaskerActionPickerActivity"
-                  android:label="@string/title_activity_main"
-                  android:exported="true">
+        <activity
+            android:name=".tasker.TaskerActionPickerActivity"
+            android:exported="true"
+            android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
         <activity android:name=".tasker.TaskerNotificationActivity" />
-        <activity android:name=".tasker.TaskerGlobalSettingsActivity"/>
-        <activity android:name=".tasker.TaskerAppListActivity"/>
-        <activity android:name=".tasker.TaskerAppSettingsActivity"/>
-        <activity android:name=".tasker.TaskerDismissActivity"/>
+        <activity android:name=".tasker.TaskerGlobalSettingsActivity" />
+        <activity android:name=".tasker.TaskerAppListActivity" />
+        <activity android:name=".tasker.TaskerAppSettingsActivity" />
+        <activity android:name=".tasker.TaskerDismissActivity" />
 
-        <receiver android:name=".tasker.TaskerReceiver"
+        <receiver
+            android:name=".tasker.TaskerReceiver"
             android:exported="true" >
             <intent-filter>
-                  <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
-              </intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
+            </intent-filter>
         </receiver>
-        <receiver android:name=".util.BluetoothHeadsetListener">
+        <receiver android:name=".util.BluetoothHeadsetListener" >
             <intent-filter>
                 <action android:name="android.bluetooth.headset.profile.action.CONNECTION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
 
-
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="048e0255b748bd3c0abc33c75a2601ff67b550c8"/>
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="048e0255b748bd3c0abc33c75a2601ff67b550c8" />
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="Fixes some stuff with the Notification Center for Pebble app." />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="54" />
+    </application>
+    <application>
     </application>
 
 </manifest>
