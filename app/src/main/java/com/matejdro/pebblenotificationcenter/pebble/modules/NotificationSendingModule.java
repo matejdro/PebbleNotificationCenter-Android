@@ -15,6 +15,7 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
+import com.matejdro.pebblenotificationcenter.util.DeviceUtil;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
@@ -138,8 +139,7 @@ public class NotificationSendingModule extends CommModule
 
             if (settingStorage.getBoolean(AppSetting.DISABLE_NOTIFY_SCREEN_OIN))
             {
-                PowerManager pm = (PowerManager) getService().getSystemService(Context.POWER_SERVICE);
-                if (pm.isScreenOn())
+                if (DeviceUtil.isScreenOn(getService()))
                 {
                     Timber.d("notify failed - screen is on");
                     return;
