@@ -24,7 +24,7 @@
                 android:defaultValue="false"
                 android:key="nativeSendSuccessMessage"
                 android:title="Enable Failed fix"
-                android:summary="Enable fix for \'Failed\' message when you execute action in native notification. DO NOT CHECK WITHOUT ENABLING XPOSED MODULE INSTALLED, otherwise your Pebble will reboot after executing action."/>
+                android:summary="Enable fix for \'Failed\' message when you execute action in native notification. DO NOT CHECK WITHOUT ENABLING INCLUDED XPOSED MODULE, otherwise your Pebble will reboot after executing action."/>
 
     </PreferenceCategory>
     <PreferenceCategory android:title="Watchapp" >
