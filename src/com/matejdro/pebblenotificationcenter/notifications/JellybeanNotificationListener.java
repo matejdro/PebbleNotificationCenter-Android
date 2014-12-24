@@ -80,6 +80,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
         if (key.getLolipopKey() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             instance.cancelNotification(key.getLolipopKey());
         else
+            //noinspection deprecation
             instance.cancelNotification(key.getPackage(), key.getTag(), key.getAndroidId());
     }
 
