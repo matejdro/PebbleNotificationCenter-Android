@@ -354,13 +354,15 @@ public class NotificationSendingModule extends CommModule
             flags |= (byte) (settingStorage.getInt(AppSetting.SELECT_HOLD_ACTION) == 2 ? 0x20 : 0);
         }
 
+        int textLength = curSendingNotification.source.getText().getBytes().length;
+
         byte[] configBytes = new byte[7 + vibrationPattern.size()];
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
         configBytes[3] = (byte) amountOfActions;
-        configBytes[4] = (byte) (curSendingNotification.source.getText().length() >>> 0x08);
-        configBytes[5] = (byte) curSendingNotification.source.getText().length();
+        configBytes[4] = (byte) (textLength >>> 0x08);
+        configBytes[5] = (byte) textLength;
         configBytes[6] = (byte) vibrationPattern.size();
 
         for (int i = 0; i < vibrationPattern.size(); i++)
