@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.matejdro.pebblenotificationcenter"
-    android:versionCode="54"
-    android:versionName="2.4b7" >
-
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="21" />
+    android:versionCode="55"
+    android:versionName="2.4b8" >
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
