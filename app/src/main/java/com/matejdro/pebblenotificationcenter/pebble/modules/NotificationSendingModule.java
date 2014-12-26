@@ -356,17 +356,18 @@ public class NotificationSendingModule extends CommModule
 
         int textLength = curSendingNotification.source.getText().getBytes().length;
 
-        byte[] configBytes = new byte[7 + vibrationPattern.size()];
+        byte[] configBytes = new byte[8 + vibrationPattern.size()];
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
         configBytes[3] = (byte) amountOfActions;
         configBytes[4] = (byte) (textLength >>> 0x08);
         configBytes[5] = (byte) textLength;
-        configBytes[6] = (byte) vibrationPattern.size();
+        configBytes[6] = (byte) settingStorage.getInt(AppSetting.SHAKE_ACTION);
+        configBytes[7] = (byte) vibrationPattern.size();
 
         for (int i = 0; i < vibrationPattern.size(); i++)
-            configBytes[7 + i] = vibrationPattern.get(i);
+            configBytes[8 + i] = vibrationPattern.get(i);
 
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 0);

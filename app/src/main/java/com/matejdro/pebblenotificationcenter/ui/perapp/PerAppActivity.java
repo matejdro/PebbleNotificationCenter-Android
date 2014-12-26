@@ -113,11 +113,12 @@ public class PerAppActivity extends Activity
 
         //Actions
         category = new ArrayList<BaseSettingItem>();
-        category.add(new SpinnerItem(settingsStorage, AppSetting.SELECT_PRESS_ACTION, R.array.settingSelectButtonAction, R.string.settingSelectPress, R.string.settingSelectHoldDescription));
-        category.add(new SpinnerItem(settingsStorage, AppSetting.SELECT_HOLD_ACTION, R.array.settingSelectButtonAction, R.string.settingSelectHold, R.string.settingSelectHoldDescription));
-        if (version(Build.VERSION_CODES.JELLY_BEAN_MR2)) category.add(new SpinnerItem(settingsStorage, AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingDismissOnPhone, 0));
-        category.add(new SpinnerItem(settingsStorage, AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingDismissOnPebble, 0));
-        category.add(new SpinnerItem(settingsStorage, AppSetting.OPEN_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingOpenOnPhonePosition, 0));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.SELECT_PRESS_ACTION, R.array.settingSelectButtonAction, R.string.settingSelectPress, R.string.settingSelectPressDescription, R.array.settingSelectButtonActionValues));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.SELECT_HOLD_ACTION, R.array.settingSelectButtonAction, R.string.settingSelectHold, R.string.settingSelectHoldDescription, R.array.settingSelectButtonActionValues));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.SHAKE_ACTION, R.array.settingShakeAction, R.string.settingShakeAction, R.string.settingShakeActionDescription, R.array.settingShakeActionValues));
+        if (version(Build.VERSION_CODES.JELLY_BEAN_MR2)) category.add(new SpinnerItem(settingsStorage, AppSetting.DISMISS_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingDismissOnPhone, 0, null));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.DISMISS_ON_PEBBLE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingDismissOnPebble, 0, null));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.OPEN_ON_PHONE_OPTION_LOCATION, R.array.settingActionVisibility, R.string.settingOpenOnPhonePosition, 0, null));
         if (version(Build.VERSION_CODES.JELLY_BEAN)) category.add(new CheckBoxItem(settingsStorage, AppSetting.LOAD_WEAR_ACTIONS, R.string.settingLoadWearActions, R.string.settingLoadWearActionsDescription));
         if (version(Build.VERSION_CODES.JELLY_BEAN)) category.add(new CheckBoxItem(settingsStorage, AppSetting.LOAD_PHONE_ACTIONS, R.string.settingLoadPhoneActions, R.string.settingLoadPhoneActionsDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_VOICE_REPLY, R.string.settingEnableVoiceReply, R.string.settingEnableVoiceReplyDescription));

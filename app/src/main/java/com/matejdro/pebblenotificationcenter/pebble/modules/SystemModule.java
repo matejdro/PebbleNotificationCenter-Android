@@ -136,7 +136,6 @@ public class SystemModule extends CommModule
 
         configBytes[8] = (byte) (WatchappHandler.SUPPORTED_PROTOCOL >>> 0x08);
         configBytes[9] = (byte) WatchappHandler.SUPPORTED_PROTOCOL;
-        configBytes[10] = (byte) Integer.parseInt(getService().getGlobalSettings().getString(PebbleNotificationCenter.SHAKE_ACTION, "1"));
         configBytes[11] = (byte) (vibratingTimeout >>> 0x08);
         configBytes[12] = (byte) vibratingTimeout;
 

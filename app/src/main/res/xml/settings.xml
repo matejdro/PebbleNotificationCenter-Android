@@ -84,13 +84,6 @@
             android:key="noVibrateCharge"
             android:title="Don&apos;t vibrate when charging" />
 
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/shakeActions"
-            android:entryValues="@array/shakeActionValues"
-            android:key="shakeAction"
-            android:title="Action on shake" />
-
         <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="invertColors"

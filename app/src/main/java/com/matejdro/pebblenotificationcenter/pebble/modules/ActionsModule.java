@@ -5,6 +5,7 @@ import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.NotificationActionList;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPhoneAction;
@@ -93,9 +94,9 @@ public class ActionsModule extends CommModule
     private void gotMessageSelectPressed(PebbleDictionary data)
     {
         int id = data.getInteger(2).intValue();
-        boolean hold = data.contains(3);
+        int type = data.getUnsignedIntegerAsLong(3).intValue();
 
-        Timber.d("Select button pressed on Pebble, Hold: " + hold);
+        Timber.d("Button action from Pebble, Type: " + type);
 
         ProcessedNotification notification = getService().sentNotifications.get(id);
         if (notification == null)
@@ -111,7 +112,14 @@ public class ActionsModule extends CommModule
             return;
         }
 
-        AppSetting relevantSetting = hold ? AppSetting.SELECT_HOLD_ACTION : AppSetting.SELECT_PRESS_ACTION;
+        AppSetting relevantSetting;
+        if (type == 0)
+            relevantSetting = AppSetting.SELECT_PRESS_ACTION;
+        else if (type == 1)
+            relevantSetting = AppSetting.SELECT_HOLD_ACTION;
+        else
+            relevantSetting = AppSetting.SHAKE_ACTION;
+
         AppSettingStorage settingStorage = notification.source.getSettingStorage(getService());
 
         int action = settingStorage.getInt(relevantSetting);
@@ -121,7 +129,7 @@ public class ActionsModule extends CommModule
             this.notification = notification;
             showList(new NotificationActionList(notification));
         }
-        else if (action == 0)
+        else if (action == 0 || action == 60 || action == 61) //Do nothing on disabled and stop periodic vibration actions
         {
             Timber.d("Action was set to none");
             SystemModule.get(getService()).hideHourglass();
@@ -130,6 +138,10 @@ public class ActionsModule extends CommModule
         else if (action == 1)
         {
             DismissOnPhoneAction.dismissOnPhone(notification, getService());
+        }
+        else if (action == 62)
+        {
+            DismissUpwardsModule.dismissPebbleID(getService(), notification.id);
         }
         else
         {

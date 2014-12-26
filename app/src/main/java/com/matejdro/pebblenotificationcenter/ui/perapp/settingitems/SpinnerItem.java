@@ -18,7 +18,9 @@ public class SpinnerItem extends BaseSettingItem
     private AppSetting associatedSetting;
     private int textResource;
     private int descriptionResource;
-    private int spinnerItemsList;
+    private int spinnerItemsListResource;
+    private Integer spinnerItemValuesResource;
+
 
     private TextView nameText;
     private TextView descriptionText;
@@ -27,18 +29,19 @@ public class SpinnerItem extends BaseSettingItem
 
     protected PerAppActivity activity;
 
-    public SpinnerItem(AppSettingStorage settingsStorage, AppSetting associatedSetting, int spinnerItemsList, int textResource, int descriptionResource)
+    public SpinnerItem(AppSettingStorage settingsStorage, AppSetting associatedSetting, int spinnerItemsListResource, int textResource, int descriptionResource, Integer spinnerItemValuesResource)
     {
         super(settingsStorage);
 
-        this.spinnerItemsList = spinnerItemsList;
+        this.spinnerItemsListResource = spinnerItemsListResource;
         this.associatedSetting = associatedSetting;
         this.textResource = textResource;
         this.descriptionResource = descriptionResource;
+        this.spinnerItemValuesResource = spinnerItemValuesResource;
     }
 
     @Override
-    public View getView(PerAppActivity activity)
+    public View getView(final PerAppActivity activity)
     {
         this.activity = activity;
 
@@ -64,17 +67,39 @@ public class SpinnerItem extends BaseSettingItem
             }
         });
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, spinnerItemsList, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, spinnerItemsListResource, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        spinner.setSelection(settingsStorage.getInt(associatedSetting));
+        int selection = settingsStorage.getInt(associatedSetting);
+        if (spinnerItemValuesResource != null)
+        {
+            int[] values = activity.getResources().getIntArray(spinnerItemValuesResource);
+            for (int i = 0; i < values.length; i++)
+            {
+                if (values[i] == selection)
+                {
+                    selection = i;
+                    break;
+                }
+            }
+        }
+        if (selection >= adapter.getCount())
+            selection = 0;
+
+        spinner.setSelection(selection);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                settingsStorage.setInt(associatedSetting, i);
+                int value = i;
+
+                if (spinnerItemValuesResource != null)
+                    value = activity.getResources().getIntArray(spinnerItemValuesResource)[value];
+
+                settingsStorage.setInt(associatedSetting, value);
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView)

@@ -34,6 +34,8 @@ public enum AppSetting
     INBOX_USE_SUB_TEXT("inboxUseSubtext", true),
     SELECT_PRESS_ACTION("selectPressAction", 2),
     SELECT_HOLD_ACTION("selectHoldAction", 0),
+    SHAKE_ACTION("shakeActionNew", 0),
+
     DISMISS_ON_PHONE_OPTION_LOCATION("dismissOnPhoneLocation", 1),
     DISMISS_ON_PEBBLE_OPTION_LOCATION("dismissOnPebbleLocation", 1),
     OPEN_ON_PHONE_OPTION_LOCATION("openOnPhoneLocation", 1),

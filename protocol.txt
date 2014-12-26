@@ -45,16 +45,14 @@ Pebble --> Phone
 
 	MODULE 4 - ACTIONS
 		
-		Packet 0 - SELECT button pressed
+		Packet 0 - SELECT or SHAKE action
 		Sent when user presses SELECT button on notification
 		Additional data:
 			2 = Unique notification id (int32)
-			3 = If present, button was held instead of just pressed.
-
-		Packet 1 - Dismiss notification
-		Requests phone to dismiss notification
-		Additional data:
-			2 = Unique notification id (int32)
+			3 = Action type
+				0 - SELECT press
+				1 - SELECT hold
+				2 - SHAKE
 
 		Packet 2 - Action list item picked
 		Additional data:
@@ -100,7 +98,6 @@ Phone --> Pebble
 						Eight bit (0x80) = Enable notifications
 					[8] = Compatible watchapp version (first byte)
 					[9] = Compatible watchapp version (second byte)
-					[10] = Shake action
 					[11] = Periodic vibration timeout in seconds (first byte)
 					[12] = Periodic vibration timeout in seconds (second byte)
 
@@ -127,8 +124,9 @@ Phone --> Pebble
 				[3] = Number of items in action menu (uint8)	
 				[4] = Length of the text (first byte)
 				[5] = Length of the text (second byte)
-				[6] = Number of bytes in vibration pattern
-				[7,8,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
+				[6] = Shake action
+				[7] = Number of bytes in vibration pattern
+				[8,9,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
 			4 = Title (max 30 bytes) - cstring
 			5 = Subtitle (max 30 bytes) - cstring
 		
@@ -165,7 +163,6 @@ Phone --> Pebble
 	        	[0] = Index of the first canned reponse in this packet
 	        	[1] = Amount of all actions in the list
 	        	[2] = Should I display tertiary text window instead of menu (1 or 0)
-
 	        3 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
 
 

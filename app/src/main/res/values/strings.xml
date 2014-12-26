@@ -141,7 +141,8 @@
 
     <string-array name="settingSelectButtonAction">
         <item>Nothing</item>
-        <item>Dismiss notification</item>
+        <item>Dismiss from Pebble</item>
+        <item>Dismiss from Phone</item>
         <item>Open actions menu</item>
         <item>Action menu item 1</item>
         <item>Action menu item 2</item>
@@ -164,6 +165,91 @@
         <item>Action menu item 19</item>
         <item>Action menu item 20</item>
     </string-array>
+    
+    <integer-array name="settingSelectButtonActionValues">
+        <item>0</item>
+        <item>62</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+    </integer-array>
+
+    <string-array name="settingShakeAction">
+        <item>Nothing</item>
+        <item>Stop periodic vibration</item>
+        <item>Stop periodic vibration and enable autoswitch</item>
+        <item>Dismiss from Pebble</item>
+        <item>Dismiss from Phone</item>
+        <item>Open actions menu</item>
+        <item>Action menu item 1</item>
+        <item>Action menu item 2</item>
+        <item>Action menu item 3</item>
+        <item>Action menu item 4</item>
+        <item>Action menu item 5</item>
+        <item>Action menu item 6</item>
+        <item>Action menu item 7</item>
+        <item>Action menu item 8</item>
+        <item>Action menu item 9</item>
+        <item>Action menu item 10</item>
+        <item>Action menu item 11</item>
+        <item>Action menu item 12</item>
+        <item>Action menu item 13</item>
+        <item>Action menu item 14</item>
+        <item>Action menu item 15</item>
+        <item>Action menu item 16</item>
+        <item>Action menu item 17</item>
+        <item>Action menu item 18</item>
+        <item>Action menu item 19</item>
+        <item>Action menu item 20</item>
+    </string-array>
+
+    <integer-array name="settingShakeActionValues">
+        <item>0</item>
+        <item>60</item>
+        <item>61</item>
+        <item>62</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+    </integer-array>
 
     <string-array name="settingActionVisibility">
         <item>Disable</item>
@@ -397,6 +483,9 @@
     <string name="settingSelectHold">SELECT hold action</string>
     <string name="settingSelectHoldDescription">Same as above except that this actions is executed when you hold SELECT
         button.
+    </string>
+    <string name="settingShakeAction">Shake action</string>
+    <string name="settingShakeActionDescription">Same as above except that this actions is executed when you shake your Pebble. Enable autoswitch action means that Pebble will automatically switch to new notification when it comes if you shook your Pebble on old one.
     </string>
     <string name="settingDismissOnPhone">Dismiss on phone action position</string>
     <string name="settingDismissOnPebble">Dismiss on Pebble action position</string>
