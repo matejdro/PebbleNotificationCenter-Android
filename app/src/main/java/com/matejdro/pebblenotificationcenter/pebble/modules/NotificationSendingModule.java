@@ -116,7 +116,7 @@ public class NotificationSendingModule extends CommModule
                     settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
                     canDisplayWearGroupNotification(notification.source, settingStorage))
             {
-                getService().getHistoryDatabase().storeNotification(notificationSource.getPostTime(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), textLimit, true));
+                getService().getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), textLimit, true));
             }
         }
 

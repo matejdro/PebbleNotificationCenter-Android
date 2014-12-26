@@ -92,10 +92,16 @@ public class PebbleNotification implements Parcelable
         this.dismissable = dismissable;
     }
 
+    public long getRawPostTime()
+    {
+        return postTime;
+    }
+
     public long getPostTime()
     {
         return postTime + TimeZone.getDefault().getOffset(System.currentTimeMillis());
     }
+
 
     public void setPostTime(long postTime)
     {

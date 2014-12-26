@@ -140,7 +140,7 @@ public class ListModule extends CommModule
         data.addUint8(4, (byte) (notification.isDismissable() ? 0 : 1));
         data.addString(5, TextUtil.prepareString(notification.getTitle()));
         data.addString(6, TextUtil.prepareString(notification.getSubtitle()));
-        data.addString(7, getFormattedDate(getService(), notification.getPostTime()));
+        data.addString(7, getFormattedDate(getService(), notification.getRawPostTime()));
         if (openListWindow)
             data.addUint8(999, (byte) 1);
 
