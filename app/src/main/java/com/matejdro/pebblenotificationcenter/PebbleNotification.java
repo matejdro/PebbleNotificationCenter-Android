@@ -7,6 +7,7 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import java.util.ArrayList;
+import java.util.TimeZone;
 
 /**
  * Created by Matej on 22.9.2014.
@@ -93,7 +94,7 @@ public class PebbleNotification implements Parcelable
 
     public long getPostTime()
     {
-        return postTime;
+        return postTime + TimeZone.getDefault().getOffset(System.currentTimeMillis());
     }
 
     public void setPostTime(long postTime)
