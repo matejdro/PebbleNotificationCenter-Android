@@ -54,7 +54,6 @@ public class OptionsFragment extends Fragment {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
 			}
 		});
 
