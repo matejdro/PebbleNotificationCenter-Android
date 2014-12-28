@@ -1,0 +1,18 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "com.matejdro.pebblenotificationcenter"
+        minSdkVersion 14
+        targetSdkVersion 21
+    }}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile group: 'com.google.guava', name: 'guava', version: '18.0'
+    compile files('libs/crashlytics.jar')
+    provided files('libs/XposedBridgeApi-54.jar')
+}

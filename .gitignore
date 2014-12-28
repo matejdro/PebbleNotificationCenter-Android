@@ -5,6 +5,8 @@
 .gradle/
 local.properties
 out/
+build/
+gradle*
 
 bin/
 .classpath

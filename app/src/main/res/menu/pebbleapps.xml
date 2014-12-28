@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+        <item
+        android:id="@+id/allNC"
+        android:title="Set all to NC notification"
+        android:orderInCategory="1"
+       	/>
+
+    <item
+            android:id="@+id/allPebble"
+            android:title="Set all to Pebble notification"
+            android:orderInCategory="2"
+            />
+
+    <item
+            android:id="@+id/allNone"
+            android:title="Set all to no notification"
+            android:orderInCategory="3"
+            />
+
+</menu>
