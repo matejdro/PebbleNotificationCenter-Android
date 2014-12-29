@@ -551,6 +551,8 @@ public class NotificationSendingModule extends CommModule
         try
         {
             limit = Math.min(Integer.parseInt(storage.getString(AppSetting.MAXIMUM_TEXT_LENGTH)), TEXT_LIMIT);
+            if (limit < 4) //Minimum limit is 4 to allow ...
+                limit = 4;
         }
         catch (NumberFormatException e)
         {
