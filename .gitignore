@@ -28,3 +28,5 @@ ehthumbs.db
 Thumbs.db
 
 crashlytics.properties
+com_crashlytics_export_strings.xml
+crashlytics-build.properties
