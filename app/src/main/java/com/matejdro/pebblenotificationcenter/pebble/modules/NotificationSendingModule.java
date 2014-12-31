@@ -331,7 +331,7 @@ public class NotificationSendingModule extends CommModule
         int periodicVibrationInterval = 0;
         try
         {
-            periodicVibrationInterval = Math.min(Integer.parseInt(settingStorage.getString(AppSetting.PERIODIC_VIBRATION)), 128);
+            periodicVibrationInterval = Math.min(Integer.parseInt(settingStorage.getString(AppSetting.PERIODIC_VIBRATION)), 30000);
         } catch (NumberFormatException e)
         {
         }
