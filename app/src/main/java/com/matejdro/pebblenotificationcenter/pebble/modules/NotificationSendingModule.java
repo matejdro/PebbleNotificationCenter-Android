@@ -343,12 +343,14 @@ public class NotificationSendingModule extends CommModule
         if (curSendingNotification.source.getActions() != null)
             amountOfActions = curSendingNotification.source.getActions().size();
 
+        boolean showMenuInstantly = getService().getGlobalSettings().getBoolean("showMenuInstantly", true);
+
         byte flags = 0;
         flags |= (byte) (curSendingNotification.source.isListNotification() ? 0x2 : 0);
         flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || curSendingNotification.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
         flags |= (byte) (curSendingNotification.source.shouldScrollToEnd() ? 0x8 : 0);
 
-        if (amountOfActions > 0)
+        if (amountOfActions > 0 && showMenuInstantly)
         {
             flags |= (byte) ((curSendingNotification.source.shouldForceActionMenu() || settingStorage.getInt(AppSetting.SELECT_PRESS_ACTION) == 2) ? 0x10 : 0);
             flags |= (byte) (settingStorage.getInt(AppSetting.SELECT_HOLD_ACTION) == 2 ? 0x20 : 0);
@@ -363,7 +365,14 @@ public class NotificationSendingModule extends CommModule
         configBytes[3] = (byte) amountOfActions;
         configBytes[4] = (byte) (textLength >>> 0x08);
         configBytes[5] = (byte) textLength;
-        configBytes[6] = (byte) settingStorage.getInt(AppSetting.SHAKE_ACTION);
+
+        int shakeAction = settingStorage.getInt(AppSetting.SHAKE_ACTION);
+        if (shakeAction == 2 && !showMenuInstantly )
+            configBytes[6] = 1;
+        else
+            configBytes[6] = (byte) shakeAction;
+
+
         configBytes[7] = (byte) vibrationPattern.size();
 
         for (int i = 0; i < vibrationPattern.size(); i++)

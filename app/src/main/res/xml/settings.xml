@@ -89,6 +89,13 @@
                 android:key="invertColors"
                 android:title="Invert colors" />
 
+        <CheckBoxPreference
+            android:key="showMenuInstantly"
+            android:title="Show actions menu instantly"
+            android:summary="When this is checked, blank actions menu will be displayed instantly after pressing the button with text delayed. This allows you to pick action even before text arrives from phone if you know where it is (for example if you know dismiss is first option, you can just quickly double tap). When unchecked, menu will appear when text arrives."
+            android:defaultValue="true"
+             />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference 
