@@ -345,6 +345,10 @@ public class SystemModule extends CommModule
     {
         Timber.d("CloseApp " + currentRunningApp);
 
+        NotificationSendingModule notificationSendingModule = NotificationSendingModule.get(getService());
+        if (notificationSendingModule.isAnyNotificationWaiting())
+            return;
+
         if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && canCloseToApp(currentRunningApp) && closeTries < 2)
             PebbleKit.startAppOnPebble(getService(), currentRunningApp);
         else
