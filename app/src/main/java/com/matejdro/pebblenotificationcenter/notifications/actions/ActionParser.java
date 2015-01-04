@@ -3,6 +3,7 @@ package com.matejdro.pebblenotificationcenter.notifications.actions;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -137,20 +138,47 @@ public class ActionParser
         if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
             return;
 
-        Notification.Action[] actions = getActionsField(notification);
+        Object[] actions = getActionsField(notification);
 
         if (actions == null)
             return;
 
-        for (Notification.Action action : actions)
+        //Accessing through reflection is required for 4.2 devices
+        Field titleMethod;
+        Field intentMethod;
+
+        try
+        {
+            Class actionClass = Class.forName("android.app.Notification$Action");
+            titleMethod = actionClass.getDeclaredField("title");
+            intentMethod = actionClass.getDeclaredField("actionIntent");
+        } catch (ClassNotFoundException e) {
+            Crashlytics.logException(e);
+            return;
+        } catch (NoSuchFieldException e) {
+            Crashlytics.logException(e);
+            return;
+        }
+
+
+        for (Object action : actions)
         {
             if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                 break;
 
-            if (action.actionIntent == null || action.title == null)
-                continue;
+            try {
+                CharSequence title = (CharSequence) titleMethod.get(action);
+                PendingIntent intent = (PendingIntent) intentMethod.get(action);
 
-            storage.add(new PendingIntentAction(action.title.toString(), action.actionIntent));
+                if (title == null || intent == null)
+                    continue;
+
+                storage.add(new PendingIntentAction(title.toString(), intent));
+
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -158,24 +186,21 @@ public class ActionParser
      * Get the actions array from a notification using reflection. Actions were present in
      * Jellybean notifications, but the field was private until KitKat.
      */
-    public static Notification.Action[] getActionsField(Notification notif) {
+    public static Object[] getActionsField(Notification notif) {
 
         try {
-            Field actionsField = Notification.class.getDeclaredField("actions");
+            Field actionsField = Class.forName("android.app.Notification").getDeclaredField("actions");
             actionsField.setAccessible(true);
 
-            Notification.Action[] actions = (Notification.Action[]) actionsField.get(notif);
+            Object[] actions = (Object[]) actionsField.get(notif);
             return actions;
         } catch (IllegalAccessException e) {
             Crashlytics.logException(e);
         } catch (NoSuchFieldException e) {
             Crashlytics.logException(e);
-        } catch (IllegalAccessError e)
-        {
-            //Weird error that appears on some devices (Only Xiaomi reported so far) and apparently means that Notification.Action on these devices is different than usual Android.
-            //Unsupported for now.
+        } catch (ClassNotFoundException e) {
+            Crashlytics.logException(e);
         }
-
 
         return null;
     }
