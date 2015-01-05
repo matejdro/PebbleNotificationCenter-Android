@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
@@ -35,7 +37,7 @@ public class WearVoiceAction extends NotificationAction
     private String voiceKey;
     private String[] appProvidedChoices;
     private List<String> cannedResponseList;
-    private ProcessedNotification parent;
+    private int notificationId;
     private int voiceItemIndex;
     private int writeItemIndex;
 
@@ -113,7 +115,8 @@ public class WearVoiceAction extends NotificationAction
 
     public void populateCannedList(Context context, ProcessedNotification notification, boolean nativeMode)
     {
-        parent = notification;
+        notificationId = notification.id;
+
         cannedResponseList = new ArrayList<String>();
 
         if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
@@ -182,9 +185,9 @@ public class WearVoiceAction extends NotificationAction
         return writeItemIndex != -1;
     }
 
-    public ProcessedNotification getNotification()
+    public ProcessedNotification getNotification(PebbleTalkerService service)
     {
-        return parent;
+        return service.sentNotifications.get(notificationId);
     }
 
     @Override
@@ -209,6 +212,7 @@ public class WearVoiceAction extends NotificationAction
         parcel.writeValue(actionIntent);
         parcel.writeString(voiceKey);
         parcel.writeStringArray(appProvidedChoices);
+        parcel.writeInt(notificationId);
     }
 
 
@@ -222,7 +226,10 @@ public class WearVoiceAction extends NotificationAction
             String key = parcel.readString();
             String[] choices = parcel.createStringArray();
 
-            return new WearVoiceAction(text, intent, key, choices);
+            WearVoiceAction action = new WearVoiceAction(text, intent, key, choices);
+            action.notificationId = parcel.readInt();
+
+            return action;
         }
 
         @Override
@@ -232,7 +239,7 @@ public class WearVoiceAction extends NotificationAction
         }
     };
 
-    public void sendReply(String text, Context context)
+    public void sendReply(String text, PebbleTalkerService service)
     {
         try
         {
@@ -245,17 +252,18 @@ public class WearVoiceAction extends NotificationAction
             ClipData clipData = new ClipData("android.remoteinput.results", new String[] { ClipDescription.MIMETYPE_TEXT_INTENT }, new ClipData.Item(messageDataIntent));
             Intent replyIntent = new Intent();
             replyIntent.setClipData(clipData);
-            actionIntent.send(context, 0, replyIntent);
+            actionIntent.send(service, 0, replyIntent);
         } catch (PendingIntent.CanceledException e)
         {
             e.printStackTrace();
         }
 
-        if (parent.source.getSettingStorage(context).getBoolean(AppSetting.DISMISS_AFTER_REPLY))
+        ProcessedNotification notification = getNotification(service);
+        if (notification.source.getSettingStorage(service).getBoolean(AppSetting.DISMISS_AFTER_REPLY))
         {
-            DismissUpwardsModule.dismissNotification(context, parent.source.getKey());
+            DismissUpwardsModule.dismissNotification(service, notification.source.getKey());
             if (NotificationHandler.isNotificationListenerSupported())
-                JellybeanNotificationListener.dismissNotification(parent.source.getKey());
+                JellybeanNotificationListener.dismissNotification(notification.source.getKey());
         }
     }
 

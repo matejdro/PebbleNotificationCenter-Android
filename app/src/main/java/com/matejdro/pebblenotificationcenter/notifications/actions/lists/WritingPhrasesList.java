@@ -23,16 +23,16 @@ public class WritingPhrasesList extends ActionList
         this.action = action;
         this.service = service;
 
-        populatedList();
+        populateList(service);
     }
 
-    private void populatedList()
+    private void populateList(PebbleTalkerService service)
     {
         phrases = new ArrayList<String>();
 
         phrases.add("Send");
 
-        ArrayList<String> userProvidedPhrases = (ArrayList<String>) action.getNotification().source.getSettingStorage(service).getStringList(AppSetting.WRITING_PHRASES);
+        ArrayList<String> userProvidedPhrases = (ArrayList<String>) action.getNotification(service).source.getSettingStorage(service).getStringList(AppSetting.WRITING_PHRASES);
         if (userProvidedPhrases != null)
         {
             for (String choice : userProvidedPhrases)
