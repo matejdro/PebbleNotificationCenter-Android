@@ -100,7 +100,7 @@ public class PebbleAppListFragment extends Fragment {
 
 	private void setAll(int option)
 	{
-		if (apps.isEmpty())
+		if (apps == null || apps.isEmpty())
 			return;
 
 		editor.putInt("pebble_app_mode_default", option);
