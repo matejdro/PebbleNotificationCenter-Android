@@ -180,7 +180,7 @@ public class NotificationSendingModule extends CommModule
                 }
             }
 
-            if (getService().getGlobalSettings().getBoolean("noNotificationsNoPebble", false) && !PebbleKit.isWatchConnected(getService()))
+            if (getService().getGlobalSettings().getBoolean("noNotificationsNoPebble", false) && !isWatchConnected(getService()))
             {
                 Timber.d("notify failed - watch not connected");
                 return;
@@ -569,5 +569,17 @@ public class NotificationSendingModule extends CommModule
         }
 
         return limit;
+    }
+
+    /**
+     * Wrapper for PebbleKit.isWatchConnected
+     */
+    public static boolean isWatchConnected(Context context)
+    {
+        try {
+            return PebbleKit.isWatchConnected(context);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
