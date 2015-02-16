@@ -545,6 +545,8 @@
     <string name="settingFontTitle">Title font</string>
     <string name="settingFontSubtitle">Subtitle font</string>
     <string name="settingFontBody">Body font</string>
+    <string name="settingAlwaysParseStatusbarNotification">Always parse statusbar notification</string>
+    <string name="settingAlwaysParseStatusbarNotificationDescription">Always try to retrieve text from actual statusbar notification instead of using text that is separately provided by app itself. Use when notification on Pebble is different from one in statusbar.</string>
 
 
 </resources>

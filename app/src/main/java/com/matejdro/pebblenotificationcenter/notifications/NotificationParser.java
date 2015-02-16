@@ -10,6 +10,7 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.widget.RemoteViews;
 import com.crashlytics.android.Crashlytics;
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -17,16 +18,20 @@ import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStor
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import timber.log.Timber;
+
 public class NotificationParser {
 	public String title;
 	public String text;
 
-	public NotificationParser(Context context, String pkg, Notification notification)
+	public NotificationParser(Context context, PebbleNotification pebbleNotification, Notification notification)
 	{
 		this.title = null;
 		this.text = "";
-		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+
+        String pkg = pebbleNotification.getKey().getPackage();
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && !pebbleNotification.getSettingStorage(context).getBoolean(AppSetting.ALWAYS_PARSE_STATUSBAR_NOTIFICATION))
 		{
 			if (tryParseNatively(context, pkg, notification))
 			{
@@ -249,25 +254,25 @@ public class NotificationParser {
 	private void parseRemoteView(RemoteViews views)
 	{
 		try {
-			Class secretClass = views.getClass();
+			Class remoteViewsClass = RemoteViews.class;
 			Class baseActionClass = Class.forName("android.widget.RemoteViews$Action");
-			
-			Field actionsField = secretClass.getDeclaredField("mActions");
+
+
+			Field actionsField = remoteViewsClass.getDeclaredField("mActions");
 
 			actionsField.setAccessible(true);
 
 			ArrayList<Object> actions = (ArrayList<Object>) actionsField.get(views);
-			for (Object action : actions) {		
-				
-				
-				if (!action.getClass().getName().contains("$ReflectionAction"))
+			for (Object action : actions) {
+                if (!action.getClass().getName().contains("$ReflectionAction"))
 					continue;
 
 				Field typeField = action.getClass().getDeclaredField("type");
 				typeField.setAccessible(true);
 				int type = typeField.getInt(action);
-				if (type != 9 && type != 10)
+                if (type != 9 && type != 10)
 					continue;
+
 
 				int viewId = -1;
 				try
@@ -284,9 +289,11 @@ public class NotificationParser {
 				valueField.setAccessible(true);
 				CharSequence value = (CharSequence) valueField.get(action);
 				
-				if (value.equals("...")
-						|| isInteger(value.toString())
-						|| text.contains(value)) {
+				if (value == null ||
+                    value.equals("...") ||
+                    isInteger(value.toString()) ||
+                    text.contains(value))
+                {
 					continue;
 				}
 

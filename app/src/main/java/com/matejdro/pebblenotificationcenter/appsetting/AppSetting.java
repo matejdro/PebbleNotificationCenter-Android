@@ -27,6 +27,7 @@ public enum AppSetting
     CUSTOM_TITLE("customTitle", ""),
     MAXIMUM_TEXT_LENGTH("maximumTextLength", Integer.toString(NotificationSendingModule.TEXT_LIMIT)),
     USE_WEAR_GROUP_NOTIFICATIONS("useWearGroupNotifications", true),
+    ALWAYS_PARSE_STATUSBAR_NOTIFICATION("alwaysParseStatusbarNotification", false),
     RESPECT_ANDROID_INTERRUPT_FILTER("respectAndroidInterruptFilter", false),
     TITLE_FONT("fontTitle", 6),
     SUBTITLE_FONT("fontSubtitle", 5),

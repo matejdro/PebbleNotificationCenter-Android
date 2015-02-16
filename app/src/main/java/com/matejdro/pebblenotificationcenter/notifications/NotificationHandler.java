@@ -71,7 +71,9 @@ public class NotificationHandler {
     {
         final String title = getAppName(context, key.getPackage());
 
-        NotificationParser parser = new NotificationParser(context, key.getPackage(), notification);
+        PebbleNotification pebbleNotification = new PebbleNotification(title, null, key);
+
+        NotificationParser parser = new NotificationParser(context, pebbleNotification, notification);
 
         String secondaryTitle = parser.title;
         String text = parser.text.trim();
@@ -80,7 +82,7 @@ public class NotificationHandler {
             text = notification.tickerText.toString();
         }
 
-        PebbleNotification pebbleNotification = new PebbleNotification(title, text, key);
+        pebbleNotification.setText(text);
         pebbleNotification.setSubtitle(secondaryTitle);
         pebbleNotification.setDismissable(isDismissible);
 

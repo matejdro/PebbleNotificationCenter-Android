@@ -112,6 +112,7 @@ public class PerAppActivity extends Activity
         category.add(new SpinnerItem(settingsStorage, AppSetting.TITLE_FONT, R.array.pebbleFonts, R.string.settingFontTitle, 0, R.array.fontValues));
         category.add(new SpinnerItem(settingsStorage, AppSetting.SUBTITLE_FONT, R.array.pebbleFonts, R.string.settingFontSubtitle, 0, R.array.fontValues));
         category.add(new SpinnerItem(settingsStorage, AppSetting.BOCY_FONT, R.array.pebbleFonts, R.string.settingFontBody, 0, R.array.fontValues));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.ALWAYS_PARSE_STATUSBAR_NOTIFICATION, R.string.settingAlwaysParseStatusbarNotification, R.string.settingAlwaysParseStatusbarNotificationDescription));
         settings.add(new SettingsCategory(0, category));
 
         //Actions
