@@ -15,6 +15,9 @@ import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorag
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
+import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
+
+import java.util.ArrayList;
 
 public class TaskerReceiver extends BroadcastReceiver
 {
@@ -132,5 +135,7 @@ public class TaskerReceiver extends BroadcastReceiver
            editor.putFloat(key, (Float) object);
         else if (object instanceof Long)
             editor.putLong(key, (Long) object);
+        else if (object instanceof ArrayList)
+            PreferencesUtil.saveCollection(editor, (ArrayList<String>)object, key);
     }
 }
