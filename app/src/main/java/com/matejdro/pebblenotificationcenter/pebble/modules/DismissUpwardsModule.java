@@ -25,6 +25,7 @@ public class DismissUpwardsModule extends CommModule
     public static final String INTENT_DISMISS_NOTIFICATION = "DismissOneNotification";
     public static final String INTENT_DISMISS_PEBBLE_ID = "DismissPebbleID";
     public static final String INTENT_DISMISS_PACKAGE = "DismissOneNotification";
+    public static final String INTENT_DISMISS_NOTIFICATION_ID = "DismissOneExactID";
 
     private Queue<Integer> dismissQueue = new LinkedList<Integer>();
 
@@ -35,6 +36,7 @@ public class DismissUpwardsModule extends CommModule
         service.registerIntent(INTENT_DISMISS_NOTIFICATION, this);
         service.registerIntent(INTENT_DISMISS_PACKAGE, this);
         service.registerIntent(INTENT_DISMISS_PEBBLE_ID, this);
+        service.registerIntent(INTENT_DISMISS_NOTIFICATION_ID, this);
     }
 
     private void sendDismiss(Integer id)
@@ -46,6 +48,9 @@ public class DismissUpwardsModule extends CommModule
         data.addUint8(0, (byte) 3);
         data.addUint8(1, (byte) 0);
         data.addInt32(2, id);
+        data.addUint8(3, (byte) (NotificationSendingModule.get(getService()).isAnyNotificationWaiting() ? 1 : 0));
+
+        Timber.d("DontClose: " + data.getUnsignedIntegerAsLong(3).intValue());
 
         getService().getPebbleCommunication().sendToPebble(data);
     }
@@ -87,37 +92,18 @@ public class DismissUpwardsModule extends CommModule
         return true;
     }
 
-    /*
-        @param deep Also try to find similar wear notifications
-     */
-    public void dismissUpwards(ProcessedNotification notification, boolean deep)
+    public void dismissUpwards(ProcessedNotification notification)
     {
         queueDismiss(notification.id);
         getService().sentNotifications.remove(notification.id);
         NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.source);
 
-        if (deep)
-        {
-            //Also dismiss related group messages from this notification (some apps have trouble with dismissing to side channel directly)
-            if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
-            {
-                for (int i = 0; i < getService().sentNotifications.size(); i++)
-                {
-                    ProcessedNotification compare = getService().sentNotifications.valueAt(i);
-
-                    if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
-                    {
-                        dismissNotification(getService(), compare.source.getKey());
-                    }
-                }
-            }
-        }
     }
 
-    /*
-        @param deep Also remove notification from sending queue and try to find similar wear notifications
+    /**
+     * @param dismissImmediately when <code>false</code>, dismiss will be queued and will execute with next intent
      */
-    public void processDismissUpwards(NotificationKey key, boolean deep)
+    public void processDismissUpwards(NotificationKey key, boolean dismissImmediately)
     {
         Timber.d("got dismiss: " + key);
 
@@ -140,8 +126,35 @@ public class DismissUpwardsModule extends CommModule
 
             if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
-                dismissUpwards(notification, deep);
-                i--;
+                if (dismissImmediately)
+                {
+                    dismissUpwards(notification);
+                    dismissSimilarWearNotifications(notification);
+                    i--;
+                }
+                else
+                {
+                    dismissProcessedNotification(getService(), notification.id);
+                }
+            }
+        }
+    }
+
+    /**
+     * Also dismiss related group messages from this notification (some apps have trouble with dismissing to side channel directly)
+     */
+    public void dismissSimilarWearNotifications(ProcessedNotification notification)
+    {
+        if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+        {
+            for (int i = 0; i < getService().sentNotifications.size(); i++)
+            {
+                ProcessedNotification compare = getService().sentNotifications.valueAt(i);
+
+                if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
+                {
+                    dismissNotification(getService(), compare.source.getKey());
+                }
             }
         }
     }
@@ -165,7 +178,7 @@ public class DismissUpwardsModule extends CommModule
 
             if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
             {
-                dismissUpwards(notification, true);
+                dismissUpwards(notification);
                 i--;
             }
         }
@@ -189,6 +202,20 @@ public class DismissUpwardsModule extends CommModule
             int id = intent.getIntExtra("id", -1);
             queueDismiss(id);
         }
+        else if (intent.getAction().equals(INTENT_DISMISS_NOTIFICATION_ID))
+        {
+            int id = intent.getIntExtra("id", -1);
+
+            ProcessedNotification notification = getService().sentNotifications.get(id);
+            if (notification == null)
+            {
+                Timber.w("Invalid notification ID!");
+                return;
+            }
+
+            dismissUpwards(notification);
+        }
+
     }
 
     @Override
@@ -233,6 +260,16 @@ public class DismissUpwardsModule extends CommModule
 
         context.startService(intent);
     }
+
+    public static void dismissProcessedNotification(Context context, int id)
+    {
+        Intent intent = new Intent(context, PebbleTalkerService.class);
+        intent.setAction(INTENT_DISMISS_NOTIFICATION_ID);
+        intent.putExtra("id", id);
+
+        context.startService(intent);
+    }
+
 
     public static void dismissWholePackage(Context context, String pkg)
     {

@@ -153,7 +153,8 @@ Phone --> Pebble
 		Packet 0 - Dismiss notification
 		Removes notification from Pebble
 		Additional data:
-			2 = Unique notification id (int32)		
+			2 = Unique notification id (int32)	
+			3 = Are there notifications waiting to be sent (1 or 0 - uint8). If this is 1, app won't close after all notifications are dismissed.
 
 	MODULE 4 - ACTIONS
 
