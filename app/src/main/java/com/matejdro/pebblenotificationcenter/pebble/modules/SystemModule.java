@@ -115,9 +115,6 @@ public class SystemModule extends CommModule
 
         }
 
-        configBytes[0] = (byte) Integer.parseInt(getService().getGlobalSettings().getString(PebbleNotificationCenter.FONT_TITLE, "6"));
-        configBytes[1] = (byte) Integer.parseInt(getService().getGlobalSettings().getString(PebbleNotificationCenter.FONT_SUBTITLE, "5"));
-        configBytes[2] = (byte) Integer.parseInt(getService().getGlobalSettings().getString(PebbleNotificationCenter.FONT_BODY, "4"));
         configBytes[3] = (byte) (timeout >>> 0x08);
         configBytes[4] = (byte) timeout;
         configBytes[5] = (byte) lightTimeout;

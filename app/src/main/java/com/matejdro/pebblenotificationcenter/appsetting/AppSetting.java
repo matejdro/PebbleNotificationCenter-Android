@@ -28,10 +28,15 @@ public enum AppSetting
     MAXIMUM_TEXT_LENGTH("maximumTextLength", Integer.toString(NotificationSendingModule.TEXT_LIMIT)),
     USE_WEAR_GROUP_NOTIFICATIONS("useWearGroupNotifications", true),
     RESPECT_ANDROID_INTERRUPT_FILTER("respectAndroidInterruptFilter", false),
+    TITLE_FONT("fontTitle", 6),
+    SUBTITLE_FONT("fontSubtitle", 5),
+    BOCY_FONT("fontBody", 4),
+
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),
     INBOX_REVERSE("inboxReverse", false),
     DISPLAY_ONLY_NEWEST("inboxDisplayOnlyNewest", false),
     INBOX_USE_SUB_TEXT("inboxUseSubtext", true),
+
     SELECT_PRESS_ACTION("selectPressAction", 2),
     SELECT_HOLD_ACTION("selectHoldAction", 0),
     SHAKE_ACTION("shakeActionNew", 0),

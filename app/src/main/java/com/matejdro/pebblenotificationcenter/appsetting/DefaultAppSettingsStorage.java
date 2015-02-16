@@ -33,7 +33,15 @@ public class DefaultAppSettingsStorage implements AppSettingStorage
 
     public int getInt(AppSetting setting)
     {
-        return preferences.getInt(setting.getKey(), (Integer) setting.getDefault());
+        try
+        {
+            return preferences.getInt(setting.getKey(), (Integer) setting.getDefault());
+        }
+        catch (ClassCastException e)
+        {
+            //Some settings were stored as string when in global settings. Handle this here.
+            return Integer.parseInt(preferences.getString(setting.getKey(), Integer.toString((Integer) setting.getDefault())));
+        }
     }
 
     public List<String> getStringList(AppSetting setting)

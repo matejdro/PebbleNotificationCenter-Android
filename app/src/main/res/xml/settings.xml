@@ -47,26 +47,6 @@
             android:key="closeToLastApp"
             android:summary="You need to ENABLE DEVELOPER CONNECTION inside Pebble app to get this to work. It is also a bit buggy (sometimes app won't close), use on your own risk."
             android:title="Close to previously running app" />
-
-        <ListPreference
-            android:defaultValue="6"
-            android:entries="@array/pebbleFonts"
-            android:entryValues="@array/fontValues"
-            android:key="fontTitle"
-            android:title="Title font" />
-        <ListPreference
-            android:defaultValue="5"
-            android:entries="@array/pebbleFonts"
-            android:entryValues="@array/fontValues"
-            android:key="fontSubtitle"
-            android:title="Subtitle font" />
-        <ListPreference
-            android:defaultValue="4"
-            android:entries="@array/pebbleFonts"
-            android:entryValues="@array/fontValues"
-            android:key="fontBody"
-            android:title="Body font" />
-
          <ListPreference
             android:key="lightScreenNotifications"
             android:title="Light screen on notification"

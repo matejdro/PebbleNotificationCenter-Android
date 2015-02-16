@@ -358,7 +358,7 @@ public class NotificationSendingModule extends CommModule
 
         int textLength = curSendingNotification.source.getText().getBytes().length;
 
-        byte[] configBytes = new byte[8 + vibrationPattern.size()];
+        byte[] configBytes = new byte[11 + vibrationPattern.size()];
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
@@ -372,11 +372,14 @@ public class NotificationSendingModule extends CommModule
         else
             configBytes[6] = (byte) shakeAction;
 
+        configBytes[7] = (byte) settingStorage.getInt(AppSetting.TITLE_FONT);
+        configBytes[8] = (byte) settingStorage.getInt(AppSetting.SUBTITLE_FONT);
+        configBytes[9] = (byte) settingStorage.getInt(AppSetting.BOCY_FONT);
 
-        configBytes[7] = (byte) vibrationPattern.size();
+        configBytes[10] = (byte) vibrationPattern.size();
 
         for (int i = 0; i < vibrationPattern.size(); i++)
-            configBytes[8 + i] = vibrationPattern.get(i);
+            configBytes[11 + i] = vibrationPattern.get(i);
 
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 0);

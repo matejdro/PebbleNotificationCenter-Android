@@ -109,6 +109,9 @@ public class PerAppActivity extends Activity
         if (version(Build.VERSION_CODES.JELLY_BEAN_MR2)) category.add(new CheckBoxItem(settingsStorage, AppSetting.DISMISS_UPRWADS, R.string.settingDismissUpwards, R.string.settingDismissUpwardsDescripition));
         category.add(new EditTextItem(settingsStorage, AppSetting.CUSTOM_TITLE, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL, R.string.settingCustomTitle, R.string.settingCustomTitleDescription));
         category.add(new EditTextItem(settingsStorage, AppSetting.MAXIMUM_TEXT_LENGTH, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingMaximumLength, R.string.settingMaximumLengthDescription));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.TITLE_FONT, R.array.pebbleFonts, R.string.settingFontTitle, 0, R.array.fontValues));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.SUBTITLE_FONT, R.array.pebbleFonts, R.string.settingFontSubtitle, 0, R.array.fontValues));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.BOCY_FONT, R.array.pebbleFonts, R.string.settingFontBody, 0, R.array.fontValues));
         settings.add(new SettingsCategory(0, category));
 
         //Actions

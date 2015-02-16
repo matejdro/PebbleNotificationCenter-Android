@@ -81,9 +81,6 @@ Phone --> Pebble
 			Sends all settings to Pebble
 			Additional data:
 				2 = Config (byte array)
-					[0] = Title font (0-17)
-					[1] = Subtitle font (0-17)
-					[2] = Body font (0-17)
 					[3] = Timeout in seconds (first byte)
 					[4] = Timeout in seconds (second byte)
 					[5] = Light timeout in seconds
@@ -125,8 +122,11 @@ Phone --> Pebble
 				[4] = Length of the text (first byte)
 				[5] = Length of the text (second byte)
 				[6] = Shake action
-				[7] = Number of bytes in vibration pattern
-				[8,9,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
+				[7] = Title font (0-17)
+				[8] = Subtitle font (0-17)
+				[9] = Body font (0-17)
+				[10] = Number of bytes in vibration pattern
+				[11,12,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
 			4 = Title (max 30 bytes) - cstring
 			5 = Subtitle (max 30 bytes) - cstring
 		

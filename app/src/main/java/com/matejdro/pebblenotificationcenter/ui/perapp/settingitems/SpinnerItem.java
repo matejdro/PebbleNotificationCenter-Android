@@ -112,16 +112,6 @@ public class SpinnerItem extends BaseSettingItem
         return view;
     }
 
-    protected boolean getSavedValue()
-    {
-        return settingsStorage.getBoolean(associatedSetting);
-    }
-
-    protected void settingChanged(boolean change)
-    {
-        settingsStorage.setBoolean(associatedSetting, change);
-    }
-
     @Override
     public boolean onClose()
     {

@@ -91,7 +91,7 @@
         <item>Roboto 49 Subset</item>
         <item>Droid Serif 28 Bold</item>
     </string-array>
-    <string-array name="fontValues">
+    <integer-array name="fontValues">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -110,7 +110,7 @@
         <item>15</item>
         <item>16</item>
         <item>17</item>
-    </string-array>
+    </integer-array>
     <string-array name="tasker_actions">
         <item>Send notification</item>
         <item>Change setting</item>
@@ -542,6 +542,9 @@
         Also keep in mind that emoji and non-english characters usually take more space than plain english characters so notifications containing them will take more space.
     </string>
     <string name="help">Help / FAQ</string>
+    <string name="settingFontTitle">Title font</string>
+    <string name="settingFontSubtitle">Subtitle font</string>
+    <string name="settingFontBody">Body font</string>
 
 
 </resources>
