@@ -43,16 +43,6 @@ public class NotificationParser {
 			getExtraBigData(notification);
 		else
 			getExtraData(notification);
-		
-		if ((title == null || title.trim().length() == 0) && text.contains("\n"))
-		{
-			int firstLineBreak = text.indexOf('\n');
-			if (firstLineBreak < 40 && firstLineBreak < text.length() * 0.8)
-			{
-				title = text.substring(0, firstLineBreak).trim();
-				text = text.substring(firstLineBreak).trim();
-			}
-		}
 	}
 	
 	@TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)

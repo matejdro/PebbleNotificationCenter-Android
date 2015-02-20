@@ -40,6 +40,7 @@ public class NotificationSendingModule extends CommModule
     public static final String INTENT_NOTIFICATION = "Notification";
 
     public static final int TEXT_LIMIT = 2000;
+    public static final int TITLE_TEXT_LIMIT = 30;
 
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
@@ -85,7 +86,7 @@ public class NotificationSendingModule extends CommModule
             if (text.contains("\n"))
             {
                 int firstLineBreak = text.indexOf('\n');
-                if (firstLineBreak < 40 && firstLineBreak < text.length() * 0.8)
+                if (firstLineBreak < TITLE_TEXT_LIMIT && firstLineBreak < text.length() * 0.8)
                 {
                     subtitle = text.substring(0, firstLineBreak).trim();
                     text = text.substring(firstLineBreak).trim();
@@ -121,8 +122,8 @@ public class NotificationSendingModule extends CommModule
         }
 
         notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), textLimit));
-        notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), 30));
-        notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), 30));
+        notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), TITLE_TEXT_LIMIT));
+        notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), TITLE_TEXT_LIMIT));
 
         if (!notificationSource.isListNotification())
         {

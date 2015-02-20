@@ -78,7 +78,7 @@ public class NotificationHandler {
         String secondaryTitle = parser.title;
         String text = parser.text.trim();
 
-        if (notification.tickerText != null && (text == null || text.trim().length() == 0)) {
+        if (notification.tickerText != null && text.length() == 0 && (secondaryTitle == null  || secondaryTitle.trim().length() == 0)) {
             text = notification.tickerText.toString();
         }
 
