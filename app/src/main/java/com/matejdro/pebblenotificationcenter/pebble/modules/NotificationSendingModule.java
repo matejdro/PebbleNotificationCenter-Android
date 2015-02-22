@@ -524,14 +524,14 @@ public class NotificationSendingModule extends CommModule
         return curSendingNotification != null || !sendingQueue.isEmpty();
     }
 
-    public void removeNotificationFromSendingQueue(PebbleNotification notificationToRemove)
+    public void removeNotificationFromSendingQueue(int id)
     {
         Iterator<ProcessedNotification> iterator = sendingQueue.iterator();
         while (iterator.hasNext())
         {
             ProcessedNotification notification = iterator.next();
 
-            if (notification.source.isSameNotification(notificationToRemove.getKey()))
+            if (notification.id == id)
             {
                 iterator.remove();
             }

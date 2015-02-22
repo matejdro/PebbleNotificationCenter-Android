@@ -96,7 +96,7 @@ public class DismissUpwardsModule extends CommModule
     {
         queueDismiss(notification.id);
         getService().sentNotifications.remove(notification.id);
-        NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.source);
+        NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.id);
 
     }
 
