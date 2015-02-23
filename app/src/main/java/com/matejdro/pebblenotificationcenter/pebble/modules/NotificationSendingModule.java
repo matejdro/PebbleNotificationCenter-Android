@@ -241,6 +241,7 @@ public class NotificationSendingModule extends CommModule
             systemModule.updateCurrentlyRunningApp();
 
             UUID currentApp = systemModule.getCurrentRunningApp();
+            Timber.d("Current app: " + currentApp);
             if (currentApp == null)
                 currentApp = SystemModule.UNKNOWN_UUID;
             pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(getService().getGlobalSettings(), currentApp);

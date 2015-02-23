@@ -80,7 +80,7 @@ public class PebbleApp
         apps.add(new PebbleApp(context.getString(R.string.PebbleAppAlarms), UUID.fromString("67a32d95-ef69-46d4-a0b9-854cc62f97f9")));
         apps.add(new PebbleApp(context.getString(R.string.PebbleAppWatchfaceList), UUID.fromString("18e443ce-38fd-47c8-84d5-6d0c775fbe55")));
         apps.add(new PebbleApp(context.getString(R.string.PebbleWatchfaceSimplicity), UUID.fromString("6bf6215b-c97f-409e-8c31-4f55657222b4")));
-        apps.add(new PebbleApp(context.getString(R.string.PebbleWatchfaceAnalog), UUID.fromString("55cb7c75-8a35-4487-90a4-913f1fa67601")));
+        apps.add(new PebbleApp(context.getString(R.string.PebbleWatchfaceAnalog), UUID.fromString("e53172a6-301b-425b-9c3c-ef345e7fbc95")));
         apps.add(new PebbleApp(context.getString(R.string.PebbleWatchfaceText), UUID.fromString("7c652eb9-26d6-442c-9868-a436797de205")));
 
         return apps;
