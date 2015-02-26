@@ -547,6 +547,7 @@
     <string name="settingFontBody">Body font</string>
     <string name="settingAlwaysParseStatusbarNotification">Always parse statusbar notification</string>
     <string name="settingAlwaysParseStatusbarNotificationDescription">Always try to retrieve text from actual statusbar notification instead of using text that is separately provided by app itself. Use when notification on Pebble is different from one in statusbar.</string>
-
+    <string name="settingHideNotificationText">Hide notification text</string>
+    <string name="settingHideNotificationTextDescription">When checked, notificaiton text will be initially hidden and will require you to select Show action from action menu to uncover it. This gives you additional degree of privacy as you can decide when to see notification text (when people are not around to look at your watch).</string>
 
 </resources>

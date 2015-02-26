@@ -27,7 +27,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile group: 'com.google.guava', name: 'guava', version: '18.0'
+    compile 'com.google.guava:guava:18.0'
     provided files('libs/XposedBridgeApi-54.jar')
     compile 'com.crashlytics.android:crashlytics:1.+'
 }

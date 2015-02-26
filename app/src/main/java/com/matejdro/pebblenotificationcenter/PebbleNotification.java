@@ -27,6 +27,7 @@ public class PebbleNotification implements Parcelable
     private boolean forceSwitch;
     private boolean listNotification;
     private boolean scrollToEnd;
+    private boolean hidingTextDisallowed;
     private String wearGroupKey;
 
     public static final int WEAR_GROUP_TYPE_DISABLED = 0;
@@ -48,6 +49,7 @@ public class PebbleNotification implements Parcelable
         forceSwitch = false;
         listNotification = false;
         scrollToEnd = false;
+        hidingTextDisallowed = false;
 
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
     }
@@ -201,6 +203,16 @@ public class PebbleNotification implements Parcelable
         this.scrollToEnd = scrollToEnd;
     }
 
+    public void setHidingTextDisallowed(boolean hidingTextDisallowed)
+    {
+        this.hidingTextDisallowed = hidingTextDisallowed;
+    }
+
+    public boolean isHidingTextDisallowed()
+    {
+        return hidingTextDisallowed;
+    }
+
     public NotificationKey getKey()
     {
         return key;
@@ -248,6 +260,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeByte((byte) (listNotification ? 1 : 0));
         parcel.writeByte((byte) (forceSwitch ? 1 : 0));
         parcel.writeByte((byte) (scrollToEnd ? 1 : 0));
+        parcel.writeByte((byte) (hidingTextDisallowed ? 1 : 0));
         parcel.writeLong(postTime);
         parcel.writeValue(subtitle);
         parcel.writeValue(text);
@@ -272,6 +285,7 @@ public class PebbleNotification implements Parcelable
             notification.listNotification = parcel.readByte() == 1;
             notification.forceSwitch = parcel.readByte() == 1;
             notification.scrollToEnd = parcel.readByte() == 1;
+            notification.hidingTextDisallowed = parcel.readByte() == 1;
             notification.postTime = parcel.readLong();
             notification.subtitle = (String) parcel.readValue(((Object) this).getClass().getClassLoader());
             notification.text = (String) parcel.readValue(((Object) this).getClass().getClassLoader());

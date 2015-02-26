@@ -3,7 +3,7 @@ package com.matejdro.pebblenotificationcenter.pebble.modules;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.os.PowerManager;
+
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
@@ -13,14 +13,14 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
+import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
+import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.notifications.actions.ReplaceNotificationAction;
 import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
-import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import com.matejdro.pebblenotificationcenter.util.DeviceUtil;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
-import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import com.matejdro.pebblenotificationcenter.util.TextUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -77,7 +77,7 @@ public class NotificationSendingModule extends CommModule
         }
 
 
-        if (notificationSource.getSubtitle() == null)
+        if (notificationSource.getSubtitle().isEmpty())
         {
             //Attempt to figure out subtitle
             String subtitle = "";
@@ -95,6 +95,12 @@ public class NotificationSendingModule extends CommModule
 
             notificationSource.setText(text);
             notificationSource.setSubtitle(subtitle);
+        }
+        else if (notificationSource.getSubtitle().length() > TITLE_TEXT_LIMIT)
+        {
+            //Do not cut off titles which some apps make very long
+            notificationSource.setText(notificationSource.getSubtitle() + "\n" + notificationSource.getText());
+            notificationSource.setSubtitle("");
         }
 
         if (notificationSource.getTitle().trim().equals(notificationSource.getSubtitle().trim()))
@@ -229,12 +235,43 @@ public class NotificationSendingModule extends CommModule
 
         DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey(), false);
 
+        if (settingStorage.getBoolean(AppSetting.HIDE_NOTIFICATION_TEXT) && !notificationSource.isListNotification() && !notificationSource.isHidingTextDisallowed())
+            sendNotificationAsPrivate(notification);
+        else
+            sendNotification(notification);
+
+    }
+
+    private void notificationTransferCompleted()
+    {
+        if (curSendingNotification.vibrated)
+            lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+        lastAppNotification.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
+
+        curSendingNotification = null;
+    }
+
+    private void sendNotificationAsPrivate(ProcessedNotification notification)
+    {
+        PebbleNotification coverNotification = new PebbleNotification(notification.source.getTitle(), "Use Show action to uncover it.", notification.source.getKey());
+        coverNotification.setSubtitle("Hidden notification");
+        coverNotification.setHidingTextDisallowed(true);
+        coverNotification.setNoHistory(true);
+
+        ArrayList<NotificationAction> actions = new ArrayList<>();
+        actions.add(new ReplaceNotificationAction("Show", notification));
+        actions.add(new DismissOnPebbleAction(getService()));
+        coverNotification.setActions(actions);
+
+        processNotification(coverNotification);
+    }
+
+    public void sendNotification(ProcessedNotification notification)
+    {
         getService().sentNotifications.put(notification.id, notification);
 
-        Timber.d("notify internal 2");
-
         int pebbleAppMode = 0;
-        if (!notificationSource.isListNotification())
+        if (!notification.source.isListNotification())
         {
             //Different type of notification depending on Pebble app
             SystemModule systemModule = SystemModule.get(getService());
@@ -246,8 +283,6 @@ public class NotificationSendingModule extends CommModule
                 currentApp = SystemModule.UNKNOWN_UUID;
             pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(getService().getGlobalSettings(), currentApp);
         }
-
-        Timber.d("notify internal 3");
 
         if (pebbleAppMode == 0) //NC Notification
         {
@@ -261,15 +296,6 @@ public class NotificationSendingModule extends CommModule
         {
             Timber.d("notify failed - pebble app");
         }
-    }
-
-    private void notificationTransferCompleted()
-    {
-        if (curSendingNotification.vibrated)
-            lastAppVibration.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
-        lastAppNotification.put(curSendingNotification.source.getKey().getPackage(), System.currentTimeMillis());
-
-        curSendingNotification = null;
     }
 
     private void sendNativeNotification(ProcessedNotification notification)
