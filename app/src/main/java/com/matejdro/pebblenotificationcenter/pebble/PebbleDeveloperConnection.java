@@ -219,20 +219,15 @@ public class PebbleDeveloperConnection extends WebSocketClient
                         //Responses attribute
                         dataStream.writeByte(8); //Attribute Type = 8 (canned responses)
                         int size = 0;
-                        List<String> responses = new ArrayList<String>(voiceAction.getCannedResponseList().size());
-                        for (String response : voiceAction.getCannedResponseList())
-                        {
-                            response = TextUtil.prepareString(response, 20);
-                            responses.add(response);
-
-                            size += Math.min(20, response.getBytes().length) + 1;
-                        }
-                        writeUnsignedShortLittleEndian(dataStream, size); //Size of canned response list
-
+                        List<String> responses = voiceAction.getCannedResponseList();
                         for (String response : responses)
                         {
-                            writeNullTerminatedPebbleString(dataStream, response, 20); //Write responses
+                            size += response.getBytes().length + 1;
                         }
+                        size = Math.min(size, 128);
+
+                        writeUnsignedShortLittleEndian(dataStream, size); //Size of canned response list
+                        writeNullTerminatedPebbleStringList(dataStream, responses, 128); //Write responses
                     }
                     else
                     {
@@ -554,13 +549,20 @@ public class PebbleDeveloperConnection extends WebSocketClient
         }
     }
 
-    public static void writeNullTerminatedPebbleString(DataOutputStream stream, String string, int limit) throws IOException
+    public static void writeNullTerminatedPebbleStringList(DataOutputStream stream, List<String> list, int limit) throws IOException
     {
-        string = TextUtil.trimString(string, limit, true);
-        byte[] stringData = string.getBytes();
+        for (String line : list)
+        {
+            if (limit == 0)
+                break;
 
-        stream.write(stringData);
-        stream.write(0);
+            line = TextUtil.trimString(line, limit - 1, true);
+            byte[] bytes = line.getBytes();
+            stream.write(bytes);
+            stream.write(0);
+
+            limit -= bytes.length + 1;
+        }
     }
 
 
