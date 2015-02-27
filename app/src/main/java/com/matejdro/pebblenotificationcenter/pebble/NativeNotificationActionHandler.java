@@ -57,6 +57,11 @@ public class NativeNotificationActionHandler
 
         NotificationAction action = notification.source.getActions().get(actionId);
 
+        if (service.getGlobalSettings().getBoolean("nativeSendSuccessMessage", false))
+        {
+            service.getDeveloperConnection().sendActionACKNACKCheckmark(notificationId, actionId + 1, "Done");
+        }
+
         if (action instanceof DismissOnPebbleAction)
         {
             //Do nothing, any action from Pebble already dismisses notification.
@@ -79,11 +84,6 @@ public class NativeNotificationActionHandler
         else
         {
             action.executeAction(service, notification);
-        }
-
-        if (service.getGlobalSettings().getBoolean("nativeSendSuccessMessage", false))
-        {
-            service.getDeveloperConnection().sendActionACKNACKCheckmark(notificationId, actionId + 1, "Done");
         }
     }
 }

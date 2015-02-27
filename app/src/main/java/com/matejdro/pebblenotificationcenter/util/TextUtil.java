@@ -60,7 +60,7 @@ public class TextUtil
         int targetLength = length;
         if (trailingElipsis)
         {
-            targetLength -= 3;
+            targetLength = Math.max(0, targetLength - 3);
         }
 
         if (text.getBytes().length > length)
