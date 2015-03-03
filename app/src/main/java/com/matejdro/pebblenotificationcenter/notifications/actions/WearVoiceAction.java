@@ -26,6 +26,8 @@ import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Created by Matej on 22.9.2014.
  */
@@ -259,6 +261,12 @@ public class WearVoiceAction extends NotificationAction
         }
 
         ProcessedNotification notification = getNotification(service);
+        if (notification == null)
+        {
+            Timber.w("Sending voice reply for non-existing notification.");
+            return;
+        }
+
         if (notification.source.getSettingStorage(service).getBoolean(AppSetting.DISMISS_AFTER_REPLY))
         {
             DismissUpwardsModule.dismissNotification(service, notification.source.getKey());
