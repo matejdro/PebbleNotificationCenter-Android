@@ -62,13 +62,13 @@ public class VoiceCapture implements RecognitionListener
 
             sendStatusNotification(service.getString(R.string.voiceInputBluetoothWait));
 
+            service.registerReceiver(new BluetoothAudioListener(), new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED));
+            waitingForBluetooth = true;
+
             AudioManager audioManager = (AudioManager) service.getSystemService(Context.AUDIO_SERVICE);
             audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
             audioManager.startBluetoothSco();
             audioManager.setBluetoothScoOn(true);
-
-            service.registerReceiver(new BluetoothAudioListener(), new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED));
-            waitingForBluetooth = true;
         }
         else
         {
