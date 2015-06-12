@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -32,6 +34,7 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.VibrationPat
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.WritingPhrasesItem;
 import com.matejdro.pebblecommons.util.ViewUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -62,6 +65,18 @@ public class PerAppActivity extends Activity
 
         loadAppSettings();
         attachSettings();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState)
+    {
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState)
+    {
+
     }
 
     protected AppSettingStorage initAppSettingStorage()
