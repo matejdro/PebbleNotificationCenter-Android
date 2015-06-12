@@ -3,12 +3,16 @@ package com.matejdro.pebblenotificationcenter.pebble.modules;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.util.SparseArray;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
+import com.matejdro.pebblecommons.pebble.CommModule;
+import com.matejdro.pebblecommons.pebble.PebbleCommunication;
+import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -16,10 +20,10 @@ import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotification
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ReplaceNotificationAction;
-import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
-import com.matejdro.pebblenotificationcenter.util.DeviceUtil;
+import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
+import com.matejdro.pebblecommons.util.DeviceUtil;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
-import com.matejdro.pebblenotificationcenter.util.TextUtil;
+import com.matejdro.pebblecommons.util.TextUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -75,8 +79,7 @@ public class NotificationSendingModule extends CommModule
                 notificationSource.setTitle(customTitle);
             }
         }
-
-
+        
         if (notificationSource.getSubtitle().isEmpty())
         {
             //Attempt to figure out subtitle
@@ -123,7 +126,7 @@ public class NotificationSendingModule extends CommModule
                     settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
                     canDisplayWearGroupNotification(notification.source, settingStorage))
             {
-                getService().getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), textLimit, true));
+                NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), textLimit, true));
             }
         }
 
@@ -219,16 +222,18 @@ public class NotificationSendingModule extends CommModule
             }
         }
 
+        SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
+
         Random rnd = new Random();
         do
         {
             notification.id = rnd.nextInt();
         }
-        while (getService().sentNotifications.get(notification.id) != null);
+        while (sentNotifications.get(notification.id) != null);
 
         if (!notification.source.isListNotification() && !canDisplayWearGroupNotification(notification.source, settingStorage))
         {
-            getService().sentNotifications.put(notification.id, notification);
+            sentNotifications.put(notification.id, notification);
             Timber.d("notify failed - group");
             return;
         }
@@ -268,7 +273,7 @@ public class NotificationSendingModule extends CommModule
 
     public void sendNotification(ProcessedNotification notification)
     {
-        getService().sentNotifications.put(notification.id, notification);
+        NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.put(notification.id, notification);
 
         int pebbleAppMode = 0;
         if (!notification.source.isListNotification())
@@ -307,7 +312,7 @@ public class NotificationSendingModule extends CommModule
         PebbleKit.FirmwareVersionInfo watchfirmware = PebbleKit.getWatchFWVersion(getService());
         if (watchfirmware.getMajor() > 2 || (watchfirmware.getMajor() == 2 && watchfirmware.getMinor() > 8))
         {
-            getService().getDeveloperConnection().sendNotification(notification);
+            NotificationCenterDeveloperConnection.fromDevConn(getService().getDeveloperConnection()).sendNotification(notification);
         }
         else
         {
@@ -531,10 +536,12 @@ public class NotificationSendingModule extends CommModule
         }
         if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
         {
+            SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
+
             //Prevent re-sending of the first message.
-            for (int i = 0; i < getService().sentNotifications.size(); i++)
+            for (int i = 0; i < sentNotifications.size(); i++)
             {
-                ProcessedNotification comparing = getService().sentNotifications.valueAt(i);
+                ProcessedNotification comparing = sentNotifications.valueAt(i);
                 if (comparing.source.getWearGroupType() != PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && notification.hasIdenticalContent(comparing.source))
                 {
                     Timber.d("group notify failed - same notification exists");
@@ -572,7 +579,7 @@ public class NotificationSendingModule extends CommModule
 
     public static void notify(PebbleNotification notification, Context context)
     {
-        Intent intent = new Intent(context, PebbleTalkerService.class);
+        Intent intent = new Intent(context, NCTalkerService.class);
         intent.setAction(INTENT_NOTIFICATION);
         intent.putExtra("notification", notification);
 

@@ -2,15 +2,19 @@ package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.SparseArray;
+
 import com.getpebble.android.kit.util.PebbleDictionary;
+import com.matejdro.pebblecommons.pebble.CommModule;
+import com.matejdro.pebblecommons.pebble.PebbleCommunication;
+import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
-import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -59,7 +63,7 @@ public class DismissUpwardsModule extends CommModule
     {
         Timber.d("Queueing dismiss packet for notification " + id);
 
-        ProcessedNotification notification = getService().sentNotifications.get(id);
+        ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(id);
         if (notification == null)
         {
             Timber.w("Invalid notification ID!");
@@ -95,7 +99,7 @@ public class DismissUpwardsModule extends CommModule
     public void dismissUpwards(ProcessedNotification notification)
     {
         queueDismiss(notification.id);
-        getService().sentNotifications.remove(notification.id);
+        NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.remove(notification.id);
         NotificationSendingModule.get(getService()).removeNotificationFromSendingQueue(notification.id);
 
     }
@@ -112,17 +116,19 @@ public class DismissUpwardsModule extends CommModule
 
         AppSettingStorage settingsStorage;
         if (key.getPackage() == null)
-            settingsStorage = getService().getDefaultSettingsStorage();
+            settingsStorage = NCTalkerService.fromPebbleTalkerService(getService()).getDefaultSettingsStorage();
         else
-            settingsStorage = new SharedPreferencesAppStorage(getService(), key.getPackage(), getService().getDefaultSettingsStorage());
+            settingsStorage = new SharedPreferencesAppStorage(getService(), key.getPackage(), NCTalkerService.fromPebbleTalkerService(getService()).getDefaultSettingsStorage());
 
         boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
         if (!syncDismissUp)
             return;
 
-        for (int i = 0; i < getService().sentNotifications.size(); i++)
+        SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
+
+        for (int i = 0; i < sentNotifications.size(); i++)
         {
-            ProcessedNotification notification = getService().sentNotifications.valueAt(i);
+            ProcessedNotification notification = sentNotifications.valueAt(i);
 
             if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
@@ -145,11 +151,14 @@ public class DismissUpwardsModule extends CommModule
      */
     public void dismissSimilarWearNotifications(ProcessedNotification notification)
     {
+
         if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
         {
-            for (int i = 0; i < getService().sentNotifications.size(); i++)
+            SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
+
+            for (int i = 0; i < sentNotifications.size(); i++)
             {
-                ProcessedNotification compare = getService().sentNotifications.valueAt(i);
+                ProcessedNotification compare = sentNotifications.valueAt(i);
 
                 if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
                 {
@@ -166,15 +175,16 @@ public class DismissUpwardsModule extends CommModule
         if (pkg == null)
             return;
 
-        AppSettingStorage settingsStorage = new SharedPreferencesAppStorage(getService(), pkg, getService().getDefaultSettingsStorage());
+        AppSettingStorage settingsStorage = new SharedPreferencesAppStorage(getService(), pkg, NCTalkerService.fromPebbleTalkerService(getService()).getDefaultSettingsStorage());
 
         boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
         if (!syncDismissUp)
             return;
 
-        for (int i = 0; i < getService().sentNotifications.size(); i++)
+        SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
+        for (int i = 0; i < sentNotifications.size(); i++)
         {
-            ProcessedNotification notification = getService().sentNotifications.valueAt(i);
+            ProcessedNotification notification = sentNotifications.valueAt(i);
 
             if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
             {
@@ -206,7 +216,7 @@ public class DismissUpwardsModule extends CommModule
         {
             int id = intent.getIntExtra("id", -1);
 
-            ProcessedNotification notification = getService().sentNotifications.get(id);
+            ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(id);
             if (notification == null)
             {
                 Timber.w("Invalid notification ID!");
@@ -245,7 +255,7 @@ public class DismissUpwardsModule extends CommModule
 
     public static void dismissPebbleID(Context context, int id)
     {
-        Intent intent = new Intent(context, PebbleTalkerService.class);
+        Intent intent = new Intent(context, NCTalkerService.class);
         intent.setAction(INTENT_DISMISS_PEBBLE_ID);
         intent.putExtra("id", id);
 
@@ -254,7 +264,7 @@ public class DismissUpwardsModule extends CommModule
 
     public static void dismissNotification(Context context, NotificationKey key)
     {
-        Intent intent = new Intent(context, PebbleTalkerService.class);
+        Intent intent = new Intent(context, NCTalkerService.class);
         intent.setAction(INTENT_DISMISS_NOTIFICATION);
         intent.putExtra("key", key);
 
@@ -263,7 +273,7 @@ public class DismissUpwardsModule extends CommModule
 
     public static void dismissProcessedNotification(Context context, int id)
     {
-        Intent intent = new Intent(context, PebbleTalkerService.class);
+        Intent intent = new Intent(context, NCTalkerService.class);
         intent.setAction(INTENT_DISMISS_NOTIFICATION_ID);
         intent.putExtra("id", id);
 
@@ -273,7 +283,7 @@ public class DismissUpwardsModule extends CommModule
 
     public static void dismissWholePackage(Context context, String pkg)
     {
-        Intent intent = new Intent(context, PebbleTalkerService.class);
+        Intent intent = new Intent(context, NCTalkerService.class);
         intent.setAction(INTENT_DISMISS_PACKAGE);
         intent.putExtra("package", pkg);
 

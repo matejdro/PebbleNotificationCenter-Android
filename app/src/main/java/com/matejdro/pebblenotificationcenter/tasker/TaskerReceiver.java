@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;

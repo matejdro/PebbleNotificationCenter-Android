@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompatSideChannelService;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 import timber.log.Timber;
 

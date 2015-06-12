@@ -31,4 +31,5 @@ dependencies {
     provided files('libs/XposedBridgeApi-54.jar')
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.getpebble:pebblekit:3.0.0@aar'
+    compile project(':PebbleAndroidCommons')
 }

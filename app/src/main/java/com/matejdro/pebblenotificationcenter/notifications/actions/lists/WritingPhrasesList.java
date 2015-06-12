@@ -1,7 +1,9 @@
 package com.matejdro.pebblenotificationcenter.notifications.actions.lists;
 
 import android.content.Context;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+
+import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
@@ -15,10 +17,10 @@ import java.util.List;
 public class WritingPhrasesList extends ActionList
 {
     private WearVoiceAction action;
-    private PebbleTalkerService service;
+    private NCTalkerService service;
     private List<String> phrases;
 
-    public WritingPhrasesList(WearVoiceAction action, PebbleTalkerService service)
+    public WritingPhrasesList(WearVoiceAction action, NCTalkerService service)
     {
         this.action = action;
         this.service = service;
@@ -26,7 +28,7 @@ public class WritingPhrasesList extends ActionList
         populateList(service);
     }
 
-    private void populateList(PebbleTalkerService service)
+    private void populateList(NCTalkerService service)
     {
         phrases = new ArrayList<String>();
 
@@ -66,7 +68,7 @@ public class WritingPhrasesList extends ActionList
     }
 
     @Override
-    public boolean itemPicked(PebbleTalkerService service, int id)
+    public boolean itemPicked(NCTalkerService service, int id)
     {
         return false;
     }

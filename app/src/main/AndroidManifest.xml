@@ -47,30 +47,13 @@
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
         </service>
-        <service android:name="com.matejdro.pebblenotificationcenter.PebbleTalkerService" >
+        <service android:name="com.matejdro.pebblenotificationcenter.NCTalkerService" >
         </service>
         <service android:name="com.matejdro.pebblenotificationcenter.notifications.SideChannelNotificationListener" >
             <intent-filter>
                 <action android:name="android.support.BIND_NOTIFICATION_SIDE_CHANNEL" />
             </intent-filter>
         </service>
-
-        <receiver
-            android:name="com.matejdro.pebblenotificationcenter.DataReceiver"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="com.getpebble.action.app.RECEIVE" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.getpebble.action.app.RECEIVE_NACK" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.getpebble.action.app.RECEIVE_ACK" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.getpebble.action.PEBBLE_CONNECTED" />
-            </intent-filter>
-        </receiver>
 
         <activity
             android:name="com.matejdro.pebblenotificationcenter.ui.MainActivity"

@@ -278,16 +278,6 @@
         Pebble?
     </string>
     <string name="openInPebbleAppStore">Open NC in Pebble App Store</string>
-    <string name="PebbleAppsOther">Unknown</string>
-    <string name="PebbleAppMainMenu">Main Menu</string>
-    <string name="PebbleAppSettings">Settings</string>
-    <string name="PebbleAppMusic">Music</string>
-    <string name="PebbleAppNotificationHistory">Notifications (native)</string>
-    <string name="PebbleAppAlarms">Alarms</string>
-    <string name="PebbleAppWatchfaceList">Watchfaces (list)</string>
-    <string name="PebbleWatchfaceSimplicity">Simplicity watchface</string>
-    <string name="PebbleWatchfaceAnalog">Classic analog watchface</string>
-    <string name="PebbleWatchfaceText">Text watchface</string>
     <string name="settingResetToDefault">Reset to default settings</string>
     <string name="settingResetToDefaultDescription">When you press this button, all below settings will reset to default settings and will automatically sync with default settings until you change them manually.</string>
     <string name="settingResetToDefaultButton">RESET</string>

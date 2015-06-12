@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;

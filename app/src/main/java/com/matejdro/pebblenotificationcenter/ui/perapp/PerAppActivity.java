@@ -30,7 +30,7 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.TaskerTaskLi
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ResetDefaultsButtonItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.VibrationPatternItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.WritingPhrasesItem;
-import com.matejdro.pebblenotificationcenter.util.ViewUtil;
+import com.matejdro.pebblecommons.util.ViewUtil;
 import java.util.ArrayList;
 import java.util.List;
 

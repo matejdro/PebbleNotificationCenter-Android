@@ -1,8 +1,9 @@
 package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.os.Parcel;
+
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 
@@ -19,7 +20,7 @@ public class NotifyAction extends NotificationAction
     }
 
     @Override
-    public boolean executeAction(PebbleTalkerService service, ProcessedNotification activeNotification)
+    public boolean executeAction(NCTalkerService service, ProcessedNotification activeNotification)
     {
         NotificationSendingModule.notify(this.notification, service);
         return true;

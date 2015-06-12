@@ -2,7 +2,8 @@ package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.content.Intent;
 import android.os.Parcel;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -24,7 +25,7 @@ public class IntentAction extends NotificationAction
     }
 
     @Override
-    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(NCTalkerService service, ProcessedNotification notification)
     {
         Intent intent = new Intent(intentAction);
 

@@ -1,6 +1,6 @@
 package com.matejdro.pebblenotificationcenter.notifications.actions.lists;
 
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import java.util.List;
@@ -37,7 +37,7 @@ public class NotificationActionList extends ActionList
     }
 
     @Override
-    public boolean itemPicked(PebbleTalkerService service, int id)
+    public boolean itemPicked(NCTalkerService service, int id)
     {
         NotificationAction action = notification.source.getActions().get(id);
         if (action == null)

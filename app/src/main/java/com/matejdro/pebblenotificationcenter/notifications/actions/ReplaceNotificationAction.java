@@ -2,8 +2,8 @@ package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.os.Parcel;
 
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
@@ -22,7 +22,7 @@ public class ReplaceNotificationAction extends NotificationAction
     }
 
     @Override
-    public boolean executeAction(PebbleTalkerService service, ProcessedNotification activeNotification)
+    public boolean executeAction(NCTalkerService service, ProcessedNotification activeNotification)
     {
         DismissUpwardsModule.dismissPebbleID(service, activeNotification.id);
         NotificationSendingModule.get(service).sendNotification(this.notification);

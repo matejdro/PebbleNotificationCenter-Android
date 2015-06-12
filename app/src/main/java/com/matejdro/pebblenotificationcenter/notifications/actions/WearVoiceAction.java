@@ -13,10 +13,13 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.matejdro.pebblenotificationcenter.PebbleNotification;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblecommons.messages.MessageTextProviderListener;
+import com.matejdro.pebblecommons.messages.PhoneVoiceProvider;
+import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
+import com.matejdro.pebblenotificationcenter.notifications.NCUserPrompter;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
@@ -33,7 +36,7 @@ import timber.log.Timber;
  */
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
-public class WearVoiceAction extends NotificationAction
+public class WearVoiceAction extends NotificationAction implements MessageTextProviderListener
 {
     private PendingIntent actionIntent;
     private String voiceKey;
@@ -42,6 +45,7 @@ public class WearVoiceAction extends NotificationAction
     private int notificationId;
     private int voiceItemIndex;
     private int writeItemIndex;
+    private NCTalkerService lastUsedService;
 
     public WearVoiceAction(String actionText, PendingIntent intent, String voiceKey, String[] appProvidedChoices)
     {
@@ -160,19 +164,19 @@ public class WearVoiceAction extends NotificationAction
         return cannedResponseList;
     }
 
-    public void showVoicePrompt(final PebbleTalkerService service)
+    public void showVoicePrompt(final NCTalkerService service)
     {
         service.runOnMainThread(new Runnable()
         {
             @Override
             public void run()
             {
-                new VoiceCapture(WearVoiceAction.this, service).startVoice();
+                new PhoneVoiceProvider(new NCUserPrompter(service), service).startRetrievingText(WearVoiceAction.this);
             }
         });
     }
 
-    public void showTertiaryText(PebbleTalkerService service)
+    public void showTertiaryText(NCTalkerService service)
     {
         ActionsModule.get(service).showList(new WritingPhrasesList(this, service));
     }
@@ -187,14 +191,16 @@ public class WearVoiceAction extends NotificationAction
         return writeItemIndex != -1;
     }
 
-    public ProcessedNotification getNotification(PebbleTalkerService service)
+    public ProcessedNotification getNotification(NCTalkerService service)
     {
         return service.sentNotifications.get(notificationId);
     }
 
     @Override
-    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(NCTalkerService service, ProcessedNotification notification)
     {
+        lastUsedService = service;
+
         populateCannedList(service, notification, false);
 
         ActionsModule.get(service).showList(new WearCannedResponseList());
@@ -241,7 +247,7 @@ public class WearVoiceAction extends NotificationAction
         }
     };
 
-    public void sendReply(String text, PebbleTalkerService service)
+    public void sendReply(String text, NCTalkerService service)
     {
         try
         {
@@ -275,6 +281,12 @@ public class WearVoiceAction extends NotificationAction
         }
     }
 
+    @Override
+    public void gotText(String text)
+    {
+        sendReply(text, lastUsedService);
+    }
+
     public class WearCannedResponseList extends ActionList
     {
         @Override
@@ -290,7 +302,7 @@ public class WearVoiceAction extends NotificationAction
         }
 
         @Override
-        public boolean itemPicked(PebbleTalkerService service, int id)
+        public boolean itemPicked(NCTalkerService service, int id)
         {
             if (id == voiceItemIndex)
             {

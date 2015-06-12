@@ -24,7 +24,7 @@ import android.content.SharedPreferences;
 import com.luckycatlabs.sunrisesunset.calculator.SolarEventCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.util.TimeUtil;
+import com.matejdro.pebblecommons.util.TimeUtil;
 
 /**
  * Public interface for getting the various types of sunrise/sunset.

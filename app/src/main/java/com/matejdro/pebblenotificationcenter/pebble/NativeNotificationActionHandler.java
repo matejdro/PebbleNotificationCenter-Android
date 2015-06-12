@@ -1,6 +1,7 @@
 package com.matejdro.pebblenotificationcenter.pebble;
 
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
@@ -14,9 +15,9 @@ import timber.log.Timber;
  */
 public class NativeNotificationActionHandler
 {
-    private PebbleTalkerService service;
+    private NCTalkerService service;
 
-    public NativeNotificationActionHandler(PebbleTalkerService service)
+    public NativeNotificationActionHandler(NCTalkerService service)
     {
         this.service = service;
     }

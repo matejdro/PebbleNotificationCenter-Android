@@ -1,7 +1,10 @@
 package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import com.getpebble.android.kit.util.PebbleDictionary;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+import com.matejdro.pebblecommons.pebble.CommModule;
+import com.matejdro.pebblecommons.pebble.PebbleCommunication;
+import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -11,8 +14,7 @@ import com.matejdro.pebblenotificationcenter.notifications.actions.lists.Notific
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPhoneAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.WritingPhrasesList;
-import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
-import com.matejdro.pebblenotificationcenter.util.TextUtil;
+import com.matejdro.pebblecommons.util.TextUtil;
 import timber.log.Timber;
 
 /**
@@ -98,7 +100,7 @@ public class ActionsModule extends CommModule
 
         Timber.d("Button action from Pebble, Type: " + type);
 
-        ProcessedNotification notification = getService().sentNotifications.get(id);
+        ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(id);
         if (notification == null)
         {
             Timber.d("Invalid notification " + id);
@@ -108,7 +110,7 @@ public class ActionsModule extends CommModule
 
         if (notification.source.getActions() == null || notification.source.getActions().size() == 0)
         {
-            DismissOnPhoneAction.dismissOnPhone(notification, getService());
+            DismissOnPhoneAction.dismissOnPhone(notification, NCTalkerService.fromPebbleTalkerService(getService()));
             return;
         }
 
@@ -137,7 +139,7 @@ public class ActionsModule extends CommModule
         }
         else if (action == 1)
         {
-            DismissOnPhoneAction.dismissOnPhone(notification, getService());
+            DismissOnPhoneAction.dismissOnPhone(notification, NCTalkerService.fromPebbleTalkerService(getService()));
         }
         else if (action == 62)
         {
@@ -150,7 +152,7 @@ public class ActionsModule extends CommModule
                 return;
 
             SystemModule.get(getService()).hideHourglass();
-            notification.source.getActions().get(action).executeAction(getService(), notification);
+            notification.source.getActions().get(action).executeAction(NCTalkerService.fromPebbleTalkerService(getService()), notification);
         }
     }
 
@@ -166,7 +168,7 @@ public class ActionsModule extends CommModule
             return;
         }
 
-        if (!list.itemPicked(getService(), action));
+        if (!list.itemPicked(NCTalkerService.fromPebbleTalkerService(getService()), action));
             SystemModule.get(getService()).hideHourglass();
     }
 
@@ -176,7 +178,7 @@ public class ActionsModule extends CommModule
 
         Timber.d("Got dismiss request from Pebble");
 
-        ProcessedNotification notification = getService().sentNotifications.get(id);
+        ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(id);
         if (notification == null)
         {
             Timber.d("Invalid notification!");
@@ -184,7 +186,7 @@ public class ActionsModule extends CommModule
             return;
         }
 
-        DismissOnPhoneAction.dismissOnPhone(notification, getService());
+        DismissOnPhoneAction.dismissOnPhone(notification, NCTalkerService.fromPebbleTalkerService(getService()));
     }
 
     private void gotMessageReplyText(PebbleDictionary data)

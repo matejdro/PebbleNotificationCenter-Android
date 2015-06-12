@@ -2,7 +2,8 @@ package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.app.PendingIntent;
 import android.os.Parcel;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 
 /**
@@ -18,7 +19,7 @@ public class PendingIntentAction extends NotificationAction
     }
 
     @Override
-    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(NCTalkerService service, ProcessedNotification notification)
     {
         try
         {

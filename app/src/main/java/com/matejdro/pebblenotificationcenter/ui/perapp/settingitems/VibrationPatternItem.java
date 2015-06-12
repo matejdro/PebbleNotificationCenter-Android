@@ -5,7 +5,7 @@ import android.text.InputType;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblenotificationcenter.util.TextUtil;
+import com.matejdro.pebblecommons.util.TextUtil;
 
 /**
  * Created by Matej on 19.10.2014.

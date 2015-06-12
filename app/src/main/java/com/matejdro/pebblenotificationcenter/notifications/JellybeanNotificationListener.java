@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 import timber.log.Timber;
 

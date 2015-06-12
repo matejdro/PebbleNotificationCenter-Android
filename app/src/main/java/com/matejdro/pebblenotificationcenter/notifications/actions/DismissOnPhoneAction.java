@@ -2,8 +2,9 @@ package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.content.Context;
 import android.os.Parcel;
+
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
@@ -25,13 +26,13 @@ public class DismissOnPhoneAction extends NotificationAction
     }
 
     @Override
-    public boolean executeAction(PebbleTalkerService service, ProcessedNotification notification)
+    public boolean executeAction(NCTalkerService service, ProcessedNotification notification)
     {
         dismissOnPhone(notification, service);
         return true;
     }
 
-    public static void dismissOnPhone(ProcessedNotification notification, PebbleTalkerService service)
+    public static void dismissOnPhone(ProcessedNotification notification, NCTalkerService service)
     {
         DismissUpwardsModule.dismissPebbleID(service, notification.id);
 

@@ -18,12 +18,12 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import com.matejdro.pebblenotificationcenter.DataReceiver;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+
+import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
-import com.matejdro.pebblenotificationcenter.pebble.PebbleApp;
-import com.matejdro.pebblenotificationcenter.pebble.PebbleDeveloperConnection;
-import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
+import com.matejdro.pebblecommons.pebble.PebbleApp;
+import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
 import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
 import java.net.URISyntaxException;
@@ -256,7 +256,7 @@ public class PebbleAppListFragment extends Fragment {
             PebbleDeveloperConnection connection = null;
             try
             {
-                connection = new PebbleDeveloperConnection(getActivity());
+                connection = new NotificationCenterDeveloperConnection(getActivity());
                 connection.connectBlocking();
 
             } catch (URISyntaxException e)
@@ -275,7 +275,7 @@ public class PebbleAppListFragment extends Fragment {
                 while (iterator.hasNext())
                 {
                     PebbleApp app = iterator.next();
-                    if (app.getUuid().equals(DataReceiver.pebbleAppUUID))
+                    if (app.getUuid().equals(PebbleNotificationCenter.WATCHAPP_UUID))
                         iterator.remove();
                 }
 

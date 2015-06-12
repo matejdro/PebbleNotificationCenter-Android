@@ -5,7 +5,6 @@ import android.content.Intent;
 import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ListModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import java.util.ArrayList;

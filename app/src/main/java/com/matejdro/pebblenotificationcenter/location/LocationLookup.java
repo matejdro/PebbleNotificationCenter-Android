@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.util.TimeUtil;
+import com.matejdro.pebblecommons.util.TimeUtil;
 
 public class LocationLookup {
   static private LocationLookup _instance = null;

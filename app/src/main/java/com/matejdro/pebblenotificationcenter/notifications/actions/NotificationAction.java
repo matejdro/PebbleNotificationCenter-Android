@@ -1,7 +1,8 @@
 package com.matejdro.pebblenotificationcenter.notifications.actions;
 
 import android.os.Parcelable;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
+
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 
 /**
@@ -31,5 +32,5 @@ public abstract class NotificationAction implements Parcelable
     /*
         @return true if action definitely sent something towards Pebble
      */
-    public abstract boolean executeAction(PebbleTalkerService service, ProcessedNotification notification);
+    public abstract boolean executeAction(NCTalkerService service, ProcessedNotification notification);
 }

@@ -2,10 +2,16 @@ package com.matejdro.pebblenotificationcenter;
 
 import android.content.pm.ApplicationInfo;
 import com.crashlytics.android.Crashlytics;
-import com.matejdro.pebblenotificationcenter.util.LogWriter;
+import com.matejdro.pebblecommons.PebbleCompanionApplication;
+import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 
-public class PebbleNotificationCenter extends android.app.Application {
+import java.util.Map;
+import java.util.UUID;
+
+public class PebbleNotificationCenter extends PebbleCompanionApplication
+{
     public static final String PACKAGE = "com.matejdro.pebblenotificationcenter";
 
     public static final String APP_INCLUSION_MODE = "includeMode";
@@ -28,8 +34,9 @@ public class PebbleNotificationCenter extends android.app.Application {
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
     public static final String ALTITUDE = "altitude";
-    
-    
+
+    public final static UUID WATCHAPP_UUID = UUID.fromString("0a7575eb-e5b9-456b-8701-3eacb62d74f1");
+
     private static SettingsMemoryStorage settingsMemoryStorage;
     
     @Override public void onCreate() {
@@ -40,11 +47,29 @@ public class PebbleNotificationCenter extends android.app.Application {
             Crashlytics.start(this);
 
         settingsMemoryStorage = new SettingsMemoryStorage(this);
-        LogWriter.init();
+        LogWriter.init(settingsMemoryStorage.getSharedPreferences(), "NotificationCenter");
     }
     	
 	public static SettingsMemoryStorage getInMemorySettings()
 	{		
 		return settingsMemoryStorage;
 	}
+
+    @Override
+    public UUID getPebbleAppUUID()
+    {
+        return WATCHAPP_UUID;
+    }
+
+    @Override
+    public Class<? extends PebbleTalkerService> getTalkerServiceClass()
+    {
+        return NCTalkerService.class;
+    }
+
+    @Override
+    public Map<String, String> getTextReplacementTable()
+    {
+        return settingsMemoryStorage.getReplacingStrings();
+    }
 }

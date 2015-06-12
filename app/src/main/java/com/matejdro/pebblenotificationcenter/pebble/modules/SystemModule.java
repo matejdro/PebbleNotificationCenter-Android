@@ -2,17 +2,17 @@ package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.provider.ContactsContract;
 import android.util.SparseArray;
-import android.widget.Toast;
+
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
-import com.matejdro.pebblenotificationcenter.DataReceiver;
+import com.matejdro.pebblecommons.pebble.CommModule;
+import com.matejdro.pebblecommons.pebble.PebbleCommunication;
+import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
-import com.matejdro.pebblenotificationcenter.pebble.PebbleCommunication;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -100,7 +100,7 @@ public class SystemModule extends CommModule
                 backlight = true;
                 break;
             case 3:
-                getService().getLocationLookup().lookup();
+                NCTalkerService.fromPebbleTalkerService(getService()).getLocationLookup().lookup();
                 backlight = SunriseSunsetCalculator.isSunDown(getService().getGlobalSettings());
                 break;
         }
@@ -322,7 +322,7 @@ public class SystemModule extends CommModule
     {
         UUID newApp = getService().getDeveloperConnection().getCurrentRunningApp();
 
-        if (newApp != null && (!newApp.equals(DataReceiver.pebbleAppUUID) || currentRunningApp == null) && !newApp.equals(UNKNOWN_UUID))
+        if (newApp != null && (!newApp.equals(PebbleNotificationCenter.WATCHAPP_UUID) || currentRunningApp == null) && !newApp.equals(UNKNOWN_UUID))
         {
             currentRunningApp = newApp;
         }
@@ -335,7 +335,7 @@ public class SystemModule extends CommModule
 
     public void openApp()
     {
-        PebbleKit.startAppOnPebble(getService(), DataReceiver.pebbleAppUUID);
+        PebbleKit.startAppOnPebble(getService(), PebbleNotificationCenter.WATCHAPP_UUID);
     }
 
     public void closeApp()
@@ -349,7 +349,7 @@ public class SystemModule extends CommModule
         if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && canCloseToApp(currentRunningApp) && closeTries < 2)
             PebbleKit.startAppOnPebble(getService(), currentRunningApp);
         else
-            PebbleKit.closeAppOnPebble(getService(), DataReceiver.pebbleAppUUID);
+            PebbleKit.closeAppOnPebble(getService(), PebbleNotificationCenter.WATCHAPP_UUID);
 
         SharedPreferences.Editor editor = getService().getGlobalSettings().edit();
         editor.putLong("lastClose", System.currentTimeMillis());
@@ -360,7 +360,7 @@ public class SystemModule extends CommModule
 
     private static boolean canCloseToApp(UUID uuid)
     {
-        return uuid != null && !uuid.equals(DataReceiver.pebbleAppUUID) && !uuid.equals(MAIN_MENU_UUID) && !uuid.equals(UNKNOWN_UUID);
+        return uuid != null && !uuid.equals(PebbleNotificationCenter.WATCHAPP_UUID) && !uuid.equals(MAIN_MENU_UUID) && !uuid.equals(UNKNOWN_UUID);
     }
 
     public static SystemModule get(PebbleTalkerService service)

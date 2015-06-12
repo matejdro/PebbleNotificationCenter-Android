@@ -1,7 +1,9 @@
 package com.matejdro.pebblenotificationcenter.util;
 
 import android.content.SharedPreferences;
-import com.matejdro.pebblenotificationcenter.DataReceiver;
+
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.UUID;
@@ -80,7 +82,7 @@ public class PreferencesUtil
 
     public static int getPebbleAppNotificationMode(SharedPreferences preferences, UUID uuid)
     {
-		if (uuid.equals(DataReceiver.pebbleAppUUID)) //When NC is open, send NC notifications
+		if (uuid.equals(PebbleNotificationCenter.WATCHAPP_UUID)) //When NC is open, send NC notifications
 			return 0;
 
         int mode = preferences.getInt("pebble_app_mode_".concat(uuid.toString()), -1);
