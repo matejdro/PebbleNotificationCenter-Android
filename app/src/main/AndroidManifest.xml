@@ -99,11 +99,6 @@
                   <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
               </intent-filter>
         </receiver>
-        <receiver android:name=".util.BluetoothHeadsetListener">
-            <intent-filter>
-                <action android:name="android.bluetooth.headset.profile.action.CONNECTION_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
 
         <receiver android:name="com.matejdro.pebblenotificationcenter.pebble.WatchappHandler"
                   android:exported="true" >
