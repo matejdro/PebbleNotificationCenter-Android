@@ -37,6 +37,9 @@ public class ActiveNotificationsAdapter implements NotificationListAdapter {
 			Notification notification = sbn.getNotification();
 
             PebbleNotification pn = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, NotificationHandler.getKeyFromSbn(sbn), notification, sbn.isClearable());
+			if (pn == null)
+				continue;
+
             pn.setListNotification(true);
             pn.setPostTime(sbn.getPostTime());
 
