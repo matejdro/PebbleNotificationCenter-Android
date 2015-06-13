@@ -16,6 +16,7 @@ import android.os.Parcelable;
 import com.matejdro.pebblecommons.messages.MessageTextProviderListener;
 import com.matejdro.pebblecommons.messages.PhoneVoiceProvider;
 import com.matejdro.pebblecommons.messages.TimeVoiceProvider;
+import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
@@ -128,7 +129,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
 
         cannedResponseList = new ArrayList<String>();
 
-        if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY))
+        if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
         {
             cannedResponseList.add("Time Voice");
             timeVoiceItemIndex = cannedResponseList.size() - 1;
