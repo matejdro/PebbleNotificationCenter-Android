@@ -267,6 +267,8 @@
     <string name="pebbleAppsDescription">NC is like any other app on Pebble - when notification comes, it will close whatever app was active. This is fine most of the time, but for some apps you might not want this (for example you wouldn\'t want to interrupt running stopwatch). \n\n This view allows you to set NC to produce native Pebble notifications or simply turn off notifications if specific app is open on Pebble. \n\n For this feature to work, you need to enable Developer Connection Pebble app settings.</string>
     <string name="pebbleAppLoadingError">Error while loading app list. Is your Pebble connected and Developer Connection
         enabled?
+        \n\n\n
+        This feature does not work on Pebble Time at the moment.
     </string>
     <string name="clearHistory">Clear History</string>
     <string name="deleteHistoryConfirm">Do you really want to clear whole notification history?</string>

@@ -45,7 +45,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="closeToLastApp"
-            android:summary="You need to ENABLE DEVELOPER CONNECTION inside Pebble app to get this to work. It is also a bit buggy (sometimes app won't close), use on your own risk."
+            android:summary="You need to ENABLE DEVELOPER CONNECTION inside Pebble app to get this to work. It is also a bit buggy (sometimes app won't close), use on your own risk. This feature does not work on Pebble Time at the moment."
             android:title="Close to previously running app" />
          <ListPreference
             android:key="lightScreenNotifications"
