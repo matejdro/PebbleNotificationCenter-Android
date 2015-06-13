@@ -12,8 +12,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompatExtras;
+
+import com.matejdro.pebblecommons.notification.NotificationCenterExtender;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
@@ -66,8 +69,15 @@ public class NotificationHandler {
         NotificationSendingModule.notify(pebbleNotification, context);
     }
 
-    public static PebbleNotification getPebbleNotificationFromAndroidNotification(Context context, NotificationKey key, Notification notification, boolean isDismissible)
+    public static @Nullable PebbleNotification getPebbleNotificationFromAndroidNotification(Context context, NotificationKey key, Notification notification, boolean isDismissible)
     {
+        NotificationCenterExtender notificationCenterExtender = new NotificationCenterExtender(notification);
+        if (notificationCenterExtender.isNCNotificationDisabled())
+        {
+            Timber.d("Discarding notification because extender requested it");
+            return null;
+        }
+
         final String title = getAppName(context, key.getPackage());
 
         PebbleNotification pebbleNotification = new PebbleNotification(title, null, key);
