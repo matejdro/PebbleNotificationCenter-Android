@@ -15,6 +15,7 @@ import android.os.Parcelable;
 
 import com.matejdro.pebblecommons.messages.MessageTextProviderListener;
 import com.matejdro.pebblecommons.messages.PhoneVoiceProvider;
+import com.matejdro.pebblecommons.messages.TimeVoiceProvider;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
@@ -44,6 +45,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
     private List<String> cannedResponseList;
     private int notificationId;
     private int voiceItemIndex;
+    private int timeVoiceItemIndex;
     private int writeItemIndex;
     private NCTalkerService lastUsedService;
 
@@ -54,6 +56,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         this.voiceKey = voiceKey;
         this.appProvidedChoices = appProvidedChoices;
         voiceItemIndex = -1;
+        timeVoiceItemIndex = -1;
         writeItemIndex = -1;
     }
 
@@ -125,9 +128,16 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
 
         cannedResponseList = new ArrayList<String>();
 
+        if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY))
+        {
+            cannedResponseList.add("Time Voice");
+            timeVoiceItemIndex = cannedResponseList.size() - 1;
+        }
+
+
         if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
         {
-            cannedResponseList.add("Voice");
+            cannedResponseList.add("Phone Voice");
             voiceItemIndex = cannedResponseList.size() - 1;
         }
 
@@ -172,6 +182,18 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
             public void run()
             {
                 new PhoneVoiceProvider(new NCUserPrompter(service), service).startRetrievingText(WearVoiceAction.this);
+            }
+        });
+    }
+
+    public void showTimeVoicePrompt(final NCTalkerService service)
+    {
+        service.runOnMainThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                new TimeVoiceProvider(service).startRetrievingText(WearVoiceAction.this);
             }
         });
     }
@@ -311,6 +333,10 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
             else if (id == writeItemIndex)
             {
                 showTertiaryText(service);
+            }
+            else if (id == timeVoiceItemIndex)
+            {
+                showTimeVoicePrompt(service);
             }
             else
             {

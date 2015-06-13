@@ -409,11 +409,15 @@
     <string name="voiceInputResultNotificationText">%s\n\nPick correct text from menu or retry.
     </string>
     <string name="voiceInputResultActionName">Result %d</string>
-    <string name="settingEnableVoiceReply">Enable voice reply</string>
+    <string name="settingEnableVoiceReply">Enable phone voice reply</string>
 
     <string name="settingEnableVoiceReplyDescription">When this setting is enabled, you can dictate reply on android
-        wear actions. Of course Pebble does not have microphone, but you can use your phone\'s mic (sometimes it even
-        hears from your pocket) or mic on your headphones.
+        wear actions using microphone on the phone or one connected to the phone (BT headset for example).
+    </string>
+    <string name="settingEnableTimeVoiceReply">Enable Time voice reply</string>
+
+    <string name="settingEnableTimeVoiceReplyDescription">When this setting is enabled, you can dictate reply on android
+        wear actions using microphone on the Pebble Time (does not work on classic Pebble obviously). You need to enable Notification Center in Pebble Time notification settings for this to work.
     </string>
     <string name="settingEnableWritingReply">Enable writing reply</string>
     <string name="settingEnableWritingReplyDescription">When this setting is enabled, you write reply messages from your Pebble.

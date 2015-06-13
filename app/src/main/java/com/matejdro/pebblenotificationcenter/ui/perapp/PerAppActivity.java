@@ -143,6 +143,7 @@ public class PerAppActivity extends Activity
         if (version(Build.VERSION_CODES.JELLY_BEAN)) category.add(new CheckBoxItem(settingsStorage, AppSetting.LOAD_WEAR_ACTIONS, R.string.settingLoadWearActions, R.string.settingLoadWearActionsDescription));
         if (version(Build.VERSION_CODES.JELLY_BEAN)) category.add(new CheckBoxItem(settingsStorage, AppSetting.LOAD_PHONE_ACTIONS, R.string.settingLoadPhoneActions, R.string.settingLoadPhoneActionsDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_VOICE_REPLY, R.string.settingEnableVoiceReply, R.string.settingEnableVoiceReplyDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_TIME_VOICE_REPLY, R.string.settingEnableTimeVoiceReply, R.string.settingEnableTimeVoiceReplyDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.ENABLE_WRITING_REPLY, R.string.settingEnableWritingReply, R.string.settingEnableWritingReplyDescription));
         category.add(new CannedResponsesItem(settingsStorage, AppSetting.CANNED_RESPONSES, R.string.settingCannedResponses, R.string.settingCannedResponsesDescription));
         category.add(new WritingPhrasesItem(settingsStorage, AppSetting.WRITING_PHRASES, R.string.settingWritingPhrases, R.string.settingWritingPhrasesDescription));

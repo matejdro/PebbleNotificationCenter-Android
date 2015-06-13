@@ -49,6 +49,7 @@ public enum AppSetting
     LOAD_WEAR_ACTIONS("loadWearActions", true),
     LOAD_PHONE_ACTIONS("loadPhoneActions", true),
     ENABLE_VOICE_REPLY("enableVoiceReply", true),
+    ENABLE_TIME_VOICE_REPLY("enableTimeVoiceReply", true),
     ENABLE_WRITING_REPLY("enableWritingReply", true),
     DISMISS_AFTER_REPLY("dismissAfterReply", true),
     CANNED_RESPONSES("cannedResponses", null),

@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter;
 
 import android.util.SparseArray;
 
+import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
@@ -81,6 +82,11 @@ public class NCTalkerService extends PebbleTalkerService
         try
         {
             devConn = new NotificationCenterDeveloperConnection(this);
+
+            //None of the Developer Connection features are supported on Basalt, disable it automatically.
+            if (getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
+                return;
+
             devConn.connectBlocking();
         } catch (InterruptedException e)
         {
