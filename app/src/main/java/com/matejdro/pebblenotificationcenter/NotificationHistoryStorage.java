@@ -84,5 +84,7 @@ public class NotificationHistoryStorage extends SQLiteOpenHelper {
 		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 		editor.putLong("lastCleanup", System.currentTimeMillis());
 		editor.apply();
+
+		cursor.close();
 	}
 }

@@ -42,6 +42,8 @@ public class NotificationHistoryAdapter implements NotificationListAdapter {
 
 			notifications.add(notification);
 		}
+
+		cursor.close();
 	}
 
 	@Override
