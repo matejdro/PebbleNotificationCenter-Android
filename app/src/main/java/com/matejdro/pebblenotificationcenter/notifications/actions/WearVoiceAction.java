@@ -123,32 +123,33 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         return new WearVoiceAction(title, actionIntent, key, choicesString);
     }
 
-    public void populateCannedList(Context context, ProcessedNotification notification, boolean nativeMode)
+    public void populateCannedList(NCTalkerService service, ProcessedNotification notification, boolean nativeMode)
     {
+        lastUsedService = service;
         notificationId = notification.id;
 
         cannedResponseList = new ArrayList<String>();
 
-        if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
+        if (notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
         {
             cannedResponseList.add("Time Voice");
             timeVoiceItemIndex = cannedResponseList.size() - 1;
         }
 
 
-        if (notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
+        if (notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
         {
             cannedResponseList.add("Phone Voice");
             voiceItemIndex = cannedResponseList.size() - 1;
         }
 
-        if (!nativeMode && notification.source.getSettingStorage(context).getBoolean(AppSetting.ENABLE_WRITING_REPLY))
+        if (!nativeMode && notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_WRITING_REPLY))
         {
             cannedResponseList.add("Write");
             writeItemIndex = cannedResponseList.size() - 1;
         }
 
-        ArrayList<String> userProvidedChoices = (ArrayList<String>) notification.source.getSettingStorage(context).getStringList(AppSetting.CANNED_RESPONSES);
+        ArrayList<String> userProvidedChoices = (ArrayList<String>) notification.source.getSettingStorage(service).getStringList(AppSetting.CANNED_RESPONSES);
         if (userProvidedChoices != null)
         {
             for (String choice : userProvidedChoices)

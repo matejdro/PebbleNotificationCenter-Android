@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblecommons.util.LogWriter;
+import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.WearVoiceAction;
@@ -21,11 +22,11 @@ import timber.log.Timber;
 public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnection
 {
     private NativeNotificationActionHandler notificationActionHandler;
-    private Context context;
+    private NCTalkerService service;
 
-    public NotificationCenterDeveloperConnection(Context context) throws URISyntaxException
+    public NotificationCenterDeveloperConnection(NCTalkerService service) throws URISyntaxException
     {
-        this.context = context;
+        this.service = service;
     }
 
     @Override
@@ -101,7 +102,7 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
                     if (action instanceof WearVoiceAction)
                     {
                         WearVoiceAction voiceAction = (WearVoiceAction) action;
-                        voiceAction.populateCannedList(context, notification, true);
+                        voiceAction.populateCannedList(service, notification, true);
 
                         dataStream.writeByte(3); //Action type. 3 = text
                         dataStream.writeByte(2); //2 attributes

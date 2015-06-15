@@ -6,6 +6,7 @@ import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
+import com.matejdro.pebblenotificationcenter.pebble.NativeNotificationActionHandler;
 import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ActionsModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
@@ -88,6 +89,9 @@ public class NCTalkerService extends PebbleTalkerService
                 return;
 
             devConn.connectBlocking();
+            NativeNotificationActionHandler actionHandler = new NativeNotificationActionHandler(this);
+            NotificationCenterDeveloperConnection.fromDevConn(devConn).registerActionHandler(actionHandler);
+
         } catch (InterruptedException e)
         {
         } catch (URISyntaxException e)

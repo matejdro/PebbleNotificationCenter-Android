@@ -256,10 +256,11 @@ public class PebbleAppListFragment extends Fragment {
             PebbleDeveloperConnection connection = null;
             try
             {
-                connection = new NotificationCenterDeveloperConnection(getActivity());
+                connection = new PebbleDeveloperConnection();
                 connection.connectBlocking();
+				apps = connection.getInstalledPebbleApps();
 
-            } catch (URISyntaxException e)
+			} catch (URISyntaxException e)
             {
                 e.printStackTrace();
             } catch (InterruptedException e)
@@ -267,7 +268,6 @@ public class PebbleAppListFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            apps = connection.getInstalledPebbleApps();
             if (apps != null)
             {
                 //Remove Notification Center from the list

@@ -73,7 +73,7 @@ public class NativeNotificationActionHandler
                 return;
 
             WearVoiceAction voiceAction = (WearVoiceAction) action;
-            if (voiceAction.containsVoiceOption() && replyText.equals("Voice"))
+            if (voiceAction.containsVoiceOption() && replyText.equals("Phone Voice"))
             {
                 voiceAction.showVoicePrompt(service);
             }
