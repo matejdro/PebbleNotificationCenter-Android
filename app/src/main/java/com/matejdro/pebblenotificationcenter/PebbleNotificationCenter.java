@@ -7,6 +7,7 @@ import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 
+import io.fabric.sdk.android.Fabric;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,7 +45,7 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
 
         boolean isDebuggable =  ( 0 != ( getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
         if (!isDebuggable)
-            Crashlytics.start(this);
+            Fabric.with(this, new Crashlytics());
 
         settingsMemoryStorage = new SettingsMemoryStorage(this);
         LogWriter.init(settingsMemoryStorage.getSharedPreferences(), "NotificationCenter");
