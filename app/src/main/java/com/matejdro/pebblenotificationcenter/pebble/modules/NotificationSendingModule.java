@@ -488,7 +488,7 @@ public class NotificationSendingModule extends CommModule
         {
             curSendingNotification.nextChunkToSend = -1;
 
-            getService().getPebbleCommunication().queueModule(this);
+            getService().getPebbleCommunication().queueModulePriority(this);
         }
     }
 
