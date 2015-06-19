@@ -8,6 +8,8 @@ import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 
 import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,6 +50,7 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
             Fabric.with(this, new Crashlytics());
 
         settingsMemoryStorage = new SettingsMemoryStorage(this);
+        Timber.setTag("PebbleNotificationCenter");
         LogWriter.init(settingsMemoryStorage.getSharedPreferences(), "NotificationCenter");
     }
     	
