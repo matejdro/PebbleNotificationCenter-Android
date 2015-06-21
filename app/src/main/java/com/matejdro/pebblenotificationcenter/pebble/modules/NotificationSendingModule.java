@@ -534,7 +534,9 @@ public class NotificationSendingModule extends CommModule
         {
             return false; //Don't send group notifications, they are not enabled.
         }
-        if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
+
+        boolean sendIdentical = settingStorage.getBoolean(AppSetting.SEND_IDENTICAL_NOTIFICATIONS);
+        if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE || !sendIdentical)
         {
             SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 
@@ -542,7 +544,7 @@ public class NotificationSendingModule extends CommModule
             for (int i = 0; i < sentNotifications.size(); i++)
             {
                 ProcessedNotification comparing = sentNotifications.valueAt(i);
-                if (comparing.source.getWearGroupType() != PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && notification.hasIdenticalContent(comparing.source))
+                if ((comparing.source.getWearGroupType() != PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY || !sendIdentical) && notification.hasIdenticalContent(comparing.source))
                 {
                     Timber.d("group notify failed - same notification exists");
                     return false;

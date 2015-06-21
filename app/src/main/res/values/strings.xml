@@ -292,6 +292,9 @@
     <string name="settingSendBlankNotificationsDescription">When checked, NC will also send completely blank
         notifications from this app
     </string>
+    <string name="settingSendIdenticalNotifications">Send identical notifications</string>
+    <string name="settingSendIdenticalNotificationsDescription">By default NC will not forward notification if notification with exact same text is already present in the notification tray. Check this if for example app generates periodic reminders with identical content.
+    </string>
     <string name="settingSwitchToRecent">Switch to most recent notification</string>
     <string name="settingSwitchToRecentDescription">When this is checked and new notification comes from this app, it
         will switch to that notification instead of queuing it.

@@ -12,6 +12,7 @@ public enum AppSetting
 
     SEND_ONGOING_NOTIFICATIONS("enableOngoing", false),
     SEND_BLANK_NOTIFICATIONS("sendBlank", false),
+    SEND_IDENTICAL_NOTIFICATIONS("sendIdentical", false),
     DISABLE_NOTIFY_SCREEN_OIN("noNotificationsScreenOn", false),
     DISABLE_LOCAL_ONLY_NOTIFICATIONS("disableLocalOnly", false),
 
