@@ -2,12 +2,16 @@ package com.matejdro.pebblenotificationcenter.notifications;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -54,7 +58,7 @@ public class NotificationHandler {
         //Respect LocalOnly on NC notifications regardless of the settings
         boolean localNotification = NotificationCompat.getLocalOnly(notification);
         if (localNotification &&
-           (key.getPackage().equals(PebbleNotificationCenter.PACKAGE) || settingStorage.getBoolean(AppSetting.DISABLE_LOCAL_ONLY_NOTIFICATIONS)))
+           (PebbleNotificationCenter.PACKAGE.equals(key.getPackage()) || settingStorage.getBoolean(AppSetting.DISABLE_LOCAL_ONLY_NOTIFICATIONS)))
         {
             Timber.d("Discarding notification because it is local only");
             return;
@@ -97,6 +101,7 @@ public class NotificationHandler {
         pebbleNotification.setText(text);
         pebbleNotification.setSubtitle(secondaryTitle);
         pebbleNotification.setDismissable(isDismissible);
+        pebbleNotification.setColor(getColor(notification, key.getPackage(), context));
 
         ActionParser.loadActions(notification, pebbleNotification, context);
 
@@ -142,7 +147,7 @@ public class NotificationHandler {
 
     public static boolean hasPages(Bundle extras)
     {
-        if (!extras.containsKey("android.wearable.EXTENSIONS"))
+        if (extras == null || !extras.containsKey("android.wearable.EXTENSIONS"))
             return false;
 
         Bundle wearables = extras.getBundle("android.wearable.EXTENSIONS");
@@ -155,6 +160,85 @@ public class NotificationHandler {
             return false;
 
         return true;
+    }
+
+    public static int getColor(Notification notification, String appPackage, Context context)
+    {
+        //Try getting color from Notification#color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            int color = notification.color;
+            if (color != Notification.COLOR_DEFAULT)
+                return color;
+        }
+
+        //Try getting color from Wearable and Car extensions
+        Bundle extras = NotificationParser.getExtras(notification);
+        if (extras != null)
+        {
+            if (extras.containsKey("android.wearable.EXTENSIONS"))
+            {
+                Bundle wearableExtension = extras.getBundle("android.wearable.EXTENSIONS");
+                if (wearableExtension.containsKey("app_color"))
+                    return wearableExtension.getInt("app_color");
+            }
+
+            if (extras.containsKey("android.car.EXTENSIONS"))
+            {
+                Bundle carExtension = extras.getBundle("android.car.EXTENSIONS");
+                if (carExtension.containsKey("app_color"))
+                    return carExtension.getInt("app_color");
+            }
+        }
+
+        //Try getting color from app theme (material design primary color)
+        if (appPackage != null)
+        {
+            PackageManager packageManager = context.getPackageManager();
+            try
+            {
+                Resources otherAppResources = packageManager.getResourcesForApplication(appPackage);
+                Resources.Theme theme = otherAppResources.newTheme();
+
+                int themeResId = packageManager.getApplicationInfo(appPackage, 0).theme;
+                if (themeResId == 0)
+                {
+                    Intent launchIntent =  packageManager.getLaunchIntentForPackage(appPackage);
+                    themeResId = launchIntent != null ? packageManager.getActivityInfo(launchIntent.getComponent(), 0).theme : 0;
+                }
+
+                if (themeResId != 0)
+                {
+                    theme.applyStyle(themeResId, false);
+
+                    //AppCompat theme color
+                    TypedArray typedArray = theme.obtainStyledAttributes(new int[] {otherAppResources.getIdentifier("colorPrimary", "attr", appPackage)});
+                    int color = typedArray.getColor(0, Color.TRANSPARENT);
+                    typedArray.recycle();
+
+                    if (color == Color.TRANSPARENT && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    {
+                        //Native Lollipop theme color
+                        typedArray = theme.obtainStyledAttributes(new int[] {android.R.attr.colorPrimary});
+                        color = typedArray.getColor(0, Color.TRANSPARENT);
+                        typedArray.recycle();
+                    }
+
+                    if (color != Color.TRANSPARENT)
+                        return color;
+                }
+            }
+            catch (NameNotFoundException ignored)
+            {
+            }
+        }
+
+        //Try getting color from notification LED color
+        int ledColor = notification.ledARGB;
+        if (ledColor != Notification.COLOR_DEFAULT)
+            return ledColor;
+
+        return Color.BLACK;
     }
 
 	public static String getAppName(Context context, String packageName)

@@ -125,8 +125,9 @@ Phone --> Pebble
 				[7] = Title font (0-17)
 				[8] = Subtitle font (0-17)
 				[9] = Body font (0-17)
-				[10] = Number of bytes in vibration pattern
-				[11,12,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
+                [10] = Statusbar color (in GColor8 format - byte with aarrggbb bits) - uint8 (only on Basalt)
+				[11] = Number of bytes in vibration pattern
+				[12,13,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
 			4 = Title (max 30 bytes) - cstring
 			5 = Subtitle (max 30 bytes) - cstring
 		

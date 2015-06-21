@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.util.SparseArray;
 
@@ -9,6 +10,7 @@ import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
+import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
@@ -222,6 +224,10 @@ public class NotificationSendingModule extends CommModule
             }
         }
 
+        int colorFromConfig = settingStorage.getInt(AppSetting.STATUSBAR_COLOR);
+        if (Color.alpha(colorFromConfig) != 0)
+            notificationSource.setColor(colorFromConfig);
+
         SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 
         Random rnd = new Random();
@@ -391,7 +397,7 @@ public class NotificationSendingModule extends CommModule
 
         int textLength = curSendingNotification.source.getText().getBytes().length;
 
-        byte[] configBytes = new byte[11 + vibrationPattern.size()];
+        byte[] configBytes = new byte[12 + vibrationPattern.size()];
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
@@ -409,10 +415,13 @@ public class NotificationSendingModule extends CommModule
         configBytes[8] = (byte) settingStorage.getInt(AppSetting.SUBTITLE_FONT);
         configBytes[9] = (byte) settingStorage.getInt(AppSetting.BOCY_FONT);
 
-        configBytes[10] = (byte) vibrationPattern.size();
+        if (getService().getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
+            configBytes[10] = PebbleImageToolkit.getGColor8FromRGBColor(curSendingNotification.source.getColor());
+
+        configBytes[11] = (byte) vibrationPattern.size();
 
         for (int i = 0; i < vibrationPattern.size(); i++)
-            configBytes[11 + i] = vibrationPattern.get(i);
+            configBytes[12 + i] = vibrationPattern.get(i);
 
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 0);

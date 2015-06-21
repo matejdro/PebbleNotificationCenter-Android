@@ -34,6 +34,7 @@ public enum AppSetting
     SUBTITLE_FONT("fontSubtitle", 5),
     BOCY_FONT("fontBody", 4),
     HIDE_NOTIFICATION_TEXT("hideNotiifcationText", false),
+    STATUSBAR_COLOR("statusbarColor", 0x00000000),
 
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),
     INBOX_REVERSE("inboxReverse", false),

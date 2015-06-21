@@ -548,5 +548,8 @@
     <string name="settingAlwaysParseStatusbarNotificationDescription">Always try to retrieve text from actual statusbar notification instead of using text that is separately provided by app itself. Use when notification on Pebble is different from one in statusbar.</string>
     <string name="settingHideNotificationText">Hide notification text</string>
     <string name="settingHideNotificationTextDescription">When checked, notificaiton text will be initially hidden and will require you to select Show action from action menu to uncover it. This gives you additional degree of privacy as you can decide when to see notification text (when people are not around to look at your watch).</string>
+    <string name="settingStatusbarColor">Statusbar color</string>
+    <string name="settingStatusbarColorDescription">Color of the statusbar above notification. This can be used to quickly distinguish between apps (for example Gmail is red, Facebook is blue etc.). By default this setting will use color provided by app or default to black if app does not provide color. But you can customize it and pick your own color if app does not provide it or you don\'t like one app provides.
+    </string>
 
 </resources>

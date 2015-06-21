@@ -1,6 +1,7 @@
 package com.matejdro.pebblenotificationcenter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -29,6 +30,7 @@ public class PebbleNotification implements Parcelable
     private boolean scrollToEnd;
     private boolean hidingTextDisallowed;
     private String wearGroupKey;
+    private int color;
 
     public static final int WEAR_GROUP_TYPE_DISABLED = 0;
     public static final int WEAR_GROUP_TYPE_GROUP_MESSAGE = 1;
@@ -50,6 +52,7 @@ public class PebbleNotification implements Parcelable
         listNotification = false;
         scrollToEnd = false;
         hidingTextDisallowed = false;
+        color = Color.BLACK;
 
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
     }
@@ -223,6 +226,16 @@ public class PebbleNotification implements Parcelable
         this.key = key;
     }
 
+    public int getColor()
+    {
+        return color;
+    }
+
+    public void setColor(int color)
+    {
+        this.color = color;
+    }
+
     public boolean isInSameGroup(PebbleNotification comparing)
     {
         if (getWearGroupType() == WEAR_GROUP_TYPE_DISABLED || comparing.getWearGroupType() == WEAR_GROUP_TYPE_DISABLED)
@@ -267,6 +280,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeValue(actions);
         parcel.writeValue(wearGroupKey);
         parcel.writeInt(wearGroupType);
+        parcel.writeInt(color);
     }
 
     public static final Creator<PebbleNotification> CREATOR = new Creator<PebbleNotification>()
@@ -292,6 +306,7 @@ public class PebbleNotification implements Parcelable
             notification.actions = (ArrayList) parcel.readValue(((Object) this).getClass().getClassLoader());
             notification.wearGroupKey = (String) parcel.readValue(((Object) this).getClass().getClassLoader());
             notification.wearGroupType = parcel.readInt();
+            notification.color = parcel.readInt();
 
             return notification;
         }

@@ -23,6 +23,7 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.AppEnabledCh
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.BaseSettingItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CannedResponsesItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CheckBoxItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ColorPickerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.EditTextItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.IntentActionsItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.QuietHoursItem;
@@ -37,10 +38,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import afzkl.development.colorpickerview.dialog.ColorPickerDialogFragment;
+
 /**
  * Created by Matej on 16.9.2014.
  */
-public class PerAppActivity extends Activity
+public class PerAppActivity extends Activity implements ColorPickerDialogFragment.ColorPickerDialogListener
 {
     protected AppSettingStorage settingsStorage;
     protected String appPackage;
@@ -130,6 +133,7 @@ public class PerAppActivity extends Activity
         category.add(new SpinnerItem(settingsStorage, AppSetting.BOCY_FONT, R.array.pebbleFonts, R.string.settingFontBody, 0, R.array.fontValues));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.ALWAYS_PARSE_STATUSBAR_NOTIFICATION, R.string.settingAlwaysParseStatusbarNotification, R.string.settingAlwaysParseStatusbarNotificationDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.HIDE_NOTIFICATION_TEXT, R.string.settingHideNotificationText, R.string.settingHideNotificationTextDescription));
+        if (version(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)) category.add(new ColorPickerItem(settingsStorage, AppSetting.STATUSBAR_COLOR, R.string.settingStatusbarColor, R.string.settingStatusbarColorDescription));
 
         settings.add(new SettingsCategory(0, category));
 
@@ -256,6 +260,33 @@ public class PerAppActivity extends Activity
 
         float density = ViewUtil.getDensity(this);
         view.setElevation(2 * density);
+    }
+
+    @Override
+    public void onColorSelected(int i, int i1)
+    {
+        for (SettingsCategory category : settings)
+        {
+            for (BaseSettingItem item : category.settings)
+            {
+                if (item instanceof ColorPickerDialogFragment.ColorPickerDialogListener)
+                    ((ColorPickerDialogFragment.ColorPickerDialogListener) item).onColorSelected(i, i1);
+            }
+        }
+
+    }
+
+    @Override
+    public void onDialogDismissed(int i)
+    {
+        for (SettingsCategory category : settings)
+        {
+            for (BaseSettingItem item : category.settings)
+            {
+                if (item instanceof ColorPickerDialogFragment.ColorPickerDialogListener)
+                    ((ColorPickerDialogFragment.ColorPickerDialogListener) item).onDialogDismissed(i);
+            }
+        }
     }
 
     public class SettingsCategory

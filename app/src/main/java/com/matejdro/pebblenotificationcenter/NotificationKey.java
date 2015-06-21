@@ -2,6 +2,8 @@ package com.matejdro.pebblenotificationcenter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+
 import java.util.regex.Pattern;
 
 /**
@@ -35,22 +37,22 @@ public class NotificationKey implements Parcelable
         this.tag = tag;
     }
 
-    public String getLolipopKey()
+    public @Nullable String getLolipopKey()
     {
         return lolipopKey;
     }
 
-    public String getPackage()
+    public @Nullable String getPackage()
     {
         return pkg;
     }
 
-    public Integer getAndroidId()
+    public @Nullable Integer getAndroidId()
     {
         return androidId;
     }
 
-    public String getTag()
+    public @Nullable String getTag()
     {
         return tag;
     }
