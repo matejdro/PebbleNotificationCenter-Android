@@ -397,7 +397,7 @@ public class NotificationSendingModule extends CommModule
 
         int textLength = curSendingNotification.source.getText().getBytes().length;
 
-        byte[] configBytes = new byte[12 + vibrationPattern.size()];
+        byte[] configBytes = new byte[14 + vibrationPattern.size()];
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
@@ -418,10 +418,28 @@ public class NotificationSendingModule extends CommModule
         if (getService().getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
             configBytes[10] = PebbleImageToolkit.getGColor8FromRGBColor(curSendingNotification.source.getColor());
 
-        configBytes[11] = (byte) vibrationPattern.size();
+        boolean queueImage = false;
+        if (curSendingNotification.source.getPebbleImage() == null)
+        {
+            configBytes[11] = 0;
+            configBytes[12] = 0;
+        }
+        else
+        {
+            int size = curSendingNotification.source.getPebbleImage().length;
+
+            configBytes[11] = (byte) (size >>> 8);
+            configBytes[12] = (byte) size;
+
+            queueImage = true;
+
+            System.out.println("imagesize " + size);
+        }
+
+        configBytes[13] = (byte) vibrationPattern.size();
 
         for (int i = 0; i < vibrationPattern.size(); i++)
-            configBytes[12 + i] = vibrationPattern.get(i);
+            configBytes[14 + i] = vibrationPattern.get(i);
 
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 0);
@@ -432,6 +450,10 @@ public class NotificationSendingModule extends CommModule
         data.addUint8(999, (byte) 1);
 
         getService().getPebbleCommunication().sendToPebble(data);
+
+        if (queueImage)
+        ImageSendingModule.get(getService()).startSendingImage(curSendingNotification);
+
     }
 
     private void sendMoreText()

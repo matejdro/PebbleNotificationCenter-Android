@@ -8,6 +8,7 @@ Pebble --> Phone
 		Sent from Pebble when app is opened. Phone should respond to  that by sending config.
 		Additional data:
 			2 = Watchapp version - uint16
+            3 = Platform (0 = Aplite, 1 = Basalt) - uint8
 
 		Packet 1 - Menu picked
 		Sent when user picks entry in main menu
@@ -62,6 +63,10 @@ Pebble --> Phone
 		Additional data:
 			2 = text (string)					
 				
+    MODULE 5 - IMAGE (ONLY ON BASALT)
+        
+        Packet 0 - Start sending image 
+			2 = Unique notification id (int32)
 
 Phone --> Pebble
 	
@@ -125,9 +130,11 @@ Phone --> Pebble
 				[7] = Title font (0-17)
 				[8] = Subtitle font (0-17)
 				[9] = Body font (0-17)
-                [10] = Statusbar color (in GColor8 format - byte with aarrggbb bits) - uint8 (only on Basalt)
-				[11] = Number of bytes in vibration pattern
-				[12,13,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
+                [10] = Statusbar color (in GColor8 format - byte with aarrggbb bits, only on Basalt)
+                [11] = Image size (first byte, only on basalt)
+                [12] = Image size (second byte, only on basalt)
+				[13] = Number of bytes in vibration pattern
+				[14,15,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
 			4 = Title (max 30 bytes) - cstring
 			5 = Subtitle (max 30 bytes) - cstring
 		
@@ -166,5 +173,11 @@ Phone --> Pebble
 	        	[1] = Amount of all actions in the list
 	        	[2] = Should I display tertiary text window instead of menu (1 or 0)
 	        3 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
+            
+    MODULE 5 - IMAGE (ONLY ON BASALT)
+        Packet 0 - Image data 
+        2 = array of uint8
+            [0] = Index of the first byte mod 256
+            [1-116] = Data of the image (part of the PNG image format)
 
 

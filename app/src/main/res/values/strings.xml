@@ -549,7 +549,8 @@
     <string name="settingHideNotificationText">Hide notification text</string>
     <string name="settingHideNotificationTextDescription">When checked, notificaiton text will be initially hidden and will require you to select Show action from action menu to uncover it. This gives you additional degree of privacy as you can decide when to see notification text (when people are not around to look at your watch).</string>
     <string name="settingStatusbarColor">Statusbar color</string>
-    <string name="settingStatusbarColorDescription">Color of the statusbar above notification. This can be used to quickly distinguish between apps (for example Gmail is red, Facebook is blue etc.). By default this setting will use color provided by app or default to black if app does not provide color. But you can customize it and pick your own color if app does not provide it or you don\'t like one app provides.
-    </string>
+    <string name="settingStatusbarColorDescription">Color of the statusbar above notification. This can be used to quickly distinguish between apps (for example Gmail is red, Facebook is blue etc.). By default this setting will use color provided by app or default to black if app does not provide color. But you can customize it and pick your own color if app does not provide it or you don\'t like one app provides.</string>
+    <string name="settingShowImage">Display notification image</string>
+    <string name="settingShowImageDescription">Display notification image in the background of the text. Depending on the app it can be received image (for example MMS message with image), image of the contact that send the message or just stock icon for this type of notification (for example envelope icon for mail). Only works on Pebble Time. Notifications with background images and longer text can cause scrolling lag. Disable this feature if it is unusable for you.</string>
 
 </resources>

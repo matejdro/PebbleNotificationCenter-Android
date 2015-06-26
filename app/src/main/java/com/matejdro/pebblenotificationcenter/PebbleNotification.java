@@ -1,9 +1,12 @@
 package com.matejdro.pebblenotificationcenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
@@ -31,6 +34,7 @@ public class PebbleNotification implements Parcelable
     private boolean hidingTextDisallowed;
     private String wearGroupKey;
     private int color;
+    private byte[] pebbleImage;
 
     public static final int WEAR_GROUP_TYPE_DISABLED = 0;
     public static final int WEAR_GROUP_TYPE_GROUP_MESSAGE = 1;
@@ -236,6 +240,16 @@ public class PebbleNotification implements Parcelable
         this.color = color;
     }
 
+    public @Nullable byte[] getPebbleImage()
+    {
+        return pebbleImage;
+    }
+
+    public void setPebbleImage(@Nullable byte[] pebbleImage)
+    {
+        this.pebbleImage = pebbleImage;
+    }
+
     public boolean isInSameGroup(PebbleNotification comparing)
     {
         if (getWearGroupType() == WEAR_GROUP_TYPE_DISABLED || comparing.getWearGroupType() == WEAR_GROUP_TYPE_DISABLED)
@@ -281,6 +295,8 @@ public class PebbleNotification implements Parcelable
         parcel.writeValue(wearGroupKey);
         parcel.writeInt(wearGroupType);
         parcel.writeInt(color);
+        parcel.writeValue(pebbleImage);
+
     }
 
     public static final Creator<PebbleNotification> CREATOR = new Creator<PebbleNotification>()
@@ -307,6 +323,7 @@ public class PebbleNotification implements Parcelable
             notification.wearGroupKey = (String) parcel.readValue(((Object) this).getClass().getClassLoader());
             notification.wearGroupType = parcel.readInt();
             notification.color = parcel.readInt();
+            notification.pebbleImage = (byte[]) parcel.readValue(getClass().getClassLoader());
 
             return notification;
         }

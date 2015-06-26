@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
+import com.matejdro.pebblenotificationcenter.pebble.modules.ImageSendingModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 import timber.log.Timber;
@@ -88,6 +90,7 @@ public class NotificationHandler {
         final String title = getAppName(context, key.getPackage());
 
         PebbleNotification pebbleNotification = new PebbleNotification(title, null, key);
+        AppSettingStorage settingStorage = pebbleNotification.getSettingStorage(context);
 
         NotificationParser parser = new NotificationParser(context, pebbleNotification, notification);
 
@@ -102,6 +105,9 @@ public class NotificationHandler {
         pebbleNotification.setSubtitle(secondaryTitle);
         pebbleNotification.setDismissable(isDismissible);
         pebbleNotification.setColor(getColor(notification, key.getPackage(), context));
+
+        if (settingStorage.getBoolean(AppSetting.SHOW_IMAGE))
+            pebbleNotification.setPebbleImage(ImageSendingModule.prepareImage(getImage(notification)));
 
         ActionParser.loadActions(notification, pebbleNotification, context);
 
@@ -239,6 +245,48 @@ public class NotificationHandler {
             return ledColor;
 
         return Color.BLACK;
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static Bitmap getImage(Notification notification)
+    {
+        Bundle extras = NotificationParser.getExtras(notification);
+        if (extras != null)
+        {
+            //Extract image from BigPictureStyle notification style
+            Bitmap bitmap = extras.getParcelable(Notification.EXTRA_PICTURE);
+            if (bitmap != null)
+                return bitmap;
+
+            //Extract image from Wearable extender background
+            if (extras.containsKey("android.wearable.EXTENSIONS"))
+            {
+                Bundle wearableExtension = extras.getBundle("android.wearable.EXTENSIONS");
+                bitmap = wearableExtension.getParcelable("background");
+                if (bitmap != null)
+                    return bitmap;
+            }
+
+            //Extract image from Car extender large icon
+            if (extras.containsKey("android.car.EXTENSIONS"))
+            {
+                Bundle carExtensions = extras.getBundle("android.car.EXTENSIONS");
+                bitmap = carExtensions.getParcelable("large_icon");
+                if (bitmap != null)
+                    return bitmap;
+            }
+
+            //Extract image from large icon on android notification
+            bitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG);
+            if (bitmap != null)
+                return bitmap;
+
+            bitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON);
+            if (bitmap != null)
+                return bitmap;
+        }
+
+        return  null;
     }
 
 	public static String getAppName(Context context, String packageName)

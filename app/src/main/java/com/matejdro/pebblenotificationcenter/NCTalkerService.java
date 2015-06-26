@@ -10,6 +10,7 @@ import com.matejdro.pebblenotificationcenter.pebble.NativeNotificationActionHand
 import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ActionsModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
+import com.matejdro.pebblenotificationcenter.pebble.modules.ImageSendingModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ListModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
@@ -54,6 +55,7 @@ public class NCTalkerService extends PebbleTalkerService
         addModule(new ListModule(this), ListModule.MODULE_LIST);
         addModule(new DismissUpwardsModule(this), DismissUpwardsModule.MODULE_DISMISS_UPWARDS);
         addModule(new ActionsModule(this), ActionsModule.MODULE_ACTIONS);
+        addModule(new ImageSendingModule(this), ImageSendingModule.MODULE_IMAGE_SENDING);
     }
 
     public LocationLookup getLocationLookup()
