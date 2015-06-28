@@ -315,9 +315,15 @@ public class NotificationParser {
                 extras = new Bundle();
             }
             return extras;
-        } catch (IllegalAccessException e) {
-            Crashlytics.logException(e);
-        } catch (NoSuchFieldException e) {
+        }
+        catch (NoSuchFieldException e)
+        {
+            //Error is normal on pre-4.3 Android (just return null). Otherwise report crash.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                Crashlytics.logException(e);
+        }
+        catch (IllegalAccessException e)
+        {
             Crashlytics.logException(e);
         }
 
