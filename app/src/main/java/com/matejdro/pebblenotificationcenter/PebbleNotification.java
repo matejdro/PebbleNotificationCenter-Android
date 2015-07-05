@@ -260,7 +260,7 @@ public class PebbleNotification implements Parcelable
 
     public boolean hasIdenticalContent(PebbleNotification comparing)
     {
-        return key.getPackage().equals(comparing.key.getPackage()) && comparing.text.equals(text) && comparing.title.equals(title) && comparing.subtitle.equals(subtitle);
+        return key.getPackage() != null && key.getPackage().equals(comparing.key.getPackage()) && comparing.text.equals(text) && comparing.title.equals(title) && comparing.subtitle.equals(subtitle);
     }
 
     public boolean isSameNotification(NotificationKey comparing)

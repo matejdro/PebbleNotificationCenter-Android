@@ -123,7 +123,7 @@ public class ImageSendingModule extends CommModule
             return null;
 
         Bitmap image = PebbleImageToolkit.resizePreservingRatio(originalImage, MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
-        PebbleImageToolkit.ditherToPebbleTimeColors(image);
+        image = PebbleImageToolkit.ditherToPebbleTimeColors(image);
         byte[] imageData = PebbleImageToolkit.getIndexedPebbleImageBytes(image);
         if (imageData.length > MAX_IMAGE_SIZE)
         {
@@ -131,7 +131,7 @@ public class ImageSendingModule extends CommModule
 
             float sizeRatio = (float) MAX_IMAGE_SIZE / imageData.length;
             image = PebbleImageToolkit.resizePreservingRatio(originalImage, (int) (MAX_IMAGE_WIDTH * sizeRatio), (int) (MAX_IMAGE_HEIGHT * sizeRatio));
-            PebbleImageToolkit.ditherToPebbleTimeColors(image);
+            image = PebbleImageToolkit.ditherToPebbleTimeColors(image);
             imageData = PebbleImageToolkit.getIndexedPebbleImageBytes(image);
         }
 
