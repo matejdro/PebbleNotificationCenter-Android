@@ -32,6 +32,7 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
     public static final String INVERT_COLORS = "invertColors";
     public static final String NOTIFICATIONS_DISABLED = "noNotifications";
     public static final String VIBRATION_DISABLED = "noVibration";
+    public static final String DISPLAY_SCROLL_SHADOW = "displayScrollShadow";
 
 
     public static final String LATITUDE = "latitude";

@@ -102,6 +102,8 @@ Phone --> Pebble
 					[9] = Compatible watchapp version (second byte)
 					[11] = Periodic vibration timeout in seconds (first byte)
 					[12] = Periodic vibration timeout in seconds (second byte)
+                    [13] = Second flags byte
+                        First bit (0x01) = Display scroll shadow
 
 
 			Packet 1 - Hide hourglass

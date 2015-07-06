@@ -72,7 +72,7 @@ public class SystemModule extends CommModule
         data.addUint8(0, (byte) 0);
         data.addUint8(1, (byte) 0);
 
-        byte[] configBytes = new byte[13];
+        byte[] configBytes = new byte[14];
 
         int timeout = 0;
         try
@@ -135,6 +135,10 @@ public class SystemModule extends CommModule
         configBytes[9] = (byte) WatchappHandler.SUPPORTED_PROTOCOL;
         configBytes[11] = (byte) (vibratingTimeout >>> 0x08);
         configBytes[12] = (byte) vibratingTimeout;
+
+        byte secondFlags = 0;
+        secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.DISPLAY_SCROLL_SHADOW, true) ? 0x01 : 0);
+        configBytes[13] = secondFlags;
 
         data.addBytes(2, configBytes);
 

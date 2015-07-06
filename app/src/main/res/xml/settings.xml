@@ -76,6 +76,13 @@
             android:defaultValue="true"
              />
 
+        <CheckBoxPreference
+            android:key="displayScrollShadow"
+            android:title="Display scroll shadow"
+            android:summary="When this is checked, Pebble will display scroll shadow to indicate whether there is more content to scroll on the top/bottom."
+            android:defaultValue="true"
+            />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference 
