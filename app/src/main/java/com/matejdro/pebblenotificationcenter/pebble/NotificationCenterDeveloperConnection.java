@@ -26,6 +26,7 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
 
     public NotificationCenterDeveloperConnection(NCTalkerService service) throws URISyntaxException
     {
+        super(service);
         this.service = service;
     }
 

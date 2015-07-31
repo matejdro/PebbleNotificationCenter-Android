@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
+import com.matejdro.pebblecommons.util.BundleSharedPreferences;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
@@ -14,9 +16,6 @@ import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorag
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
-import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
-
-import java.util.ArrayList;
 
 public class TaskerReceiver extends BroadcastReceiver
 {
@@ -61,7 +60,7 @@ public class TaskerReceiver extends BroadcastReceiver
                     continue;
 
                 String actualSetting = key.substring(8);
-                writeIntoSharedPreferences(editor, actualSetting, bundle.get(key));
+                BundleSharedPreferences.writeIntoSharedPreferences(editor, actualSetting, bundle.get(key));
             }
 
             editor.apply();
@@ -82,7 +81,7 @@ public class TaskerReceiver extends BroadcastReceiver
                     continue;
 
                 String actualSetting = key.substring(8);
-                writeIntoSharedPreferences(editor, actualSetting, bundle.get(key));
+                BundleSharedPreferences.writeIntoSharedPreferences(editor, actualSetting, bundle.get(key));
             }
 
             editor.apply();
@@ -119,22 +118,5 @@ public class TaskerReceiver extends BroadcastReceiver
                 return;
             }
         }
-    }
-
-
-    public static void writeIntoSharedPreferences(Editor editor, String key, Object object)
-    {
-        if (object instanceof Integer)
-            editor.putInt(key, (Integer) object);
-        else if (object instanceof Boolean)
-            editor.putBoolean(key, (Boolean) object);
-        else if (object instanceof String)
-            editor.putString(key, (String) object);
-        else if (object instanceof Float)
-           editor.putFloat(key, (Float) object);
-        else if (object instanceof Long)
-            editor.putLong(key, (Long) object);
-        else if (object instanceof ArrayList)
-            PreferencesUtil.saveCollection(editor, (ArrayList<String>)object, key);
     }
 }

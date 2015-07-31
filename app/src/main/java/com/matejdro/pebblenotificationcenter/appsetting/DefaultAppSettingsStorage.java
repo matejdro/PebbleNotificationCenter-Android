@@ -2,7 +2,7 @@ package com.matejdro.pebblenotificationcenter.appsetting;
 
 import android.content.SharedPreferences;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
+import com.matejdro.pebblecommons.util.PreferencesUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

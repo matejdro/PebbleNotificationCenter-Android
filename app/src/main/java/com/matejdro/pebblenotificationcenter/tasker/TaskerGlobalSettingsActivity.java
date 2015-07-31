@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+
+import com.matejdro.pebblecommons.util.BundleSharedPreferences;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.ui.SettingsActivity;
 import java.lang.reflect.Field;

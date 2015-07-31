@@ -18,13 +18,14 @@ import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationSettings;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ReplaceNotificationAction;
 import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
 import com.matejdro.pebblecommons.util.DeviceUtil;
-import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
+import com.matejdro.pebblecommons.util.PreferencesUtil;
 import com.matejdro.pebblecommons.util.TextUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -292,7 +293,7 @@ public class NotificationSendingModule extends CommModule
             Timber.d("Current app: " + currentApp);
             if (currentApp == null)
                 currentApp = SystemModule.UNKNOWN_UUID;
-            pebbleAppMode = PreferencesUtil.getPebbleAppNotificationMode(getService().getGlobalSettings(), currentApp);
+            pebbleAppMode = PebbleAppNotificationSettings.getPebbleAppNotificationMode(getService().getGlobalSettings(), currentApp);
         }
 
         if (pebbleAppMode == 0) //NC Notification

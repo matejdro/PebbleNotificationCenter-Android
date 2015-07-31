@@ -3,6 +3,8 @@ package com.matejdro.pebblenotificationcenter.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.matejdro.pebblecommons.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import java.util.HashMap;

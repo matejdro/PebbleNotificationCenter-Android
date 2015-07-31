@@ -23,9 +23,9 @@ import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblecommons.pebble.PebbleApp;
-import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
+import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationSettings;
 import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
-import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
+import com.matejdro.pebblecommons.util.PreferencesUtil;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -225,7 +225,7 @@ public class PebbleAppListFragment extends Fragment {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
                 {
                     pebbleApp.setNotificationMode(position);
-                    PreferencesUtil.setPebbleAppNotificationMode(editor, pebbleApp.getUuid(), position);
+                    PebbleAppNotificationSettings.setPebbleAppNotificationMode(editor, pebbleApp.getUuid(), position);
                 }
 
                 @Override
@@ -256,7 +256,7 @@ public class PebbleAppListFragment extends Fragment {
             PebbleDeveloperConnection connection = null;
             try
             {
-                connection = new PebbleDeveloperConnection();
+                connection = new PebbleDeveloperConnection(getActivity());
                 connection.connectBlocking();
 				apps = connection.getInstalledPebbleApps();
 
@@ -288,7 +288,7 @@ public class PebbleAppListFragment extends Fragment {
 
                 for (PebbleApp app : apps)
                 {
-                    app.setNotificationMode(PreferencesUtil.getPebbleAppNotificationMode(preferences, app.getUuid()));
+                    app.setNotificationMode(PebbleAppNotificationSettings.getPebbleAppNotificationMode(preferences, app.getUuid()));
                 }
             }
 

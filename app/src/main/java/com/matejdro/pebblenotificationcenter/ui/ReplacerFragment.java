@@ -26,7 +26,7 @@ import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.ui.ReplacerEditDialog.ReplacerDialogResult;
 import com.matejdro.pebblenotificationcenter.ui.ReplacerFilePickerDialog.FilePickerDialogResult;
-import com.matejdro.pebblenotificationcenter.util.PreferencesUtil;
+import com.matejdro.pebblecommons.util.PreferencesUtil;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
