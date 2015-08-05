@@ -86,10 +86,6 @@ public class NCTalkerService extends PebbleTalkerService
         {
             devConn = new NotificationCenterDeveloperConnection(this);
 
-            //None of the Developer Connection features are supported on Basalt, disable it automatically.
-            if (getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
-                return;
-
             devConn.connectBlocking();
             NativeNotificationActionHandler actionHandler = new NativeNotificationActionHandler(this);
             NotificationCenterDeveloperConnection.fromDevConn(devConn).registerActionHandler(actionHandler);
