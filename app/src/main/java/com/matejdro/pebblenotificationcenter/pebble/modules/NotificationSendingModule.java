@@ -12,13 +12,14 @@ import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblenotificationcenter.GeneralNCDatabase;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationSettings;
+import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationMode;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
@@ -291,20 +292,18 @@ public class NotificationSendingModule extends CommModule
 
             UUID currentApp = systemModule.getCurrentRunningApp();
             Timber.d("Current app: " + currentApp);
-            if (currentApp == null)
-                currentApp = SystemModule.UNKNOWN_UUID;
-            pebbleAppMode = PebbleAppNotificationSettings.getPebbleAppNotificationMode(getService().getGlobalSettings(), currentApp);
+            pebbleAppMode = GeneralNCDatabase.getInstance().getPebbleAppNotificationMode(currentApp);
         }
 
-        if (pebbleAppMode == 0) //NC Notification
+        if (pebbleAppMode == PebbleAppNotificationMode.OPEN_IN_NOTIFICATION_CENTER)
         {
             sendNCNotification(notification);
         }
-        else if (pebbleAppMode == 1) //Pebble native notification
+        else if (pebbleAppMode == PebbleAppNotificationMode.SHOW_NATIVE_NOTIFICATION)
         {
             sendNativeNotification(notification);
         }
-        else if (pebbleAppMode == 2) //No notification
+        else if (pebbleAppMode == PebbleAppNotificationMode.DISABLE_NOTIFICATION) //No notification
         {
             Timber.d("notify failed - pebble app");
         }

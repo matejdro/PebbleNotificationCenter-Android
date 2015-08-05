@@ -1,21 +1,35 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <item android:id="@+id/addPebbleApps"
+            android:title="Retrieve Pebble Apps"
+            android:orderInCategory="1"
+            android:icon="@drawable/ic_action_content_new"
+            app:showAsAction="ifRoom"/>
+
         <item
         android:id="@+id/allNC"
         android:title="Set all to NC notification"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
        	/>
 
     <item
             android:id="@+id/allPebble"
             android:title="Set all to Pebble notification"
-            android:orderInCategory="2"
+            android:orderInCategory="3"
             />
 
     <item
             android:id="@+id/allNone"
             android:title="Set all to no notification"
-            android:orderInCategory="3"
+            android:orderInCategory="4"
             />
+
+    <item
+        android:id="@+id/action_delete_all"
+        android:title="Delete all Pebble app settings"
+        android:orderInCategory="5"
+        />
+
 
 </menu>

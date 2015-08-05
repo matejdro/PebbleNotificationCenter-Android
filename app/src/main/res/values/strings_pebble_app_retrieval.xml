@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_continue">Continue</string>
+    <string name="button_manual">Manual mode</string>
+    <string name="button_cancel">Cancel</string>
+
+    <string name="error_developer_connection">Error while connecting to Pebble\'s developer connection. Do you have it on?</string>
+    <string name="error_pebble_disconnected">Pebble appears to be disconnected. This action cannot be performed.</string>
+    <string name="error_no_root">Unable to acquire root access. Do you want to switch to manual mode?</string>
+    <string name="error_internet">Failed to get list of your locker apps. Are you connected to the internet?</string>
+
+    <string name="sdk3_app_retrieval_intro">Pebbles running SDK 3 (connected to unrooted phone) do not support retrieving all installed apps at once, but you can add every app manually (you have to re-do this procedure for every app you want to add).\n\nPlease open app on Pebble you want to add and press Continue.</string>
+    <string name="root_app_retrieval_intro">Pebbles running SDK 3 normally do not support retrieving all installed apps at once, but since your phone is rooted, you can use workaround method that also requires internet access. \n\nIf your phone was not correctly detected as rooted or you don\'t have internet connection, you can switch to manual mode. You will also have to use manual mode to add all system apps (for example stock Music app).</string>
+
+    <string name="retrieving_app">Retrieving current app…</string>
+    <string name="retrieving_apps">Retrieving apps…</string>
+
+</resources>

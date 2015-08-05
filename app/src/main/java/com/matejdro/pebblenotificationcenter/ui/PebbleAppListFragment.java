@@ -1,10 +1,10 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,159 +19,138 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.getpebble.android.kit.PebbleKit;
 import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
-import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+import com.matejdro.pebblecommons.util.RootUtil;
+import com.matejdro.pebblenotificationcenter.GeneralNCDatabase;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblecommons.pebble.PebbleApp;
-import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationSettings;
+import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationMode;
+import com.matejdro.pebblenotificationcenter.pebble.appretrieval.AppRetrievalCallback;
+import com.matejdro.pebblenotificationcenter.pebble.appretrieval.RootAppRetrieval;
+import com.matejdro.pebblenotificationcenter.pebble.appretrieval.Sdk2AppRetrieval;
+import com.matejdro.pebblenotificationcenter.pebble.appretrieval.Sdk3AppRetrieval;
 import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
-import com.matejdro.pebblecommons.util.PreferencesUtil;
+
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
-public class PebbleAppListFragment extends Fragment {
-
-	private static SharedPreferences preferences;
-	private static SharedPreferences.Editor editor;
-
+public class PebbleAppListFragment extends Fragment implements AppRetrievalCallback
+{
 	private ListView listView;
-	private AppListAdapter listViewAdapter;
-    private List<PebbleApp> apps;
-
-
-	private boolean showOnResume = false;
-    private boolean error = false;
-
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		if (showOnResume && apps.size() > 0)
-		{
-			showOnResume = false;
-			showList();
-		}
-        else if (error)
-        {
-            error = false;
-
-            showLoading();
-            new AppLoadingTask().execute();
-        }
-	}
+	private PebbleAppListAdapter listViewAdapter;
+    private List<PebbleApp> apps = Collections.emptyList();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		apps = Collections.synchronizedList(new ArrayList<PebbleApp>());
+		ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_pebble_app_list, null);
 
-		preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		editor = preferences.edit();
-		
-		new AppLoadingTask().execute();
+		listView = (ListView) view.findViewById(R.id.pebbleAppList);
+		listViewAdapter = new PebbleAppListAdapter();
+		listView.setAdapter(listViewAdapter);
 
 		this.setHasOptionsMenu(true);
 
-		return inflater.inflate(R.layout.fragment_pebble_app_list, null);
+		return view;
 	}
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	public void onStart()
+	{
+		super.onStart();
+		reloadApps();
 	}
-
-    private void showLoading()
-    {
-        View view = getView().findViewById(R.id.loadingBar);
-        view.setVisibility(View.VISIBLE);
-        view = getView().findViewById(R.id.loadingErrorText);
-        view.setVisibility(View.GONE);
-        view = getView().findViewById(R.id.pebbleAppList);
-        view.setVisibility(View.GONE);
-    }
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.pebbleapps, menu);
 	}
 
+	private void reloadApps()
+	{
+		apps = GeneralNCDatabase.getInstance().getPebbleApps();
+		listViewAdapter.notifyDataSetChanged();
+	}
+
 	private void setAll(int option)
 	{
-		if (apps == null || apps.isEmpty())
-			return;
+		GeneralNCDatabase.getInstance().setAllPebbleAppNotificationMode(option);
+		reloadApps();
+	}
 
-		editor.putInt("pebble_app_mode_default", option);
-
-		for (PebbleApp app : apps)
+	public void retrievePebbleApps()
+	{
+		if (!PebbleKit.isWatchConnected(getActivity()))
 		{
-			app.setNotificationMode(option);
+			new AlertDialog.Builder(getActivity()).setMessage(R.string.error_pebble_disconnected).setPositiveButton(R.string.ok, null).show();
+			return;
 		}
 
-		listViewAdapter.notifyDataSetChanged();
+		PebbleKit.FirmwareVersionInfo pebbleFirmwareVersion = PebbleKit.getWatchFWVersion(getActivity());
+
+		if (pebbleFirmwareVersion.getMajor() >= 3)
+		{
+			if (RootUtil.isDeviceRooted())
+			{
+				new RootAppRetrieval(getActivity(), this).retrieveApps();
+			}
+			else
+			{
+				new Sdk3AppRetrieval(getActivity(), this).retrieveApps();
+			}
+		}
+		else
+		{
+			new Sdk2AppRetrieval(getActivity(), this).retrieveApps();
+		}
+	}
+
+	@Override
+	public void addApps(Collection<PebbleApp> apps)
+	{
+		GeneralNCDatabase.getInstance().addPebbleApps(apps);
+		reloadApps();
+	}
+
+	public void deleteAll()
+	{
+		GeneralNCDatabase.getInstance().deleteAllPebbleApps();
+		reloadApps();
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId())
 		{
+			case R.id.addPebbleApps:
+				retrievePebbleApps();
+				break;
 			case R.id.allNC:
-				setAll(0);
+				setAll(PebbleAppNotificationMode.OPEN_IN_NOTIFICATION_CENTER);
 				return true;
 			case R.id.allPebble:
-				setAll(1);
+				setAll(PebbleAppNotificationMode.SHOW_NATIVE_NOTIFICATION);
 				return true;
 			case R.id.allNone:
-				setAll(2);
+				setAll(PebbleAppNotificationMode.DISABLE_NOTIFICATION);
 				return true;
+			case R.id.action_delete_all:
+				deleteAll();
+				break;
+
 		}
 
 		return false;
 	}
 
-
-
-	private void showList()
-	{
-        error = false;
-
-		if (!isResumed())
-		{
-			showOnResume = true;
-			return;
-		}
-
-		View view = getView().findViewById(R.id.loadingBar);
-		view.setVisibility(View.GONE);
-        view = getView().findViewById(R.id.loadingErrorText);
-        view.setVisibility(View.GONE);
-
-        listView = (ListView) getView().findViewById(R.id.pebbleAppList);
-		listViewAdapter = new AppListAdapter();
-		listView.setAdapter(listViewAdapter);
-		listView.setVisibility(View.VISIBLE);
-		listView.setScrollingCacheEnabled(true);
-	}
-
-    private void showError()
-    {
-        error = true;
-
-        View view = getView().findViewById(R.id.loadingBar);
-        view.setVisibility(View.GONE);
-        view = getView().findViewById(R.id.loadingErrorText);
-        view.setVisibility(View.VISIBLE);
-        view = getView().findViewById(R.id.pebbleAppList);
-        view.setVisibility(View.GONE);
-    }
-
-	private class AppListAdapter extends BaseAdapter
+	private class PebbleAppListAdapter extends BaseAdapter
 	{
         private ArrayAdapter<CharSequence> appModePickerAdapter;
 
-        public AppListAdapter()
+        public PebbleAppListAdapter()
         {
             appModePickerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.pebble_app_options, android.R.layout.simple_spinner_item);
             appModePickerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -199,7 +178,7 @@ public class PebbleAppListFragment extends Fragment {
 
 			if (convertView == null)
 			{
-				convertView = getActivity().getLayoutInflater().inflate(R.layout.pebble_app_list_item, null);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.pebble_app_list_item, parent, false);
 				holder = new ViewHolder();
 
 				holder.name = (TextView) convertView.findViewById(R.id.appName);
@@ -220,20 +199,47 @@ public class PebbleAppListFragment extends Fragment {
             holder.spinner.setSelection(pebbleApp.getNotificationMode());
 
             holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-            {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
-                {
-                    pebbleApp.setNotificationMode(position);
-                    PebbleAppNotificationSettings.setPebbleAppNotificationMode(editor, pebbleApp.getUuid(), position);
-                }
+			{
+				@Override
+				public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
+				{
+					pebbleApp.setNotificationMode(position);
+					GeneralNCDatabase.getInstance().setPebbleAppNotificationMode(pebbleApp.getUuid(), position);
+				}
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView)
-                {
+				@Override
+				public void onNothingSelected(AdapterView<?> adapterView)
+				{
 
-                }
-            });
+				}
+			});
+
+			if (!pebbleApp.getUuid().equals(SystemModule.UNKNOWN_UUID))
+			{
+				convertView.setOnLongClickListener(new View.OnLongClickListener()
+				{
+					@Override
+					public boolean onLongClick(View v)
+					{
+
+						new AlertDialog.Builder(getActivity()).setMessage(R.string.pebble_apps_delete_prompt).setNegativeButton(R.string.no, null)
+								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+								{
+									@Override
+									public void onClick(DialogInterface dialog, int which)
+									{
+										GeneralNCDatabase.getInstance().deletePebbleApp(pebbleApp.getUuid());
+										apps.remove(position);
+										listViewAdapter.notifyDataSetChanged();
+									}
+								}).show();
+
+						return false;
+					}
+				});
+			}
+
+
 
 			return convertView;
 		}
@@ -268,7 +274,7 @@ public class PebbleAppListFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            if (apps != null)
+           /* if (apps != null)
             {
                 //Remove Notification Center from the list
                 Iterator<PebbleApp> iterator = apps.iterator();
@@ -290,20 +296,13 @@ public class PebbleAppListFragment extends Fragment {
                 {
                     app.setNotificationMode(PebbleAppNotificationSettings.getPebbleAppNotificationMode(preferences, app.getUuid()));
                 }
-            }
+            }*/
 
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
-            if (getActivity() == null || !isResumed())
-                return;
-
-            if (apps == null)
-                showError();
-            else
-                showList();
 		}
 	}
 
