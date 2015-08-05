@@ -65,6 +65,7 @@ public class Sdk2AppRetrieval
                 {
                     List<PebbleApp> installedPebbleApps = developerConnection.getInstalledPebbleApps();
                     installedPebbleApps.addAll(PebbleApp.getSystemApps(context));
+                    developerConnection.close();
 
                     return installedPebbleApps;
                 }

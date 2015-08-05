@@ -74,7 +74,12 @@ public class Sdk3AppRetrieval
                 developerConnection.connectBlocking();
 
                 if (developerConnection.isOpen())
-                    return developerConnection.getCurrentRunningApp();
+                {
+                    UUID uuid = developerConnection.getCurrentRunningApp();
+                    developerConnection.close();
+                    return uuid;
+                }
+
             } catch (URISyntaxException e)
             {
                 e.printStackTrace();
