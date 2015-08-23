@@ -2,10 +2,8 @@ package com.matejdro.pebblenotificationcenter.notifications;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -19,7 +17,6 @@ import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompatExtras;
 
 import com.matejdro.pebblecommons.notification.NotificationCenterExtender;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
@@ -32,6 +29,7 @@ import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ImageSendingModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
+
 import timber.log.Timber;
 
 public class NotificationHandler {
@@ -244,7 +242,7 @@ public class NotificationHandler {
         if (ledColor != Notification.COLOR_DEFAULT)
             return ledColor;
 
-        return Color.BLACK;
+        return Color.TRANSPARENT;
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

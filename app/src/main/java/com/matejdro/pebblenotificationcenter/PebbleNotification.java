@@ -1,7 +1,6 @@
 package com.matejdro.pebblenotificationcenter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,6 +9,7 @@ import android.support.annotation.Nullable;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+
 import java.util.ArrayList;
 import java.util.TimeZone;
 
@@ -56,7 +56,7 @@ public class PebbleNotification implements Parcelable
         listNotification = false;
         scrollToEnd = false;
         hidingTextDisallowed = false;
-        color = Color.BLACK;
+        color = Color.TRANSPARENT;
 
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
     }

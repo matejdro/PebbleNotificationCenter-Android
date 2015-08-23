@@ -12,6 +12,8 @@ import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblecommons.util.DeviceUtil;
+import com.matejdro.pebblecommons.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.GeneralNCDatabase;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
@@ -25,9 +27,7 @@ import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebb
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ReplaceNotificationAction;
 import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
-import com.matejdro.pebblecommons.util.DeviceUtil;
-import com.matejdro.pebblecommons.util.PreferencesUtil;
-import com.matejdro.pebblecommons.util.TextUtil;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
+
 import timber.log.Timber;
 
 /**
@@ -316,7 +317,11 @@ public class NotificationSendingModule extends CommModule
         notification.nativeNotification = true;
 
         PebbleKit.FirmwareVersionInfo watchfirmware = PebbleKit.getWatchFWVersion(getService());
-        if (watchfirmware.getMajor() > 2 || (watchfirmware.getMajor() == 2 && watchfirmware.getMinor() > 8))
+        if (watchfirmware.getMajor() > 2)
+        {
+            NotificationCenterDeveloperConnection.fromDevConn(getService().getDeveloperConnection()).sendSDK3Notification(notification, true);
+        }
+        else if (watchfirmware.getMajor() == 2 && watchfirmware.getMinor() > 8)
         {
             NotificationCenterDeveloperConnection.fromDevConn(getService().getDeveloperConnection()).sendNotification(notification);
         }
@@ -416,7 +421,13 @@ public class NotificationSendingModule extends CommModule
         configBytes[9] = (byte) settingStorage.getInt(AppSetting.BOCY_FONT);
 
         if (getService().getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
-            configBytes[10] = PebbleImageToolkit.getGColor8FromRGBColor(curSendingNotification.source.getColor());
+        {
+            int color = curSendingNotification.source.getColor();
+            if (color == Color.TRANSPARENT)
+                color = Color.BLACK;
+
+            configBytes[10] = PebbleImageToolkit.getGColor8FromRGBColor(color);
+        }
 
         boolean queueImage = false;
         if (curSendingNotification.source.getPebbleImage() == null)

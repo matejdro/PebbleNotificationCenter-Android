@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.SparseArray;
 
+import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
@@ -15,9 +16,12 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
+import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import timber.log.Timber;
 
 /**
@@ -72,7 +76,13 @@ public class DismissUpwardsModule extends CommModule
 
         if (notification.nativeNotification)
         {
-            getService().getDeveloperConnection().sendNotificationDismiss(id);
+            PebbleKit.FirmwareVersionInfo watchfirmware = PebbleKit.getWatchFWVersion(getService());
+            if (watchfirmware.getMajor() > 2) //Dismissing is only supported on Pebble 3.0+
+            {
+                // Dismissing native notifications is apparently performing by re-sending notification with dismissable flag set to false.
+                NotificationCenterDeveloperConnection.fromDevConn(getService().getDeveloperConnection()).sendSDK3Notification(notification, false);
+            }
+
         }
         else
         {

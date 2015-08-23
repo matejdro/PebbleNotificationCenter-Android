@@ -13,6 +13,7 @@ apply plugin: 'io.fabric'
 repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url 'http://dl.bintray.com/danielnilsson9/maven' }
+    maven { url "https://oss.sonatype.org/content/groups/public/" }
 }
 
 
