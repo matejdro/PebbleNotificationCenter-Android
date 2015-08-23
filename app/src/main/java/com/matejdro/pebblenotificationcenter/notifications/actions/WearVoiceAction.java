@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.RemoteInput;
 import android.content.ClipData;
 import android.content.ClipDescription;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,17 +16,17 @@ import com.matejdro.pebblecommons.messages.MessageTextProviderListener;
 import com.matejdro.pebblecommons.messages.PhoneVoiceProvider;
 import com.matejdro.pebblecommons.messages.TimeVoiceProvider;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
-import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
-import com.matejdro.pebblenotificationcenter.notifications.NCUserPrompter;
-import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
+import com.matejdro.pebblenotificationcenter.notifications.NCUserPrompter;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
+import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.WritingPhrasesList;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ActionsModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,7 +129,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
 
         cannedResponseList = new ArrayList<String>();
 
-        if (notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
+        if (!nativeMode && notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedPebblePlatform() == PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
         {
             cannedResponseList.add("Time Voice");
             timeVoiceItemIndex = cannedResponseList.size() - 1;
