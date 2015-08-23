@@ -1,18 +1,21 @@
 package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import android.content.Context;
+
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblecommons.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.lists.ActiveNotificationsAdapter;
 import com.matejdro.pebblenotificationcenter.lists.NotificationHistoryAdapter;
 import com.matejdro.pebblenotificationcenter.lists.NotificationListAdapter;
-import com.matejdro.pebblecommons.util.TextUtil;
+
 import java.text.DateFormat;
 import java.util.Date;
+
 import timber.log.Timber;
 
 /**
@@ -146,7 +149,7 @@ public class ListModule extends CommModule
         if (openListWindow)
             data.addUint8(999, (byte) 1);
 
-        Timber.i("Sending list entry " + index + " " + data.getString(5));
+        Timber.i("Sending list entry %d %s", index, data.getString(5));
 
         getService().getPebbleCommunication().sendToPebble(data);
     }

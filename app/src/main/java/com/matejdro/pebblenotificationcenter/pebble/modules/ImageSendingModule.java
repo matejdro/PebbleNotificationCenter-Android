@@ -1,29 +1,14 @@
 package com.matejdro.pebblenotificationcenter.pebble.modules;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.util.SparseArray;
 
-import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
-import com.matejdro.pebblenotificationcenter.PebbleNotification;
-import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
-import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
-import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.Callable;
 
 import timber.log.Timber;
 
@@ -62,7 +47,7 @@ public class ImageSendingModule extends CommModule
 
     public void sendImagePart()
     {
-        Timber.d("SendImagePart " + nextByteToSend);
+        Timber.d("SendImagePart %d", nextByteToSend);
 
         int bytesToSend = Math.min(imageData.length - nextByteToSend, IMAGE_BYTES_PER_MESSAGE);
         byte[] bytes = new byte[bytesToSend + 1];
@@ -127,7 +112,7 @@ public class ImageSendingModule extends CommModule
         byte[] imageData = PebbleImageToolkit.getIndexedPebbleImageBytes(image);
         if (imageData.length > MAX_IMAGE_SIZE)
         {
-            Timber.w("Too big Pebble image: " + imageData.length + "bytes! Further resizing...");
+            Timber.w("Too big Pebble image: %d bytes! Further resizing...", imageData.length);
 
             float sizeRatio = (float) MAX_IMAGE_SIZE / imageData.length;
             image = PebbleImageToolkit.resizePreservingRatio(originalImage, (int) (MAX_IMAGE_WIDTH * sizeRatio), (int) (MAX_IMAGE_HEIGHT * sizeRatio));
@@ -143,7 +128,7 @@ public class ImageSendingModule extends CommModule
     {
         int id = message.getUnsignedIntegerAsLong(1).intValue();
 
-        Timber.d("image packet " + id);
+        Timber.d("image packet %d", id);
 
         switch (id)
         {

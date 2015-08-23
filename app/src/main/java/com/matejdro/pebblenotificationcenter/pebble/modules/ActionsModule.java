@@ -4,17 +4,17 @@ import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblecommons.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
-import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
-import com.matejdro.pebblenotificationcenter.notifications.actions.lists.NotificationActionList;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPhoneAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
+import com.matejdro.pebblenotificationcenter.notifications.actions.lists.NotificationActionList;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.WritingPhrasesList;
-import com.matejdro.pebblecommons.util.TextUtil;
+
 import timber.log.Timber;
 
 /**
@@ -98,12 +98,12 @@ public class ActionsModule extends CommModule
         int id = data.getInteger(2).intValue();
         int type = data.getUnsignedIntegerAsLong(3).intValue();
 
-        Timber.d("Button action from Pebble, Type: " + type);
+        Timber.d("Button action from Pebble, Type: %d", type);
 
         ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(id);
         if (notification == null)
         {
-            Timber.d("Invalid notification " + id);
+            Timber.d("Invalid notification $d", id);
             SystemModule.get(getService()).hideHourglass();
             return;
         }
@@ -159,7 +159,7 @@ public class ActionsModule extends CommModule
     public void gotMessageActionItemPicked(PebbleDictionary message)
     {
         int action = message.getUnsignedIntegerAsLong(2).intValue();
-        Timber.d("Action picked message " + action);
+        Timber.d("Action picked message %d", action);
 
         if (list == null || action >= list.getNumberOfItems())
         {

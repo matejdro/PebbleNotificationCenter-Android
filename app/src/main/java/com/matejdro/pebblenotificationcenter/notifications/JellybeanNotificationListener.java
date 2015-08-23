@@ -1,13 +1,13 @@
 package com.matejdro.pebblenotificationcenter.notifications;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
+
 import timber.log.Timber;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -47,7 +47,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
         NotificationKey key = NotificationHandler.getKeyFromSbn(sbn);
-        Timber.d("Got jellybean dismiss " + key);
+        Timber.d("Got jellybean dismiss %d", key);
 
 
         DismissUpwardsModule.dismissNotification(this, key);
@@ -71,7 +71,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
     @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
     public static void dismissNotification(NotificationKey key)
     {
-        Timber.d("dismissing from phone " + key + " " + (instance != null));
+        Timber.d("dismissing from phone %d %b", key, (instance != null));
 
         if (instance == null)
             return;

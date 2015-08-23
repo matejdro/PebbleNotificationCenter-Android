@@ -49,7 +49,7 @@ public class DismissUpwardsModule extends CommModule
 
     private void sendDismiss(Integer id)
     {
-        Timber.d("Dismissing upwards " + id);
+        Timber.d("Dismissing upwards $d", id);
 
         PebbleDictionary data = new PebbleDictionary();
 
@@ -57,15 +57,13 @@ public class DismissUpwardsModule extends CommModule
         data.addUint8(1, (byte) 0);
         data.addInt32(2, id);
         data.addUint8(3, (byte) (NotificationSendingModule.get(getService()).isAnyNotificationWaiting() ? 1 : 0));
-
-        Timber.d("DontClose: " + data.getUnsignedIntegerAsLong(3).intValue());
-
+        
         getService().getPebbleCommunication().sendToPebble(data);
     }
 
     public void queueDismiss(Integer id)
     {
-        Timber.d("Queueing dismiss packet for notification " + id);
+        Timber.d("Queueing dismiss packet for notification %d", id);
 
         ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(id);
         if (notification == null)
@@ -119,7 +117,7 @@ public class DismissUpwardsModule extends CommModule
      */
     public void processDismissUpwards(NotificationKey key, boolean dismissImmediately)
     {
-        Timber.d("got dismiss: " + key);
+        Timber.d("got dismiss: %s", key);
 
         if (key == null || key.getAndroidId() == null)
             return;
@@ -180,7 +178,7 @@ public class DismissUpwardsModule extends CommModule
 
     public void processDismissUpwardsWholePackage(String pkg)
     {
-        Timber.d("got dismiss package: " + pkg);
+        Timber.d("got dismiss package: %s", pkg);
 
         if (pkg == null)
             return;

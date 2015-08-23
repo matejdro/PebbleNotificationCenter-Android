@@ -292,7 +292,7 @@ public class NotificationSendingModule extends CommModule
             systemModule.updateCurrentlyRunningApp();
 
             UUID currentApp = systemModule.getCurrentRunningApp();
-            Timber.d("Current app: " + currentApp);
+            Timber.d("Current app: ", currentApp);
             pebbleAppMode = GeneralNCDatabase.getInstance().getPebbleAppNotificationMode(currentApp);
         }
 
@@ -347,7 +347,7 @@ public class NotificationSendingModule extends CommModule
             text = text.substring(chunk.length());
         }
 
-        Timber.d("BeginSend " + notification.id + " " + notification.source.getTitle() + " " + notification.source.getSubtitle() + " " + notification.textChunks.size());
+        Timber.d("BeginSend %d %s %s %d", notification.id, notification.source.getTitle(), notification.source.getSubtitle(), notification.textChunks.size());
 
         SystemModule.get(getService()).openApp();
 
@@ -366,7 +366,7 @@ public class NotificationSendingModule extends CommModule
 
     private void sendInitialNotificationPacket()
     {
-        Timber.d("Initial notify packet " + curSendingNotification.id);
+        Timber.d("Initial notify packet %d", curSendingNotification.id);
 
         curSendingNotification.nextChunkToSend = 0;
 
@@ -469,7 +469,7 @@ public class NotificationSendingModule extends CommModule
 
     private void sendMoreText()
     {
-        Timber.d("Sending more text... " + curSendingNotification.id + " " + curSendingNotification.nextChunkToSend);
+        Timber.d("Sending more text... %d %d", curSendingNotification.id, curSendingNotification.nextChunkToSend);
 
         PebbleDictionary data = new PebbleDictionary();
         data.addUint8(0, (byte) 1);
@@ -547,8 +547,8 @@ public class NotificationSendingModule extends CommModule
         {
         }
 
-        Timber.d("MinInterval: " + minInterval);
-        Timber.d("LastVib: " + lastVibration);
+        Timber.d("MinInterval: %d", minInterval);
+        Timber.d("LastVib: %d", lastVibration);
 
         if (minInterval == 0 || lastVibration == null ||
                 (System.currentTimeMillis() - lastVibration) > minInterval * 1000)

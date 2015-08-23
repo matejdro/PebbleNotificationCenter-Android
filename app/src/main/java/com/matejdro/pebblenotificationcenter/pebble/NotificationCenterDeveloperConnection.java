@@ -4,7 +4,6 @@ import android.graphics.Color;
 
 import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
-import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblecommons.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
@@ -19,8 +18,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.List;
-
-import timber.log.Timber;
 
 public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnection
 {
@@ -155,8 +152,6 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
         message[1] = (byte) (size >> 8);
         message[2] = (byte) size;
 
-        Timber.d("Sending native notification " + LogWriter.bytesToHex(message));
-
         send(message);
     }
 
@@ -203,8 +198,6 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
             int numOfActions = 0;
             if (notification.source.getActions() != null)
                 numOfActions = notification.source.getActions().size();
-
-            Timber.d("HasColor " + hasColor + " " + Integer.toBinaryString(notification.source.getColor()));
 
             payloadSizeFirstByte = stream.size();
             dataStream.writeShort(0); //Size of notification object payload (placeholder)

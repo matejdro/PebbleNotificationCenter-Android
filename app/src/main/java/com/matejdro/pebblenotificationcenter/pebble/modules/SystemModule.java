@@ -14,8 +14,10 @@ import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
+
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
 import timber.log.Timber;
 
 /**
@@ -194,7 +196,7 @@ public class SystemModule extends CommModule
         if (message.contains(2))
             version = message.getUnsignedIntegerAsLong(2).intValue();
 
-        Timber.d("Version " + version);
+        Timber.d("Version %d", version);
 
         final int finalVersion = version;
 
@@ -212,7 +214,7 @@ public class SystemModule extends CommModule
 
             int pebblePlatform = message.getUnsignedIntegerAsLong(3).intValue();
             getService().getPebbleCommunication().setConnectedPebblePlatform(pebblePlatform);
-            Timber.d("Pebble Platform: " + pebblePlatform);
+            Timber.d("Pebble Platform: %d", pebblePlatform);
 
 
             SparseArray<CommModule> modules = getService().getAllModules();
@@ -307,7 +309,7 @@ public class SystemModule extends CommModule
         if (message.contains(1)) //Open message from older Pebble app does not have entry at 1.
             id = message.getUnsignedIntegerAsLong(1).intValue();
 
-        Timber.d("system packet " + id);
+        Timber.d("system packet %d", id);
 
         switch (id)
         {
@@ -350,7 +352,7 @@ public class SystemModule extends CommModule
 
     public void closeApp()
     {
-        Timber.d("CloseApp " + currentRunningApp);
+        Timber.d("CloseApp %s", currentRunningApp);
 
         NotificationSendingModule notificationSendingModule = NotificationSendingModule.get(getService());
         if (notificationSendingModule.isAnyNotificationWaiting())

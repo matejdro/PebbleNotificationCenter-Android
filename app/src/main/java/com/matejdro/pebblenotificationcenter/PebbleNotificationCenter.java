@@ -1,17 +1,18 @@
 package com.matejdro.pebblenotificationcenter;
 
 import android.content.pm.ApplicationInfo;
+
 import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblecommons.PebbleCompanionApplication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 
-import io.fabric.sdk.android.Fabric;
-import timber.log.Timber;
-
 import java.util.Map;
 import java.util.UUID;
+
+import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
 
 public class PebbleNotificationCenter extends PebbleCompanionApplication
 {
@@ -51,7 +52,9 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
             Fabric.with(this, new Crashlytics());
 
         settingsMemoryStorage = new SettingsMemoryStorage(this);
-        Timber.setTag("PebbleNotificationCenter");
+
+        Timber.setAppTag("PebbleNotificationCenter");
+        Timber.plant(new Timber.AppTaggedDebugTree());
         LogWriter.init(settingsMemoryStorage.getSharedPreferences(), "NotificationCenter");
     }
     	

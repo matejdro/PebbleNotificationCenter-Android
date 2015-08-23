@@ -37,7 +37,7 @@ public class NotificationHandler {
 
 	public static void newNotification(Context context, NotificationKey key, Notification notification, boolean isDismissible)
 	{
-		Timber.i("Processing notification " + key);
+		Timber.i("Processing notification %d", key);
 
 		SettingsMemoryStorage settings = PebbleNotificationCenter.getInMemorySettings();
         AppSettingStorage settingStorage = new SharedPreferencesAppStorage(context, key.getPackage(), settings.getDefaultSettingsStorage());
@@ -131,7 +131,7 @@ public class NotificationHandler {
         boolean summary = NotificationCompat.isGroupSummary(notification);
         boolean hasPages = hasPages(extras);
 
-        Timber.d("wear group: " + summary + " " + hasPages + " " + groupKey);
+        Timber.d("wear group: %b %b %s", summary, hasPages, groupKey);
 
         if (groupKey == null)
             return;

@@ -1,10 +1,11 @@
 package com.matejdro.pebblenotificationcenter.notifications;
 
 import android.app.Notification;
-import android.content.Intent;
 import android.support.v4.app.NotificationCompatSideChannelService;
+
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.pebble.modules.DismissUpwardsModule;
+
 import timber.log.Timber;
 
 /**
@@ -23,7 +24,7 @@ public class SideChannelNotificationListener extends NotificationCompatSideChann
     public void cancel(String packageName, int id, String tag)
     {
         NotificationKey key = new NotificationKey(packageName, id, tag);
-        Timber.d("Dismiss side channel " + key);
+        Timber.d("Dismiss side channel %s", key);
 
         DismissUpwardsModule.dismissNotification(this, key);
     }

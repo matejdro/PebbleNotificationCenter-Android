@@ -98,7 +98,7 @@ public class NativeNotificationActionHandler
 
     private boolean handle(int notificationId, int actionId, String replyText)
     {
-        Timber.d("native action " + notificationId + " " + actionId + " " + replyText);
+        Timber.d("native action %d %d %s", notificationId, actionId, replyText);
 
         final ProcessedNotification notification = service.sentNotifications.get(notificationId);
         if (notification == null)
