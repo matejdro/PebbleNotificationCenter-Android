@@ -47,7 +47,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
         NotificationKey key = NotificationHandler.getKeyFromSbn(sbn);
-        Timber.d("Got jellybean dismiss %d", key);
+        Timber.d("Got jellybean dismiss %s", key);
 
 
         DismissUpwardsModule.dismissNotification(this, key);
@@ -71,7 +71,7 @@ public class JellybeanNotificationListener extends NotificationListenerService {
     @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
     public static void dismissNotification(NotificationKey key)
     {
-        Timber.d("dismissing from phone %d %b", key, (instance != null));
+        Timber.d("dismissing from phone %s %b", key, (instance != null));
 
         if (instance == null)
             return;

@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter.pebble;
 
 import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
@@ -50,7 +51,8 @@ public class NativeNotificationActionHandler
         }
 
         boolean handled = handle(notificationId, actionId, replyText);
-        if (handled && service.getGlobalSettings().getBoolean("nativeSendSuccessMessage", false))
+        //noinspection ConstantConditions
+        if (handled && PebbleNotificationCenter.isXposedModuleRunning())
         {
             service.getDeveloperConnection().sendActionACKNACKCheckmark(notificationId, actionId + 1, "Done");
         }
@@ -98,7 +100,7 @@ public class NativeNotificationActionHandler
 
     private boolean handle(int notificationId, int actionId, String replyText)
     {
-        Timber.d("native action %d %d %s", notificationId, actionId, replyText);
+        Timber.d("native action %d %d %s %b", notificationId, actionId, replyText, PebbleNotificationCenter.isXposedModuleRunning());
 
         final ProcessedNotification notification = service.sentNotifications.get(notificationId);
         if (notification == null)

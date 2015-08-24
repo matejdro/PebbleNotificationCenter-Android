@@ -80,4 +80,10 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
     {
         return settingsMemoryStorage.getReplacingStrings();
     }
+
+    @SuppressWarnings("ConstantConditions")
+    public static boolean isXposedModuleRunning()
+    {
+        return false;
+    }
 }
