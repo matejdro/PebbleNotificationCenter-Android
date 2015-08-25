@@ -64,6 +64,11 @@ public class NotificationHandler {
             return;
         }
 
+        if (settingStorage.getInt(AppSetting.MINIMUM_NOTIFICATION_PRIORITY) > notification.priority) {
+            Timber.d("Discarding notification because its priority is too low!");
+            return;
+        }
+
         PebbleNotification pebbleNotification = getPebbleNotificationFromAndroidNotification(context, key, notification, isDismissible);
         if (pebbleNotification == null)
             return;

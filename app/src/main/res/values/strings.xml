@@ -257,6 +257,22 @@
         <item>Below app actions</item>
     </string-array>
 
+    <string-array name="settingNotificationPriority">
+        <item>Low</item>
+        <item>Min</item>
+        <item>Default</item>
+        <item>High</item>
+        <item>Max</item>
+    </string-array>
+
+    <integer-array name="settingNotificationPriorityValues">
+        <item>-2</item>
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </integer-array>
+
     <string name="replacementListTitle">Regex Filters:</string>
     <string name="replacementListDescription">Global filter by keywords/regular expressions for notifications that should be included/excluded from displaying.</string>
     <string name="replacement_description">In this window you can define replacement pairs. Notification Center will swap specified characters with specified text. Use that to remove or translate characters that Pebble does not display to readable text.</string>
@@ -525,6 +541,8 @@
     <string name="settingNoNotificationsScreenOnDescription">Disable new notifications popping up when screen is on. Useful to prevent Pebble buzzing if you are on your phone anyway.</string>
     <string name="settingDisableLocalOnlyNotifications">Do not send \"Local only\" notifications</string>
     <string name="settingDisableLocalOnlyNotificationsDescription">Apps can mark notifications as local only, which means they should not leave the phone. When checked, NC will respect that option. You can use this to quickly filter out notifications that are useless on the watch (for example app updates), but keep in mind that not apps support it and some apps might falsely mark it.</string>
+    <string name="settingMinimumNotificationPriority">Minimum notification priority</string>
+    <string name="settingMinimumNotificationPriorityDescription">When app posts notification, it assigns it priority. Lower priority notifications are meant to be used for actions that user is not needed to react immediatelly, while higher priority need instant attention (for example phone call notification has MAX priority). You can recognize lower priority notifications by the fact that their icons do not appear on statusbar on some phones/OS versions.</string>
     <string name="settingCustomTitle">Custom title</string>
     <string name="settingCustomTitleDescription">Use this title instead of application name. Useful if application\'s name is too long. Leave empty to use default app name. Leave just one space to remove app title altogether.</string>
     <string name="settingMaximumLength">Maximum text length</string>

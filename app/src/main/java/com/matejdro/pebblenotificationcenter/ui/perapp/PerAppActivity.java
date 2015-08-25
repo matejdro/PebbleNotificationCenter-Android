@@ -13,6 +13,8 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.matejdro.pebblecommons.util.ViewUtil;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -28,14 +30,13 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.EditTextItem
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.IntentActionsItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.QuietHoursItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.RegexItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ResetDefaultsButtonItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.SpinnerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.TaskerTaskListItem;
-import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ResetDefaultsButtonItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.VibrationPatternItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.WritingPhrasesItem;
-import com.matejdro.pebblecommons.util.ViewUtil;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import afzkl.development.colorpickerview.dialog.ColorPickerDialogFragment;
@@ -122,6 +123,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         if (version(Build.VERSION_CODES.LOLLIPOP)) category.add(new CheckBoxItem(settingsStorage, AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER, R.string.settingRespectInterruptFilter, R.string.settingRespectInterruptFilterDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.DISABLE_LOCAL_ONLY_NOTIFICATIONS, R.string.settingDisableLocalOnlyNotifications, R.string.settingDisableLocalOnlyNotificationsDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.DISABLE_NOTIFY_SCREEN_OIN, R.string.settingNoNotificationsScreenOn, R.string.settingNoNotificationsScreenOnDescription));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.MINIMUM_NOTIFICATION_PRIORITY, R.array.settingNotificationPriority, R.string.settingMinimumNotificationPriority, R.string.settingMinimumNotificationPriorityDescription, R.array.settingNotificationPriorityValues));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION, R.string.settingSwitchToRecent, R.string.settingSwitchToRecentDescription));
         category.add(new QuietHoursItem(settingsStorage, R.string.settingQuietHours, R.string.settingQuietHoursDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SAVE_TO_HISTORY, R.string.settingSaveToHistory, R.string.settingSaveToHistoryDescription));

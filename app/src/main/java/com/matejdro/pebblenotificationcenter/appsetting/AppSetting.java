@@ -1,6 +1,7 @@
 package com.matejdro.pebblenotificationcenter.appsetting;
 
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public enum AppSetting
     SEND_IDENTICAL_NOTIFICATIONS("sendIdentical", true),
     DISABLE_NOTIFY_SCREEN_OIN("noNotificationsScreenOn", false),
     DISABLE_LOCAL_ONLY_NOTIFICATIONS("disableLocalOnly", false),
+    MINIMUM_NOTIFICATION_PRIORITY("minimumNotificationPriority", -2),
 
     QUIET_TIME_ENABLED("enableQuietTime", false),
     QUIET_TIME_START_HOUR("quietTimeStartHour", 0),
