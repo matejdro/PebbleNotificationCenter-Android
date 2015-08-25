@@ -55,4 +55,10 @@
             android:layout_marginTop="20dp"
             android:text="Save in history"
             android:checked="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/tasker_notification_hint"/>
 </LinearLayout>
