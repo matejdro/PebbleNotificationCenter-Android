@@ -64,7 +64,7 @@ public class NotificationHandler {
             return;
         }
 
-        if (settingStorage.getInt(AppSetting.MINIMUM_NOTIFICATION_PRIORITY) > notification.priority) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && settingStorage.getInt(AppSetting.MINIMUM_NOTIFICATION_PRIORITY) > notification.priority) {
             Timber.d("Discarding notification because its priority is too low!");
             return;
         }
