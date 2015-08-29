@@ -2,12 +2,9 @@ package com.matejdro.pebblenotificationcenter;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.matejdro.pebblecommons.pebble.PebbleApp;
@@ -18,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-
-import timber.log.Timber;
 
 public class GeneralNCDatabase extends SQLiteOpenHelper {
 
@@ -134,7 +129,10 @@ public class GeneralNCDatabase extends SQLiteOpenHelper {
 
 		Cursor cursor = getReadableDatabase().rawQuery("SELECT NotificationMode FROM PebbleApps WHERE UUID = ?", new String[]{ uuid.toString() });
 		if (!cursor.moveToNext())
+		{
+			cursor.close();
 			return getPebbleAppNotificationMode(SystemModule.UNKNOWN_UUID);
+		}
 
 		int notificationMode = cursor.getInt(0);
 		cursor.close();
