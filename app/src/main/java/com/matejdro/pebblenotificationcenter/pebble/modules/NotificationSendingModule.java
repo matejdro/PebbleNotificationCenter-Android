@@ -317,6 +317,11 @@ public class NotificationSendingModule extends CommModule
         notification.nativeNotification = true;
 
         PebbleKit.FirmwareVersionInfo watchfirmware = PebbleKit.getWatchFWVersion(getService());
+        if (watchfirmware == null)
+        {
+            return;
+        }
+
         if (watchfirmware.getMajor() > 2)
         {
             NotificationCenterDeveloperConnection.fromDevConn(getService().getDeveloperConnection()).sendSDK3Notification(notification, true);
