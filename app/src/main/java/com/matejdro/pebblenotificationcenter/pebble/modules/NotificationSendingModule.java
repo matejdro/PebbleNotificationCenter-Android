@@ -12,6 +12,7 @@ import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblecommons.pebble.PebbleUtil;
 import com.matejdro.pebblecommons.util.DeviceUtil;
 import com.matejdro.pebblecommons.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.GeneralNCDatabase;
@@ -316,7 +317,7 @@ public class NotificationSendingModule extends CommModule
 
         notification.nativeNotification = true;
 
-        PebbleKit.FirmwareVersionInfo watchfirmware = PebbleKit.getWatchFWVersion(getService());
+        PebbleKit.FirmwareVersionInfo watchfirmware = PebbleUtil.getPebbleFirmwareVersion(getService());
         if (watchfirmware == null)
         {
             return;

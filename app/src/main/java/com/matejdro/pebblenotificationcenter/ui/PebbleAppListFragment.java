@@ -20,11 +20,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.getpebble.android.kit.PebbleKit;
+import com.matejdro.pebblecommons.pebble.PebbleApp;
 import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
+import com.matejdro.pebblecommons.pebble.PebbleUtil;
 import com.matejdro.pebblecommons.util.RootUtil;
 import com.matejdro.pebblenotificationcenter.GeneralNCDatabase;
 import com.matejdro.pebblenotificationcenter.R;
-import com.matejdro.pebblecommons.pebble.PebbleApp;
 import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationMode;
 import com.matejdro.pebblenotificationcenter.pebble.appretrieval.AppRetrievalCallback;
 import com.matejdro.pebblenotificationcenter.pebble.appretrieval.RootAppRetrieval;
@@ -89,9 +90,9 @@ public class PebbleAppListFragment extends Fragment implements AppRetrievalCallb
 			return;
 		}
 
-		PebbleKit.FirmwareVersionInfo pebbleFirmwareVersion = PebbleKit.getWatchFWVersion(getActivity());
+		PebbleKit.FirmwareVersionInfo pebbleFirmwareVersion = PebbleUtil.getPebbleFirmwareVersion(getActivity());
 
-		if (pebbleFirmwareVersion.getMajor() >= 3)
+		if (pebbleFirmwareVersion != null && pebbleFirmwareVersion.getMajor() >= 3)
 		{
 			if (RootUtil.isDeviceRooted())
 			{

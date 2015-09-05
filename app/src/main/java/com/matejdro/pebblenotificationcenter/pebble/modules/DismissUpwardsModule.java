@@ -9,6 +9,7 @@ import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblecommons.pebble.PebbleUtil;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
@@ -74,8 +75,8 @@ public class DismissUpwardsModule extends CommModule
 
         if (notification.nativeNotification)
         {
-            PebbleKit.FirmwareVersionInfo watchfirmware = PebbleKit.getWatchFWVersion(getService());
-            if (watchfirmware.getMajor() > 2) //Dismissing is only supported on Pebble 3.0+
+            PebbleKit.FirmwareVersionInfo watchfirmware = PebbleUtil.getPebbleFirmwareVersion(getService());
+            if (watchfirmware != null && watchfirmware.getMajor() > 2) //Dismissing is only supported on Pebble 3.0+
             {
                 // Dismissing native notifications is apparently performing by re-sending notification with dismissable flag set to false.
                 NotificationCenterDeveloperConnection.fromDevConn(getService().getDeveloperConnection()).sendSDK3Notification(notification, false);
