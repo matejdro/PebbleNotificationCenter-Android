@@ -285,7 +285,7 @@ public class NotificationSendingModule extends CommModule
     {
         NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.put(notification.id, notification);
 
-        int pebbleAppMode = 0;
+        int pebbleAppMode = PebbleAppNotificationMode.OPEN_IN_NOTIFICATION_CENTER;
         if (!notification.source.isListNotification())
         {
             //Different type of notification depending on Pebble app
