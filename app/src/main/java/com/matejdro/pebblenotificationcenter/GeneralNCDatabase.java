@@ -71,6 +71,9 @@ public class GeneralNCDatabase extends SQLiteOpenHelper {
 
 		for (PebbleApp app : apps)
 		{
+			if (app.getUuid().equals(SystemModule.UNKNOWN_UUID))
+				continue;
+
 			ContentValues contentValues = new ContentValues();
 			contentValues.put("Name", app.getName());
 			contentValues.put("UUID", app.getUuid().toString());
@@ -142,6 +145,9 @@ public class GeneralNCDatabase extends SQLiteOpenHelper {
 
 	public void deletePebbleApp(UUID uuid)
 	{
+		if (uuid.equals(SystemModule.UNKNOWN_UUID))
+			return;
+
 		getWritableDatabase().delete("PebbleApps", "UUID = ?", new String[]{uuid.toString()});
 	}
 
