@@ -31,7 +31,7 @@ public class GeneralNCDatabase extends SQLiteOpenHelper {
 
 	private Context context;
 
-	public GeneralNCDatabase(Context context) {
+	private GeneralNCDatabase(Context context) {
 		super(context, "data", null, 1);
 		this.context = context;
 	}
