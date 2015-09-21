@@ -3,19 +3,21 @@ package com.matejdro.pebblenotificationcenter.lists;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
+
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
-import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
-import java.util.Arrays;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class ActiveNotificationsAdapter implements NotificationListAdapter {
-	private PebbleNotification[] notifications;
+	private List<PebbleNotification> pebbleNotifications;
 	
 	public ActiveNotificationsAdapter(Context context) {
 		loadNotifications(context);
@@ -23,41 +25,38 @@ public class ActiveNotificationsAdapter implements NotificationListAdapter {
 	
 	private void loadNotifications(Context context)
 	{
+		pebbleNotifications = new ArrayList<>();
+
 		StatusBarNotification[] sbns = JellybeanNotificationListener.getCurrentNotifications();
         if (sbns == null)
-        {
-            notifications = new PebbleNotification[0];
             return;
-        }
-		notifications = new PebbleNotification[sbns.length];
-		
-		for (int i = 0; i < sbns.length; i++)
+
+		for (StatusBarNotification sbn : sbns)
 		{
-			StatusBarNotification sbn = sbns[i];
 			Notification notification = sbn.getNotification();
 
-            PebbleNotification pn = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, NotificationHandler.getKeyFromSbn(sbn), notification, sbn.isClearable());
+			PebbleNotification pn = NotificationHandler.getPebbleNotificationFromAndroidNotification(context, NotificationHandler.getKeyFromSbn(sbn), notification, sbn.isClearable());
 			if (pn == null)
 				continue;
 
-            pn.setListNotification(true);
-            pn.setPostTime(sbn.getPostTime());
+			pn.setListNotification(true);
+			pn.setPostTime(sbn.getPostTime());
 
-            notifications[i] = pn;
+			pebbleNotifications.add(pn);
 		}
 		
-		Arrays.sort(notifications, new NotificationComparable());
+		Collections.sort(pebbleNotifications, new NotificationComparable());
 	}
 
 
 	@Override
 	public PebbleNotification getNotificationAt(int index) {
-		return notifications[index];
+		return pebbleNotifications.get(index);
 	}
 
 	@Override
 	public int getNumOfNotifications() {
-		return notifications.length;
+		return pebbleNotifications.size();
 	}
 
 	private static class NotificationComparable implements Comparator<PebbleNotification>
