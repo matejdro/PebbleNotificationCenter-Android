@@ -5,6 +5,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -87,7 +88,7 @@ public class SpinnerItem extends BaseSettingItem
         if (selection >= adapter.getCount())
             selection = 0;
 
-        spinner.setSelection(selection);
+        spinner.setSelection(selection, false);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
