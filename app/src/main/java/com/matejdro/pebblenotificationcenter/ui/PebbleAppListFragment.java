@@ -1,9 +1,7 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.matejdro.pebblecommons.pebble.PebbleApp;
-import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblecommons.pebble.PebbleUtil;
 import com.matejdro.pebblecommons.util.RootUtil;
 import com.matejdro.pebblenotificationcenter.GeneralNCDatabase;
@@ -33,10 +30,8 @@ import com.matejdro.pebblenotificationcenter.pebble.appretrieval.Sdk2AppRetrieva
 import com.matejdro.pebblenotificationcenter.pebble.appretrieval.Sdk3AppRetrieval;
 import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class PebbleAppListFragment extends Fragment implements AppRetrievalCallback
@@ -244,77 +239,6 @@ public class PebbleAppListFragment extends Fragment implements AppRetrievalCallb
 
 			return convertView;
 		}
-	}
-
-	private class AppLoadingTask extends AsyncTask<Void, Void, Void>
-	{
-		@Override
-		protected void onPreExecute()
-        {
-        }
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			if (getActivity() == null)
-				return null;
-
-            Context context = getActivity();
-
-            PebbleDeveloperConnection connection = null;
-            try
-            {
-                connection = new PebbleDeveloperConnection(getActivity());
-                connection.connectBlocking();
-				apps = connection.getInstalledPebbleApps();
-
-			} catch (URISyntaxException e)
-            {
-                e.printStackTrace();
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
-           /* if (apps != null)
-            {
-                //Remove Notification Center from the list
-                Iterator<PebbleApp> iterator = apps.iterator();
-                while (iterator.hasNext())
-                {
-                    PebbleApp app = iterator.next();
-                    if (app.getUuid().equals(PebbleNotificationCenter.WATCHAPP_UUID))
-                        iterator.remove();
-                }
-
-                apps.addAll(PebbleApp.getSystemApps(context));
-
-                Collections.sort(apps, new PebbleAppComparator());
-
-                PebbleApp otherApp = new PebbleApp(context.getString(R.string.PebbleAppsOther), SystemModule.UNKNOWN_UUID);
-                apps.add(otherApp);
-
-                for (PebbleApp app : apps)
-                {
-                    app.setNotificationMode(PebbleAppNotificationSettings.getPebbleAppNotificationMode(preferences, app.getUuid()));
-                }
-            }*/
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-		}
-	}
-
-	private static class PebbleAppComparator implements Comparator<PebbleApp>
-	{
-
-		@Override
-		public int compare(PebbleApp lhs, PebbleApp rhs) {
-			return lhs.getName().compareTo(rhs.getName());
-		}
-
 	}
 
 	private static class ViewHolder
