@@ -2,7 +2,10 @@ package com.matejdro.pebblenotificationcenter.appsetting;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
+
 import com.matejdro.pebblecommons.util.PreferencesUtil;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.List;
 /**
  * Created by Matej on 16.9.2014.
  */
-public class SharedPreferencesAppStorage implements AppSettingStorage
+public class SharedPreferencesAppStorage extends AbsAppSettingStorage
 {
     private DefaultAppSettingsStorage defaultConfig;
     private SharedPreferences appConfig;
@@ -24,6 +27,16 @@ public class SharedPreferencesAppStorage implements AppSettingStorage
         appConfig = context.getSharedPreferences(getSharedPreferencesName(appPackage), Context.MODE_PRIVATE);
         editor = appConfig.edit();
         this.appPackage = appPackage;
+    }
+
+    @Nullable
+    @Override
+    public String getStringByKey(String key)
+    {
+        if (!appConfig.contains(key))
+            return defaultConfig.getStringByKey(key);
+
+        return appConfig.getString(key, null);
     }
 
     @Override

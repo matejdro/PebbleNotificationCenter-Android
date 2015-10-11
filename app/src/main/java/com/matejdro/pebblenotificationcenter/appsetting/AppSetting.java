@@ -1,5 +1,6 @@
 package com.matejdro.pebblenotificationcenter.appsetting;
 
+import com.matejdro.pebblenotificationcenter.pebble.NativeNotificationIcon;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public enum AppSetting
     HIDE_NOTIFICATION_TEXT("hideNotiifcationText", false),
     STATUSBAR_COLOR("statusbarColor", 0x00000000),
     SHOW_IMAGE("showImage", true),
+    NATIVE_NOTIFICATION_ICON("nativeNotificationIcon", NativeNotificationIcon.AUTOMATIC),
 
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),
     INBOX_REVERSE("inboxReverse", false),

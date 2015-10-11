@@ -27,6 +27,7 @@ import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotification
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ReplaceNotificationAction;
+import com.matejdro.pebblenotificationcenter.pebble.NativeNotificationIcon;
 import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperConnection;
 
 import java.util.ArrayList;
@@ -231,6 +232,10 @@ public class NotificationSendingModule extends CommModule
         int colorFromConfig = settingStorage.getInt(AppSetting.STATUSBAR_COLOR);
         if (Color.alpha(colorFromConfig) != 0)
             notificationSource.setColor(colorFromConfig);
+
+        NativeNotificationIcon iconFromConfig = settingStorage.getEnum(AppSetting.NATIVE_NOTIFICATION_ICON);
+        if (iconFromConfig != NativeNotificationIcon.AUTOMATIC)
+            notificationSource.setNativeNotificationIcon(iconFromConfig);
 
         SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 

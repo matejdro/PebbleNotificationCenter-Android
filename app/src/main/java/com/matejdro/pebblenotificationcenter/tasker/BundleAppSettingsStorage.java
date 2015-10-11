@@ -1,8 +1,12 @@
 package com.matejdro.pebblenotificationcenter.tasker;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+
+import com.matejdro.pebblenotificationcenter.appsetting.AbsAppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,7 +14,7 @@ import java.util.List;
 /**
  * Created by Matej on 18.9.2014.
  */
-public class BundleAppSettingsStorage implements AppSettingStorage
+public class BundleAppSettingsStorage extends AbsAppSettingStorage
 {
     private AppSettingStorage original;
     private Bundle storage;
@@ -20,6 +24,17 @@ public class BundleAppSettingsStorage implements AppSettingStorage
         this.original = original;
         this.storage = storage;
     }
+
+    @Nullable
+    @Override
+    public String getStringByKey(String key)
+    {
+        if (storage.containsKey("setting_".concat(key)))
+            return storage.getString("setting_".concat(key));
+
+        return getStringByKey(key);
+    }
+
 
     @Override
     public String getString(AppSetting setting)

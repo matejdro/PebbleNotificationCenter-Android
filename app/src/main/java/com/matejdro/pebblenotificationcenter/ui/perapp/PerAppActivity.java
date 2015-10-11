@@ -27,6 +27,7 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CannedRespon
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CheckBoxItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ColorPickerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.EditTextItem;
+import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.IconPickerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.IntentActionsItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.QuietHoursItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.RegexItem;
@@ -137,6 +138,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         category.add(new CheckBoxItem(settingsStorage, AppSetting.HIDE_NOTIFICATION_TEXT, R.string.settingHideNotificationText, R.string.settingHideNotificationTextDescription));
         if (version(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)) category.add(new ColorPickerItem(settingsStorage, AppSetting.STATUSBAR_COLOR, R.string.settingStatusbarColor, R.string.settingStatusbarColorDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SHOW_IMAGE, R.string.settingShowImage, R.string.settingShowImageDescription));
+        category.add(new IconPickerItem(settingsStorage, R.string.settingNotificationIcon, R.string.settingNotificationIconDescription));
 
         settings.add(new SettingsCategory(0, category));
 

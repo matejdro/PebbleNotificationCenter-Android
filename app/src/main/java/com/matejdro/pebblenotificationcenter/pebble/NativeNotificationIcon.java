@@ -10,6 +10,7 @@ import java.util.Map;
 
 public enum NativeNotificationIcon implements Parcelable
 {
+    AUTOMATIC(0),
     NOTIFICATION_GENERIC(1),
     TIMELINE_MISSED_CALL(2),
     NOTIFICATION_REMINDER(3),
