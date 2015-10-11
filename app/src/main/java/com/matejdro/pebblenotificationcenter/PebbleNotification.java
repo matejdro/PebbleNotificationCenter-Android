@@ -4,11 +4,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.pebble.NativeNotificationIcon;
 
 import java.util.ArrayList;
 import java.util.TimeZone;
@@ -35,6 +37,7 @@ public class PebbleNotification implements Parcelable
     private String wearGroupKey;
     private int color;
     private byte[] pebbleImage;
+    private NativeNotificationIcon nativeNotificationIcon;
 
     public static final int WEAR_GROUP_TYPE_DISABLED = 0;
     public static final int WEAR_GROUP_TYPE_GROUP_MESSAGE = 1;
@@ -59,6 +62,7 @@ public class PebbleNotification implements Parcelable
         color = Color.TRANSPARENT;
 
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
+        nativeNotificationIcon = NativeNotificationIcon.NOTIFICATION_GENERIC;
     }
 
     public String getTitle()
@@ -250,6 +254,16 @@ public class PebbleNotification implements Parcelable
         this.pebbleImage = pebbleImage;
     }
 
+    public NativeNotificationIcon getNativeNotificationIcon()
+    {
+        return nativeNotificationIcon;
+    }
+
+    public void setNativeNotificationIcon(@NonNull NativeNotificationIcon nativeNotificationIcon)
+    {
+        this.nativeNotificationIcon = nativeNotificationIcon;
+    }
+
     public boolean isInSameGroup(PebbleNotification comparing)
     {
         if (getWearGroupType() == WEAR_GROUP_TYPE_DISABLED || comparing.getWearGroupType() == WEAR_GROUP_TYPE_DISABLED)
@@ -296,7 +310,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeInt(wearGroupType);
         parcel.writeInt(color);
         parcel.writeValue(pebbleImage);
-
+        parcel.writeValue(nativeNotificationIcon);
     }
 
     public static final Creator<PebbleNotification> CREATOR = new Creator<PebbleNotification>()
@@ -324,6 +338,7 @@ public class PebbleNotification implements Parcelable
             notification.wearGroupType = parcel.readInt();
             notification.color = parcel.readInt();
             notification.pebbleImage = (byte[]) parcel.readValue(getClass().getClassLoader());
+            notification.nativeNotificationIcon = (NativeNotificationIcon) parcel.readValue(getClass().getClassLoader());
 
             return notification;
         }

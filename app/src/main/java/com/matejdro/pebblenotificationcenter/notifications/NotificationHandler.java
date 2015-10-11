@@ -26,6 +26,7 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
+import com.matejdro.pebblenotificationcenter.pebble.NativeNotificationIcon;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ImageSendingModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
@@ -108,6 +109,9 @@ public class NotificationHandler {
         pebbleNotification.setSubtitle(secondaryTitle);
         pebbleNotification.setDismissable(isDismissible);
         pebbleNotification.setColor(getColor(notification, key.getPackage(), context));
+
+        if (key.getPackage() != null)
+            pebbleNotification.setNativeNotificationIcon(NativeNotificationIcon.getIconForApplication(key.getPackage(), title));
 
         if (settingStorage.getBoolean(AppSetting.SHOW_IMAGE))
             pebbleNotification.setPebbleImage(ImageSendingModule.prepareImage(getImage(notification)));

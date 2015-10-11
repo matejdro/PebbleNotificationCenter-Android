@@ -201,7 +201,7 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
 
             payloadSizeFirstByte = stream.size();
             dataStream.writeShort(0); //Size of notification object payload (placeholder)
-            dataStream.writeByte(hasColor ? 4 : 3); //Attribute count
+            dataStream.writeByte(hasColor ? 5 : 4); //Attribute count
             dataStream.writeByte(numOfActions); //Action count
 
             //ATTRIBUTES
@@ -221,10 +221,13 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
                 writeUnsignedShortLittleEndian(dataStream, 1); //Attribute size
                 dataStream.writeByte(PebbleImageToolkit.getGColor8FromRGBColor(notification.source.getColor())); //Color in GColor8 format
             }
+
+            int iconID = notification.source.getNativeNotificationIcon().getIconID();
             //Icon attribute
-            /*writeUnsignedShortLittleEndian(dataStream, 4); //Attribute size
-            writeUnsignedIntLittleEndian(dataStream, 0x80000010); //Icon?
-            dataStream.writeByte(0x1c);*/
+            dataStream.writeByte(0x4);
+            writeUnsignedShortLittleEndian(dataStream, 4); //Attribute size
+            //writeUnsignedIntLittleEndian(dataStream, 0x80000010); //Icon?
+            writeUnsignedIntLittleEndian(dataStream, iconID);
 
 
             //Actions
