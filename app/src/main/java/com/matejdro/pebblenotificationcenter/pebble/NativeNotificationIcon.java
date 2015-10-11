@@ -166,6 +166,8 @@ public enum NativeNotificationIcon implements Parcelable
         iconKeywords.add(new AbstractMap.SimpleEntry<>("sms", GENERIC_SMS));
         iconKeywords.add(new AbstractMap.SimpleEntry<>("mail", GENERIC_EMAIL));
         iconKeywords.add(new AbstractMap.SimpleEntry<>("messag", GENERIC_EMAIL));
+        iconKeywords.add(new AbstractMap.SimpleEntry<>("mms", GENERIC_SMS));
+        iconKeywords.add(new AbstractMap.SimpleEntry<>("text", GENERIC_SMS));
         iconKeywords.add(new AbstractMap.SimpleEntry<>("reminder", NOTIFICATION_REMINDER));
     }
 
