@@ -2,7 +2,7 @@ package com.matejdro.pebblenotificationcenter;
 
 import android.content.pm.ApplicationInfo;
 
-import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.matejdro.pebblecommons.PebbleCompanionApplication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblecommons.util.LogWriter;
@@ -48,8 +48,9 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
         super.onCreate();
 
         boolean isDebuggable =  ( 0 != ( getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
-        if (!isDebuggable)
-            Fabric.with(this, new Crashlytics());
+
+        CrashlyticsCore crashlytics = new CrashlyticsCore.Builder().disabled(isDebuggable).build();
+        Fabric.with(this, crashlytics);
 
         settingsMemoryStorage = new SettingsMemoryStorage(this);
 
