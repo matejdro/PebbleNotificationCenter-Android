@@ -78,8 +78,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.LicenseActivity" >
-        </activity>
         <activity android:name=".ui.perapp.PerAppActivity" android:configChanges="orientation|screenSize" />
         <activity
             android:name=".tasker.TaskerActionPickerActivity"
