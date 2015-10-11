@@ -168,7 +168,7 @@ public class ActionsModule extends CommModule
             return;
         }
 
-        if (!list.itemPicked(NCTalkerService.fromPebbleTalkerService(getService()), action));
+        if (!list.itemPicked(NCTalkerService.fromPebbleTalkerService(getService()), action))
             SystemModule.get(getService()).hideHourglass();
     }
 
