@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<notices>
+    <notice>
+        <name>Guava</name>
+        <url>https://github.com/google/guava</url>
+        <copyright>Copyright (C) 2012 The Guava Authors</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Xposed Bridge</name>
+        <url>https://github.com/rovo89/XposedBridge</url>
+        <copyright>Copyright 2013 rovo89, Tungstwenty</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Color Picker view</name>
+        <url>https://github.com/danielnilsson9/color-picker-view</url>
+        <copyright>Copyright (C) 2015 Daniel Nilsson</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Android SVG</name>
+        <url>http://bigbadaboom.github.io/androidsvg/</url>
+        <copyright>Copyright 2013 Paul LeBeau, Cave Rock Software Ltd.</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Java Websocket</name>
+        <url>https://github.com/TooTallNate/Java-WebSocket</url>
+        <copyright>Copyright (c) 2010-2012 Nathan Rajlich</copyright>
+        <license>MIT License</license>
+    </notice>
+</notices>
