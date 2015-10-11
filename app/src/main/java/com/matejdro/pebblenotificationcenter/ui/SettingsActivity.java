@@ -9,7 +9,10 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.text.InputType;
+
 import com.matejdro.pebblenotificationcenter.R;
+
+import de.psdev.licensesdialog.LicensesDialog;
 
 
 public class SettingsActivity extends PreferenceActivity {
@@ -43,8 +46,12 @@ public class SettingsActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
-                Intent intent = new Intent(SettingsActivity.this, LicenseActivity.class);
-                startActivity(intent);
+                new LicensesDialog.Builder(SettingsActivity.this)
+                        .setNotices(R.raw.notices)
+                        .setIncludeOwnLicense(true)
+                        .build()
+                        .show();
+
                 return true;
             }
         });
