@@ -30,4 +30,9 @@
         <copyright>Copyright (c) 2010-2012 Nathan Rajlich</copyright>
         <license>MIT License</license>
     </notice>
+    <notice>
+        <name>PNGJ</name>
+        <url>https://github.com/leonbloy/pngj/</url>
+        <license>Apache Software License 2.0</license>
+    </notice>
 </notices>
