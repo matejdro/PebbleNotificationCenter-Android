@@ -116,7 +116,10 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         {
             choicesString = new String[choices.length];
             for (int i = 0; i < choices.length; i++)
-                choicesString[i] = choices[i].toString();
+            {
+                if (choices[i] != null)
+                    choicesString[i] = choices[i].toString();
+            }
         }
 
         return new WearVoiceAction(title, actionIntent, key, choicesString);
