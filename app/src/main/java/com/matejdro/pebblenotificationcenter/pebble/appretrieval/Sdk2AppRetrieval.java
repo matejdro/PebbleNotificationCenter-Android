@@ -56,14 +56,18 @@ public class Sdk2AppRetrieval
         @Override
         protected List doInBackground(Void... params)
         {
+            PebbleDeveloperConnection developerConnection = null;
             try
             {
-                PebbleDeveloperConnection developerConnection = new PebbleDeveloperConnection(context);
+                developerConnection = new PebbleDeveloperConnection(context);
                 developerConnection.connectBlocking();
 
                 if (developerConnection.isOpen())
                 {
                     List<PebbleApp> installedPebbleApps = developerConnection.getInstalledPebbleApps();
+                    if (installedPebbleApps == null)
+                        return null;
+
                     installedPebbleApps.addAll(PebbleApp.getSystemApps(context));
                     developerConnection.close();
 
@@ -77,6 +81,12 @@ public class Sdk2AppRetrieval
             {
                 e.printStackTrace();
             }
+            finally
+            {
+                if (developerConnection != null)
+                    developerConnection.close();
+            }
+
             return null;
         }
 
