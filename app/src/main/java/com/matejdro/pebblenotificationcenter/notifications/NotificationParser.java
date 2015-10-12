@@ -9,16 +9,16 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.widget.RemoteViews;
+
 import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-
-import timber.log.Timber;
 
 public class NotificationParser {
 	public String title;
@@ -152,6 +152,9 @@ public class NotificationParser {
 
     private String formatCharSequence(CharSequence sequence)
     {
+        if (sequence == null)
+            return "";
+
         if (!(sequence instanceof SpannableString))
         {
             return sequence.toString();
