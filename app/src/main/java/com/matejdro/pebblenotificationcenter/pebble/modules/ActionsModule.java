@@ -103,7 +103,7 @@ public class ActionsModule extends CommModule
         ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(id);
         if (notification == null)
         {
-            Timber.d("Invalid notification $d", id);
+            Timber.d("Invalid notification %d", id);
             SystemModule.get(getService()).hideHourglass();
             return;
         }
@@ -158,6 +158,14 @@ public class ActionsModule extends CommModule
 
     public void gotMessageActionItemPicked(PebbleDictionary message)
     {
+        ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(this.notification.id);
+        if (notification == null)
+        {
+            Timber.d("Invalid notification %d", notification.id);
+            SystemModule.get(getService()).hideHourglass();
+            return;
+        }
+
         int action = message.getUnsignedIntegerAsLong(2).intValue();
         Timber.d("Action picked message %d", action);
 
@@ -167,6 +175,8 @@ public class ActionsModule extends CommModule
             SystemModule.get(getService()).hideHourglass();
             return;
         }
+
+
 
         if (!list.itemPicked(NCTalkerService.fromPebbleTalkerService(getService()), action))
             SystemModule.get(getService()).hideHourglass();
