@@ -56,7 +56,7 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
 
         Timber.setAppTag("PebbleNotificationCenter");
         Timber.plant(new Timber.AppTaggedDebugTree());
-        LogWriter.init(settingsMemoryStorage.getSharedPreferences(), "NotificationCenter");
+        LogWriter.init(settingsMemoryStorage.getSharedPreferences(), "NotificationCenter", this);
     }
     	
 	public static SettingsMemoryStorage getInMemorySettings()

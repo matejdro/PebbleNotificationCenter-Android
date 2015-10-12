@@ -532,4 +532,7 @@
     <string name="pebble_apps_other">Other apps</string>
     <string name="pebble_apps_delete_prompt">Do you want to delete that Pebble app setting? Setting for \"Other apps\" will apply if you do that.</string>
     <string name="tasker_notification_hint">Hint: unless notification not appearing in statusbar is a requirement, I recommend you use Tasker\'s Alert -> Notify action. It allows you to also specify actions and dismiss notification at will.</string>
+    <string name="accept_and_reselect">Please accept permission and select the option again.</string>
+    <string name="cannot_use_without_storage_permission">Cannot this option without storage permission.</string>
+
 </resources>

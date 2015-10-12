@@ -1,35 +1,44 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.NotificationHistoryStorage;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 import com.matejdro.pebblenotificationcenter.util.ConfigBackup;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends ActionBarActivity /*implements ActionBar.TabListener*/ {
+
+public class MainActivity extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
@@ -73,7 +82,7 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
         });
 
         checkServiceRunning();
-        Environment.getExternalStoragePublicDirectory("NotificationCenter");
+        checkPermissions();
     }
 
 	@Override
@@ -203,6 +212,9 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
 
     private void backupConfig()
     {
+        if (!checkAndRequestStoragePermission(this))
+            return;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this).setMessage(R.string.backupDialogText).setTitle(R.string.backupDialogTitle);
 
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
@@ -229,6 +241,9 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
 
     private void restoreConfig()
     {
+        if (!checkAndRequestStoragePermission(this))
+            return;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this).setMessage(R.string.restoreConfigDialogText).setTitle(R.string.restoreConfigDialogTitle);
 
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
@@ -271,6 +286,92 @@ public class MainActivity extends ActionBarActivity /*implements ActionBar.TabLi
         }
     }
 
+    private void checkPermissions()
+    {
+        List<String> wantedPermissions = new ArrayList<>();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED)
+            wantedPermissions.add(Manifest.permission.RECORD_AUDIO);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_DENIED)
+            wantedPermissions.add(Manifest.permission.BLUETOOTH);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //Light screen after sunset requires location for sunset times
+        if (preferences.getString(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, "2").equals("3") &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
+        {
+            wantedPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        //Log writer needs to access external storage
+        if (preferences.getBoolean(LogWriter.SETTING_ENABLE_LOG_WRITING, false) &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+        {
+            wantedPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+
+        if (!wantedPermissions.isEmpty())
+            ActivityCompat.requestPermissions(this, wantedPermissions.toArray(new String[wantedPermissions.size()]), 0);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        for (int i = 0; i < permissions.length; i++)
+        {
+            String permission = permissions[i];
+
+            if (permission.equals(Manifest.permission.ACCESS_COARSE_LOCATION) && grantResults[i] == PackageManager.PERMISSION_DENIED)
+            {
+                //Location permission was denied, lets disable after-sunset-only light
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                if (preferences.getString(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, "2").equals("3"))
+                    preferences.edit().putString(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, "2").apply();
+            }
+            else if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            {
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED)
+                {
+                    //We got external storage permission, lets restart the log writer
+                    if (preferences.getBoolean(LogWriter.SETTING_ENABLE_LOG_WRITING, false))
+                        LogWriter.reopen();
+                }
+                else
+                {
+                    //Permission was denied, lets disable log writing
+                    preferences.edit().putBoolean(LogWriter.SETTING_ENABLE_LOG_WRITING, false).apply();
+                }
+            }
+        }
+    }
+
+    public static boolean checkAndRequestStoragePermission(Activity activity)
+    {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            {
+                Toast.makeText(activity, R.string.accept_and_reselect, Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                new AlertDialog.Builder(activity).setMessage(R.string.cannot_use_without_storage_permission).setNegativeButton(R.string.ok, null).show();
+            }
+
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary

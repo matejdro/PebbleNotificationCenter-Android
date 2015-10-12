@@ -1,21 +1,28 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.TwoStatePreference;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 
+import com.matejdro.pebblecommons.util.LogWriter;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 
 import de.psdev.licensesdialog.LicensesDialog;
 
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends PreferenceActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 	private SharedPreferences settings;
     private SharedPreferences.Editor editor;
 
@@ -32,19 +39,23 @@ public class SettingsActivity extends PreferenceActivity {
         editor = settings.edit();
 
         setPopupOptionsEnabled(!settings.getBoolean("noNotifications", false), settings.getBoolean("enableQuietTime", false));
-        findPreference("noNotifications").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        findPreference("noNotifications").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
             @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
+            public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
                 setPopupOptionsEnabled(!(Boolean) newValue, settings.getBoolean("enableQuietTime", false));
                 return true;
             }
         });
 
         Preference notifierLicenseButton = findPreference("notifierLicense");
-        notifierLicenseButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        notifierLicenseButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
 
             @Override
-            public boolean onPreferenceClick(Preference preference) {
+            public boolean onPreferenceClick(Preference preference)
+            {
 
                 new LicensesDialog.Builder(SettingsActivity.this)
                         .setNotices(R.raw.notices)
@@ -84,6 +95,53 @@ public class SettingsActivity extends PreferenceActivity {
             }
         });
 
+        findPreference(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
+                if (newValue.equals("3") && ContextCompat.checkSelfPermission(SettingsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
+                {
+                    ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        findPreference(LogWriter.SETTING_ENABLE_LOG_WRITING).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
+                if (((Boolean) newValue) && ContextCompat.checkSelfPermission(SettingsActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+                {
+                    ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                    return false;
+                }
+                return true;
+            }
+        });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        for (int i = 0; i < permissions.length; i++)
+        {
+            if (permissions[i].equals(Manifest.permission.ACCESS_COARSE_LOCATION) && grantResults[i] == PackageManager.PERMISSION_GRANTED)
+            {
+                ListPreference backlightPreference = (ListPreference) findPreference(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS);
+                backlightPreference.setValue("3");
+            }
+            else if (permissions[i].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) && grantResults[i] == PackageManager.PERMISSION_GRANTED)
+            {
+                TwoStatePreference logWriterPreference = (TwoStatePreference) findPreference(LogWriter.SETTING_ENABLE_LOG_WRITING);
+                logWriterPreference.setChecked(true);
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public void init()

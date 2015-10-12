@@ -22,11 +22,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.matejdro.pebblecommons.util.PreferencesUtil;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.ui.ReplacerEditDialog.ReplacerDialogResult;
 import com.matejdro.pebblenotificationcenter.ui.ReplacerFilePickerDialog.FilePickerDialogResult;
-import com.matejdro.pebblecommons.util.PreferencesUtil;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -188,6 +190,9 @@ public class ReplacerFragment extends Fragment {
 
 	private void loadFromFile()
 	{
+		if (!MainActivity.checkAndRequestStoragePermission(getActivity()))
+			return;
+
 		File folder = Environment.getExternalStoragePublicDirectory("NotificationCenter");
 		if (!folder.exists())
 			folder.mkdir();
@@ -253,6 +258,9 @@ public class ReplacerFragment extends Fragment {
 
 	private void saveToFile()
 	{
+		if (!MainActivity.checkAndRequestStoragePermission(getActivity()))
+			return;
+
 		AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 
 		alert.setTitle("Export");

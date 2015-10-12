@@ -1,18 +1,21 @@
 package com.matejdro.pebblenotificationcenter.location;
 
-import java.util.Date;
-
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 
-import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblecommons.util.TimeUtil;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+
+import java.util.Date;
 
 public class LocationLookup {
   static private LocationLookup _instance = null;
@@ -32,6 +35,9 @@ public class LocationLookup {
   }
 
   public void lookup() {
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
+      return;
+
     boolean backlight = settings.getString(PebbleNotificationCenter.LIGHT_SCREEN_ON_NOTIFICATIONS, "2").equals("3");
     // will lookup time once a hour
     if (backlight && TimeUtil.hasTimePassed(gotLastLocation, 60 * 60 * 1000)) {
@@ -87,7 +93,9 @@ public class LocationLookup {
     if (locationListener != null) {
       LocationManager locationManager =
           (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-      locationManager.removeUpdates(locationListener);
+
+      if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        locationManager.removeUpdates(locationListener);
     }
     _instance = null;
   }
