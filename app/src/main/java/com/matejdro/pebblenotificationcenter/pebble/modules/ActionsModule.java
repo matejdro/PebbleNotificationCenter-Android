@@ -158,6 +158,13 @@ public class ActionsModule extends CommModule
 
     public void gotMessageActionItemPicked(PebbleDictionary message)
     {
+        if (notification == null)
+        {
+            Timber.d("Received action with no relevant notification");
+            SystemModule.get(getService()).hideHourglass();
+            return;
+        }
+
         ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(this.notification.id);
         if (notification == null)
         {
