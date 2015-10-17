@@ -226,7 +226,6 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
             //Icon attribute
             dataStream.writeByte(0x4);
             writeUnsignedShortLittleEndian(dataStream, 4); //Attribute size
-            //writeUnsignedIntLittleEndian(dataStream, 0x80000010); //Icon?
             writeUnsignedIntLittleEndian(dataStream, iconID);
 
 
