@@ -10,6 +10,7 @@
     <string name="error_internet">Failed to get list of your locker apps. Are you connected to the internet?</string>
 
     <string name="sdk3_app_retrieval_intro">Pebbles running SDK 3 (connected to unrooted phone) do not support retrieving all installed apps at once, but you can add every app manually (you have to re-do this procedure for every app you want to add).\n\nPlease open app on Pebble you want to add and press Continue.</string>
+    <string name="sdk3_app_enter_name">Enter name of the app:</string>
     <string name="root_app_retrieval_intro">Pebbles running SDK 3 normally do not support retrieving all installed apps at once, but since your phone is rooted, you can use workaround method that also requires internet access. \n\nIf your phone was not correctly detected as rooted or you don\'t have internet connection, you can switch to manual mode. You will also have to use manual mode to add all system apps (for example stock Music app).</string>
 
     <string name="retrieving_app">Retrieving current app…</string>

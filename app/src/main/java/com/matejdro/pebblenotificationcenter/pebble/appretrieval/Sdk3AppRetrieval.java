@@ -104,7 +104,7 @@ public class Sdk3AppRetrieval
 
 
             final AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setMessage(R.string.sdk3_app_retrieval_intro)
+                    .setMessage(R.string.sdk3_app_enter_name)
                     .setNegativeButton(R.string.button_cancel, null)
                     .setPositiveButton(R.string.button_continue, null)
                     .create();
