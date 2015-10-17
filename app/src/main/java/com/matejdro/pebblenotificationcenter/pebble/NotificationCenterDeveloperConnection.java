@@ -191,7 +191,7 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
             writeUnsignedIntLittleEndian(dataStream, (int) (notification.source.getRawPostTime() / 1000)); //Notification timestamp
             dataStream.writeShort(0); //Duration of the item (not used for notifications, always 0)
             dataStream.writeByte(1); //Item type to insert = Notification (1)
-            dataStream.writeShort(dismissable ? 0x0001 : 0x1001); //Flags (magic value, depends on whether notification is dismissable or not)
+            dataStream.writeShort(dismissable ? 0x0100 : 0x1100); //Flags (magic value, depends on whether notification is dismissable or not)
             dataStream.writeByte(4); //Layout (always 4)
 
             boolean hasColor = notification.source.getColor() != Color.TRANSPARENT;
