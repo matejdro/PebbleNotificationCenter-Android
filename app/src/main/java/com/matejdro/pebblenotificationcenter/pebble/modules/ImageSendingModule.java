@@ -19,7 +19,6 @@ public class ImageSendingModule extends CommModule
 {
     public static final int MAX_IMAGE_WIDTH = 144;
     public static final int MAX_IMAGE_HEIGHT = 168 - 16;
-    public static final int IMAGE_BYTES_PER_MESSAGE = 124 - 8 - 1;
     public static final int MAX_IMAGE_SIZE = 9000;
 
 
@@ -49,7 +48,9 @@ public class ImageSendingModule extends CommModule
     {
         Timber.d("SendImagePart %d", nextByteToSend);
 
-        int bytesToSend = Math.min(imageData.length - nextByteToSend, IMAGE_BYTES_PER_MESSAGE);
+        int maxImageFragmentSize = getService().getPebbleCommunication().getMaximumPacketSize() - 1 - 7;
+
+        int bytesToSend = Math.min(imageData.length - nextByteToSend, maxImageFragmentSize);
         byte[] bytes = new byte[bytesToSend + 1];
         bytes[0] = (byte) ((byte) (nextByteToSend % 256) & 0xFF);
 
