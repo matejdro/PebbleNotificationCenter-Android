@@ -29,7 +29,7 @@ public enum AppSetting
     DISMISS_UPRWADS("syncDismissUp", true),
     SAVE_TO_HISTORY("saveToHistory", true),
     CUSTOM_TITLE("customTitle", ""),
-    MAXIMUM_TEXT_LENGTH("maximumTextLength", Integer.toString(NotificationSendingModule.TEXT_LIMIT)),
+    MAXIMUM_TEXT_LENGTH("maximumTextLength", Integer.toString(NotificationSendingModule.DEFAULT_TEXT_LIMIT)),
     USE_WEAR_GROUP_NOTIFICATIONS("useWearGroupNotifications", true),
     ALWAYS_PARSE_STATUSBAR_NOTIFICATION("alwaysParseStatusbarNotification", false),
     RESPECT_ANDROID_INTERRUPT_FILTER("respectAndroidInterruptFilter", false),

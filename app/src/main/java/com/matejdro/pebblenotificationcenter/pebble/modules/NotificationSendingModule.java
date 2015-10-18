@@ -50,8 +50,7 @@ public class NotificationSendingModule extends CommModule
     public static final int MODULE_NOTIFICATION_SENDING = 1;
     public static final String INTENT_NOTIFICATION = "Notification";
 
-    public static final int TEXT_LIMIT = 2000;
-    public static final int TITLE_TEXT_LIMIT = 30;
+    public static final int DEFAULT_TEXT_LIMIT = 2000;
 
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
@@ -96,7 +95,7 @@ public class NotificationSendingModule extends CommModule
             if (text.contains("\n"))
             {
                 int firstLineBreak = text.indexOf('\n');
-                if (firstLineBreak < TITLE_TEXT_LIMIT && firstLineBreak < text.length() * 0.8)
+                if (firstLineBreak < text.length() * 0.8)
                 {
                     subtitle = text.substring(0, firstLineBreak).trim();
                     text = text.substring(firstLineBreak).trim();
@@ -106,17 +105,10 @@ public class NotificationSendingModule extends CommModule
             notificationSource.setText(text);
             notificationSource.setSubtitle(subtitle);
         }
-        else if (notificationSource.getSubtitle().length() > TITLE_TEXT_LIMIT)
-        {
-            //Do not cut off titles which some apps make very long
-            notificationSource.setText(notificationSource.getSubtitle() + "\n" + notificationSource.getText());
-            notificationSource.setSubtitle("");
-        }
 
         if (notificationSource.getTitle().trim().equals(notificationSource.getSubtitle().trim()))
             notificationSource.setSubtitle("");
 
-        int textLimit = getMaximumTextLength(settingStorage);
 
         if (!notificationSource.isListNotification())
         {
@@ -133,13 +125,10 @@ public class NotificationSendingModule extends CommModule
                     settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
                     canDisplayWearGroupNotification(notification.source, settingStorage))
             {
+                int textLimit = getMaximumTextLength(settingStorage);
                 NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(), TextUtil.trimString(notificationSource.getTitle(), 30, true), TextUtil.trimString(notificationSource.getSubtitle(), 30, true), TextUtil.trimString(notificationSource.getText(), textLimit, true));
             }
         }
-
-        notificationSource.setText(TextUtil.prepareString(notificationSource.getText(), textLimit));
-        notificationSource.setTitle(TextUtil.prepareString(notificationSource.getTitle(), TITLE_TEXT_LIMIT));
-        notificationSource.setSubtitle(TextUtil.prepareString(notificationSource.getSubtitle(), TITLE_TEXT_LIMIT));
 
         if (!notificationSource.isListNotification())
         {
@@ -350,12 +339,40 @@ public class NotificationSendingModule extends CommModule
         notification.nativeNotification = false;
 
         //Split text into chunks
-        String text = notification.source.getText();
-        while (text.length() > 0)
+        int textLimit = getMaximumTextLength(notification.source.getSettingStorage(getService()));
+        String mergedText = notification.source.getTitle() + "\0" + notification.source.getSubtitle() + "\0" + notification.source.getText();
+        mergedText = TextUtil.prepareString(mergedText, textLimit);
+
+        byte[] textBytes = mergedText.getBytes();
+        notification.textLength = (short) textBytes.length;
+
+        boolean lookingForSubtitleIndex = true;
+        for (int i = 0; i < textBytes.length; i++)
         {
-            String chunk = TextUtil.trimString(text, 100, false);
+            if (textBytes[i] == 0)
+            {
+                if (lookingForSubtitleIndex)
+                {
+                    notification.firstSubtitleIndex = (short) (i + 1);
+                    lookingForSubtitleIndex = false;
+                }
+                else
+                {
+                    notification.firstTextIndex = (short) (i + 1);
+                    break;
+                }
+            }
+        }
+
+        int i = 0;
+        while (i < textBytes.length)
+        {
+            byte[] chunk = new byte[100];
+            int size = Math.min(100, textBytes.length - i);
+            System.arraycopy(textBytes, i, chunk, 0, size);
             notification.textChunks.add(chunk);
-            text = text.substring(chunk.length());
+
+            i+= size;
         }
 
         Timber.d("BeginSend %d %s %s %d", notification.id, notification.source.getTitle(), notification.source.getSubtitle(), notification.textChunks.size());
@@ -411,15 +428,13 @@ public class NotificationSendingModule extends CommModule
             flags |= (byte) (settingStorage.getInt(AppSetting.SELECT_HOLD_ACTION) == 2 ? 0x20 : 0);
         }
 
-        int textLength = curSendingNotification.source.getText().getBytes().length;
-
-        byte[] configBytes = new byte[14 + vibrationPattern.size()];
+        byte[] configBytes = new byte[18 + vibrationPattern.size()];
         configBytes[0] = flags;
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
         configBytes[3] = (byte) amountOfActions;
-        configBytes[4] = (byte) (textLength >>> 0x08);
-        configBytes[5] = (byte) textLength;
+        configBytes[4] = (byte) (curSendingNotification.textLength >>> 0x08);
+        configBytes[5] = (byte) curSendingNotification.textLength;
 
         int shakeAction = settingStorage.getInt(AppSetting.SHAKE_ACTION);
         if (shakeAction == 2 && !showMenuInstantly )
@@ -458,10 +473,15 @@ public class NotificationSendingModule extends CommModule
             System.out.println("imagesize " + size);
         }
 
-        configBytes[13] = (byte) vibrationPattern.size();
+        configBytes[13] = (byte) (curSendingNotification.firstSubtitleIndex >>> 0x08);
+        configBytes[14] = (byte) curSendingNotification.firstSubtitleIndex;
+        configBytes[15] = (byte) (curSendingNotification.firstTextIndex >>> 0x08);
+        configBytes[16] = (byte) curSendingNotification.firstTextIndex;
+
+        configBytes[17] = (byte) vibrationPattern.size();
 
         for (int i = 0; i < vibrationPattern.size(); i++)
-            configBytes[14 + i] = vibrationPattern.get(i);
+            configBytes[18 + i] = vibrationPattern.get(i);
 
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 0);
@@ -486,7 +506,7 @@ public class NotificationSendingModule extends CommModule
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 1);
         data.addInt32(2, curSendingNotification.id);
-        data.addString(3, curSendingNotification.textChunks.get(curSendingNotification.nextChunkToSend));
+        data.addBytes(3, curSendingNotification.textChunks.get(curSendingNotification.nextChunkToSend));
 
         getService().getPebbleCommunication().sendToPebble(data);
         curSendingNotification.nextChunkToSend++;
@@ -648,11 +668,11 @@ public class NotificationSendingModule extends CommModule
 
     public static int getMaximumTextLength(AppSettingStorage storage)
     {
-        int limit = TEXT_LIMIT;
+        int limit = DEFAULT_TEXT_LIMIT;
 
         try
         {
-            limit = Math.min(Integer.parseInt(storage.getString(AppSetting.MAXIMUM_TEXT_LENGTH)), TEXT_LIMIT);
+            limit = Math.min(Integer.parseInt(storage.getString(AppSetting.MAXIMUM_TEXT_LENGTH)), DEFAULT_TEXT_LIMIT);
             if (limit < 4) //Minimum limit is 4 to allow ...
                 limit = 4;
         }

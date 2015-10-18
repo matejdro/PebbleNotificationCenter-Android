@@ -127,8 +127,8 @@ Phone --> Pebble
 				[1] = Periodic vibration interval (first byte)
 				[2] = Periodic vibration interval (second byte)
 				[3] = Number of items in action menu (uint8)	
-				[4] = Length of the text (first byte)
-				[5] = Length of the text (second byte)
+				[4] = Length of the full text string (first byte) - See Packet 1 below
+				[5] = Length of the full text string (second byte)
 				[6] = Shake action
 				[7] = Title font (0-17)
 				[8] = Subtitle font (0-17)
@@ -136,16 +136,19 @@ Phone --> Pebble
                 [10] = Statusbar color (in GColor8 format - byte with aarrggbb bits, only on Basalt)
                 [11] = Image size (first byte, only on basalt)
                 [12] = Image size (second byte, only on basalt)
-				[13] = Number of bytes in vibration pattern
-				[14,15,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
-			4 = Title (max 30 bytes) - cstring
-			5 = Subtitle (max 30 bytes) - cstring
-		
-		Packet 1 - More notification text packet
-		Send additional text (after above packet from Pebble)
+                [13] = Array index of the first subtitle char (first byte)
+				[14] = Array index of the first subtitle char (second byte)
+                [15] = Array index of the first text char (first byte)
+				[16] = Array index of the first text char (second byte)
+				[17] = Number of bytes in vibration pattern
+				[18,19,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
+
+		Packet 1 - Notification text packet
+		Send notification text (after above packet from Pebble).
+		Full string (title + subtitle + body, all separated with null character) is separated into 100 byte chunks and sent to pebble sequentially.
 		Additional data:
 			2 = Unique notification id (int32)
-			3 = Text (up to 80 bytes) - cstring
+			3 = Text (up to 100 utf-8 bytes) - byte array
 
 	MODULE 2 - NOTIFICATION LIST
 

@@ -3,15 +3,17 @@ package com.matejdro.pebblenotificationcenter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.matejdro.pebblenotificationcenter.notifications.actions.ReplaceNotificationAction;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessedNotification implements Parcelable
 {
 	public int id;
-	public List<String> textChunks = new ArrayList<String>(13);
+	public List<byte[]> textChunks = new ArrayList<>(13);
+    public short firstSubtitleIndex = Short.MAX_VALUE;
+    public short firstTextIndex = Short.MAX_VALUE;
+    public short textLength;
+
     public boolean vibrated = false;
     public int nextChunkToSend = -1;
     public boolean nativeNotification;
@@ -42,7 +44,7 @@ public class ProcessedNotification implements Parcelable
         {
             ProcessedNotification notification = new ProcessedNotification();
             notification.id = parcel.readInt();
-            notification.textChunks = (List<String>) parcel.readValue(getClass().getClassLoader());
+            notification.textChunks = (List<byte[]>) parcel.readValue(getClass().getClassLoader());
             notification.vibrated = parcel.readByte() == 1;
             notification.nextChunkToSend = parcel.readInt();
             notification.nativeNotification = parcel.readByte() == 1;
