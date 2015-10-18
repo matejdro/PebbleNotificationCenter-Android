@@ -176,7 +176,9 @@ Phone --> Pebble
 	        	[1] = Amount of all actions in the list
 	        	[2] = Should I display tertiary text window instead of menu (1 or 0)
 	        3 = Names (up to 4) - multiple null-terminated strings (up to 19 chars each) in one byte array
-            
+
+		Packet 1 - Display voice action (Only on basalt)
+
     MODULE 5 - IMAGE (ONLY ON BASALT)
         Packet 0 - Image data 
         2 = array of uint8

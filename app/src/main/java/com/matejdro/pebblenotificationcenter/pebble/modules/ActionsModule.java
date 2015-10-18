@@ -11,6 +11,7 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPhoneAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
+import com.matejdro.pebblenotificationcenter.notifications.actions.WearVoiceAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.ActionList;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.NotificationActionList;
 import com.matejdro.pebblenotificationcenter.notifications.actions.lists.WritingPhrasesList;
@@ -28,6 +29,9 @@ public class ActionsModule extends CommModule
     private ProcessedNotification notification;
     int listSize = -1;
     private int nextListItemToSend = -1;
+
+    private WearVoiceAction replyAction;
+    private boolean shouldSendVoiceStart;
 
     public ActionsModule(PebbleTalkerService service)
     {
@@ -70,9 +74,26 @@ public class ActionsModule extends CommModule
             nextListItemToSend = -1;
     }
 
+    private void sendVoiceStart()
+    {
+        PebbleDictionary data = new PebbleDictionary();
+
+        data.addUint8(0, (byte) 4);
+        data.addUint8(1, (byte) 1);
+
+        getService().getPebbleCommunication().sendToPebble(data);
+    }
+
+
     @Override
     public boolean sendNextMessage()
     {
+        if (shouldSendVoiceStart)
+        {
+            sendVoiceStart();
+            shouldSendVoiceStart = false;
+        }
+
         if (list != null && nextListItemToSend >= 0 )
         {
             sendNextListItems();
@@ -87,6 +108,16 @@ public class ActionsModule extends CommModule
         this.list = list;
         listSize = Math.min(list.getNumberOfItems(), NotificationAction.MAX_NUMBER_OF_ACTIONS);
         nextListItemToSend = 0;
+
+        PebbleCommunication communication = getService().getPebbleCommunication();
+        communication.queueModulePriority(this);
+        communication.sendNext();
+    }
+
+    public void startTimeVoice(WearVoiceAction replyAction)
+    {
+        this.replyAction = replyAction;
+        shouldSendVoiceStart = true;
 
         PebbleCommunication communication = getService().getPebbleCommunication();
         communication.queueModulePriority(this);
@@ -208,10 +239,20 @@ public class ActionsModule extends CommModule
 
     private void gotMessageReplyText(PebbleDictionary data)
     {
+        String text = data.getString(2);
+
+        if (replyAction != null)
+        {
+            replyAction.sendReply(text, NCTalkerService.fromPebbleTalkerService(getService()));
+            SystemModule.get(getService()).hideHourglass();
+            replyAction = null;
+
+            return;
+        }
+
         if (list == null || !list.isTertiaryTextList())
             return;
 
-        String text = data.getString(2);
         ((WritingPhrasesList) list).reply(text);
 
         SystemModule.get(getService()).hideHourglass();

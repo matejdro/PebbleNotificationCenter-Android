@@ -14,7 +14,6 @@ import android.os.Parcelable;
 
 import com.matejdro.pebblecommons.messages.MessageTextProviderListener;
 import com.matejdro.pebblecommons.messages.PhoneVoiceProvider;
-import com.matejdro.pebblecommons.messages.TimeVoiceProvider;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
@@ -192,14 +191,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
 
     public void showTimeVoicePrompt(final NCTalkerService service)
     {
-        service.runOnMainThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                new TimeVoiceProvider(service).startRetrievingText(WearVoiceAction.this);
-            }
-        });
+        ActionsModule.get(service).startTimeVoice(this);
     }
 
     public void showTertiaryText(NCTalkerService service)
