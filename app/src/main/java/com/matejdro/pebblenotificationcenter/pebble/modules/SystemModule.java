@@ -216,6 +216,9 @@ public class SystemModule extends CommModule
             getService().getPebbleCommunication().setConnectedPebblePlatform(pebblePlatform);
             Timber.d("Pebble Platform: %d", pebblePlatform);
 
+            int maxMessageSize = message.getUnsignedIntegerAsLong(4).intValue();
+            getService().getPebbleCommunication().setMaximumPacketSize(maxMessageSize);
+
 
             SparseArray<CommModule> modules = getService().getAllModules();
             for (int i = 0 ; i < modules.size(); i++)

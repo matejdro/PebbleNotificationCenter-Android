@@ -1,7 +1,6 @@
 package com.matejdro.pebblenotificationcenter.pebble;
 
 import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -12,11 +11,12 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+
 import com.matejdro.pebblenotificationcenter.R;
 
 public class WatchappHandler extends BroadcastReceiver
 {
-    public static final int SUPPORTED_PROTOCOL = 31;
+    public static final int SUPPORTED_PROTOCOL = 32;
     public static final String INTENT_UPDATE_WATCHAPP = "com.matejdro.pebblenotificationcenter.UPDATE_WATCHAPP";
 
     public static final String WATCHAPP_URL = "https://dl.dropboxusercontent.com/u/6999250/dialer/Center/notificationcenter.pbw";

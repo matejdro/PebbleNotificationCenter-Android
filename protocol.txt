@@ -9,6 +9,7 @@ Pebble --> Phone
 		Additional data:
 			2 = Watchapp version - uint16
             3 = Platform (0 = Aplite, 1 = Basalt) - uint8
+            4 = Maximum appmessage size to the Pebble in bytes - uint32
 
 		Packet 1 - Menu picked
 		Sent when user picks entry in main menu
