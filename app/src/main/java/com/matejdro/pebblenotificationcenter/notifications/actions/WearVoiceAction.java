@@ -340,6 +340,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
                     return false;
 
                 sendReply(cannedResponseList.get(id), service);
+                return false; //Replying might not dismiss notification which would cause hourglass to stay there. Send false to make sure it disappears.
             }
 
             return true;
