@@ -26,7 +26,6 @@ public class ActionsModule extends CommModule
     public static final int MODULE_ACTIONS = 4;
 
     private ActionList list;
-    private ProcessedNotification notification;
     int listSize = -1;
     private int nextListItemToSend = -1;
 
@@ -159,7 +158,6 @@ public class ActionsModule extends CommModule
 
         if (notification.source.shouldForceActionMenu() || action == 2)
         {
-            this.notification = notification;
             showList(new NotificationActionList(notification));
         }
         else if (action == 0 || action == 60 || action == 61) //Do nothing on disabled and stop periodic vibration actions
@@ -189,21 +187,6 @@ public class ActionsModule extends CommModule
 
     public void gotMessageActionItemPicked(PebbleDictionary message)
     {
-        if (notification == null)
-        {
-            Timber.d("Received action with no relevant notification");
-            SystemModule.get(getService()).hideHourglass();
-            return;
-        }
-
-        ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(this.notification.id);
-        if (notification == null)
-        {
-            Timber.d("Invalid notification %d", notification.id);
-            SystemModule.get(getService()).hideHourglass();
-            return;
-        }
-
         int action = message.getUnsignedIntegerAsLong(2).intValue();
         Timber.d("Action picked message %d", action);
 
