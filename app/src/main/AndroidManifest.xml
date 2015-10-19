@@ -108,6 +108,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name="PebbleConnectedReceiver">
+            <intent-filter>
+                <action android:name="com.getpebble.action.PEBBLE_CONNECTED"/>
+            </intent-filter>
+        </receiver>
+
         <meta-data
          android:name="xposedmodule"
          android:value="true" />

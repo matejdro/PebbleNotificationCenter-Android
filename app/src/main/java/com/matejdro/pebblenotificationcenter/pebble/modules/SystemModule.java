@@ -299,10 +299,21 @@ public class SystemModule extends CommModule
     @Override
     public void gotIntent(Intent intent)
     {
-        if (intent.getAction().equals(INTENT_PEBBLE_CONNECTED) && NotificationSendingModule.get(getService()).isAnyNotificationWaiting())
+        if (intent.getAction().equals(INTENT_PEBBLE_CONNECTED))
         {
-            openApp();
+            PebbleCommunication communication = getService().getPebbleCommunication();
+            communication.resetBusy();
+            communication.sendNext();
+
+            if (    NotificationSendingModule.get(getService()).isAnyNotificationWaiting() &&
+                    getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.OPEN_NC_AFTER_RECONNECT, false))
+            {
+                Timber.d("Opening App after reconnect");
+
+                openApp();
+            }
         }
+
     }
 
     @Override

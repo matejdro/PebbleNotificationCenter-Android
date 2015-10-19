@@ -18,6 +18,11 @@
             android:key="noNotificationsSilent"
             android:summary="Disable new notifications popping up when phone is in vibrate or in silent mode"
             android:title="Disable notify when in silent mode" />
+        <CheckBoxPreference
+            android:key="openAfterReconnect"
+            android:summary="When pebble reconnects to the phone, immediately display all missed notifications. Does not work for native notifications."
+            android:title="Display notifications after reconnect"
+            android:defaultValue="false"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="Watchapp" >
         <CheckBoxPreference
