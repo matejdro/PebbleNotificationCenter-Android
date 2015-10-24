@@ -68,6 +68,7 @@ public enum AppSetting
     PERIODIC_VIBRATION("settingPeriodicVibration", "20"),
     MINIMUM_VIBRATION_INTERVAL("minimumVibrationInterval", "0"),
     MINIMUM_NOTIFICATION_INTERVAL("minimumNotificationInterval", "0"),
+    NO_UPDATE_VIBRATION("noUpdateVibration", false),
     INCLUDED_REGEX("WhitelistRegexes", null),
     EXCLUDED_REGEX("BlacklistRegexes", null);
 

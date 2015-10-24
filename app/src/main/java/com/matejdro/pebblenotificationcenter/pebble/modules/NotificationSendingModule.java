@@ -241,7 +241,9 @@ public class NotificationSendingModule extends CommModule
             return;
         }
 
-        DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey(), false);
+        int lastDismissedID = DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey(), false);
+        if (settingStorage.getBoolean(AppSetting.NO_UPDATE_VIBRATION))
+            notification.prevId = lastDismissedID;
 
         if (settingStorage.getBoolean(AppSetting.HIDE_NOTIFICATION_TEXT) && !notificationSource.isListNotification() && !notificationSource.isHidingTextDisallowed())
             sendNotificationAsPrivate(notification);
@@ -486,8 +488,7 @@ public class NotificationSendingModule extends CommModule
         data.addUint8(1, (byte) 0);
         data.addInt32(2, curSendingNotification.id);
         data.addBytes(3, configBytes);
-        data.addString(4, curSendingNotification.source.getTitle());
-        data.addString(5, curSendingNotification.source.getSubtitle());
+        data.addInt32(4, curSendingNotification.prevId);
         data.addUint8(999, (byte) 1);
 
         getService().getPebbleCommunication().sendToPebble(data);

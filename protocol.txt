@@ -142,6 +142,9 @@ Phone --> Pebble
 				[16] = Array index of the first text char (second byte)
 				[17] = Number of bytes in vibration pattern
 				[18,19,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
+			4 = Previous notification id (int32)
+				ID of the previous notification that was updated by this notification. If this ID is displayed on the watch, this notification will not vibrate.
+				Value 0 means it will always vibrate.
 
 		Packet 1 - Notification text packet
 		Send notification text (after above packet from Pebble).

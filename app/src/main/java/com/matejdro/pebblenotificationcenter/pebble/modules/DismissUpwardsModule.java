@@ -115,13 +115,16 @@ public class DismissUpwardsModule extends CommModule
 
     /**
      * @param dismissImmediately when <code>false</code>, dismiss will be queued and will execute with next intent
+     * @return NC ID of the last notification that was dismissed or {@code 0}.
      */
-    public void processDismissUpwards(NotificationKey key, boolean dismissImmediately)
+    public int processDismissUpwards(NotificationKey key, boolean dismissImmediately)
     {
         Timber.d("got dismiss: %s", key);
 
         if (key == null || key.getAndroidId() == null)
-            return;
+            return 0;
+
+        int prevNotification = 0;
 
         AppSettingStorage settingsStorage;
         if (key.getPackage() == null)
@@ -131,7 +134,7 @@ public class DismissUpwardsModule extends CommModule
 
         boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
         if (!syncDismissUp)
-            return;
+            return 0;
 
         SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 
@@ -141,6 +144,8 @@ public class DismissUpwardsModule extends CommModule
 
             if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
+                prevNotification = notification.id;
+
                 if (dismissImmediately)
                 {
                     dismissUpwards(notification);
@@ -153,6 +158,8 @@ public class DismissUpwardsModule extends CommModule
                 }
             }
         }
+
+        return prevNotification;
     }
 
     /**

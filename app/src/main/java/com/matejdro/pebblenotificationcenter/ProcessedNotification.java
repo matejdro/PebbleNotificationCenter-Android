@@ -9,6 +9,7 @@ import java.util.List;
 public class ProcessedNotification implements Parcelable
 {
 	public int id;
+    public int prevId = 0;
 	public List<byte[]> textChunks = new ArrayList<>(13);
     public short firstSubtitleIndex = Short.MAX_VALUE;
     public short firstTextIndex = Short.MAX_VALUE;
@@ -30,6 +31,7 @@ public class ProcessedNotification implements Parcelable
     public void writeToParcel(Parcel parcel, int i)
     {
         parcel.writeInt(id);
+        parcel.writeInt(prevId);
         parcel.writeValue(textChunks);
         parcel.writeByte((byte) (vibrated ? 1 : 0));
         parcel.writeInt(nextChunkToSend);
@@ -44,6 +46,7 @@ public class ProcessedNotification implements Parcelable
         {
             ProcessedNotification notification = new ProcessedNotification();
             notification.id = parcel.readInt();
+            notification.prevId = parcel.readInt();
             notification.textChunks = (List<byte[]>) parcel.readValue(getClass().getClassLoader());
             notification.vibrated = parcel.readByte() == 1;
             notification.nextChunkToSend = parcel.readInt();
