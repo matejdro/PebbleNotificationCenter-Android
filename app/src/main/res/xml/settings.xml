@@ -20,7 +20,7 @@
             android:title="Disable notify when in silent mode" />
         <CheckBoxPreference
             android:key="openAfterReconnect"
-            android:summary="When pebble reconnects to the phone, immediately display all missed notifications. Does not work for native notifications."
+            android:summary="When pebble reconnects to the phone, immediately display all missed notifications. Only works on watchapp notifications."
             android:title="Display notifications after reconnect"
             android:defaultValue="false"/>
     </PreferenceCategory>

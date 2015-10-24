@@ -270,7 +270,7 @@
     </string>
     <string name="settingSwitchToRecent">Switch to most recent notification</string>
     <string name="settingSwitchToRecentDescription">When this is checked and new notification comes from this app, it
-        will switch to that notification instead of queuing it.
+        will switch to that notification instead of queuing it. Only works on watchapp notifications.
     </string>
     <string name="settingDismissUpwards">Dismiss Upwards</string>
     <string name="settingDismissUpwardsDescripition">When checked and you dismiss notification on the phone, it will
@@ -296,12 +296,12 @@
     <string name="settingVibrationPattern">Vibration pattern</string>
     <string name="settingVibrationPatternDescription">Here you can define vibration pattern for this app. Pattern is in
         format \'vibrateTime, pauseTime, vibrateTime, pauseTime ...\', where times are in miliseconds. For example
-        \'100, 200, 300\' will vibrate for 100ms, then wait 200 ms and then again vibrate for 300ms. Limit is 20 total numbers (so 10 vibrations and 10 pauses). Maximum total duration is 10 seconds. If you want to disable vibration, just enter 0.
+        \'100, 200, 300\' will vibrate for 100ms, then wait 200 ms and then again vibrate for 300ms. Limit is 20 total numbers (so 10 vibrations and 10 pauses). Maximum total duration is 10 seconds. If you want to disable vibration, just enter 0. Only works on watchapp notifications.
     </string>
     <string name="settingPeriodicVibration">Periodic Vibration</string>
     <string name="settingPeriodicVibrationDescription">After initial vibration, Pebble will also vibrate every few
         seconds to remind you notification is there in case you did not felt it first time or you were busy. Here you
-        can set interval of that vibration. You can also set it to 0 to disable the feature.
+        can set interval of that vibration. You can also set it to 0 to disable the feature. Only works on watchapp notifications.
     </string>
     <string name="settingIncludingRegex">Including Regex</string>
     <string name="settingIncludingRegexDescription">Here you can define list of regular expressions that notification
@@ -373,7 +373,7 @@
     <string name="settingWritingPhrases">Writing phrases</string>
     <string name="settingWritingPhrasesDescription">
         When writing messages on your Pebble you can type letter-by-letter or you can add paste whole phrases in.
-        Here you defined which phrases will be available to you (up to 19).
+        Here you defined which phrases will be available to you (up to 19). Only works on watchapp notifications.
     </string>
     <string name="addWritingPhrase">Add phrase</string>
     <string name="editWritingPhrase">Edit phrase</string>
@@ -398,7 +398,7 @@
         wear actions using microphone on the Pebble Time (does not work on classic Pebble obviously). You need to enable Notification Center in Pebble Time notification settings for this to work.
     </string>
     <string name="settingEnableWritingReply">Enable writing reply</string>
-    <string name="settingEnableWritingReplyDescription">When this setting is enabled, you write reply messages from your Pebble.
+    <string name="settingEnableWritingReplyDescription">When this setting is enabled, you write reply messages from your Pebble. Only works on watchapp notifications.
     </string>
     <string name="settingDismissAfterReply">Dismiss notification after replying</string>
     <string name="settingDismissAfterReplyDescription">Some apps do not automatically dismiss notification after you reply to it. By checking this option NC will take care of it.</string>
@@ -451,13 +451,13 @@
     <string name="openOnPhone">Open on phone</string>
     <string name="settingSelectPress">SELECT press action</string>
     <string name="settingSelectPressDescription">
-        What happens when you press SELECT button on Pebble. Menu actions are equal to pressing corresponding action in action menu. For example if you pick \&quot;Action menu item 3\&quot; then pressing SELECT button would be equal to opening action menu and selecting 3rd action.</string>
+        What happens when you press SELECT button on Pebble. Menu actions are equal to pressing corresponding action in action menu. For example if you pick \&quot;Action menu item 3\&quot; then pressing SELECT button would be equal to opening action menu and selecting 3rd action. Only works on watchapp notifications.</string>
     <string name="settingSelectHold">SELECT hold action</string>
     <string name="settingSelectHoldDescription">Same as above except that this actions is executed when you hold SELECT
-        button.
+        button. Only works on watchapp notifications.
     </string>
     <string name="settingShakeAction">Shake action</string>
-    <string name="settingShakeActionDescription">Same as above except that this actions is executed when you shake your Pebble. Enable autoswitch action means that Pebble will automatically switch to new notification when it comes if you shook your Pebble on old one.
+    <string name="settingShakeActionDescription">Same as above except that this actions is executed when you shake your Pebble. Enable autoswitch action means that Pebble will automatically switch to new notification when it comes if you shook your Pebble on old one. Only works on watchapp notifications.
     </string>
     <string name="settingDismissOnPhone">Dismiss on phone action position</string>
     <string name="settingDismissOnPebble">Dismiss on Pebble action position</string>
@@ -474,7 +474,7 @@
     <string name="settingMinimumVibrationIntervalDescription">Allows you to specify minimum amount of seconds that must
         pass between two notifications for second to vibrate. For example if you set this to 10 and you receive
         notification, it won\'t vibrate for notifications from this app for next 10 seconds. Useful for group chat notifications where
-        lots of messages can be sent in very short time. Set to 0 to disable.
+        lots of messages can be sent in very short time. Set to 0 to disable. Only works on watchapp notifications.
     </string>
     <string name="settingMinimumNotificationInterval">Minimum notification interval</string>
     <string name="settingMinimumNotificationIntervalDescription">Allows you to specify minimum amount of seconds that must
@@ -513,12 +513,13 @@
 
         That means you can display anywhere between 2 long notifications or 10 short notifications. If app generates notifications that are very long and you generally don\'t read them fully, you can limit length of them to fit as many of them on the watch as possible.\n\n
 
-        Also keep in mind that emoji and non-english characters usually take more space than plain english characters so notifications containing them will take more space.
+        Also keep in mind that emoji and non-english characters usually take more space than plain english characters so notifications containing them will take more space.  Only works on watchapp notifications, native will have much shorter text limit.
     </string>
     <string name="help">Help / FAQ</string>
     <string name="settingFontTitle">Title font</string>
     <string name="settingFontSubtitle">Subtitle font</string>
     <string name="settingFontBody">Body font</string>
+    <string name="settingDescriptionWatchappOnly">(Only works on watchapp notifications.)</string>
     <string name="settingAlwaysParseStatusbarNotification">Always parse statusbar notification</string>
     <string name="settingAlwaysParseStatusbarNotificationDescription">Always try to retrieve text from actual statusbar notification instead of using text that is separately provided by app itself. Use when notification on Pebble is different from one in statusbar.</string>
     <string name="settingHideNotificationText">Hide notification text</string>
@@ -528,7 +529,7 @@
     <string name="settingNotificationIcon">Notification Icon</string>
     <string name="settingNotificationIconDescription">Icon of the notification. Only for native notifications. Blank icon (just grey square) means NC will try to automatically determine the icon of the app. Images are loaded from the internet, so you may not be able to change this setting while offline.</string>
     <string name="settingShowImage">Display notification image</string>
-    <string name="settingShowImageDescription">Display notification image in the background of the text. Depending on the app it can be received image (for example MMS message with image), image of the contact that send the message or just stock icon for this type of notification (for example envelope icon for mail). Only works on Pebble Time. Notifications with background images and longer text can cause scrolling lag. Disable this feature if it is unusable for you.</string>
+    <string name="settingShowImageDescription">Display notification image in the background of the text. Depending on the app it can be received image (for example MMS message with image), image of the contact that send the message or just stock icon for this type of notification (for example envelope icon for mail). Only works on Pebble Time and with watchapp notifications.</string>
     <string name="pebble_apps_other">Other apps</string>
     <string name="pebble_apps_delete_prompt">Do you want to delete that Pebble app setting? Setting for \"Other apps\" will apply if you do that.</string>
     <string name="tasker_notification_hint">Hint: unless notification not appearing in statusbar is a requirement, I recommend you use Tasker\'s Alert -> Notify action. It allows you to also specify actions and dismiss notification at will.</string>

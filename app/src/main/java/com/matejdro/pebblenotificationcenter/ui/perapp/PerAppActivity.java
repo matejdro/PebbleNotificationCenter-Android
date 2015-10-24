@@ -131,9 +131,9 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         if (version(Build.VERSION_CODES.JELLY_BEAN_MR2)) category.add(new CheckBoxItem(settingsStorage, AppSetting.DISMISS_UPRWADS, R.string.settingDismissUpwards, R.string.settingDismissUpwardsDescripition));
         category.add(new EditTextItem(settingsStorage, AppSetting.CUSTOM_TITLE, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL, R.string.settingCustomTitle, R.string.settingCustomTitleDescription));
         category.add(new EditTextItem(settingsStorage, AppSetting.MAXIMUM_TEXT_LENGTH, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingMaximumLength, R.string.settingMaximumLengthDescription));
-        category.add(new SpinnerItem(settingsStorage, AppSetting.TITLE_FONT, R.array.pebbleFonts, R.string.settingFontTitle, 0, R.array.fontValues));
-        category.add(new SpinnerItem(settingsStorage, AppSetting.SUBTITLE_FONT, R.array.pebbleFonts, R.string.settingFontSubtitle, 0, R.array.fontValues));
-        category.add(new SpinnerItem(settingsStorage, AppSetting.BOCY_FONT, R.array.pebbleFonts, R.string.settingFontBody, 0, R.array.fontValues));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.TITLE_FONT, R.array.pebbleFonts, R.string.settingFontTitle, R.string.settingDescriptionWatchappOnly, R.array.fontValues));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.SUBTITLE_FONT, R.array.pebbleFonts, R.string.settingFontSubtitle, R.string.settingDescriptionWatchappOnly, R.array.fontValues));
+        category.add(new SpinnerItem(settingsStorage, AppSetting.BOCY_FONT, R.array.pebbleFonts, R.string.settingFontBody, R.string.settingDescriptionWatchappOnly, R.array.fontValues));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.ALWAYS_PARSE_STATUSBAR_NOTIFICATION, R.string.settingAlwaysParseStatusbarNotification, R.string.settingAlwaysParseStatusbarNotificationDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.HIDE_NOTIFICATION_TEXT, R.string.settingHideNotificationText, R.string.settingHideNotificationTextDescription));
         if (version(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)) category.add(new ColorPickerItem(settingsStorage, AppSetting.STATUSBAR_COLOR, R.string.settingStatusbarColor, R.string.settingStatusbarColorDescription));
