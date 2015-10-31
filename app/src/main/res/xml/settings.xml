@@ -88,6 +88,13 @@
             android:defaultValue="false"
             />
 
+        <CheckBoxPreference
+            android:key="displayDisconnectedNotification"
+            android:title="Display disconnected notification"
+            android:summary="If bluetooth is disconnected while NC is open, display disconnected notification"
+            android:defaultValue="true"
+            />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference 

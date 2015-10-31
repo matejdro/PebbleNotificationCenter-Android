@@ -36,6 +36,7 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
     public static final String DISPLAY_SCROLL_SHADOW = "displayScrollShadow";
     public static final String OPEN_NC_AFTER_RECONNECT = "openAfterReconnect";
     public static final String SCROLL_BY_PAGE = "scrollByPage";
+    public static final String DISPLAY_DISCONNECTED_NOTIFICATION = "displayDisconnectedNotification";
 
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
