@@ -32,7 +32,7 @@ public class BundleAppSettingsStorage extends AbsAppSettingStorage
         if (storage.containsKey("setting_".concat(key)))
             return storage.getString("setting_".concat(key));
 
-        return getStringByKey(key);
+        return original.getStringByKey(key);
     }
 
 
