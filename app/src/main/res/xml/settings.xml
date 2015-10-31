@@ -61,6 +61,7 @@
             android:key="noVibrateCharge"
             android:title="Don&apos;t vibrate when charging" />
 
+
         <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="invertColors"
@@ -78,6 +79,13 @@
             android:title="Display scroll shadow"
             android:summary="When this is checked, Pebble will display scroll shadow to indicate whether there is more content to scroll on the top/bottom."
             android:defaultValue="true"
+            />
+
+        <CheckBoxPreference
+            android:key="scrollByPage"
+            android:title="Scroll page-by-page"
+            android:summary="Scroll page by page instead of line by line. This option is always enabled regardless of the setting on round devices."
+            android:defaultValue="false"
             />
 
     </PreferenceCategory>

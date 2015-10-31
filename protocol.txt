@@ -105,6 +105,7 @@ Phone --> Pebble
 					[12] = Periodic vibration timeout in seconds (second byte)
                     [13] = Second flags byte
                         First bit (0x01) = Display scroll shadow
+                        Second bit (0x02) = Scroll page-by-page
 
 
 			Packet 1 - Hide hourglass

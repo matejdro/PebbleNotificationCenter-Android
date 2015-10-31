@@ -140,6 +140,7 @@ public class SystemModule extends CommModule
 
         byte secondFlags = 0;
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.DISPLAY_SCROLL_SHADOW, true) ? 0x01 : 0);
+        secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.SCROLL_BY_PAGE, false) ? 0x02 : 0);
         configBytes[13] = secondFlags;
 
         data.addBytes(2, configBytes);
