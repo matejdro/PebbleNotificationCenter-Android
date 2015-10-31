@@ -106,7 +106,7 @@ Phone --> Pebble
                     [13] = Second flags byte
                         First bit (0x01) = Display scroll shadow
                         Second bit (0x02) = Scroll page-by-page
-
+                        Third bit (0x04) = Display disconnected notification
 
 			Packet 1 - Hide hourglass
 			Hides hourglass from Notifications window (when action was performed successfully but there is nothing else to tell Pebble)
