@@ -297,6 +297,9 @@ public class SystemModule extends CommModule
                 value = message.getUnsignedIntegerAsLong(3) != 0;
                 editor.putBoolean(PebbleNotificationCenter.VIBRATION_DISABLED, value);
                 break;
+            case 2: //Clear history
+                NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().clearDatabase();
+                break;
         }
 
         editor.apply();

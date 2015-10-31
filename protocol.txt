@@ -20,9 +20,10 @@ Pebble --> Phone
 	    Send when Pebble wants to change config on the phone
 	    Additional data:
 	        2 = ID of the setting - uint8. Possible settings:
-	            0: Disable notifications 1 or 0 - value is uint8
-	            1: Disable vibration 1 or 0 - value is uint8
-	        3 = Value of the setting
+	            0: Disable notifications - value is 1 or 0
+	            1: Disable vibration - value is 1 or 0
+	            2: Clear history - value is gnored
+	        3 = Value of the setting - uint8
 
     	Packet 3 - Close app
 		Informs android app that it should close watchapp or switch to previous app depending on settings.
