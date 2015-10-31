@@ -5,7 +5,7 @@ import android.text.InputType;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblecommons.util.TextUtil;
+import com.matejdro.pebblenotificationcenter.appsetting.VibrationPattern;
 
 /**
  * Created by Matej on 19.10.2014.
@@ -25,7 +25,7 @@ public class VibrationPatternItem extends EditTextItem
 
         String vibrationPattern = editText.getText().toString();
 
-        if (!validateVibrationPattern(vibrationPattern))
+        if (!VibrationPattern.validateVibrationPattern(vibrationPattern))
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setMessage(R.string.invalidVibrationPattern);
@@ -38,19 +38,4 @@ public class VibrationPatternItem extends EditTextItem
         return true;
     }
 
-    private static boolean validateVibrationPattern(String pattern)
-    {
-        if (pattern.trim().isEmpty())
-            return false;
-
-        String split[] = pattern.split(",");
-
-        for (String s : split)
-        {
-            if (!TextUtil.isInteger(s.trim()))
-                return false;
-        }
-
-        return true;
-    }
 }

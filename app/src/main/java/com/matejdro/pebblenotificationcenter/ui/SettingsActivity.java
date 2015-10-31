@@ -1,6 +1,7 @@
 package com.matejdro.pebblenotificationcenter.ui;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.text.InputType;
 import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
+import com.matejdro.pebblenotificationcenter.appsetting.VibrationPattern;
 
 import de.psdev.licensesdialog.LicensesDialog;
 
@@ -117,6 +119,24 @@ public class SettingsActivity extends PreferenceActivity implements ActivityComp
                 if (((Boolean) newValue) && ContextCompat.checkSelfPermission(SettingsActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
                 {
                     ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        findPreference(PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
+                if (!VibrationPattern.validateVibrationPattern((String) newValue))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                    builder.setMessage(R.string.invalidVibrationPattern);
+                    builder.setPositiveButton(R.string.ok, null);
+                    builder.show();
+
                     return false;
                 }
                 return true;

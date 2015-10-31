@@ -23,6 +23,7 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationMode;
+import com.matejdro.pebblenotificationcenter.appsetting.VibrationPattern;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
@@ -585,7 +586,7 @@ public class NotificationSendingModule extends CommModule
                 (System.currentTimeMillis() - lastVibration) > minInterval * 1000)
         {
             notification.vibrated = true;
-            return AppSetting.parseVibrationPattern(settingStorage);
+            return VibrationPattern.parseVibrationPattern(settingStorage.getString(AppSetting.VIBRATION_PATTERN));
         }
         else
         {

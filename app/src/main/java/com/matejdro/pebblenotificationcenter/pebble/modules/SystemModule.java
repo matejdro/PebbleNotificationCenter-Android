@@ -11,10 +11,13 @@ import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
+import com.matejdro.pebblenotificationcenter.appsetting.VibrationPattern;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -74,7 +77,9 @@ public class SystemModule extends CommModule
         data.addUint8(0, (byte) 0);
         data.addUint8(1, (byte) 0);
 
-        byte[] configBytes = new byte[14];
+        List<Byte> vibrationPattern = VibrationPattern.parseVibrationPattern(getService().getGlobalSettings().getString(PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN, "100"));
+
+        byte[] configBytes = new byte[15 + vibrationPattern.size()];
 
         int timeout = 0;
         try
@@ -143,6 +148,11 @@ public class SystemModule extends CommModule
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.SCROLL_BY_PAGE, false) ? 0x02 : 0);
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.DISPLAY_DISCONNECTED_NOTIFICATION, true) ? 0x04 : 0);
         configBytes[13] = secondFlags;
+
+        configBytes[14] = (byte) vibrationPattern.size();
+        for (int i = 0; i < vibrationPattern.size(); i++)
+            configBytes[15 + i] = vibrationPattern.get(i);
+
 
         data.addBytes(2, configBytes);
 

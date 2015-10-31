@@ -94,7 +94,11 @@
             android:summary="If bluetooth is disconnected while NC is open, display disconnected notification"
             android:defaultValue="true"
             />
-
+        <EditTextPreference
+            android:defaultValue="100"
+            android:key="periodicVibrationPattern"
+            android:summary="Here you can define vibration pattern for periodic vibration. Pattern is in format \'vibrateTime, pauseTime, vibrateTime, pauseTime ...\', where times are in miliseconds. For example  \'100, 200, 300\' will vibrate for 100ms, then wait 200 ms and then again vibrate for 300ms. Limit is 20 total numbers (so 10 vibrations and 10 pauses). Maximum total duration is 10 seconds."
+            android:title="Periodic vibration pattern"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference 

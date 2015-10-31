@@ -95,41 +95,4 @@ public enum AppSetting
     public static final String VIRTUAL_APP_THIRD_PARTY = "com.matejdro.pebblenotificationcenter.virtual.thirdparty";
     public static final String VIRTUAL_APP_TASKER_RECEIVER = "com.matejdro.pebblenotificationcenter.virtual.taskerReceiver";
 
-    public static List<Byte> parseVibrationPattern(AppSettingStorage storage)
-    {
-        String pattern = storage.getString(VIBRATION_PATTERN);
-        String split[] = pattern.split(",");
-
-        List<Byte> bytes = new ArrayList<Byte>(40);
-        int max = Math.min(20, split.length);
-        int total = 0;
-
-        for (int i = 0; i < max; i++)
-        {
-            try
-            {
-                int segment = Integer.parseInt(split[i].trim());
-                segment = Math.min(segment, 10000 - total);
-                total -= segment;
-
-                bytes.add((byte) (segment & 0xFF));
-                bytes.add((byte) ((segment >> 8) & 0xFF));
-
-                if (total >= 10000)
-                    break;
-
-            } catch (NumberFormatException e)
-            {
-            }
-        }
-
-        if (bytes.size() == 0)
-        {
-            bytes.add((byte) 0);
-            bytes.add((byte) 0);
-
-        }
-
-        return bytes;
-    }
 }
