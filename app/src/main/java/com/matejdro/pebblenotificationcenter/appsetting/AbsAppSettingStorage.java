@@ -1,5 +1,7 @@
 package com.matejdro.pebblenotificationcenter.appsetting;
 
+import android.support.annotation.Nullable;
+
 import com.crashlytics.android.core.CrashlyticsCore;
 
 public abstract class AbsAppSettingStorage implements AppSettingStorage
@@ -29,6 +31,9 @@ public abstract class AbsAppSettingStorage implements AppSettingStorage
     @Override
     public void setEnum(AppSetting setting, Enum<?> val)
     {
-        setString(setting, val.name());
+        setStringByKey(setting.getKey(), val.name());
     }
+
+    public abstract @Nullable String getStringByKey(String key);
+    public abstract void setStringByKey(String key, String value);
 }

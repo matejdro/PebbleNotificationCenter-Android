@@ -31,6 +31,13 @@ public class DefaultAppSettingsStorage extends AbsAppSettingStorage
         return preferences.getString(key, null);
     }
 
+    @Override
+    public void setStringByKey(String key, String value)
+    {
+        editor.putString(key, value);
+        editor.apply();
+    }
+
     public String getString(AppSetting setting)
     {
         return preferences.getString(setting.getKey(), (String) setting.getDefault());
@@ -83,6 +90,12 @@ public class DefaultAppSettingsStorage extends AbsAppSettingStorage
     public void setStringList(AppSetting setting, Collection<String> val)
     {
         PreferencesUtil.saveCollection(editor, val, setting.getKey());
+    }
+
+    @Override
+    public void deleteSetting(AppSetting setting)
+    {
+        throw new UnsupportedOperationException();
     }
 
     @Override

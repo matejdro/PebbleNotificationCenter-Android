@@ -3,6 +3,7 @@ package com.matejdro.pebblenotificationcenter.tasker;
 import android.content.Intent;
 import android.os.Bundle;
 import com.matejdro.pebblenotificationcenter.R;
+import com.matejdro.pebblenotificationcenter.appsetting.AbsAppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.ui.perapp.PerAppActivity;
 
@@ -14,12 +15,12 @@ public class TaskerAppSettingsActivity extends PerAppActivity
     private Bundle storage;
 
     @Override
-    public AppSettingStorage initAppSettingStorage()
+    public AbsAppSettingStorage initAppSettingStorage()
     {
         storage = new Bundle();
         loadIntent();
 
-        AppSettingStorage original = super.initAppSettingStorage();
+        AbsAppSettingStorage original = super.initAppSettingStorage();
         return new BundleAppSettingsStorage(original, storage);
     }
 

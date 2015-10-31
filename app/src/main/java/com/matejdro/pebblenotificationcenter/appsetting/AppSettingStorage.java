@@ -10,8 +10,6 @@ import java.util.List;
  */
 public interface AppSettingStorage
 {
-    public @Nullable
-    String getStringByKey(String key);
     public String getString(AppSetting setting);
     public boolean getBoolean(AppSetting setting);
     public int getInt(AppSetting setting);
@@ -23,6 +21,8 @@ public interface AppSettingStorage
     public void setInt(AppSetting setting, int val);
     public void setStringList(AppSetting setting, Collection<String> val);
     public void setEnum(AppSetting setting, Enum<?> val);
+
+    public void deleteSetting(AppSetting setting);
 
     /*
         Returns true if app is Checked (either excluded or included depending on option)

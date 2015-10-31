@@ -40,6 +40,13 @@ public class SharedPreferencesAppStorage extends AbsAppSettingStorage
     }
 
     @Override
+    public void setStringByKey(String key, String value)
+    {
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    @Override
     public String getString(AppSetting setting)
     {
         if (!appConfig.contains(setting.getKey()))
@@ -81,6 +88,12 @@ public class SharedPreferencesAppStorage extends AbsAppSettingStorage
     @Override
     public void setString(AppSetting setting, String val)
     {
+        if (defaultConfig.getString(setting).equals(val))
+        {
+            deleteSetting(setting);
+            return;
+        }
+
         editor.putString(setting.getKey(), val);
         editor.apply();
     }
@@ -88,6 +101,12 @@ public class SharedPreferencesAppStorage extends AbsAppSettingStorage
     @Override
     public void setBoolean(AppSetting setting, boolean val)
     {
+        if (defaultConfig.getBoolean(setting) == val)
+        {
+            deleteSetting(setting);
+            return;
+        }
+
         editor.putBoolean(setting.getKey(), val);
         editor.apply();
     }
@@ -95,6 +114,12 @@ public class SharedPreferencesAppStorage extends AbsAppSettingStorage
     @Override
     public void setInt(AppSetting setting, int val)
     {
+        if (defaultConfig.getInt(setting) == val)
+        {
+            deleteSetting(setting);
+            return;
+        }
+
         editor.putInt(setting.getKey(), val);
         editor.apply();
     }
@@ -102,7 +127,32 @@ public class SharedPreferencesAppStorage extends AbsAppSettingStorage
     @Override
     public void setStringList(AppSetting setting, Collection<String> val)
     {
+        if (defaultConfig.getStringList(setting).equals(val))
+        {
+            deleteSetting(setting);
+            return;
+        }
+
         PreferencesUtil.saveCollection(editor, val, setting.getKey());
+    }
+
+    @Override
+    public void setEnum(AppSetting setting, Enum<?> val)
+    {
+        if (defaultConfig.getEnum(setting) == val)
+        {
+            deleteSetting(setting);
+            return;
+        }
+
+        super.setEnum(setting, val);
+    }
+
+    @Override
+    public void deleteSetting(AppSetting setting)
+    {
+        editor.remove(setting.getKey());
+        editor.apply();
     }
 
     @Override

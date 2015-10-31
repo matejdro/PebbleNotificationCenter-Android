@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.matejdro.pebblecommons.util.ViewUtil;
 import com.matejdro.pebblenotificationcenter.R;
+import com.matejdro.pebblenotificationcenter.appsetting.AbsAppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
@@ -84,9 +85,9 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
 
     }
 
-    protected AppSettingStorage initAppSettingStorage()
+    protected AbsAppSettingStorage initAppSettingStorage()
     {
-        AppSettingStorage settingsStorage = null;
+        AbsAppSettingStorage settingsStorage = null;
 
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor defaultEditor = defaultSharedPreferences.edit();
