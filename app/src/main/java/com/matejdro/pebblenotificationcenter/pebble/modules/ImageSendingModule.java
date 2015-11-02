@@ -94,7 +94,7 @@ public class ImageSendingModule extends CommModule
     public void gotMessageStartSendingImage(PebbleDictionary message)
     {
         PebbleCommunication pebbleCommunication = getService().getPebbleCommunication();
-        if (pebbleCommunication.getConnectedPebblePlatform() != PebbleCommunication.PEBBLE_PLATFORM_BASSALT)
+        if (!pebbleCommunication.getConnectedPebblePlatform().hasColors())
             return;
 
         int notificationID = message.getInteger(2).intValue();
