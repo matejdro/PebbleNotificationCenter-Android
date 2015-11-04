@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
     package="com.matejdro.pebblenotificationcenter"
-    android:versionCode="76"
+    android:versionCode="77"
     android:versionName="2.70" >
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
