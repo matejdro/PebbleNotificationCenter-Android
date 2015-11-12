@@ -48,7 +48,12 @@ public class ImageSendingModule extends CommModule
     {
         Timber.d("SendImagePart %d", nextByteToSend);
 
-        int maxImageFragmentSize = getService().getPebbleCommunication().getMaximumPacketSize() - 1 - 7;
+        //Substract appmessage overhead from maximum packet size
+        // (1 byte for number of entries)
+        // (3 entries  - 3x7 bytes)
+        // (2 additional bytes (for entries 0 and 1))
+        // (1 additional byte for storing size of the image for checksum)
+        int maxImageFragmentSize = getService().getPebbleCommunication().getMaximumPacketSize() - 3 * 7 - 2 - 1 - 1;
 
         int bytesToSend = Math.min(imageData.length - nextByteToSend, maxImageFragmentSize);
         byte[] bytes = new byte[bytesToSend + 1];
