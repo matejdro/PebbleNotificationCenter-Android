@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.matejdro.pebblecommons.messages.MessageTextProviderListener;
 import com.matejdro.pebblecommons.messages.PhoneVoiceProvider;
@@ -209,7 +210,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         return writeItemIndex != -1;
     }
 
-    public ProcessedNotification getNotification(NCTalkerService service)
+    public @Nullable ProcessedNotification getNotification(NCTalkerService service)
     {
         return service.sentNotifications.get(notificationId);
     }

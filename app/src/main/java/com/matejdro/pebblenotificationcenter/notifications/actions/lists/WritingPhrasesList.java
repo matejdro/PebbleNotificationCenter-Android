@@ -34,7 +34,11 @@ public class WritingPhrasesList extends ActionList
 
         phrases.add("Send");
 
-        ArrayList<String> userProvidedPhrases = (ArrayList<String>) action.getNotification(service).source.getSettingStorage(service).getStringList(AppSetting.WRITING_PHRASES);
+        ProcessedNotification notification = action.getNotification(service);
+        if (notification == null)
+            return;
+
+        ArrayList<String> userProvidedPhrases = (ArrayList<String>) notification.source.getSettingStorage(service).getStringList(AppSetting.WRITING_PHRASES);
         if (userProvidedPhrases != null)
         {
             for (String choice : userProvidedPhrases)
