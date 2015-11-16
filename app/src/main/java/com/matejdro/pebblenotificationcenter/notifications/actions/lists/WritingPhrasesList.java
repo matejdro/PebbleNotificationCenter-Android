@@ -51,7 +51,7 @@ public class WritingPhrasesList extends ActionList
 
         if (phrases.size() < NotificationAction.MAX_NUMBER_OF_ACTIONS)
         {
-            for (String cannedResponse : action.getCannedResponseList())
+            for (String cannedResponse : action.getCannedResponses())
             {
                 phrases.add(cannedResponse);
             }
@@ -86,5 +86,13 @@ public class WritingPhrasesList extends ActionList
     public boolean isTertiaryTextList()
     {
         return true;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "WritingPhrasesList{" +
+                "phrases=" + phrases +
+                '}';
     }
 }

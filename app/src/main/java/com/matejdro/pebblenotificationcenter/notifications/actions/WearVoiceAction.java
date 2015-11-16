@@ -42,7 +42,8 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
     private PendingIntent actionIntent;
     private String voiceKey;
     private String[] appProvidedChoices;
-    private List<String> cannedResponseList;
+    private List<String> allReplyOptions;
+    private List<String> cannedResponses;
     private int notificationId;
     private int voiceItemIndex;
     private int timeVoiceItemIndex;
@@ -130,25 +131,26 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         lastUsedService = service;
         notificationId = notification.id;
 
-        cannedResponseList = new ArrayList<String>();
+        cannedResponses = new ArrayList<String>();
+        allReplyOptions = new ArrayList<String>();
 
         if (!nativeMode && notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedPebblePlatform().hasMicrophone())
         {
-            cannedResponseList.add("Time Voice");
-            timeVoiceItemIndex = cannedResponseList.size() - 1;
+            allReplyOptions.add("Time Voice");
+            timeVoiceItemIndex = allReplyOptions.size() - 1;
         }
 
 
         if (notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_VOICE_REPLY))
         {
-            cannedResponseList.add("Phone Voice");
-            voiceItemIndex = cannedResponseList.size() - 1;
+            allReplyOptions.add("Phone Voice");
+            voiceItemIndex = allReplyOptions.size() - 1;
         }
 
         if (!nativeMode && notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_WRITING_REPLY))
         {
-            cannedResponseList.add("Write");
-            writeItemIndex = cannedResponseList.size() - 1;
+            allReplyOptions.add("Write");
+            writeItemIndex = allReplyOptions.size() - 1;
         }
 
         ArrayList<String> userProvidedChoices = (ArrayList<String>) notification.source.getSettingStorage(service).getStringList(AppSetting.CANNED_RESPONSES);
@@ -156,27 +158,35 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         {
             for (String choice : userProvidedChoices)
             {
-                cannedResponseList.add(choice);
-                if (cannedResponseList.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                cannedResponses.add(choice);
+                if (allReplyOptions.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                     break;
             }
         }
 
-        if (cannedResponseList.size() < NotificationAction.MAX_NUMBER_OF_ACTIONS && appProvidedChoices != null)
+        if (allReplyOptions.size() < NotificationAction.MAX_NUMBER_OF_ACTIONS && appProvidedChoices != null)
         {
             for (CharSequence choice : appProvidedChoices)
             {
-                cannedResponseList.add(choice.toString());
-                if (cannedResponseList.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
+                cannedResponses.add(choice.toString());
+                if (allReplyOptions.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                     break;
             }
         }
+
+        allReplyOptions.addAll(cannedResponses);
     }
 
-    public List<String> getCannedResponseList()
+    public List<String> getCannedResponses()
     {
-        return cannedResponseList;
+        return cannedResponses;
     }
+
+    public List<String> getAllReplyOptions()
+    {
+        return allReplyOptions;
+    }
+
 
     public void showVoicePrompt(final NCTalkerService service)
     {
@@ -311,13 +321,13 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         @Override
         public int getNumberOfItems()
         {
-            return cannedResponseList.size();
+            return allReplyOptions.size();
         }
 
         @Override
         public String getItem(int id)
         {
-            return cannedResponseList.get(id);
+            return allReplyOptions.get(id);
         }
 
         @Override
@@ -337,10 +347,10 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
             }
             else
             {
-                if (cannedResponseList.size() <= id)
+                if (allReplyOptions.size() <= id)
                     return false;
 
-                sendReply(cannedResponseList.get(id), service);
+                sendReply(allReplyOptions.get(id), service);
                 return false; //Replying might not dismiss notification which would cause hourglass to stay there. Send false to make sure it disappears.
             }
 

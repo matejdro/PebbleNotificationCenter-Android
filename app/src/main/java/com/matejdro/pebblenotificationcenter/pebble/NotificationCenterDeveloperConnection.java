@@ -120,7 +120,7 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
                         //Responses attribute
                         dataStream.writeByte(8); //Attribute Type = 8 (canned responses)
                         int size = 0;
-                        List<String> responses = voiceAction.getCannedResponseList();
+                        List<String> responses = voiceAction.getAllReplyOptions();
                         for (String response : responses)
                         {
                             size += response.getBytes().length + 1;
@@ -269,7 +269,7 @@ public class NotificationCenterDeveloperConnection extends PebbleDeveloperConnec
                         //Responses attribute
                         dataStream.writeByte(8); //Attribute Type = 8 (canned responses)
                         int size = 0;
-                        List<String> responses = voiceAction.getCannedResponseList();
+                        List<String> responses = voiceAction.getAllReplyOptions();
                         for (String response : responses)
                         {
                             size += response.getBytes().length + 1;
