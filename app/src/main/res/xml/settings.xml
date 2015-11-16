@@ -84,7 +84,7 @@
         <CheckBoxPreference
             android:key="scrollByPage"
             android:title="Scroll page-by-page"
-            android:summary="Scroll page by page instead of line by line. This option is always enabled regardless of the setting on round devices. If you use that feature, it is recommended to turn the scroll shadow off because it can cover text at the beginning of the page."
+            android:summary="Scroll page by page instead of line by line. This option is always enabled regardless of the setting on round devices. If you use that feature, it is recommended to turn the scroll shadow off because it can cover text at the beginning of the page. If your Pebble is running SDK 2, this option might cause text to be cut off in between pages."
             android:defaultValue="false"
             />
 
