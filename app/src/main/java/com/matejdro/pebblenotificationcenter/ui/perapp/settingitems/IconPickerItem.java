@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.PictureDrawable;
 import android.os.AsyncTask;
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -37,6 +38,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * Created by Matej on 19.10.2014.
@@ -325,8 +328,19 @@ public class IconPickerItem extends BaseSettingItem
         {
             if (svg != null)
             {
-                imageView.setImageDrawable(new PictureDrawable(svg.renderToPicture()));
-                svgCache.put(imageName, svg);
+                try
+                {
+                    imageView.setImageDrawable(new PictureDrawable(svg.renderToPicture()));
+                    svgCache.put(imageName, svg);
+
+                }
+                catch (NullPointerException e)
+                {
+                    //renderToPicture() sometimes throws NPE.
+
+                    Timber.e("SVG Error", e);
+                    e.printStackTrace();
+                }
             }
 
             currentlyRetrieving.remove(imageView);
