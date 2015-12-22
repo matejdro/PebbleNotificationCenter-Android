@@ -168,6 +168,9 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         {
             for (CharSequence choice : appProvidedChoices)
             {
+                if (choice == null)
+                    continue;
+                
                 cannedResponses.add(choice.toString());
                 if (allReplyOptions.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                     break;
