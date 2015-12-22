@@ -60,6 +60,9 @@ public class JellybeanNotificationListener extends NotificationListenerService {
             return false;
 
         RankingMap rankingMap = instance.getCurrentRanking();
+        if (rankingMap == null)
+            return false;
+
         Ranking ranking = new Ranking();
         if (!rankingMap.getRanking(key.getLolipopKey(), ranking))
             return false;
