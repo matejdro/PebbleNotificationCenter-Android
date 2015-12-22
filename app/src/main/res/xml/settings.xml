@@ -61,12 +61,6 @@
             android:key="noVibrateCharge"
             android:title="Don&apos;t vibrate when charging" />
 
-
-        <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="invertColors"
-                android:title="Invert colors" />
-
         <CheckBoxPreference
             android:key="showMenuInstantly"
             android:title="Show actions menu instantly"

@@ -132,7 +132,6 @@ public class SystemModule extends CommModule
         flags |= (byte) (NotificationSendingModule.get(getService()).isAnyNotificationWaiting() ? 0x08 : 0);
         flags |= (byte) (backlight ? 0x10 : 0);
         flags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.DONT_VIBRATE_WHEN_CHARGING, true) ? 0x20 : 0);
-        flags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.INVERT_COLORS, false) ? 0x40 : 0);
         flags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false) ? 0x80 : 0);
         flags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.VIBRATION_DISABLED, false) ? 0x01 : 0);
 
