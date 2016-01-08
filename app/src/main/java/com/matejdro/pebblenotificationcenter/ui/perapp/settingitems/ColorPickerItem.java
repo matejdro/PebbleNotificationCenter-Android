@@ -8,12 +8,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.github.danielnilsson9.colorpickerview.dialog.ColorPickerDialogFragment;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.ui.perapp.PerAppActivity;
-
-import afzkl.development.colorpickerview.dialog.ColorPickerDialogFragment;
 
 /**
  * Created by Matej on 19.10.2014.

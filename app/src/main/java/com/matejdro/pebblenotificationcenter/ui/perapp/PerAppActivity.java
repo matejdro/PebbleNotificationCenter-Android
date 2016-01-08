@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.danielnilsson9.colorpickerview.dialog.ColorPickerDialogFragment;
 import com.matejdro.pebblecommons.util.ViewUtil;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AbsAppSettingStorage;
@@ -41,7 +42,6 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.WritingPhras
 import java.util.ArrayList;
 import java.util.List;
 
-import afzkl.development.colorpickerview.dialog.ColorPickerDialogFragment;
 
 /**
  * Created by Matej on 16.9.2014.

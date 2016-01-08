@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="net.dinglisch.android.tasker.PERMISSION_RUN_TASKS" />
 
-    <uses-sdk tools:overrideLibrary="afzkl.development.colorpickerview" />
+    <uses-sdk tools:overrideLibrary="com.github.danielnilsson9.colorpickerview" />
 
     <uses-feature
         android:name="android.hardware.microphone"
