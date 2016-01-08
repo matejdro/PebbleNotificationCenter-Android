@@ -31,7 +31,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.google.guava:guava:18.0'
     provided files('libs/XposedBridgeApi-54.jar')
-    compile 'com.getpebble:pebblekit:3.0.0@aar'
     compile project(':PebbleAndroidCommons')
     compile('com.crashlytics.sdk.android:crashlytics:2.3.2@aar') {
         transitive = true;
