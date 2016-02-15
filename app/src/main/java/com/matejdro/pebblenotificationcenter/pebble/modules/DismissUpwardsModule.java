@@ -50,7 +50,7 @@ public class DismissUpwardsModule extends CommModule
 
     private void sendDismiss(Integer id)
     {
-        Timber.d("Dismissing upwards $d", id);
+        Timber.d("Dismissing upwards %d", id);
 
         PebbleDictionary data = new PebbleDictionary();
 
