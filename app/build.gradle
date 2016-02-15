@@ -39,6 +39,7 @@ dependencies {
 
     compile 'com.caverock:androidsvg:1.2.2-beta-1@aar'
     compile('de.psdev.licensesdialog:licensesdialog:1.8.0')
+    compile 'com.zsoltsafrany:needle:1.0.0'
 }
 
 

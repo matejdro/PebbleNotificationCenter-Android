@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import needle.Needle;
+import needle.UiRelatedTask;
 import timber.log.Timber;
 
 /**
@@ -242,11 +244,11 @@ public class IconPickerItem extends BaseSettingItem
             currentlyRetrieving.add(imageView);
 
             imageView.setImageDrawable(null);
-            new IconRetrievalTask(imageName, imageView).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+            Needle.onBackgroundThread().withThreadPoolSize(10).execute(new IconRetrievalTask(imageName, imageView));
         }
     }
 
-    private class IconRetrievalTask extends AsyncTask<Void, Void, SVG>
+    private class IconRetrievalTask extends UiRelatedTask< SVG>
     {
         private String imageName;
         private ImageView imageView;
@@ -258,7 +260,7 @@ public class IconPickerItem extends BaseSettingItem
         }
 
         @Override
-        protected SVG doInBackground(Void... params)
+        protected SVG doWork()
         {
             File cacheFolder = new File(activity.getCacheDir(), "pebbleicons");
             if (!cacheFolder.exists())
@@ -291,6 +293,7 @@ public class IconPickerItem extends BaseSettingItem
 
             try
             {
+                Timber.d("ConnStart");
                 URL imageLinkUrl = new URL("https://developer.getpebble.com/assets/images/guides/timeline/" + imageName + ".svg");
                 URLConnection connection = imageLinkUrl.openConnection();
 
@@ -299,6 +302,7 @@ public class IconPickerItem extends BaseSettingItem
                 InputStream inputStream = connection.getInputStream();
                 byte[] svgData = ByteStreams.toByteArray(inputStream);
                 inputStream.close();
+                Timber.d("ConnFinish");
 
                 //Some pebble icons have display="none" on the root node for some reason. Lets remove that.
                 String svgString = new String(svgData);
@@ -310,6 +314,7 @@ public class IconPickerItem extends BaseSettingItem
                 FileOutputStream cacheStream = new FileOutputStream(cachedFile);
                 cacheStream.write(svgData);
                 cacheStream.close();
+                Timber.d("ParsedFinish");
 
                 return svg;
             }
@@ -327,7 +332,7 @@ public class IconPickerItem extends BaseSettingItem
         }
 
         @Override
-        protected void onPostExecute(SVG svg)
+        protected void thenDoUiRelatedWork(SVG svg)
         {
             if (svg != null)
             {

@@ -35,4 +35,10 @@
         <url>https://github.com/leonbloy/pngj/</url>
         <license>Apache Software License 2.0</license>
     </notice>
+    <notice>
+        <name>Needle</name>
+        <url>https://github.com/ZsoltSafrany/needle</url>
+        <license>MIT License</license>
+        <copyright>Copyright (c) 2014 Zsolt Safrany</copyright>
+    </notice>
 </notices>
