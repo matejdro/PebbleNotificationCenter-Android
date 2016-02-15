@@ -275,6 +275,9 @@ public class IconPickerItem extends BaseSettingItem
                     SVG svg = SVG.getFromInputStream(fileInputStream);
                     fileInputStream.close();
 
+                    //This will throw exception is SVG has not been loaded properly
+                    svg.getDocumentWidth();
+
                     return svg;
                 }
                 catch (Exception e)
@@ -288,7 +291,7 @@ public class IconPickerItem extends BaseSettingItem
 
             try
             {
-                URL imageLinkUrl = new URL("http://developer.getpebble.com/assets/images/guides/timeline/" + imageName + ".svg");
+                URL imageLinkUrl = new URL("https://developer.getpebble.com/assets/images/guides/timeline/" + imageName + ".svg");
                 URLConnection connection = imageLinkUrl.openConnection();
 
 
