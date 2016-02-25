@@ -602,7 +602,19 @@ public class NotificationSendingModule extends CommModule
         boolean groupNotificationEnabled = settingStorage.getBoolean(AppSetting.USE_WEAR_GROUP_NOTIFICATIONS);
         if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && groupNotificationEnabled)
         {
-            return false; //Don't send summary notifications, we will send group ones instead.
+            //This is summary notification. Only display it if there are no non-summary notifications from the same group already displayed.
+            SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
+            for (int i = 0; i < sentNotifications.size(); i++)
+            {
+                PebbleNotification comparing = sentNotifications.valueAt(i).source;
+                if (comparing.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE && comparing.getKey().getPackage() != null && comparing.getKey().getPackage().equals(notification.getKey().getPackage()) && comparing.getWearGroupKey().equals(notification.getWearGroupKey()))
+                {
+                    Timber.d("group notify failed - summary with existing non-summary notifications");
+                    return false;
+                }
+            }
+
+            //return false; //Don't send summary notifications, we will send group ones instead.
         }
         else if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE && !groupNotificationEnabled)
         {
