@@ -116,6 +116,9 @@ public class NotificationHandler {
         if (settingStorage.getBoolean(AppSetting.SHOW_IMAGE))
             pebbleNotification.setPebbleImage(ImageSendingModule.prepareImage(getImage(notification)));
 
+        if (settingStorage.getBoolean(AppSetting.USE_PROVIDED_VIBRATION))
+            pebbleNotification.setForcedVibrationPattern(notification.vibrate);
+
         ActionParser.loadActions(notification, pebbleNotification, context);
 
         return pebbleNotification;

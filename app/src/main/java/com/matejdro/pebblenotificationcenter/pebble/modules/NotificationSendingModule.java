@@ -586,7 +586,11 @@ public class NotificationSendingModule extends CommModule
                 (System.currentTimeMillis() - lastVibration) > minInterval * 1000)
         {
             notification.vibrated = true;
-            return VibrationPattern.parseVibrationPattern(settingStorage.getString(AppSetting.VIBRATION_PATTERN));
+
+            long[] forcedVibrationPattern = notification.source.getForcedVibrationPattern();
+            if (forcedVibrationPattern == null)
+                return VibrationPattern.parseVibrationPattern(settingStorage.getString(AppSetting.VIBRATION_PATTERN));
+            return VibrationPattern.getFromAndroidVibrationPattern(forcedVibrationPattern);
         }
         else
         {

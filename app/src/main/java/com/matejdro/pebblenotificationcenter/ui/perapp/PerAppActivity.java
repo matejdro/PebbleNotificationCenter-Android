@@ -175,6 +175,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         //Vibration
         category = new ArrayList<BaseSettingItem>();
         category.add(new VibrationPatternItem(settingsStorage, R.string.settingVibrationPattern, R.string.settingVibrationPatternDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.USE_PROVIDED_VIBRATION, R.string.settingUseProvidedVibration, R.string.settingUseProvidedVibrationDescription));
         category.add(new EditTextItem(settingsStorage, AppSetting.PERIODIC_VIBRATION, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingPeriodicVibration, R.string.settingPeriodicVibrationDescription));
         category.add(new EditTextItem(settingsStorage, AppSetting.MINIMUM_VIBRATION_INTERVAL, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingMinimumVibrationInterval, R.string.settingMinimumVibrationIntervalDescription));
         category.add(new EditTextItem(settingsStorage, AppSetting.MINIMUM_NOTIFICATION_INTERVAL, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingMinimumNotificationInterval, R.string.settingMinimumNotificationIntervalDescription));

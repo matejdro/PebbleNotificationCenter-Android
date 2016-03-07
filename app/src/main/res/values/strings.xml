@@ -298,6 +298,12 @@
         format \'vibrateTime, pauseTime, vibrateTime, pauseTime ...\', where times are in miliseconds. For example
         \'100, 200, 300\' will vibrate for 100ms, then wait 200 ms and then again vibrate for 300ms. Limit is 20 total numbers (so 10 vibrations and 10 pauses). Maximum total duration is 10 seconds. If you want to disable vibration, just enter 0. Only works on watchapp notifications.
     </string>
+    <string name="settingUseProvidedVibration">Use vibration pattern provided by notification</string>
+    <string name="settingUseProvidedVibrationDescription">Sometemes notifications provide their own notification pattern.
+        By checking this, if notification has its own pattern, it will override one set above.
+        This is especially useful if your app can provide different patterns for different notification or even has advanced options like linking vibration pattern to different contacts.
+        Only works on watchapp notifications.</string>
+
     <string name="settingPeriodicVibration">Periodic Vibration</string>
     <string name="settingPeriodicVibrationDescription">After initial vibration, Pebble will also vibrate every few
         seconds to remind you notification is there in case you did not felt it first time or you were busy. Here you

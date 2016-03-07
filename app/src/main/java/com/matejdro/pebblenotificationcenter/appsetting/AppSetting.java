@@ -65,6 +65,7 @@ public enum AppSetting
     INTENT_ACTIONS_NAMES("intentActionsNames", null),
     INTENT_ACTIONS_ACTIONS("intentActionsActions", null),
     VIBRATION_PATTERN("vibrationPattern", "500"),
+    USE_PROVIDED_VIBRATION("useProvidedVibration", false),
     PERIODIC_VIBRATION("settingPeriodicVibration", "20"),
     MINIMUM_VIBRATION_INTERVAL("minimumVibrationInterval", "0"),
     MINIMUM_NOTIFICATION_INTERVAL("minimumNotificationInterval", "0"),

@@ -38,6 +38,7 @@ public class PebbleNotification implements Parcelable
     private int color;
     private byte[] pebbleImage;
     private NativeNotificationIcon nativeNotificationIcon;
+    private long[] forcedVibrationPattern;
 
     public static final int WEAR_GROUP_TYPE_DISABLED = 0;
     public static final int WEAR_GROUP_TYPE_GROUP_MESSAGE = 1;
@@ -59,6 +60,7 @@ public class PebbleNotification implements Parcelable
         listNotification = false;
         scrollToEnd = false;
         hidingTextDisallowed = false;
+        forcedVibrationPattern = null;
         color = Color.TRANSPARENT;
 
         wearGroupType = WEAR_GROUP_TYPE_DISABLED;
@@ -264,6 +266,16 @@ public class PebbleNotification implements Parcelable
         this.nativeNotificationIcon = nativeNotificationIcon;
     }
 
+    public long[] getForcedVibrationPattern()
+    {
+        return forcedVibrationPattern;
+    }
+
+    public void setForcedVibrationPattern(long[] forcedVibrationPattern)
+    {
+        this.forcedVibrationPattern = forcedVibrationPattern;
+    }
+
     public boolean isInSameGroup(PebbleNotification comparing)
     {
         if (getWearGroupType() == WEAR_GROUP_TYPE_DISABLED || comparing.getWearGroupType() == WEAR_GROUP_TYPE_DISABLED)
@@ -311,6 +323,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeInt(color);
         parcel.writeValue(pebbleImage);
         parcel.writeValue(nativeNotificationIcon);
+        parcel.writeValue(forcedVibrationPattern);
     }
 
     public static final Creator<PebbleNotification> CREATOR = new Creator<PebbleNotification>()
@@ -339,6 +352,7 @@ public class PebbleNotification implements Parcelable
             notification.color = parcel.readInt();
             notification.pebbleImage = (byte[]) parcel.readValue(getClass().getClassLoader());
             notification.nativeNotificationIcon = (NativeNotificationIcon) parcel.readValue(getClass().getClassLoader());
+            notification.forcedVibrationPattern = (long[]) parcel.readValue(getClass().getClassLoader());
 
             return notification;
         }
