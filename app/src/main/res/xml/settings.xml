@@ -60,7 +60,11 @@
             android:defaultValue="true"
             android:key="noVibrateCharge"
             android:title="Don&apos;t vibrate when charging" />
-
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="whiteNotificationText"
+            android:title="White notification text"
+            android:summary="Display white notification text with black background"/>
         <CheckBoxPreference
             android:key="showMenuInstantly"
             android:title="Show actions menu instantly"
