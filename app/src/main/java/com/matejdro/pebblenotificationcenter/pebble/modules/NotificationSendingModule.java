@@ -635,8 +635,6 @@ public class NotificationSendingModule extends CommModule
                     return false;
                 }
             }
-
-            //return false; //Don't send summary notifications, we will send group ones instead.
         }
         else if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE && !groupNotificationEnabled)
         {
