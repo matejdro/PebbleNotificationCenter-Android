@@ -246,6 +246,8 @@ public class NotificationSendingModule extends CommModule
         if (settingStorage.getBoolean(AppSetting.NO_UPDATE_VIBRATION))
             notification.prevId = lastDismissedID;
 
+        DismissUpwardsModule.get(getService()).dismissSimilarWearNotifications(notification, false);
+
         if (settingStorage.getBoolean(AppSetting.HIDE_NOTIFICATION_TEXT) && !notificationSource.isListNotification() && !notificationSource.isHidingTextDisallowed())
             sendNotificationAsPrivate(notification);
         else
@@ -548,11 +550,27 @@ public class NotificationSendingModule extends CommModule
     @Override
     public void gotIntent(Intent intent)
     {
-        PebbleNotification notification = intent.getParcelableExtra("notification");
+        final PebbleNotification notification = intent.getParcelableExtra("notification");
         if (notification == null)
             return;
 
-        processNotification(notification);
+        // Process summary notifications 500ms later than others to make sure
+        // any non-summary notifications can get processed first
+        if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+        {
+            getService().runOnMainThreadDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    processNotification(notification);
+                }
+            }, 500);
+        }
+        else
+        {
+            processNotification(notification);
+        }
     }
 
     @Override

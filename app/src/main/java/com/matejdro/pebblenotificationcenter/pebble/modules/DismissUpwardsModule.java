@@ -119,7 +119,7 @@ public class DismissUpwardsModule extends CommModule
      */
     public int processDismissUpwards(NotificationKey key, boolean dismissImmediately)
     {
-        Timber.d("got dismiss: %s", key);
+        Timber.d("got dismiss: %s %b", key, dismissImmediately);
 
         if (key == null || key.getAndroidId() == null)
             return 0;
@@ -133,6 +133,8 @@ public class DismissUpwardsModule extends CommModule
             settingsStorage = new SharedPreferencesAppStorage(getService(), key.getPackage(), NCTalkerService.fromPebbleTalkerService(getService()).getDefaultSettingsStorage());
 
         boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
+        Timber.d("SyncDismissUp: %b", syncDismissUp);
+
         if (!syncDismissUp)
             return 0;
 
@@ -142,14 +144,17 @@ public class DismissUpwardsModule extends CommModule
         {
             ProcessedNotification notification = sentNotifications.valueAt(i);
 
+            Timber.d("OtherNotify: %b %s %d", notification.source.isListNotification(), notification.source.getKey(), notification.source.getWearGroupType());
+
             if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
             {
                 prevNotification = notification.id;
 
+                dismissSimilarWearNotifications(notification, dismissImmediately);
+
                 if (dismissImmediately)
                 {
                     dismissUpwards(notification);
-                    dismissSimilarWearNotifications(notification);
                     i--;
                 }
                 else
@@ -165,21 +170,30 @@ public class DismissUpwardsModule extends CommModule
     /**
      * Also dismiss related group messages from this notification (some apps have trouble with dismissing to side channel directly)
      */
-    public void dismissSimilarWearNotifications(ProcessedNotification notification)
+    public void dismissSimilarWearNotifications(ProcessedNotification notification, boolean dismissImmediately)
     {
+        Timber.d("DismissSimilarWear %s %s %s", notification.source.getKey(), notification.source.getWearGroupType(), notification.source.getWearGroupKey());
+        SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 
-        if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+        for (int i = 0; i < sentNotifications.size(); i++)
         {
-            SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
+            ProcessedNotification compare = sentNotifications.valueAt(i);
 
-            for (int i = 0; i < sentNotifications.size(); i++)
+            Timber.d("Other %s %s %s", compare.source.getKey(), compare.source.getWearGroupType(), compare.source.getWearGroupKey());
+
+            //Group message should not dismiss other group messages, but summary can dismiss all group messages and messages can dismiss all summaries
+            if (notification.source.isInSameGroup(compare.source) && notification.source.getWearGroupType() != compare.source.getWearGroupType())
             {
-                ProcessedNotification compare = sentNotifications.valueAt(i);
-
-                if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
+                Timber.d("Dismissing %b", dismissImmediately);
+                if (dismissImmediately)
                 {
                     dismissNotification(getService(), compare.source.getKey());
                 }
+                else
+                {
+                    dismissProcessedNotification(getService(), compare.id);
+                }
+
             }
         }
     }
