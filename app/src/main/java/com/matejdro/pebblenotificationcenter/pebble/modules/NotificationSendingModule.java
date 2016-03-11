@@ -231,7 +231,9 @@ public class NotificationSendingModule extends CommModule
         Random rnd = new Random();
         do
         {
-            notification.id = rnd.nextInt();
+            //Notifications 0-9 are special reserved
+            //(only 0 = BT disconnected notification used for now)
+            notification.id = rnd.nextInt(Integer.MAX_VALUE - 10) + 10;
         }
         while (sentNotifications.get(notification.id) != null);
 
