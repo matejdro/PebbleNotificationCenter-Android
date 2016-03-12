@@ -120,7 +120,7 @@ Phone --> Pebble
 		Packet 0 - New notification packet
 		Phone sends it to display notification.
 		Additional data:
-			2 = Unique notification id (int32)
+			2 = Unique notification id (int32) - must be >= 10 (ids 0-9 are reserved)
 			3 = Config/meta bytes - byte array
 				[0] = Flags
 					Second bit (0x02) = Notification type (1 = from history, 0 = live)
