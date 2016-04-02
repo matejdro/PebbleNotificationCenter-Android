@@ -272,6 +272,8 @@ public class NotificationSendingModule extends CommModule
         coverNotification.setSubtitle("Hidden notification");
         coverNotification.setHidingTextDisallowed(true);
         coverNotification.setNoHistory(true);
+        coverNotification.setWearGroupKey(notification.source.getWearGroupKey());
+        coverNotification.setWearGroupType(notification.source.getWearGroupType());
 
         ArrayList<NotificationAction> actions = new ArrayList<>();
         actions.add(new ReplaceNotificationAction("Show", notification));
