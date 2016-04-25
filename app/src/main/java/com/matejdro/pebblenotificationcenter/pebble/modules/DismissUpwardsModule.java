@@ -173,6 +173,10 @@ public class DismissUpwardsModule extends CommModule
     public void dismissSimilarWearNotifications(ProcessedNotification notification, boolean dismissImmediately)
     {
         Timber.d("DismissSimilarWear %s %s %s", notification.source.getKey(), notification.source.getWearGroupType(), notification.source.getWearGroupKey());
+
+        if (notification.source.getWearGroupType() != PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
+            return;
+
         SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 
         for (int i = 0; i < sentNotifications.size(); i++)
@@ -181,8 +185,8 @@ public class DismissUpwardsModule extends CommModule
 
             Timber.d("Other %s %s %s", compare.source.getKey(), compare.source.getWearGroupType(), compare.source.getWearGroupKey());
 
-            //Group message should not dismiss other group messages, but summary can dismiss all group messages and messages can dismiss all summaries
-            if (notification.source.isInSameGroup(compare.source) && notification.source.getWearGroupType() != compare.source.getWearGroupType())
+            //Group message should not dismiss other group messages, but summary can dismiss all group messages
+            if (notification.source.isInSameGroup(compare.source))
             {
                 Timber.d("Dismissing %b", dismissImmediately);
                 if (dismissImmediately)

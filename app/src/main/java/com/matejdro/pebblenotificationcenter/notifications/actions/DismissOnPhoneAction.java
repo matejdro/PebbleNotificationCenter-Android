@@ -36,21 +36,6 @@ public class DismissOnPhoneAction extends NotificationAction
     {
         DismissUpwardsModule.dismissPebbleID(service, notification.id);
 
-        //Group messages can't be dismissed (they are not even displayed), so I should find relevat message in actual notification tray
-        if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE)
-        {
-            for (int i = 0; i < service.sentNotifications.size(); i++)
-            {
-                ProcessedNotification compare = service.sentNotifications.valueAt(i);
-
-                if (notification.source.isInSameGroup(compare.source) && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
-                {
-                    notification = compare;
-                    break;
-                }
-            }
-        }
-
         if (!notification.source.isDismissable() || notification.source.getKey().getAndroidId() == null)
             return;
 
