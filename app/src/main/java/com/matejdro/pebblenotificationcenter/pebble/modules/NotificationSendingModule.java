@@ -64,6 +64,120 @@ public class NotificationSendingModule extends CommModule
         service.registerIntent(INTENT_NOTIFICATION, this);
     }
 
+    private FilteringResult shouldFilterNotification(PebbleNotification notificationSource)
+    {
+        AppSettingStorage settingStorage = notificationSource.getSettingStorage(getService());
+
+        String combinedText = notificationSource.getTitle() + "\n" + notificationSource.getSubtitle() + "\n" + notificationSource.getText();
+        Timber.d("CombinedText: %s", combinedText);
+        List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
+        if (regexList.size() > 0 && !TextUtil.containsRegexes(combinedText, regexList))
+        {
+            Timber.d("notify failed - whitelist regex");
+            return FilteringResult.ONLY_KEEP_TEMPORARY;
+        }
+
+        regexList = settingStorage.getStringList(AppSetting.EXCLUDED_REGEX);
+        if (TextUtil.containsRegexes(combinedText, regexList))
+        {
+            Timber.d("notify failed - blacklist regex");
+            return FilteringResult.ONLY_KEEP_TEMPORARY;
+        }
+
+        if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
+            if (notificationSource.getText().trim().isEmpty() && (notificationSource.getSubtitle() == null || notificationSource.getSubtitle().trim().isEmpty())) {
+                Timber.d("notify failed - empty");
+                return FilteringResult.IGNORE;
+            }
+        }
+
+
+        if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
+            return FilteringResult.ONLY_SAVE_TO_HISTORY;
+
+        if (settingStorage.getBoolean(AppSetting.DISABLE_NOTIFY_SCREEN_OIN))
+        {
+            if (DeviceUtil.isScreenOn(getService()))
+            {
+                Timber.d("notify failed - screen is on");
+                return FilteringResult.ONLY_SAVE_TO_HISTORY;
+            }
+        }
+
+        if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.NO_NOTIFY_VIBRATE, false))
+        {
+            AudioManager am = (AudioManager) getService().getSystemService(Context.AUDIO_SERVICE);
+            if (am.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
+            {
+                Timber.d("notify failed - ringer is silent");
+                return FilteringResult.ONLY_SAVE_TO_HISTORY;
+            }
+
+        }
+
+        if (settingStorage.getBoolean(AppSetting.QUIET_TIME_ENABLED))
+        {
+            int startHour = settingStorage.getInt(AppSetting.QUIET_TIME_START_HOUR);
+            int startMinute = settingStorage.getInt(AppSetting.QUIET_TIME_START_MINUTE);
+            int startTime = startHour * 60 + startMinute;
+
+            int endHour = settingStorage.getInt(AppSetting.QUIET_TIME_END_HOUR);
+            int endMinute = settingStorage.getInt(AppSetting.QUIET_TIME_END_MINUTE);
+            int endTime = endHour * 60 + endMinute;
+
+            Calendar calendar = Calendar.getInstance();
+            int curHour = calendar.get(Calendar.HOUR_OF_DAY);
+            int curMinute = calendar.get(Calendar.MINUTE);
+            int curTime = curHour * 60 + curMinute;
+
+
+            if ((endTime > startTime && curTime <= endTime && curTime >= startTime) || (endTime < startTime && (curTime <= endTime || curTime >= startTime)))
+            {
+                Timber.d("notify failed - quiet time");
+                return FilteringResult.ONLY_SAVE_TO_HISTORY;
+            }
+        }
+
+        if (getService().getGlobalSettings().getBoolean("noNotificationsNoPebble", false) && !isWatchConnected(getService()))
+        {
+            Timber.d("notify failed - watch not connected");
+            return FilteringResult.ONLY_SAVE_TO_HISTORY;
+        }
+
+        if (settingStorage.getBoolean(AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER) && JellybeanNotificationListener.isNotificationFilteredByDoNotInterrupt(notificationSource.getKey()))
+        {
+            Timber.d("notify failed - interrupt filter");
+            return FilteringResult.ONLY_SAVE_TO_HISTORY;
+        }
+
+        int minNotificationInterval = 0;
+        try
+        {
+            minNotificationInterval = Integer.parseInt(settingStorage.getString(AppSetting.MINIMUM_NOTIFICATION_INTERVAL));
+        }
+        catch (NumberFormatException e)
+        {
+        }
+
+        if (minNotificationInterval > 0) {
+            Long lastNotification = lastAppNotification.get(notificationSource.getKey().getPackage());
+            if (lastNotification != null) {
+                if ((System.currentTimeMillis() - lastNotification) < minNotificationInterval * 1000) {
+                    Timber.d("notification ignored - minimum interval not passed!");
+                    return FilteringResult.ONLY_SAVE_TO_HISTORY;
+                }
+            }
+        }
+
+        if (!canDisplayWearGroupNotification(notificationSource, settingStorage))
+        {
+            Timber.d("notify failed - group");
+            return FilteringResult.ONLY_KEEP_TEMPORARY;
+        }
+
+        return FilteringResult.SEND;
+    }
+
     public void processNotification(PebbleNotification notificationSource)
     {
         Timber.d("notify internal");
@@ -111,112 +225,21 @@ public class NotificationSendingModule extends CommModule
             notificationSource.setSubtitle("");
 
 
+
+        FilteringResult filteringResult = FilteringResult.SEND;
         if (!notificationSource.isListNotification())
+            filteringResult = shouldFilterNotification(notificationSource);
+
+        if ((filteringResult == FilteringResult.SEND || filteringResult == FilteringResult.ONLY_SAVE_TO_HISTORY) &&
+                !notificationSource.isHistoryDisabled() &&
+                settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY))
         {
-            String combinedText = notificationSource.getTitle() + "\n" + notificationSource.getSubtitle() + "\n" + notificationSource.getText();
-            List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
-            if (regexList.size() > 0 && !TextUtil.containsRegexes(combinedText, regexList))
-                return;
-
-            regexList = settingStorage.getStringList(AppSetting.EXCLUDED_REGEX);
-            if (TextUtil.containsRegexes(combinedText, regexList))
-                return;
-
-            if (!notificationSource.isHistoryDisabled() &&
-                    settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY) &&
-                    canDisplayWearGroupNotification(notification.source, settingStorage))
-            {
-                NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(), TextUtil.trimString(notificationSource.getTitle(), 4000, true), TextUtil.trimString(notificationSource.getSubtitle(), 4000, true), TextUtil.trimString(notificationSource.getText(), 4000, true));
-            }
+            NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(), TextUtil.trimString(notificationSource.getTitle(), 4000, true), TextUtil.trimString(notificationSource.getSubtitle(), 4000, true), TextUtil.trimString(notificationSource.getText(), 4000, true));
         }
 
-        if (!notificationSource.isListNotification())
-        {
-            if (!settingStorage.getBoolean(AppSetting.SEND_BLANK_NOTIFICATIONS)) {
-                if (notificationSource.getText().trim().isEmpty() && (notificationSource.getSubtitle() == null || notificationSource.getSubtitle().trim().isEmpty())) {
-                    Timber.d("Discarding notification because it is empty");
-                    return;
-                }
-            }
 
-
-            if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.NOTIFICATIONS_DISABLED, false))
-                return;
-
-            if (settingStorage.getBoolean(AppSetting.DISABLE_NOTIFY_SCREEN_OIN))
-            {
-                if (DeviceUtil.isScreenOn(getService()))
-                {
-                    Timber.d("notify failed - screen is on");
-                    return;
-                }
-            }
-
-            if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.NO_NOTIFY_VIBRATE, false))
-            {
-                AudioManager am = (AudioManager) getService().getSystemService(Context.AUDIO_SERVICE);
-                if (am.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
-                {
-                    Timber.d("notify failed - ringer is silent");
-                    return;
-                }
-
-            }
-
-            if (settingStorage.getBoolean(AppSetting.QUIET_TIME_ENABLED))
-            {
-                int startHour = settingStorage.getInt(AppSetting.QUIET_TIME_START_HOUR);
-                int startMinute = settingStorage.getInt(AppSetting.QUIET_TIME_START_MINUTE);
-                int startTime = startHour * 60 + startMinute;
-
-                int endHour = settingStorage.getInt(AppSetting.QUIET_TIME_END_HOUR);
-                int endMinute = settingStorage.getInt(AppSetting.QUIET_TIME_END_MINUTE);
-                int endTime = endHour * 60 + endMinute;
-
-                Calendar calendar = Calendar.getInstance();
-                int curHour = calendar.get(Calendar.HOUR_OF_DAY);
-                int curMinute = calendar.get(Calendar.MINUTE);
-                int curTime = curHour * 60 + curMinute;
-
-
-                if ((endTime > startTime && curTime <= endTime && curTime >= startTime) || (endTime < startTime && (curTime <= endTime || curTime >= startTime)))
-                {
-                    Timber.d("notify failed - quiet time");
-                    return;
-                }
-            }
-
-            if (getService().getGlobalSettings().getBoolean("noNotificationsNoPebble", false) && !isWatchConnected(getService()))
-            {
-                Timber.d("notify failed - watch not connected");
-                return;
-            }
-
-            if (settingStorage.getBoolean(AppSetting.RESPECT_ANDROID_INTERRUPT_FILTER) && JellybeanNotificationListener.isNotificationFilteredByDoNotInterrupt(notificationSource.getKey()))
-            {
-                Timber.d("notify failed - interrupt filter");
-                return;
-            }
-
-            int minNotificationInterval = 0;
-            try
-            {
-                minNotificationInterval = Integer.parseInt(settingStorage.getString(AppSetting.MINIMUM_NOTIFICATION_INTERVAL));
-            }
-            catch (NumberFormatException e)
-            {
-            }
-
-            if (minNotificationInterval > 0) {
-                Long lastNotification = lastAppNotification.get(notification.source.getKey().getPackage());
-                if (lastNotification != null) {
-                    if ((System.currentTimeMillis() - lastNotification) < minNotificationInterval * 1000) {
-                        Timber.d("notification ignored - minimum interval not passed!");
-                        return;
-                    }
-                }
-            }
-        }
+        if (filteringResult != FilteringResult.SEND && filteringResult != FilteringResult.ONLY_KEEP_TEMPORARY)
+            return;
 
         int colorFromConfig = settingStorage.getInt(AppSetting.STATUSBAR_COLOR);
         if (Color.alpha(colorFromConfig) != 0)
@@ -237,10 +260,12 @@ public class NotificationSendingModule extends CommModule
         }
         while (sentNotifications.get(notification.id) != null);
 
-        if (!notification.source.isListNotification() && !canDisplayWearGroupNotification(notification.source, settingStorage))
+        if (filteringResult == FilteringResult.ONLY_KEEP_TEMPORARY)
         {
+            // Sometimes notifications should be filtered out to not be displayed on the pebble,
+            // but they need to be keep in as if they were sent to prevent other wear group notifications
+            // on replacing them
             sentNotifications.put(notification.id, notification);
-            Timber.d("notify failed - group");
             return;
         }
 
@@ -731,5 +756,13 @@ public class NotificationSendingModule extends CommModule
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private enum FilteringResult
+    {
+        SEND,
+        ONLY_SAVE_TO_HISTORY,
+        ONLY_KEEP_TEMPORARY,
+        IGNORE
     }
 }
