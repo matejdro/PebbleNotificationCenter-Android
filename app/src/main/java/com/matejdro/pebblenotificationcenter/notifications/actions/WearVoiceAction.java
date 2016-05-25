@@ -134,7 +134,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
         cannedResponses = new ArrayList<String>();
         allReplyOptions = new ArrayList<String>();
 
-        if (!nativeMode && notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedPebblePlatform().hasMicrophone())
+        if (!nativeMode && notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedWatchCapabilities().hasMicrophone())
         {
             allReplyOptions.add("Time Voice");
             timeVoiceItemIndex = allReplyOptions.size() - 1;

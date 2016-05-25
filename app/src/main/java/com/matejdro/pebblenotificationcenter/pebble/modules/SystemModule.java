@@ -224,13 +224,8 @@ public class SystemModule extends CommModule
                 }
             };
 
-            int pebblePlatform = message.getUnsignedIntegerAsLong(3).intValue();
-            getService().getPebbleCommunication().setConnectedPebblePlatform(pebblePlatform);
-            Timber.d("Pebble Platform: %d", pebblePlatform);
-
-            int maxMessageSize = message.getUnsignedIntegerAsLong(4).intValue();
-            getService().getPebbleCommunication().setMaximumPacketSize(maxMessageSize);
-
+            int pebbleCapabilities = message.getUnsignedIntegerAsLong(3).intValue();
+            getService().getPebbleCommunication().setConnectedWatchCapabilities(pebbleCapabilities);
 
             SparseArray<CommModule> modules = getService().getAllModules();
             for (int i = 0 ; i < modules.size(); i++)

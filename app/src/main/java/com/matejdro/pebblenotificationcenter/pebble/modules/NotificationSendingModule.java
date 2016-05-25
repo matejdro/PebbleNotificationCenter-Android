@@ -479,7 +479,7 @@ public class NotificationSendingModule extends CommModule
         configBytes[8] = (byte) settingStorage.getInt(AppSetting.SUBTITLE_FONT);
         configBytes[9] = (byte) settingStorage.getInt(AppSetting.BOCY_FONT);
 
-        if (getService().getPebbleCommunication().getConnectedPebblePlatform().hasColors())
+        if (getService().getPebbleCommunication().getConnectedWatchCapabilities().hasColorScreen())
         {
             int color = curSendingNotification.source.getColor();
             if (color == Color.TRANSPARENT)

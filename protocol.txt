@@ -8,8 +8,13 @@ Pebble --> Phone
 		Sent from Pebble when app is opened. Phone should respond to  that by sending config.
 		Additional data:
 			2 = Watchapp version - uint16
-            3 = Platform (0 = Aplite, 1 = Basalt) - uint8
-            4 = Maximum appmessage size to the Pebble in bytes - uint32
+            3 = Watch capabilities - uint32
+			 Bit 0 (0x01) - Does watch have microphone
+			 Bit 1 (0x02) - Does watch have color screen
+			 Bit 2 (0x04) - Does watch have round screen
+			 Bit 3 (0x08) - Does watch support smartstraps
+			 Bit 4 (0x10) - Does watch support Pebble Health
+			 Bits 15-31 - Unsigned 16-bit integer representing number of maximum bytes that can fit into one appmessage
 
 		Packet 1 - Menu picked
 		Sent when user picks entry in main menu

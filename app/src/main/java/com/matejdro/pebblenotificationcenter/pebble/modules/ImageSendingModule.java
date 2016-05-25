@@ -53,7 +53,7 @@ public class ImageSendingModule extends CommModule
         // (3 entries  - 3x7 bytes)
         // (2 additional bytes (for entries 0 and 1))
         // (1 additional byte for storing size of the image for checksum)
-        int maxImageFragmentSize = getService().getPebbleCommunication().getMaximumPacketSize() - 3 * 7 - 2 - 1 - 1;
+        int maxImageFragmentSize = getService().getPebbleCommunication().getConnectedWatchCapabilities().getMaxAppmessageSize() - 3 * 7 - 2 - 1 - 1;
 
         int bytesToSend = Math.min(imageData.length - nextByteToSend, maxImageFragmentSize);
         byte[] bytes = new byte[bytesToSend + 1];
@@ -99,7 +99,7 @@ public class ImageSendingModule extends CommModule
     public void gotMessageStartSendingImage(PebbleDictionary message)
     {
         PebbleCommunication pebbleCommunication = getService().getPebbleCommunication();
-        if (!pebbleCommunication.getConnectedPebblePlatform().hasColors())
+        if (!pebbleCommunication.getConnectedWatchCapabilities().hasColorScreen())
             return;
 
         int notificationID = message.getInteger(2).intValue();
