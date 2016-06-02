@@ -42,4 +42,18 @@ dependencies {
     compile 'com.zsoltsafrany:needle:1.0.0'
 }
 
+allprojects {
+    afterEvaluate { project ->
+        def keystoreProperties = rootProject.file('keystore.properties')
+        def debugConfig = 'debug'
 
+        if (keystoreProperties.exists() && android.signingConfigs.hasProperty(debugConfig)) {
+            def props = new Properties()
+            props.load(new FileInputStream(keystoreProperties))
+            android.signingConfigs[debugConfig].storeFile = file(props['storeFile'])
+            android.signingConfigs[debugConfig].storePassword = props['storePassword']
+            android.signingConfigs[debugConfig].keyAlias = props['keyAlias']
+            android.signingConfigs[debugConfig].keyPassword = props['keyPassword']
+        }
+    }
+}
