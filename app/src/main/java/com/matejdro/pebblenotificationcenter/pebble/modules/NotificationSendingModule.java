@@ -69,7 +69,6 @@ public class NotificationSendingModule extends CommModule
         AppSettingStorage settingStorage = notificationSource.getSettingStorage(getService());
 
         String combinedText = notificationSource.getTitle() + "\n" + notificationSource.getSubtitle() + "\n" + notificationSource.getText();
-        Timber.d("CombinedText: %s", combinedText);
         List<String> regexList = settingStorage.getStringList(AppSetting.INCLUDED_REGEX);
         if (regexList.size() > 0 && !TextUtil.containsRegexes(combinedText, regexList))
         {
