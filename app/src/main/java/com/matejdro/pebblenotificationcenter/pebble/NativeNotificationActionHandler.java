@@ -98,7 +98,7 @@ public class NativeNotificationActionHandler
         }
     }
 
-    private boolean handle(int notificationId, int actionId, String replyText)
+    private boolean handle(int notificationId, int actionId, final String replyText)
     {
         Timber.d("native action %d %d %s %b", notificationId, actionId, replyText, PebbleNotificationCenter.isXposedModuleRunning());
 
@@ -109,32 +109,39 @@ public class NativeNotificationActionHandler
         if (notification.source.getActions().size() <= actionId)
             return false;
 
-        NotificationAction action = notification.source.getActions().get(actionId);
+        final NotificationAction action = notification.source.getActions().get(actionId);
 
-        //noinspection StatementWithEmptyBody
-        if (action instanceof DismissOnPebbleAction)
+        service.getHandler().post(new Runnable()
         {
-            //Do nothing, any action from Pebble already dismisses notification.
-        }
-        else if (action instanceof WearVoiceAction)
-        {
-            if (replyText == null)
-                return false;
+            @Override
+            public void run()
+            {
+                //noinspection StatementWithEmptyBody
+                if (action instanceof DismissOnPebbleAction)
+                {
+                    //Do nothing, any action from Pebble already dismisses notification.
+                }
+                else if (action instanceof WearVoiceAction)
+                {
+                    if (replyText == null)
+                        return;
 
-            WearVoiceAction voiceAction = (WearVoiceAction) action;
-            if (voiceAction.containsVoiceOption() && replyText.equals("Phone Voice"))
-            {
-                voiceAction.showVoicePrompt(service);
+                    WearVoiceAction voiceAction = (WearVoiceAction) action;
+                    if (voiceAction.containsVoiceOption() && replyText.equals("Phone Voice"))
+                    {
+                        voiceAction.showVoicePrompt(service);
+                    }
+                    else
+                    {
+                        voiceAction.sendReply(replyText, service);
+                    }
+                }
+                else
+                {
+                    action.executeAction(service, notification);
+                }
             }
-            else
-            {
-                voiceAction.sendReply(replyText, service);
-            }
-        }
-        else
-        {
-            action.executeAction(service, notification);
-        }
+        });
 
         return true;
     }
