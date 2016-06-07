@@ -1,7 +1,10 @@
 package com.matejdro.pebblenotificationcenter.xposed;
 
+import android.content.Context;
+
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 
+import java.util.Map;
 import java.util.UUID;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -78,15 +81,13 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 
     private void hookPebbleTimeApp(final XC_LoadPackage.LoadPackageParam lpparam)
     {
-		Class ap = findClass("com.getpebble.android.framework.l.a.ap", lpparam.classLoader);
-		findAndHookMethod("com.getpebble.android.framework.g.cc", lpparam.classLoader, "a", ap, new XC_MethodHook()
+		Class cm = findClass("com.getpebble.android.framework.g.cm", lpparam.classLoader);
+		findAndHookMethod("com.getpebble.android.framework.notification.e", lpparam.classLoader, "a", UUID.class, int.class, Map.class, Context.class, cm, new XC_MethodHook()
 		{
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable
 			{
-				Object apObject = param.args[0];
-
-				UUID uuid = (UUID) getObjectField(apObject, "a");
+				UUID uuid = (UUID) param.args[0];
 
 				long firstByte = uuid.getMostSignificantBits();
 				long secondByte = uuid.getLeastSignificantBits();
