@@ -37,6 +37,7 @@ public class PebbleNotification implements Parcelable
     private String wearGroupKey;
     private int color;
     private byte[] pebbleImage;
+    private byte[] notificationIcon;
     private NativeNotificationIcon nativeNotificationIcon;
     private long[] forcedVibrationPattern;
 
@@ -256,6 +257,16 @@ public class PebbleNotification implements Parcelable
         this.pebbleImage = pebbleImage;
     }
 
+    public byte[] getNotificationIcon()
+    {
+        return notificationIcon;
+    }
+
+    public void setNotificationIcon(byte[] notificationIcon)
+    {
+        this.notificationIcon = notificationIcon;
+    }
+
     public NativeNotificationIcon getNativeNotificationIcon()
     {
         return nativeNotificationIcon;
@@ -322,6 +333,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeInt(wearGroupType);
         parcel.writeInt(color);
         parcel.writeValue(pebbleImage);
+        parcel.writeValue(notificationIcon);
         parcel.writeValue(nativeNotificationIcon);
         parcel.writeValue(forcedVibrationPattern);
     }
@@ -351,6 +363,7 @@ public class PebbleNotification implements Parcelable
             notification.wearGroupType = parcel.readInt();
             notification.color = parcel.readInt();
             notification.pebbleImage = (byte[]) parcel.readValue(getClass().getClassLoader());
+            notification.notificationIcon = (byte[]) parcel.readValue(getClass().getClassLoader());
             notification.nativeNotificationIcon = (NativeNotificationIcon) parcel.readValue(getClass().getClassLoader());
             notification.forcedVibrationPattern = (long[]) parcel.readValue(getClass().getClassLoader());
 

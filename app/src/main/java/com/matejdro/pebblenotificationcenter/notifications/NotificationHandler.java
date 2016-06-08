@@ -11,6 +11,9 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -118,6 +121,9 @@ public class NotificationHandler {
 
         if (settingStorage.getBoolean(AppSetting.USE_PROVIDED_VIBRATION))
             pebbleNotification.setForcedVibrationPattern(notification.vibrate);
+
+        if (settingStorage.getBoolean(AppSetting.WATCHAPP_NOTIFICATION_ICON))
+            pebbleNotification.setNotificationIcon(ImageSendingModule.prepareIcon(getNotificationIcon(key.getPackage(), notification, context), context));
 
         ActionParser.loadActions(notification, pebbleNotification, context);
 
@@ -297,6 +303,44 @@ public class NotificationHandler {
         }
 
         return  null;
+    }
+
+    @Nullable
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.M)
+    public static Bitmap getNotificationIcon(String packageName, Notification notification, Context context)
+    {
+        Drawable iconDrawable = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            Icon icon = notification.getSmallIcon();
+            if (icon == null)
+                return null;
+
+            iconDrawable = icon.loadDrawable(context);
+        }
+        else
+        {
+            if (packageName == null)
+                return null;
+
+            int iconId = notification.icon;
+            try
+            {
+                Resources sourceAppResources = context.getPackageManager().getResourcesForApplication(packageName);
+                iconDrawable = sourceAppResources.getDrawable(iconId);
+            }
+            catch (NameNotFoundException e)
+            {
+                return null;
+            }
+        }
+
+        if (iconDrawable != null && iconDrawable instanceof BitmapDrawable)
+            return ((BitmapDrawable) iconDrawable).getBitmap();
+
+        return null;
     }
 
 	public static String getAppName(Context context, String packageName)

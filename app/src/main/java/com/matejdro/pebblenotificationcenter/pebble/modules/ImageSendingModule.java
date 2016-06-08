@@ -1,6 +1,9 @@
 package com.matejdro.pebblenotificationcenter.pebble.modules;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.preference.PreferenceManager;
 
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
@@ -8,7 +11,10 @@ import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
+
+import java.io.ByteArrayOutputStream;
 
 import timber.log.Timber;
 
@@ -21,6 +27,7 @@ public class ImageSendingModule extends CommModule
     public static final int MAX_IMAGE_HEIGHT = 168 - 16;
     public static final int MAX_IMAGE_SIZE = 9000;
 
+    public static final int ICON_SIZE = 30;
 
     public static int MODULE_IMAGE_SENDING = 5;
 
@@ -127,6 +134,32 @@ public class ImageSendingModule extends CommModule
         }
 
         return imageData;
+    }
+
+    public static byte[] prepareIcon(Bitmap originalImage, Context context)
+    {
+        if (originalImage == null)
+            return null;
+
+        Bitmap image = PebbleImageToolkit.resizePreservingRatio(originalImage, ICON_SIZE, ICON_SIZE);
+        image = PebbleImageToolkit.createGrayscaleFromAlphaMask(image);
+
+        boolean whiteImage = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PebbleNotificationCenter.WHITE_NOTIFICATION_TEXT, true);
+        int transparentColor;
+        if (whiteImage)
+        {
+            transparentColor = Color.BLACK;
+        }
+        else
+        {
+            image = PebbleImageToolkit.invertImage(image);
+            transparentColor = Color.WHITE;
+        }
+
+        image = PebbleImageToolkit.ditherToPebbleTimeColors(image);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PebbleImageToolkit.writeIndexedPebblePNG(image, outputStream, transparentColor);
+        return outputStream.toByteArray();
     }
 
     @Override

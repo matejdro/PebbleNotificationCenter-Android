@@ -532,7 +532,7 @@
     <string name="settingHideNotificationTextDescription">When checked, notificaiton text will be initially hidden and will require you to select Show action from action menu to uncover it. This gives you additional degree of privacy as you can decide when to see notification text (when people are not around to look at your watch).</string>
     <string name="settingStatusbarColor">Statusbar color</string>
     <string name="settingStatusbarColorDescription">Color of the statusbar above notification. This can be used to quickly distinguish between apps (for example Gmail is red, Facebook is blue etc.). By default this setting will use color provided by app or default to black if app does not provide color. But you can customize it and pick your own color if app does not provide it or you don\'t like one app provides.</string>
-    <string name="settingNotificationIcon">Notification Icon</string>
+    <string name="settingNotificationIcon">Native notification Icon</string>
     <string name="settingNotificationIconDescription">Icon of the notification. Only for native notifications. Blank icon (just grey square) means NC will try to automatically determine the icon of the app. Images are loaded from the internet, so you may not be able to change this setting while offline.</string>
     <string name="settingShowImage">Display notification image</string>
     <string name="settingShowImageDescription">Display notification image in the background of the text. Depending on the app it can be received image (for example MMS message with image), image of the contact that send the message or just stock icon for this type of notification (for example envelope icon for mail). Only works on Pebble Time and with watchapp notifications.</string>
@@ -543,5 +543,7 @@
     <string name="tasker_notification_hint">Hint: unless notification not appearing in statusbar is a requirement, I recommend you use Tasker\'s Alert -> Notify action. It allows you to also specify actions and dismiss notification at will.</string>
     <string name="accept_and_reselect">Please accept permission and select the option again.</string>
     <string name="cannot_use_without_storage_permission">Cannot this option without storage permission.</string>
+    <string name="settingWatchappNotificationIcon">Watchapp notification icon</string>
+    <string name="settingWatchappNotificationIconDescription">Display icon of the notification on the watchapp notifications</string>
 
 </resources>

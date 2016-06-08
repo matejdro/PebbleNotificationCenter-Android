@@ -40,6 +40,7 @@ public enum AppSetting
     STATUSBAR_COLOR("statusbarColor", 0x00000000),
     SHOW_IMAGE("showImage", true),
     NATIVE_NOTIFICATION_ICON("nativeNotificationIcon", NativeNotificationIcon.AUTOMATIC),
+    WATCHAPP_NOTIFICATION_ICON("watchappNotificationIcon", true),
 
     USE_ALTERNATE_INBOX_PARSER("useInboxParser", true),
     INBOX_REVERSE("inboxReverse", false),

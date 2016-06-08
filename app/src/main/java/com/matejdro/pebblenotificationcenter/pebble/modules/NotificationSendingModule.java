@@ -522,6 +522,22 @@ public class NotificationSendingModule extends CommModule
         data.addInt32(4, curSendingNotification.prevId);
         data.addUint8(999, (byte) 1);
 
+        // Only send icon when watch has enough memory to handle it (indicated by max AppMessage size - low memory watches have this set to very low value)
+        if (getService().getPebbleCommunication().getConnectedWatchCapabilities().getMaxAppmessageSize() > 2048)
+        {
+            byte[] iconData = curSendingNotification.source.getNotificationIcon();
+
+            if (iconData != null)
+            {
+                data.addUint16(5, (short) iconData.length);
+                data.addBytes(6, iconData);
+            }
+            else
+            {
+                data.addUint16(5, (short) 0);
+            }
+        }
+
         getService().getPebbleCommunication().sendToPebble(data);
 
         if (queueImage)

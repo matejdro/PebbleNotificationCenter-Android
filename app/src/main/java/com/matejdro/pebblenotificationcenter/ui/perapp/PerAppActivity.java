@@ -140,6 +140,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         if (version(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)) category.add(new ColorPickerItem(settingsStorage, AppSetting.STATUSBAR_COLOR, R.string.settingStatusbarColor, R.string.settingStatusbarColorDescription));
         category.add(new CheckBoxItem(settingsStorage, AppSetting.SHOW_IMAGE, R.string.settingShowImage, R.string.settingShowImageDescription));
         category.add(new IconPickerItem(settingsStorage, R.string.settingNotificationIcon, R.string.settingNotificationIconDescription));
+        category.add(new CheckBoxItem(settingsStorage, AppSetting.WATCHAPP_NOTIFICATION_ICON, R.string.settingWatchappNotificationIcon, R.string.settingWatchappNotificationIconDescription));
 
         settings.add(new SettingsCategory(0, category));
 
