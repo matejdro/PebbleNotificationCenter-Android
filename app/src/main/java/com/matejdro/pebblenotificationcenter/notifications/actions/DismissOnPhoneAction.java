@@ -3,6 +3,7 @@ package com.matejdro.pebblenotificationcenter.notifications.actions;
 import android.content.Context;
 import android.os.Parcel;
 
+import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
@@ -39,8 +40,14 @@ public class DismissOnPhoneAction extends NotificationAction
         if (!notification.source.isDismissable() || notification.source.getKey().getAndroidId() == null)
             return;
 
-        JellybeanNotificationListener.dismissNotification(notification.source.getKey());
+        //After all group messages are dismissed (only current is left), we should dismiss summary (some apps do not do this automatically)
+        if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE &&
+            getNumberOfMessagesInSameGroup(notification.source.getWearGroupKey(), service) == 1)
+        {
+            dismissSummary(notification.source.getWearGroupKey(), service);
+        }
 
+        JellybeanNotificationListener.dismissNotification(notification.source.getKey());
     }
 
 
@@ -72,4 +79,36 @@ public class DismissOnPhoneAction extends NotificationAction
             return new DismissOnPhoneAction[0];
         }
     };
+
+    private static int getNumberOfMessagesInSameGroup(String group, NCTalkerService service)
+    {
+        int amount = 0;
+
+        for (int i = 0; i < service.sentNotifications.size(); i++)
+        {
+            ProcessedNotification notification = service.sentNotifications.valueAt(i);
+
+            if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE && notification.source.getWearGroupKey().equalsIgnoreCase(group))
+            {
+                amount++;
+            }
+        }
+
+        return amount;
+    }
+
+    private static void dismissSummary(String group, NCTalkerService service)
+    {
+        for (int i = 0; i < service.sentNotifications.size(); i++)
+        {
+            ProcessedNotification notification = service.sentNotifications.valueAt(i);
+
+            if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && notification.source.getWearGroupKey().equalsIgnoreCase(group))
+            {
+                JellybeanNotificationListener.dismissNotification(notification.source.getKey());
+                break;
+            }
+        }
+    }
+
 }

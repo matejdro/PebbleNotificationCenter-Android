@@ -154,6 +154,10 @@ Phone --> Pebble
 			4 = Previous notification id (int32)
 				ID of the previous notification that was updated by this notification. If this ID is displayed on the watch, this notification will not vibrate.
 				Value 0 means it will always vibrate.
+            5 = Size of notification icon in bytes (uint16)
+                Only present when sending to watches that have at least 64KB of usable RAM. 0 means no image.
+            6 = Notification icon PNG data (byte array)
+                Only present when sending to watches that have at least 64KB of usable RAM and when icon is there (size > 0)
 
 		Packet 1 - Notification text packet
 		Send notification text (after above packet from Pebble).
