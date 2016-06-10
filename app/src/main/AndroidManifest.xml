@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
     package="com.matejdro.pebblenotificationcenter"
-    android:versionCode="92"
-    android:versionName="2.81" >
+    android:versionCode="94"
+    android:versionName="2.9B1" >
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
