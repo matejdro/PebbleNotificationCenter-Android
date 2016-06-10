@@ -1,2 +1,1 @@
 include ':app', ':PebbleAndroidCommons'
-project(':PebbleAndroidCommons').projectDir=new File("../PebbleAndroidCommons")

@@ -3,8 +3,8 @@ PebbleNotificationCenter-Android
 
 Android part of the Notification center for Pebble
 
-More info: http://forums.getpebble.com/discussion/8053/
+https://play.google.com/store/apps/details?id=com.matejdro.pebblenotificationcenter
 
 ## Building
 
-To build this project properly, you will also need [PebbleAndroidCommons](https://github.com/matejdro/PebbleAndroidCommons) directory next to PebbleNotificationCenter one. Latest release at this moment (2.81) requires [version r8](https://github.com/matejdro/PebbleAndroidCommons/tree/r8). Then you just open PebbleNotificationCenter directory with Android Studio and it should automatically resolve all dependencies.
+To build this project, just pull the repo and open it in Android Studio. If it starts complaining about missing `PebbleAndroidCommons`, make sure you also pulled the submodules.
