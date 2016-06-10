@@ -1,0 +1,3 @@
+[submodule "PebbleAndroidCommons"]
+	path = PebbleAndroidCommons
+	url = https://github.com/matejdro/PebbleAndroidCommons
