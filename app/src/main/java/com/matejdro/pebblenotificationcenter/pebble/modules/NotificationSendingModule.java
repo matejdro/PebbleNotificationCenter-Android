@@ -10,6 +10,7 @@ import android.util.SparseArray;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
+import com.matejdro.pebblecommons.pebble.PebbleCapabilities;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
@@ -521,24 +522,23 @@ public class NotificationSendingModule extends CommModule
         data.addInt32(4, curSendingNotification.prevId);
         data.addUint8(999, (byte) 1);
 
-        // Only send icon when watch has enough memory to handle it (indicated by max AppMessage size - low memory watches have this set to very low value)
-        if (getService().getPebbleCommunication().getConnectedWatchCapabilities().getMaxAppmessageSize() > 2048)
+        int iconSize = 0;
+        Bitmap icon = curSendingNotification.source.getNotificationIcon();
+        if (icon != null)
         {
-            Bitmap icon = curSendingNotification.source.getNotificationIcon();
+            PebbleCapabilities watchCapabilities = getService().getPebbleCommunication().getConnectedWatchCapabilities();
+            byte[] iconData = ImageSendingModule.prepareIcon(icon, getService(), watchCapabilities);
 
-
-            if (icon != null)
+            // Only send icon if it can fit into one Appmessage
+            if (iconData.length <= PebbleUtil.getBytesLeft(new PebbleDictionary(), watchCapabilities))
             {
-                byte[] iconData = ImageSendingModule.prepareIcon(icon, getService(), getService().getPebbleCommunication().getConnectedWatchCapabilities());
+                curSendingNotification.iconData = iconData;
+                iconSize = iconData.length;
+                curSendingNotification.needsIconSending = true;
+            }
 
-                data.addUint16(5, (short) iconData.length);
-                data.addBytes(6, iconData);
-            }
-            else
-            {
-                data.addUint16(5, (short) 0);
-            }
         }
+        data.addUint16(5, (short) iconSize);
 
         getService().getPebbleCommunication().sendToPebble(data);
 
@@ -561,6 +561,19 @@ public class NotificationSendingModule extends CommModule
         curSendingNotification.nextChunkToSend++;
     }
 
+    private void sendWatchappIcon()
+    {
+        Timber.d("Sending icon");
+
+        PebbleDictionary data = new PebbleDictionary();
+        data.addUint8(0, (byte) 1);
+        data.addUint8(1, (byte) 2);
+        data.addBytes(2, curSendingNotification.iconData);
+
+        getService().getPebbleCommunication().sendToPebble(data);
+        curSendingNotification.needsIconSending = false;
+    }
+
     @Override
     public boolean sendNextMessage()
     {
@@ -573,6 +586,10 @@ public class NotificationSendingModule extends CommModule
         if (curSendingNotification.nextChunkToSend == -1)
         {
             sendInitialNotificationPacket();
+        }
+        else if (curSendingNotification.needsIconSending)
+        {
+            sendWatchappIcon();
         }
         else if (curSendingNotification.nextChunkToSend < curSendingNotification.textChunks.size())
         {

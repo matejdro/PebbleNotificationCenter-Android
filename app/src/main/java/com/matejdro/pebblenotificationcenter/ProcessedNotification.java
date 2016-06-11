@@ -15,6 +15,9 @@ public class ProcessedNotification implements Parcelable
     public short firstTextIndex = Short.MAX_VALUE;
     public short textLength;
 
+    public boolean needsIconSending = false;
+    public byte[] iconData;
+
     public boolean vibrated = false;
     public int nextChunkToSend = -1;
     public boolean nativeNotification;
