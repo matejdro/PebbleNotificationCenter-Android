@@ -144,10 +144,10 @@ public class ImageSendingModule extends CommModule
 
         boolean colorScreen = capabilities.hasColorScreen();
 
-        Bitmap image = PebbleImageToolkit.resizePreservingRatio(originalImage, ICON_SIZE, ICON_SIZE);
+        Bitmap image = PebbleImageToolkit.resizePreservingRatio(originalImage, ICON_SIZE, ICON_SIZE, colorScreen);
         image = PebbleImageToolkit.createGrayscaleFromAlphaMask(image);
 
-        boolean whiteImage = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PebbleNotificationCenter.WHITE_NOTIFICATION_TEXT, colorScreen);
+        boolean whiteImage = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PebbleNotificationCenter.WHITE_NOTIFICATION_TEXT, false);
         int transparentColor;
         if (whiteImage)
         {
