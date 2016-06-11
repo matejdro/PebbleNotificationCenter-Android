@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
+import com.matejdro.pebblecommons.pebble.PebbleCapabilities;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
@@ -136,15 +137,17 @@ public class ImageSendingModule extends CommModule
         return imageData;
     }
 
-    public static byte[] prepareIcon(Bitmap originalImage, Context context)
+    public static byte[] prepareIcon(Bitmap originalImage, Context context, PebbleCapabilities capabilities)
     {
         if (originalImage == null)
             return null;
 
+        boolean colorScreen = capabilities.hasColorScreen();
+
         Bitmap image = PebbleImageToolkit.resizePreservingRatio(originalImage, ICON_SIZE, ICON_SIZE);
         image = PebbleImageToolkit.createGrayscaleFromAlphaMask(image);
 
-        boolean whiteImage = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PebbleNotificationCenter.WHITE_NOTIFICATION_TEXT, true);
+        boolean whiteImage = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PebbleNotificationCenter.WHITE_NOTIFICATION_TEXT, colorScreen);
         int transparentColor;
         if (whiteImage)
         {
@@ -156,9 +159,20 @@ public class ImageSendingModule extends CommModule
             transparentColor = Color.WHITE;
         }
 
-        image = PebbleImageToolkit.ditherToPebbleTimeColors(image);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PebbleImageToolkit.writeIndexedPebblePNG(image, outputStream, transparentColor);
+
+        if (colorScreen)
+        {
+            image = PebbleImageToolkit.ditherToPebbleTimeColors(image);
+            PebbleImageToolkit.writeIndexedPebblePNG(image, outputStream, transparentColor);
+        }
+        else
+        {
+            image = PebbleImageToolkit.reduceGrayscaleToBlackWhite(image);
+            PebbleImageToolkit.writeMaskedTwoBitPng(image, outputStream, whiteImage);
+
+        }
+
         return outputStream.toByteArray();
     }
 

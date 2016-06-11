@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.util.SparseArray;
@@ -501,8 +502,6 @@ public class NotificationSendingModule extends CommModule
             configBytes[12] = (byte) size;
 
             queueImage = true;
-
-            System.out.println("imagesize " + size);
         }
 
         configBytes[13] = (byte) (curSendingNotification.firstSubtitleIndex >>> 0x08);
@@ -525,10 +524,13 @@ public class NotificationSendingModule extends CommModule
         // Only send icon when watch has enough memory to handle it (indicated by max AppMessage size - low memory watches have this set to very low value)
         if (getService().getPebbleCommunication().getConnectedWatchCapabilities().getMaxAppmessageSize() > 2048)
         {
-            byte[] iconData = curSendingNotification.source.getNotificationIcon();
+            Bitmap icon = curSendingNotification.source.getNotificationIcon();
 
-            if (iconData != null)
+
+            if (icon != null)
             {
+                byte[] iconData = ImageSendingModule.prepareIcon(icon, getService(), getService().getPebbleCommunication().getConnectedWatchCapabilities());
+
                 data.addUint16(5, (short) iconData.length);
                 data.addBytes(6, iconData);
             }

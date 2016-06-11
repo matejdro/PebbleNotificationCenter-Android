@@ -1,6 +1,7 @@
 package com.matejdro.pebblenotificationcenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -37,7 +38,7 @@ public class PebbleNotification implements Parcelable
     private String wearGroupKey;
     private int color;
     private byte[] pebbleImage;
-    private byte[] notificationIcon;
+    private Bitmap notificationIcon;
     private NativeNotificationIcon nativeNotificationIcon;
     private long[] forcedVibrationPattern;
 
@@ -257,12 +258,12 @@ public class PebbleNotification implements Parcelable
         this.pebbleImage = pebbleImage;
     }
 
-    public byte[] getNotificationIcon()
+    public Bitmap getNotificationIcon()
     {
         return notificationIcon;
     }
 
-    public void setNotificationIcon(byte[] notificationIcon)
+    public void setNotificationIcon(Bitmap notificationIcon)
     {
         this.notificationIcon = notificationIcon;
     }
@@ -363,7 +364,7 @@ public class PebbleNotification implements Parcelable
             notification.wearGroupType = parcel.readInt();
             notification.color = parcel.readInt();
             notification.pebbleImage = (byte[]) parcel.readValue(getClass().getClassLoader());
-            notification.notificationIcon = (byte[]) parcel.readValue(getClass().getClassLoader());
+            notification.notificationIcon = (Bitmap) parcel.readValue(getClass().getClassLoader());
             notification.nativeNotificationIcon = (NativeNotificationIcon) parcel.readValue(getClass().getClassLoader());
             notification.forcedVibrationPattern = (long[]) parcel.readValue(getClass().getClassLoader());
 

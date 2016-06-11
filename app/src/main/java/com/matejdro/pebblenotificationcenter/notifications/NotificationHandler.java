@@ -123,7 +123,7 @@ public class NotificationHandler {
             pebbleNotification.setForcedVibrationPattern(notification.vibrate);
 
         if (settingStorage.getBoolean(AppSetting.WATCHAPP_NOTIFICATION_ICON))
-            pebbleNotification.setNotificationIcon(ImageSendingModule.prepareIcon(getNotificationIcon(key.getPackage(), notification, context), context));
+            pebbleNotification.setNotificationIcon(getNotificationIcon(key.getPackage(), notification, context));
 
         ActionParser.loadActions(notification, pebbleNotification, context);
 
