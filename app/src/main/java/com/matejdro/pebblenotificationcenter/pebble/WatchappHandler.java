@@ -19,8 +19,10 @@ public class WatchappHandler extends BroadcastReceiver
     public static final int SUPPORTED_PROTOCOL = 36;
     public static final String INTENT_UPDATE_WATCHAPP = "com.matejdro.pebblenotificationcenter.UPDATE_WATCHAPP";
 
-    public static final String WATCHAPP_URL = "https://dl.dropboxusercontent.com/u/6999250/dialer/Center/notificationcenter.pbw";
-    //public static final String WATCHAPP_URL = "https://dl.dropboxusercontent.com/u/6999250/dialer/Center/beta/notificationcenter.pbw";
+    public static final boolean BETA = true;
+
+    public static final String WATCHAPP_URL_STABLE = "https://dl.dropboxusercontent.com/u/6999250/dialer/Center/notificationcenter.pbw";
+    public static final String WATCHAPP_URL_BETA = "https://plus.google.com/communities/116982109550451242571";
 
 
     public static boolean isFirstRun(SharedPreferences settings)
@@ -59,7 +61,16 @@ public class WatchappHandler extends BroadcastReceiver
         }
     }
 
-    public static void showUpdateNotification(Context context)
+    public static void showBetaUpdateNotification(Context context)
+    {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context).setSmallIcon(R.drawable.notificationicon).setLocalOnly(true)
+                        .setContentTitle(context.getString(R.string.betaWatchappUpdateTitle)).setContentText(context.getString(R.string.betaWatchappUpdateBody))
+                        .setContentIntent(PendingIntent.getBroadcast(context, 1, new Intent(INTENT_UPDATE_WATCHAPP), PendingIntent.FLAG_CANCEL_CURRENT));
+        NotificationManagerCompat.from(context).notify(1, mBuilder.build());
+    }
+
+    public static void showStableUpdateNotification(Context context)
     {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context).setSmallIcon(R.drawable.notificationicon).setLocalOnly(true)
@@ -68,11 +79,21 @@ public class WatchappHandler extends BroadcastReceiver
         NotificationManagerCompat.from(context).notify(1, mBuilder.build());
     }
 
-    public static void openUpdateWebpage(Context context)
+    public static void showUpdateNotification(Context context)
+    {
+        if (BETA)
+            showBetaUpdateNotification(context);
+        else
+            showStableUpdateNotification(context);
+    }
+
+
+
+    public static void openWebpage(Context context, String url)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
 
-        intent.setData(Uri.parse(WATCHAPP_URL));
+        intent.setData(Uri.parse(url));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try
         {
@@ -88,7 +109,7 @@ public class WatchappHandler extends BroadcastReceiver
     {
         if (INTENT_UPDATE_WATCHAPP.equals(intent.getAction()))
         {
-            openUpdateWebpage(context);
+            openWebpage(context, BETA ? WATCHAPP_URL_BETA : WATCHAPP_URL_STABLE);
         }
     }
 }
