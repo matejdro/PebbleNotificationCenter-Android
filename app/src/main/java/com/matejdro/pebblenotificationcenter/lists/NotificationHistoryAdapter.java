@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public class NotificationHistoryAdapter implements NotificationListAdapter {
 	private List<PebbleNotification> notifications;
@@ -24,7 +26,7 @@ public class NotificationHistoryAdapter implements NotificationListAdapter {
 	
 	public void loadNotifications(Context context)
 	{
-		Cursor cursor = storage.getReadableDatabase().rawQuery("SELECT PostTime, Title, Subtitle, Text FROM notifications ORDER BY PostTime DESC LIMIT 150", null);
+		Cursor cursor = storage.getReadableDatabase().rawQuery("SELECT PostTime, Title, Subtitle, Text, Icon FROM notifications ORDER BY PostTime DESC LIMIT 150", null);
 		notifications = new ArrayList<PebbleNotification>(cursor.getCount());
 		
 		while (cursor.moveToNext())
@@ -33,12 +35,17 @@ public class NotificationHistoryAdapter implements NotificationListAdapter {
             String title = cursor.getString(1);
             String text = cursor.getString(3) + "\n\nSent on " + ListModule.getFormattedDate(context, sendingDate);
             NotificationKey key = new NotificationKey(null, null, null);
+			byte[] iconData = cursor.getBlob(4);
+			Bitmap icon = null;
+			if (iconData != null)
+				icon = BitmapFactory.decodeByteArray(iconData, 0, iconData.length);
 
             PebbleNotification notification = new PebbleNotification(title, text, key);
 			notification.setSubtitle(cursor.getString(2));
 			notification.setPostTime(sendingDate);
             notification.setListNotification(true);
 			notification.setDismissable(true);
+			notification.setNotificationIcon(icon);
 
 			notifications.add(notification);
 		}

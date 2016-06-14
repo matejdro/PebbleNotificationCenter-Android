@@ -235,7 +235,11 @@ public class NotificationSendingModule extends CommModule
                 !notificationSource.isHistoryDisabled() &&
                 settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY))
         {
-            NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(), TextUtil.trimString(notificationSource.getTitle(), 4000, true), TextUtil.trimString(notificationSource.getSubtitle(), 4000, true), TextUtil.trimString(notificationSource.getText(), 4000, true));
+            NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(),
+                    TextUtil.trimString(notificationSource.getTitle(), 4000, true),
+                    TextUtil.trimString(notificationSource.getSubtitle(), 4000, true),
+                    TextUtil.trimString(notificationSource.getText(), 4000, true),
+                    notificationSource.getNotificationIcon());
         }
 
 
