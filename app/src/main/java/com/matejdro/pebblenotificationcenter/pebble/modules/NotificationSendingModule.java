@@ -527,6 +527,8 @@ public class NotificationSendingModule extends CommModule
         data.addInt32(4, curSendingNotification.prevId);
         data.addUint8(999, (byte) 1);
 
+        data.addUint16(5, (short) 0); //Placeholder
+
         int iconSize = 0;
         Bitmap icon = curSendingNotification.source.getNotificationIcon();
         if (icon != null)
