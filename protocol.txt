@@ -182,6 +182,10 @@ Phone --> Pebble
 			5 - Title of this noification (up to 20 bytes) - cstring
 			6 - Subtitle of this notification (up to 20 bytes) - cstring
 			7 - Date string (up to 20 bytes) - cstring
+			8 - Size of the entry icon in bytes - uint16
+				0 means no icon (ongoing/normal icon is used instead)
+			9 - Icon of this notification - byte array
+				Only present on devices with AppMessage buffer >= 2048 bytes (devices that cannot afford that big buffer are considered too low memory for this feature) 
 	
 	MODULE 3 - DISMISS UPWARDS
 

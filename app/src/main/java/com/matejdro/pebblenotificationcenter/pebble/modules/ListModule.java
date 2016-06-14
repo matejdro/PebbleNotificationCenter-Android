@@ -1,11 +1,14 @@
 package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
+import com.matejdro.pebblecommons.pebble.PebbleCapabilities;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblecommons.pebble.PebbleUtil;
 import com.matejdro.pebblecommons.util.TextUtil;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
@@ -128,6 +131,8 @@ public class ListModule extends CommModule
             data.addString(5, "No notifications");
             data.addString(6, "");
             data.addString(7, "");
+            data.addUint16(8, (short) 0);
+
             if (openListWindow)
                 data.addUint8(999, (byte) 1);
 
@@ -146,8 +151,27 @@ public class ListModule extends CommModule
         data.addString(5, TextUtil.prepareString(notification.getTitle()));
         data.addString(6, TextUtil.prepareString(notification.getSubtitle()));
         data.addString(7, getFormattedDate(getService(), notification.getRawPostTime()));
+        data.addUint16(8, (short) 0); // Placeholder
+
         if (openListWindow)
             data.addUint8(999, (byte) 1);
+
+        Bitmap icon = notification.getNotificationIcon();
+        if (icon != null)
+        {
+            PebbleCapabilities connectedWatchCapabilities = getService().getPebbleCommunication().getConnectedWatchCapabilities();
+            byte[] iconData = ImageSendingModule.prepareIcon(icon, getService(), connectedWatchCapabilities);
+
+            // This feature requires lots of memory on the watch to contain lots of icons for every list item
+            // To weed out low memory devices, a device must be able to afford to receive at least 2048 bytes of the appmessage.
+            int minAppmessageBufferSize = Math.max(2048, iconData.length);
+
+            if (PebbleUtil.getBytesLeft(data, connectedWatchCapabilities) >= minAppmessageBufferSize)
+            {
+                data.addUint16(8, (short) iconData.length); // Placeholder
+                data.addBytes(9, iconData);
+            }
+        }
 
         Timber.i("Sending list entry %d %s", index, data.getString(5));
 
