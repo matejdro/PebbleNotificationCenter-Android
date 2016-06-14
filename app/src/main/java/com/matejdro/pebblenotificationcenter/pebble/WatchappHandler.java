@@ -55,7 +55,7 @@ public class WatchappHandler extends BroadcastReceiver
         catch (ActivityNotFoundException e)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(R.string.openingPebbleAppFailed).setNegativeButton("OK", null).show();
+            builder.setMessage(R.string.openingPebbleAppFailed).setNegativeButton(R.string.ok, null).show();
         }
     }
 
@@ -63,7 +63,7 @@ public class WatchappHandler extends BroadcastReceiver
     {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context).setSmallIcon(R.drawable.notificationicon).setLocalOnly(true)
-                        .setContentTitle("Notification Center watchapp update").setContentText("Click on this notiifcation to update Notification Center watchapp on Pebble")
+                        .setContentTitle(context.getString(R.string.watchappUpdateTitle)).setContentText(context.getString(R.string.watchappUpdateBody))
                         .setContentIntent(PendingIntent.getBroadcast(context, 1, new Intent(INTENT_UPDATE_WATCHAPP), PendingIntent.FLAG_CANCEL_CURRENT));
         NotificationManagerCompat.from(context).notify(1, mBuilder.build());
     }

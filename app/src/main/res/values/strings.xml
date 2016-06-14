@@ -545,5 +545,6 @@
     <string name="cannot_use_without_storage_permission">Cannot this option without storage permission.</string>
     <string name="settingWatchappNotificationIcon">Watchapp notification icon</string>
     <string name="settingWatchappNotificationIconDescription">Display icon of the notification on the watchapp notifications</string>
+    <string name="watchappUpdateBody">Click on this notiifcation to update Notification Center watchapp on Pebble</string>
 
 </resources>
