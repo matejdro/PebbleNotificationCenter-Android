@@ -2,6 +2,7 @@ package com.matejdro.pebblenotificationcenter;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
@@ -87,7 +88,7 @@ public class NotificationHistoryStorage extends SQLiteOpenHelper {
     }
 
 	public void cleanDatabase()
-	{		
+	{
 		SQLiteDatabase database = getWritableDatabase();
 		Cursor cursor = database.rawQuery("SELECT MIN(PostTime) FROM (SELECT PostTime FROM notifications ORDER BY PostTime DESC LIMIT 100)", null);
 		if (!cursor.moveToNext())
@@ -103,5 +104,14 @@ public class NotificationHistoryStorage extends SQLiteOpenHelper {
 		editor.apply();
 
 		cursor.close();
+	}
+
+
+	public void tryCleanDatabase()
+	{
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		long lastCleanup = preferences.getLong("lastCleanup", 0);
+		if (System.currentTimeMillis() - lastCleanup > 24 * 3600 * 1000)
+			cleanDatabase();
 	}
 }

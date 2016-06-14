@@ -285,6 +285,7 @@ public class NotificationSendingModule extends CommModule
         else
             sendNotification(notification);
 
+        NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().tryCleanDatabase();
     }
 
     private void notificationTransferCompleted()
