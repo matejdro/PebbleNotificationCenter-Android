@@ -113,6 +113,7 @@ Phone --> Pebble
                         First bit (0x01) = Display scroll shadow
                         Second bit (0x02) = Scroll page-by-page
                         Third bit (0x04) = Display disconnected notification
+                        Fourth bit (0x08) = Enable gestures
 					[14] = Number of bytes in vibration pattern
 					[15,16,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
 

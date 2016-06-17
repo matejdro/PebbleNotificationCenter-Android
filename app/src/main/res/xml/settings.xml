@@ -97,6 +97,14 @@
             android:key="periodicVibrationPattern"
             android:summary="Here you can define vibration pattern for periodic vibration. Pattern is in format \'vibrateTime, pauseTime, vibrateTime, pauseTime ...\', where times are in miliseconds. For example  \'100, 200, 300\' will vibrate for 100ms, then wait 200 ms and then again vibrate for 300ms. Limit is 20 total numbers (so 10 vibrations and 10 pauses). Maximum total duration is 10 seconds."
             android:title="Periodic vibration pattern"/>
+        <CheckBoxPreference
+            android:key="enableGestures"
+            android:title="Enable scrolling gestures"
+            android:summary="Enable scrolling through the notifications other-hand-free by just twisting the watch hand. See youtu.be/PUpJrldQrfk for demonstration.
+            \n\nPlease keep in mind that this feature is experimental and very finicky. It may cause increased battery drain when notification is displayed for prolonged amounts of time or even dismiss notifications by itself if it falsely detects a gesture."
+            android:defaultValue="false"
+            />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
         <Preference 
