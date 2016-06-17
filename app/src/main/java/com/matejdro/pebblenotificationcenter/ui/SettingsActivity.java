@@ -20,6 +20,7 @@ import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.VibrationPattern;
+import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 
 import de.psdev.licensesdialog.LicensesDialog;
 
@@ -139,6 +140,16 @@ public class SettingsActivity extends PreferenceActivity implements ActivityComp
 
                     return false;
                 }
+                return true;
+            }
+        });
+
+        findPreference("gesturesDemo").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override
+            public boolean onPreferenceClick(Preference preference)
+            {
+                WatchappHandler.openWebpage(SettingsActivity.this, "https://www.youtube.com/watch?v=PUpJrldQrfk");
                 return true;
             }
         });

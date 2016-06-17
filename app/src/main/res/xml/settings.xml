@@ -100,10 +100,16 @@
         <CheckBoxPreference
             android:key="enableGestures"
             android:title="Enable scrolling gestures"
-            android:summary="Enable button-free scrolling through the notifications by just twisting the hand. See youtu.be/PUpJrldQrfk for demonstration.
+            android:summary="Enable button-free scrolling through the notifications by just twisting the hand.
             \n\nPlease keep in mind that this feature is experimental and very finicky. It may cause increased battery drain when notification is displayed for prolonged amounts of time or even dismiss notifications by itself if it falsely detects a gesture."
             android:defaultValue="false"
             />
+        <Preference
+            android:key="gesturesDemo"
+            android:title="Scrolling gestures demo"
+            android:summary="Tap on this text to see the demonstration of the scrolling gestures."
+            />
+
 
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
