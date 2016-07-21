@@ -174,9 +174,6 @@ public class DismissUpwardsModule extends CommModule
     {
         Timber.d("DismissSimilarWear %s %s %s", notification.source.getKey(), notification.source.getWearGroupType(), notification.source.getWearGroupKey());
 
-        if (notification.source.getWearGroupType() != PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
-            return;
-
         SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 
         for (int i = 0; i < sentNotifications.size(); i++)
