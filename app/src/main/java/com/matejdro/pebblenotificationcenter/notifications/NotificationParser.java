@@ -11,7 +11,6 @@ import android.text.style.StyleSpan;
 import android.widget.RemoteViews;
 
 import com.crashlytics.android.Crashlytics;
-import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
@@ -52,8 +51,6 @@ public class NotificationParser {
 		Bundle extras = getExtras(notification);
 		if (extras == null)
 			return false;
-
-        LogWriter.dumpBundle(extras);
 
         if (extras.get(Notification.EXTRA_TEXT_LINES) != null && extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES).length > 0)
         {
