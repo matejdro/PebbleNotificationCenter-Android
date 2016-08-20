@@ -11,9 +11,8 @@ import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
-import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.appsetting.VibrationPattern;
+import com.matejdro.pebblecommons.pebble.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 
@@ -77,7 +76,7 @@ public class SystemModule extends CommModule
         data.addUint8(0, (byte) 0);
         data.addUint8(1, (byte) 0);
 
-        List<Byte> vibrationPattern = VibrationPattern.parseVibrationPattern(getService().getGlobalSettings().getString(PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN, "100"));
+        List<Byte> vibrationPattern = PebbleVibrationPattern.parseVibrationPattern(getService().getGlobalSettings().getString(PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN, "100"));
 
         byte[] configBytes = new byte[15 + vibrationPattern.size()];
 

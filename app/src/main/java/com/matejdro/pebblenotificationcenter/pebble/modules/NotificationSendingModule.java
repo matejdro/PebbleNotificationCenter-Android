@@ -25,7 +25,7 @@ import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationMode;
-import com.matejdro.pebblenotificationcenter.appsetting.VibrationPattern;
+import com.matejdro.pebblecommons.pebble.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.notifications.JellybeanNotificationListener;
 import com.matejdro.pebblenotificationcenter.notifications.actions.DismissOnPebbleAction;
 import com.matejdro.pebblenotificationcenter.notifications.actions.NotificationAction;
@@ -677,8 +677,8 @@ public class NotificationSendingModule extends CommModule
 
             long[] forcedVibrationPattern = notification.source.getForcedVibrationPattern();
             if (forcedVibrationPattern == null)
-                return VibrationPattern.parseVibrationPattern(settingStorage.getString(AppSetting.VIBRATION_PATTERN));
-            return VibrationPattern.getFromAndroidVibrationPattern(forcedVibrationPattern);
+                return PebbleVibrationPattern.parseVibrationPattern(settingStorage.getString(AppSetting.VIBRATION_PATTERN));
+            return PebbleVibrationPattern.getFromAndroidVibrationPattern(forcedVibrationPattern);
         }
         else
         {

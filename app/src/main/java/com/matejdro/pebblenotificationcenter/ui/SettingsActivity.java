@@ -19,7 +19,7 @@ import android.text.InputType;
 import com.matejdro.pebblecommons.util.LogWriter;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
-import com.matejdro.pebblenotificationcenter.appsetting.VibrationPattern;
+import com.matejdro.pebblecommons.pebble.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 
 import de.psdev.licensesdialog.LicensesDialog;
@@ -131,7 +131,7 @@ public class SettingsActivity extends PreferenceActivity implements ActivityComp
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue)
             {
-                if (!VibrationPattern.validateVibrationPattern((String) newValue))
+                if (!PebbleVibrationPattern.validateVibrationPattern((String) newValue))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
                     builder.setMessage(R.string.invalidVibrationPattern);
