@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fix_failed_error">Fix failed error</string>
+    <string name="fix_failed_error_description">Fix Failed error that pops up when activating actions on native notifications sent by Notification Center.</string>
+    <string name="fix_developer_connection">Disable developer connection timeout</string>
+    <string name="fix_developer_connection_description">Prevent Pebble\'s developer connection from automatically turning off after some time, breaking many Notification Center features.</string>
+    <string name="block_pebble_notifications">Block notifications from Pebble app</string>
+    <string name="block_pebble_notifications_description">Sometimes Pebble app can still send native notifications despite unchecking all apps. This settings fixes this.\n\nHealth, timeline and call notifications are not affected.</string>
+    <string name="disable_system_music">Disable system music app</string>
+    <string name="disable_system_music_description">Disable Pebble\'s default music control app.\n\n This is useful if you are using 3rd party music control app and don\'t want default one jumping to the top of the menu.</string>
+</resources>

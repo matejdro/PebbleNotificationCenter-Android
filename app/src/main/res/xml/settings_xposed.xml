@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="fixFailed"
+        android:summary="@string/fix_failed_error_description"
+        android:title="@string/fix_failed_error"/>
+    <SwitchPreference
+        android:key="fixDevConnTimeout"
+        android:summary="@string/fix_developer_connection_description"
+        android:title="@string/fix_developer_connection"/>
+    <SwitchPreference
+        android:key="blockPebbleNotifications"
+        android:summary="@string/block_pebble_notifications_description"
+        android:title="@string/block_pebble_notifications"/>
+    <SwitchPreference
+        android:key="disableMusicJump"
+        android:summary="@string/disable_system_music_description"
+        android:title="@string/disable_system_music"/>
+</PreferenceScreen>

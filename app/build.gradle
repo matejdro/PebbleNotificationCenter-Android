@@ -28,7 +28,8 @@ android {
     }}
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.1.0'
+    compile 'com.android.support:appcompat-v7:24.1.1'
+    compile 'com.android.support:preference-v14:24.1.1'
     compile 'com.google.guava:guava:18.0'
     provided files('libs/XposedBridgeApi-54.jar')
     compile project(':PebbleAndroidCommons')

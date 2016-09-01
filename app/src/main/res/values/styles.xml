@@ -11,6 +11,8 @@
         <item name="android:actionModeSelectAllDrawable">@drawable/ic_content_select_all</item>
         <item name="android:actionModeShareDrawable">@drawable/ic_social_share</item>
 
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+
     </style>
 
     <style name="AppSettingsBackground">

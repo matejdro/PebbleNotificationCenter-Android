@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
+
+        menu.findItem(R.id.action_xposed_settings).setVisible(PebbleNotificationCenter.isXposedModuleRunning());
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -95,8 +97,12 @@ public class MainActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId())
 		{
-		case R.id.action_settings:
-			Intent intent = new Intent(this, SettingsActivity.class);
+            case R.id.action_xposed_settings:
+            Intent intent = new Intent(this, XposedSettingsActivity.class);
+            startActivity(intent);
+            return true;
+            case R.id.action_settings:
+			intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			return true;
 		case R.id.action_test_notification:

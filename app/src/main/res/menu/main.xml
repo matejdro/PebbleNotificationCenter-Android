@@ -1,48 +1,57 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_action_action_settings"
         android:title="Settings"
-        android:orderInCategory="4"
+        android:orderInCategory="100"
        	/>
+
+    <item
+        android:id="@+id/action_xposed_settings"
+        android:icon="@drawable/ic_action_action_settings"
+        android:title="Xposed Settings"
+        android:orderInCategory="101"
+        />
 
     <item
         android:id="@+id/action_test_notification"
         android:icon="@drawable/ic_action_pebble"
         android:title="Test Notification"
-         android:orderInCategory="6"
+         android:orderInCategory="102"
         />
 
     <item
             android:id="@+id/help"
             android:title="@string/help"
-            android:orderInCategory="7"
+            android:orderInCategory="103"
             />
 
 
     <item
             android:id="@+id/clearHistory"
             android:title="@string/clearHistory"
-            android:orderInCategory="8"
+            android:orderInCategory="104"
             />
 
     <item
             android:id="@+id/openInPebbleApp"
             android:title="@string/openInPebbleAppStore"
-            android:orderInCategory="9"
+            android:orderInCategory="105"
             />
 
     <item
             android:id="@+id/backupConfig"
             android:title="@string/backupConfigMenuOption"
-            android:orderInCategory="10"
+            android:orderInCategory="106"
             />
 
 
     <item
             android:id="@+id/restoreConfig"
             android:title="@string/restoreConfigMenuOption"
-            android:orderInCategory="11"
+            android:orderInCategory="107"
             />
 
 
