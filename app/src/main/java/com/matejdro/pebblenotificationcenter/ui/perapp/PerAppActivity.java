@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -196,7 +197,8 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
 
         for (SettingsCategory category : settings)
         {
-            LinearLayout categoryView = (LinearLayout) getLayoutInflater().inflate(R.layout.setting_category, root, false);
+            ViewGroup categoryView = (ViewGroup) getLayoutInflater().inflate(R.layout.setting_category, root, false);
+            ViewGroup categoryBody = (ViewGroup) categoryView.findViewById(R.id.category_body);
 
             if (category.categoryNameResource != null)
             {
@@ -212,15 +214,14 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
 
             for (int i = 0; i < category.settings.size(); i++)
             {
-                categoryView.addView(category.settings.get(i).getView(this));
+                categoryBody.addView(category.settings.get(i).getView(this));
 
                 if (i < category.settings.size() - 1)
                 {
-                    getLayoutInflater().inflate(R.layout.setting_separator, categoryView, true);
+                    getLayoutInflater().inflate(R.layout.setting_separator, categoryBody, true);
                 }
             }
 
-            addCategoryElevation(categoryView);
             root.addView(categoryView);
         }
     }
@@ -259,16 +260,6 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
                     ((ActivityResultItem) item).onActivityResult(requestCode, resultCode, data);
             }
         }
-    }
-
-    @TargetApi(value = Build.VERSION_CODES.LOLLIPOP)
-    private void addCategoryElevation(View view)
-    {
-        if (!version(Build.VERSION_CODES.LOLLIPOP))
-            return;
-
-        float density = ViewUtil.getDensity(this);
-        view.setElevation(2 * density);
     }
 
     @Override

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#FF9800</color>
+    <color name="colorPrimaryDark">#F57C00</color>
+    <color name="colorAccent">#00C853</color>
     <color name="text_enabled">#000000</color>
     <color name="text_disabled">#cccccc</color>
     <color name="pebble_light_red">#ff0000</color>
