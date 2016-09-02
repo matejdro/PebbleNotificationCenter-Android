@@ -177,8 +177,7 @@ public class ActionsModule extends CommModule
         else
         {
             action -= 3;
-            if (notification.source.getActions().size() <= action)
-                return;
+            action = Math.min(action, notification.source.getActions().size() - 1);
 
             SystemModule.get(getService()).hideHourglass();
             notification.source.getActions().get(action).executeAction(NCTalkerService.fromPebbleTalkerService(getService()), notification);
