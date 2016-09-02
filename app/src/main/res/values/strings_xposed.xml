@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="xposed_description">Module that fixes various annoyances in the Pebble app.</string>
     <string name="fix_failed_error">Fix failed error</string>
     <string name="fix_failed_error_description">Fix Failed error that pops up when activating actions on native notifications sent by Notification Center.</string>
     <string name="fix_developer_connection">Disable developer connection timeout</string>
