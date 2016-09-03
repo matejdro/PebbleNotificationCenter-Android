@@ -10,9 +10,9 @@ import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
+import com.matejdro.pebblecommons.vibration.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblecommons.pebble.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 

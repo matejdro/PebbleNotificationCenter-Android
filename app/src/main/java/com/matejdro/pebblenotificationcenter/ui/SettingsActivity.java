@@ -17,9 +17,9 @@ import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 
 import com.matejdro.pebblecommons.util.LogWriter;
+import com.matejdro.pebblecommons.vibration.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
-import com.matejdro.pebblecommons.pebble.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 
 import de.psdev.licensesdialog.LicensesDialog;

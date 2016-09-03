@@ -2,10 +2,11 @@ package com.matejdro.pebblenotificationcenter.ui.perapp.settingitems;
 
 import android.app.AlertDialog;
 import android.text.InputType;
+
+import com.matejdro.pebblecommons.vibration.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
-import com.matejdro.pebblecommons.pebble.PebbleVibrationPattern;
 
 /**
  * Created by Matej on 19.10.2014.
