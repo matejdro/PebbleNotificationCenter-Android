@@ -335,6 +335,10 @@ public class NotificationHandler {
             {
                 return null;
             }
+            catch (Resources.NotFoundException e)
+            {
+                return null;
+            }
         }
 
         if (iconDrawable != null && iconDrawable instanceof BitmapDrawable)
