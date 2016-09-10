@@ -333,7 +333,7 @@
     <string name="regexAddDialogText">Enter keyword/regex for this filter</string>
     <string name="regexAddDialogTitle">Add Filter</string>
     <string name="virtualAppDefaultSettings">Default Settings</string>
-    <string name="virtualAppThirdParty">3rd party notifications</string>
+    <string name="virtualAppThirdParty">Direct to Pebble notifications</string>
     <string name="virtualAppTaskerReceiver">Tasker notifications</string>
     <string name="backupDialogText">Making new backup will delete any previously made backups. Do you want to proceed?
     </string>
