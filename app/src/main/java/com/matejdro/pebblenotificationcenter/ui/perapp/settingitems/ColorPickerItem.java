@@ -38,7 +38,7 @@ public class ColorPickerItem extends BaseSettingItem implements ColorPickerDialo
 
     public ColorPickerItem(AppSettingStorage settingsStorage, AppSetting associatedSetting, int textResource, int descriptionResource)
     {
-        super(settingsStorage);
+        super(settingsStorage, associatedSetting);
 
         this.associatedSetting = associatedSetting;
         this.textResource = textResource;

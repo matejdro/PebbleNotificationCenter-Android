@@ -27,7 +27,7 @@ public class CheckBoxItem extends BaseSettingItem
 
     public CheckBoxItem(AppSettingStorage settingsStorage, AppSetting associatedSetting, int textResource, int descriptionResource)
     {
-        super(settingsStorage);
+        super(settingsStorage, associatedSetting);
 
         this.associatedSetting = associatedSetting;
         this.textResource = textResource;

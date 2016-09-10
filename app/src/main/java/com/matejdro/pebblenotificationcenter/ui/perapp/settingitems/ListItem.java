@@ -42,7 +42,7 @@ public abstract class ListItem extends BaseSettingItem
 
     public ListItem(AppSettingStorage settingsStorage, AppSetting associatedSetting, int textResource, int descriptionResource)
     {
-        super(settingsStorage);
+        super(settingsStorage, associatedSetting);
 
         this.associatedSetting = associatedSetting;
         this.textResource = textResource;

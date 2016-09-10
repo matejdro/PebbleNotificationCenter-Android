@@ -36,7 +36,7 @@ public class QuietHoursItem extends BaseSettingItem
 
     public QuietHoursItem(AppSettingStorage settingsStorage, int textResource, int descriptionResource)
     {
-        super(settingsStorage);
+        super(settingsStorage, AppSetting.QUIET_TIME_ENABLED);
 
         this.textResource = textResource;
         this.descriptionResource = descriptionResource;

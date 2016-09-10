@@ -70,7 +70,7 @@ public class IconPickerItem extends BaseSettingItem
 
     public IconPickerItem(AppSettingStorage settingsStorage, int textResource, int descriptionResource)
     {
-        super(settingsStorage);
+        super(settingsStorage, AppSetting.NATIVE_NOTIFICATION_ICON);
 
         this.textResource = textResource;
         this.descriptionResource = descriptionResource;

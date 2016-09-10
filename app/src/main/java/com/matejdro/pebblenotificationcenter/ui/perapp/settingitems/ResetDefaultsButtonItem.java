@@ -29,7 +29,7 @@ public class ResetDefaultsButtonItem extends BaseSettingItem
 
     public ResetDefaultsButtonItem(AppSettingStorage settingsStorage, int textResource, int descriptionResource, int buttonResource)
     {
-        super(settingsStorage);
+        super(settingsStorage, null);
         this.textResource = textResource;
         this.descriptionResource = descriptionResource;
         this.buttonResource = buttonResource;

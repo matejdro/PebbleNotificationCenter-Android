@@ -32,7 +32,7 @@ public class SpinnerItem extends BaseSettingItem
 
     public SpinnerItem(AppSettingStorage settingsStorage, AppSetting associatedSetting, int spinnerItemsListResource, int textResource, int descriptionResource, Integer spinnerItemValuesResource)
     {
-        super(settingsStorage);
+        super(settingsStorage, associatedSetting);
 
         this.spinnerItemsListResource = spinnerItemsListResource;
         this.associatedSetting = associatedSetting;
