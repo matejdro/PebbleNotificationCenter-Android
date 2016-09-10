@@ -1,8 +1,12 @@
 package com.matejdro.pebblenotificationcenter;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.SparseArray;
 
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
+import com.matejdro.pebblecommons.pebble.PebbleDeveloperConnection;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblenotificationcenter.appsetting.DefaultAppSettingsStorage;
 import com.matejdro.pebblenotificationcenter.location.LocationLookup;
@@ -14,6 +18,7 @@ import com.matejdro.pebblenotificationcenter.pebble.modules.ImageSendingModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.ListModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.SystemModule;
+import com.matejdro.pebblenotificationcenter.ui.XposedSettingsActivity;
 
 import java.net.URISyntaxException;
 
@@ -36,6 +41,14 @@ public class NCTalkerService extends PebbleTalkerService
 
         defaultSettingsStorage = new DefaultAppSettingsStorage(getGlobalSettings(), getGlobalSettings().edit());
         historyDb = new NotificationHistoryStorage(this);
+
+        //noinspection ConstantConditions
+        if (PebbleNotificationCenter.isXposedModuleRunning())
+        {
+            @SuppressLint("WorldReadableFiles")
+            SharedPreferences xposedPreferences = getSharedPreferences(XposedSettingsActivity.SHARED_PREFERENCES_NAME, Context.MODE_WORLD_READABLE);
+            setEnableDeveloperConnectionRefreshing(!xposedPreferences.getBoolean(XposedSettingsActivity.SETTING_FIX_DEVELOPER_CONNECTION, false));
+        }
     }
 
     @Override
@@ -78,22 +91,13 @@ public class NCTalkerService extends PebbleTalkerService
         return (NCTalkerService) service;
     }
 
-
     @Override
-    protected void initDeveloperConnection()
-    {
-        try
-        {
-            devConn = new NotificationCenterDeveloperConnection(this);
+    protected PebbleDeveloperConnection createDeveloperConnection() throws URISyntaxException {
+        NotificationCenterDeveloperConnection developerConnection = new NotificationCenterDeveloperConnection(this);
 
-            devConn.connectBlocking();
-            NativeNotificationActionHandler actionHandler = new NativeNotificationActionHandler(this);
-            NotificationCenterDeveloperConnection.fromDevConn(devConn).registerActionHandler(actionHandler);
+        NativeNotificationActionHandler actionHandler = new NativeNotificationActionHandler(this);
+        developerConnection.registerActionHandler(actionHandler);
 
-        } catch (InterruptedException e)
-        {
-        } catch (URISyntaxException e)
-        {
-        }
+        return developerConnection;
     }
 }
