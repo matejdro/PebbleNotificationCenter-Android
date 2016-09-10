@@ -546,5 +546,6 @@
     <string name="settingWatchappNotificationIcon">Watchapp notification icon</string>
     <string name="settingWatchappNotificationIconDescription">Display icon of the notification on the watchapp notifications</string>
     <string name="xposed_settings">NC Xposed module settings</string>
+    <string name="native_to_nc_fallback_notice">\n\n(Notification was sent in NC mode because Pebble\'s developer connection is not active)</string>
 
 </resources>

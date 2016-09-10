@@ -23,6 +23,7 @@ import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
+import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.PebbleAppNotificationMode;
@@ -328,6 +329,14 @@ public class NotificationSendingModule extends CommModule
             UUID currentApp = systemModule.getCurrentRunningApp();
             Timber.d("Current app: ", currentApp);
             pebbleAppMode = GeneralNCDatabase.getInstance().getPebbleAppNotificationMode(currentApp);
+        }
+
+        if (pebbleAppMode == PebbleAppNotificationMode.SHOW_NATIVE_NOTIFICATION && !getService().getDeveloperConnection().isOpen())
+        {
+            // Fallback to NC mode when developer connection is not available. Also notify user about the problem.
+
+            notification.source.setText(notification.source.getText() + getService().getString(R.string.native_to_nc_fallback_notice));
+            pebbleAppMode = PebbleAppNotificationMode.OPEN_IN_NOTIFICATION_CENTER;
         }
 
         if (pebbleAppMode == PebbleAppNotificationMode.OPEN_IN_NOTIFICATION_CENTER)
