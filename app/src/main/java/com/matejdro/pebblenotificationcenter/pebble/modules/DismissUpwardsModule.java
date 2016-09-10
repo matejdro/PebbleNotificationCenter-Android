@@ -12,7 +12,6 @@ import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblecommons.pebble.PebbleUtil;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
-import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -132,7 +131,7 @@ public class DismissUpwardsModule extends CommModule
         else
             settingsStorage = new SharedPreferencesAppStorage(getService(), key.getPackage(), NCTalkerService.fromPebbleTalkerService(getService()).getDefaultSettingsStorage());
 
-        boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
+        boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPWARDS);
         Timber.d("SyncDismissUp: %b", syncDismissUp);
 
         if (!syncDismissUp)
@@ -208,7 +207,7 @@ public class DismissUpwardsModule extends CommModule
 
         AppSettingStorage settingsStorage = new SharedPreferencesAppStorage(getService(), pkg, NCTalkerService.fromPebbleTalkerService(getService()).getDefaultSettingsStorage());
 
-        boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPRWADS);
+        boolean syncDismissUp = settingsStorage.getBoolean(AppSetting.DISMISS_UPWARDS);
         if (!syncDismissUp)
             return;
 

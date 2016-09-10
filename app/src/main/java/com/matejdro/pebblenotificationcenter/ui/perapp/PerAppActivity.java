@@ -1,6 +1,5 @@
 package com.matejdro.pebblenotificationcenter.ui.perapp;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.danielnilsson9.colorpickerview.dialog.ColorPickerDialogFragment;
-import com.matejdro.pebblecommons.util.ViewUtil;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AbsAppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
@@ -134,7 +132,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION, R.string.settingSwitchToRecent, R.string.settingSwitchToRecentDescription));
         addToCategory(category, new QuietHoursItem(settingsStorage, R.string.settingQuietHours, R.string.settingQuietHoursDescription));
         addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.SAVE_TO_HISTORY, R.string.settingSaveToHistory, R.string.settingSaveToHistoryDescription));
-        if (version(Build.VERSION_CODES.JELLY_BEAN_MR2)) addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.DISMISS_UPRWADS, R.string.settingDismissUpwards, R.string.settingDismissUpwardsDescripition));
+        if (version(Build.VERSION_CODES.JELLY_BEAN_MR2)) addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.DISMISS_UPWARDS, R.string.settingDismissUpwards, R.string.settingDismissUpwardsDescripition));
         addToCategory(category, new EditTextItem(settingsStorage, AppSetting.CUSTOM_TITLE, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL, R.string.settingCustomTitle, R.string.settingCustomTitleDescription));
         addToCategory(category, new EditTextItem(settingsStorage, AppSetting.MAXIMUM_TEXT_LENGTH, InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL, R.string.settingMaximumLength, R.string.settingMaximumLengthDescription));
         addToCategory(category, new SpinnerItem(settingsStorage, AppSetting.TITLE_FONT, R.array.pebbleFonts, R.string.settingFontTitle, R.string.settingDescriptionWatchappOnly, R.array.fontValues));

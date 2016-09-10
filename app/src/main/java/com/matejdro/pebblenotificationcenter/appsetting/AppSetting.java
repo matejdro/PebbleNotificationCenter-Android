@@ -12,9 +12,9 @@ import java.util.List;
 public enum AppSetting
 {
 
-    SEND_ONGOING_NOTIFICATIONS("enableOngoing", false),
-    SEND_BLANK_NOTIFICATIONS("sendBlank", false),
-    SEND_IDENTICAL_NOTIFICATIONS("sendIdentical", true),
+    SEND_ONGOING_NOTIFICATIONS("enableOngoing", false, true),
+    SEND_BLANK_NOTIFICATIONS("sendBlank", false, true),
+    SEND_IDENTICAL_NOTIFICATIONS("sendIdentical", true, true),
     DISABLE_NOTIFY_SCREEN_OIN("noNotificationsScreenOn", false),
     DISABLE_LOCAL_ONLY_NOTIFICATIONS("disableLocalOnly", false, true),
     MINIMUM_NOTIFICATION_PRIORITY("minimumNotificationPriority", -2, true),
@@ -26,7 +26,7 @@ public enum AppSetting
     QUIET_TIME_END_MINUTE("quietTimeEndMinute", 0),
 
     SWITCH_TO_MOST_RECENT_NOTIFICATION("autoSwitch", false),
-    DISMISS_UPRWADS("syncDismissUp", true),
+    DISMISS_UPWARDS("syncDismissUp", true, true),
     SAVE_TO_HISTORY("saveToHistory", true),
     CUSTOM_TITLE("customTitle", ""),
     MAXIMUM_TEXT_LENGTH("maximumTextLength", Integer.toString(NotificationSendingModule.DEFAULT_TEXT_LIMIT), true),
