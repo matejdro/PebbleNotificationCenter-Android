@@ -535,15 +535,9 @@ public class NotificationSendingModule extends CommModule
         {
             PebbleCapabilities watchCapabilities = getService().getPebbleCommunication().getConnectedWatchCapabilities();
             byte[] iconData = ImageSendingModule.prepareIcon(icon, getService(), watchCapabilities);
-
-            // Only send icon if it can fit into one Appmessage
-            if (iconData.length <= PebbleUtil.getBytesLeft(new PebbleDictionary(), watchCapabilities))
-            {
-                curSendingNotification.iconData = iconData;
-                iconSize = iconData.length;
-                curSendingNotification.needsIconSending = true;
-            }
-
+            curSendingNotification.iconData = iconData;
+            iconSize = iconData.length;
+            curSendingNotification.needsIconSending = true;
         }
         data.addUint16(5, (short) iconSize);
 
@@ -575,9 +569,15 @@ public class NotificationSendingModule extends CommModule
         PebbleDictionary data = new PebbleDictionary();
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 2);
-        data.addBytes(2, curSendingNotification.iconData);
+        data.addInt32(2, curSendingNotification.id);
 
-        getService().getPebbleCommunication().sendToPebble(data);
+        // Only send icon if it can fit into one Appmessage
+        if (curSendingNotification.iconData.length <= PebbleUtil.getBytesLeft(new PebbleDictionary(), getService().getPebbleCommunication().getConnectedWatchCapabilities()))
+        {
+            data.addBytes(3, curSendingNotification.iconData);
+            getService().getPebbleCommunication().sendToPebble(data);
+        }
+
         curSendingNotification.needsIconSending = false;
     }
 

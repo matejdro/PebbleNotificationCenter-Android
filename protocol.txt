@@ -169,7 +169,8 @@ Phone --> Pebble
 		Sent immediatelly after new notification packet, before notification text packet. 
 		Only one packet, it is not send if AppMessage buffer could not fit whole image
 		Additional data:
-            2 = Notification icon PNG data (byte array)
+			2 = Unique notification id (int32)
+            3 = Notification icon PNG data (byte array)
 
 
 	MODULE 2 - NOTIFICATION LIST
