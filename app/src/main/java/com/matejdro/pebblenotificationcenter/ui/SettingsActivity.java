@@ -126,20 +126,10 @@ public class SettingsActivity extends PreferenceActivity implements ActivityComp
             }
         });
 
-        findPreference(PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-        {
+        findPreference(PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue)
-            {
-                if (!PebbleVibrationPattern.validateVibrationPattern((String) newValue))
-                {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-                    builder.setMessage(R.string.invalidVibrationPattern);
-                    builder.setPositiveButton(R.string.ok, null);
-                    builder.show();
-
-                    return false;
-                }
+            public boolean onPreferenceClick(Preference preference) {
+                new DialogVibrationPatternPicker().show(getFragmentManager(), PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN);
                 return true;
             }
         });
