@@ -545,4 +545,7 @@
     <string name="xposed_settings">NC Xposed module settings</string>
     <string name="native_to_nc_fallback_notice">\n\n(Notification was sent in NC mode because Pebble\'s developer connection is not active)</string>
     <string name="setting_periodic_vibration_pattern">Periodic vibration pattern</string>
+    <string name="settingShowMuteApp">Show mute app action</string>
+    <string name="settingShowMuteAppDescription">Show action that allows quick disabling of this app.</string>
+    <string name="action_mute_app">Mute app</string>
 </resources>

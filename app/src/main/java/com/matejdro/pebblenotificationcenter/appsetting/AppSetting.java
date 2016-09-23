@@ -59,6 +59,7 @@ public enum AppSetting
     ENABLE_VOICE_REPLY("enableVoiceReply", true),
     ENABLE_TIME_VOICE_REPLY("enableTimeVoiceReply", true),
     ENABLE_WRITING_REPLY("enableWritingReply", true),
+    SHOW_MUTE_APP_ACTION("showMuteApp", true),
     DISMISS_AFTER_REPLY("dismissAfterReply", false, true),
     CANNED_RESPONSES("cannedResponses", null),
     WRITING_PHRASES("writingPhrases", null),

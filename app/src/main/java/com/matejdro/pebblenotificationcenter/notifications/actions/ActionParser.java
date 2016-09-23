@@ -12,6 +12,7 @@ import android.os.Parcelable;
 import com.crashlytics.android.Crashlytics;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -63,6 +64,9 @@ public class ActionParser
             actions.add(new DismissOnPebbleAction(context));
         if (notification.contentIntent != null && settingStorage.getInt(AppSetting.OPEN_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS)
             actions.add(new PendingIntentAction(context.getString(R.string.openOnPhone), notification.contentIntent));
+
+        if (pebbleNotification.getKey().getPackage() != null && !pebbleNotification.getKey().getPackage().equals(PebbleNotificationCenter.PACKAGE) && settingStorage.getBoolean(AppSetting.SHOW_MUTE_APP_ACTION))
+            actions.add(new MuteAppAction(context));
 
         pebbleNotification.setActions(actions);
 
