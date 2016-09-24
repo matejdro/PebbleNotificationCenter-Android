@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.danielnilsson9.colorpickerview.dialog.ColorPickerDialogFragment;
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
+import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AbsAppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
@@ -52,7 +54,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
     protected String appName;
     protected boolean defaultSettings;
 
-    private boolean beginnerMode;
+    private boolean expertMode;
 
     public List<SettingsCategory> settings = new ArrayList<SettingsCategory>();
 
@@ -70,7 +72,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
 
         ((TextView) findViewById(R.id.appName)).setText(appName);
 
-        beginnerMode = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("beginnerMode", true);
+        expertMode = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PebbleNotificationCenter.EXPERT_MODE, true);
 
         loadAppSettings();
         attachSettings();
@@ -197,7 +199,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
     private void addToCategory(List<BaseSettingItem> category, BaseSettingItem settingItem)
     {
         AppSetting associatedSetting = settingItem.getAssociatedSetting();
-        if (associatedSetting != null && (!beginnerMode || !associatedSetting.isAdvanced()))
+        if (associatedSetting != null && (expertMode || !associatedSetting.isAdvanced()))
             category.add(settingItem);
     }
 

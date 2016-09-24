@@ -4,12 +4,6 @@
             android:title="Most settings are now per-app"
             android:summary="This menu is now left with only several global settings. Most other settings were moved to per-app settings which means you can set different options for every app. You can get to them by clicking on app name in app list (where you check/uncheck apps) or you can edit default settings, which you can find at the top of the app list."/>
 
-    <CheckBoxPreference
-        android:key="beginnerMode"
-        android:title="Beginner mode"
-        android:summary="Hide complex settings"
-        android:defaultValue="true"/>
-
     <PreferenceCategory android:title="New notification popup" >
         <CheckBoxPreference
             android:key="noNotifications"
@@ -118,10 +112,16 @@
 
 
     </PreferenceCategory>
+
     <PreferenceCategory android:title="About" >
         <Preference 
             android:key="version"
             android:title="Installed version"/>
+        <CheckBoxPreference
+            android:key="expertMode"
+            android:title="Expert mode"
+            android:summary="Show all settings"
+            android:defaultValue="false"/>
         <CheckBoxPreference
             android:key="enableLogWriter"
             android:title="Enable debug logging"
