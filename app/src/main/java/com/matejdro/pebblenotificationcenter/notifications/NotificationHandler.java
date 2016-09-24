@@ -127,6 +127,9 @@ public class NotificationHandler {
 
         ActionParser.loadActions(notification, pebbleNotification, context);
 
+        NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender(notification);
+        pebbleNotification.setScrollToEnd(wearableExtender.getStartScrollBottom());
+
         return pebbleNotification;
     }
 

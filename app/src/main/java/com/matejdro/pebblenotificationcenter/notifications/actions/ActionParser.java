@@ -122,7 +122,6 @@ public class ActionParser
                             continue;
 
                         pageNotification.setForceSwitch(true);
-                        pageNotification.setScrollToEnd(true);
                         pageNotification.setText(TextUtil.trimStringFromBack(pageNotification.getText(), NotificationSendingModule.getMaximumTextLength(pebbleNotification.getSettingStorage(context))));
 
                         storage.add(new NotifyAction(context.getString(R.string.wearPageAction, counter), pageNotification));
