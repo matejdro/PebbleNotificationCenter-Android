@@ -65,8 +65,15 @@ public class ActionParser
         if (notification.contentIntent != null && settingStorage.getInt(AppSetting.OPEN_ON_PHONE_OPTION_LOCATION) == NotificationAction.VISIBILITY_OPTION_AFTER_APP_OPTIONS)
             actions.add(new PendingIntentAction(context.getString(R.string.openOnPhone), notification.contentIntent));
 
-        if (pebbleNotification.getKey().getPackage() != null && !pebbleNotification.getKey().getPackage().equals(PebbleNotificationCenter.PACKAGE) && settingStorage.getBoolean(AppSetting.SHOW_MUTE_APP_ACTION))
-            actions.add(new MuteAppAction(context));
+        if (pebbleNotification.getKey().getPackage() != null && !pebbleNotification.getKey().getPackage().equals(PebbleNotificationCenter.PACKAGE))
+        {
+            if (settingStorage.getBoolean(AppSetting.SHOW_MUTE_APP_ACTION))
+                actions.add(new MuteAppAction(context));
+
+            int muteDuration = Integer.parseInt(settingStorage.getString(AppSetting.TEMPORARY_MUTE_ACTION_DURATION));
+            if (muteDuration > 0)
+                actions.add(new MuteAppTemporarilyAction(context, muteDuration));
+        }
 
         pebbleNotification.setActions(actions);
 

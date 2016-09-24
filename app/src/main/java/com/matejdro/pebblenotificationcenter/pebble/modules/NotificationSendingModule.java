@@ -53,11 +53,14 @@ public class NotificationSendingModule extends CommModule
 {
     public static final int MODULE_NOTIFICATION_SENDING = 1;
     public static final String INTENT_NOTIFICATION = "Notification";
+    public static final String INTENT_MUTE_APP_TEMPORARILY = "MuteAppTemporarily";
+    public static final String INTENT_CLEAR_TEMPORARY_MUTES = "ClearTemporaryMutes";
 
     public static final int DEFAULT_TEXT_LIMIT = 2000;
 
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
+    private HashMap<String, Long> temporaryMutes = new HashMap<String, Long>();
     private ProcessedNotification curSendingNotification;
     private Queue<ProcessedNotification> sendingQueue = new LinkedList<ProcessedNotification>();
 
@@ -65,6 +68,8 @@ public class NotificationSendingModule extends CommModule
     {
         super(service);
         service.registerIntent(INTENT_NOTIFICATION, this);
+        service.registerIntent(INTENT_MUTE_APP_TEMPORARILY, this);
+        service.registerIntent(INTENT_CLEAR_TEMPORARY_MUTES, this);
     }
 
     private FilteringResult shouldFilterNotification(PebbleNotification notificationSource)
@@ -159,6 +164,20 @@ public class NotificationSendingModule extends CommModule
         }
         catch (NumberFormatException e)
         {
+        }
+
+        Long appMutedUntil = temporaryMutes.get(notificationSource.getKey().getPackage());
+        if (appMutedUntil != null)
+        {
+            if (appMutedUntil > System.currentTimeMillis())
+            {
+                Timber.d("notify failed - temporary app filter");
+                return FilteringResult.IGNORE;
+            }
+            else
+            {
+                lastAppNotification.remove(notificationSource.getKey().getPackage());
+            }
         }
 
         if (minNotificationInterval > 0) {
@@ -629,26 +648,40 @@ public class NotificationSendingModule extends CommModule
     @Override
     public void gotIntent(Intent intent)
     {
-        final PebbleNotification notification = intent.getParcelableExtra("notification");
-        if (notification == null)
-            return;
+        if (intent.getAction().equals(INTENT_NOTIFICATION))
+        {
+            final PebbleNotification notification = intent.getParcelableExtra("notification");
+            if (notification == null)
+                return;
 
-        // Process summary notifications 500ms later than others to make sure
-        // any non-summary notifications can get processed first
-        if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
-        {
-            getService().runOnMainThreadDelayed(new Runnable()
+            // Process summary notifications 500ms later than others to make sure
+            // any non-summary notifications can get processed first
+            if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
             {
-                @Override
-                public void run()
+                getService().runOnMainThreadDelayed(new Runnable()
                 {
-                    processNotification(notification);
-                }
-            }, 500);
+                    @Override
+                    public void run()
+                    {
+                        processNotification(notification);
+                    }
+                }, 500);
+            }
+            else
+            {
+                processNotification(notification);
+            }
         }
-        else
+        else if (intent.getAction().equals(INTENT_MUTE_APP_TEMPORARILY))
         {
-            processNotification(notification);
+            String appPackage = intent.getStringExtra("AppPackage");
+            long until = intent.getLongExtra("MutedUntil", 0);
+
+            temporaryMutes.put(appPackage, until);
+        }
+        else if (intent.getAction().equals(INTENT_CLEAR_TEMPORARY_MUTES))
+        {
+            temporaryMutes.clear();
         }
     }
 
@@ -769,6 +802,24 @@ public class NotificationSendingModule extends CommModule
         Intent intent = new Intent(context, NCTalkerService.class);
         intent.setAction(INTENT_NOTIFICATION);
         intent.putExtra("notification", notification);
+
+        context.startService(intent);
+    }
+
+    public static void muteApp(Context context, String appPackage, long until)
+    {
+        Intent intent = new Intent(context, NCTalkerService.class);
+        intent.setAction(INTENT_MUTE_APP_TEMPORARILY);
+        intent.putExtra("AppPackage", appPackage);
+        intent.putExtra("MutedUntil", until);
+
+        context.startService(intent);
+    }
+
+    public static void clearTemporaryMutes(Context context)
+    {
+        Intent intent = new Intent(context, NCTalkerService.class);
+        intent.setAction(INTENT_CLEAR_TEMPORARY_MUTES);
 
         context.startService(intent);
     }

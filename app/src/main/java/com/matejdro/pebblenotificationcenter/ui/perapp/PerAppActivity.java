@@ -168,6 +168,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         addToCategory(category, new TaskerTaskListItem(settingsStorage, AppSetting.TASKER_ACTIONS, R.string.settingTaskerActions, R.string.settingTaskerActionsDescription));
         addToCategory(category, new IntentActionsItem(settingsStorage, AppSetting.INTENT_ACTIONS_NAMES, R.string.settingBroadcastIntentActions, R.string.settingBroadcastIntentActionsDescription));
         addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.SHOW_MUTE_APP_ACTION, R.string.settingShowMuteApp, R.string.settingShowMuteAppDescription));
+        addToCategory(category, new EditTextItem(settingsStorage, AppSetting.TEMPORARY_MUTE_ACTION_DURATION, InputType.TYPE_CLASS_NUMBER, R.string.settingTemporaryMuteDuration, R.string.settingTemporaryMuteDurationDescription));
         settings.add(new SettingsCategory(R.string.settingCategoryActions, category));
 
         //Inbox parsing

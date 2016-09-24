@@ -547,5 +547,10 @@
     <string name="setting_periodic_vibration_pattern">Periodic vibration pattern</string>
     <string name="settingShowMuteApp">Show mute app action</string>
     <string name="settingShowMuteAppDescription">Show action that allows quick disabling of this app.</string>
+    <string name="settingTemporaryMuteDuration">Temporary mute action duration</string>
+    <string name="settingTemporaryMuteDurationDescription">For how many minutes will \"Mute for X min\" action mute the app. Set to 0 to remove the action.</string>
     <string name="action_mute_app">Mute app</string>
+    <string name="action_mute_app_temporarily_minutes">Mute for %1$d min</string>
+    <string name="clear_temporary_mutes">Clear temporary mutes</string>
+    <string name="mutes_cleared">Mutes cleared</string>
 </resources>

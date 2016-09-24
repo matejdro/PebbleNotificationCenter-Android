@@ -32,6 +32,7 @@ import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
+import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.util.ConfigBackup;
 
 import java.util.ArrayList;
@@ -115,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
             break;
             case R.id.clearHistory:
                 clearHistory();
+                break;
+            case R.id.clearTemporaryMutes:
+                NotificationSendingModule.clearTemporaryMutes(this);
+                Toast.makeText(this, R.string.mutes_cleared, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.openInPebbleApp:
                 WatchappHandler.openPebbleApp(this, PreferenceManager.getDefaultSharedPreferences(this).edit());
