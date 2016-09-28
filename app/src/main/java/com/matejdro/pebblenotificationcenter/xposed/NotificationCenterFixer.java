@@ -58,7 +58,7 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 
 		//Failed error fix
 		Class asClass = findClass("com.getpebble.android.framework.l.a.as", lpparam.classLoader);
-		findAndHookMethod("com.getpebble.android.framework.g.cq", lpparam.classLoader, "a", asClass, new XC_MethodHook()
+		findAndHookMethod("com.getpebble.android.framework.g.cs", lpparam.classLoader, "a", asClass, new XC_MethodHook()
 		{
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable
@@ -107,8 +107,8 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 					return;
 
 				// Kickstart developer connection on startup
-				Object pebbleFrameworkObject = XposedHelpers.getObjectField(param.thisObject, "f");
-				XposedHelpers.callMethod(pebbleFrameworkObject, "d");
+				Object pebbleFrameworkObject = XposedHelpers.getObjectField(param.thisObject, "g");
+				XposedHelpers.callMethod(pebbleFrameworkObject, "f");
 			}
 		});
 
@@ -134,7 +134,7 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 
 		// Disable native music app
 		Class pebbleDeviceClass = XposedHelpers.findClass("com.getpebble.android.bluetooth.PebbleDevice", lpparam.classLoader);
-		findAndHookMethod("com.getpebble.android.framework.g.bs", lpparam.classLoader, "a", pebbleDeviceClass, new XC_MethodHook() {
+		findAndHookMethod("com.getpebble.android.framework.g.bu", lpparam.classLoader, "a", pebbleDeviceClass, new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 				xSharedPreferences.reload();
