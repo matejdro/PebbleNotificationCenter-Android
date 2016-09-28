@@ -17,7 +17,7 @@ import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
-import com.matejdro.pebblenotificationcenter.notifications.NotificationParser;
+import com.matejdro.pebblenotificationcenter.notifications.NotificationTextParser;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblecommons.util.TextUtil;
 import java.lang.reflect.Field;
@@ -86,7 +86,7 @@ public class ActionParser
             if (storage.size() >= NotificationAction.MAX_NUMBER_OF_ACTIONS)
                 return;
 
-            Bundle extras = NotificationParser.getExtras(notification);
+            Bundle extras = NotificationTextParser.getExtras(notification);
 
             if (extras.containsKey("android.wearable.EXTENSIONS"))
             {
