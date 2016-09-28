@@ -99,7 +99,7 @@ public class NotificationHandler {
         PebbleNotification pebbleNotification = new PebbleNotification(title, null, key);
         AppSettingStorage settingStorage = pebbleNotification.getSettingStorage(context);
 
-        NotificationParser parser = new NotificationParser(context, pebbleNotification, notification);
+        NotificationTextParser parser = new NotificationTextParser(context, pebbleNotification, notification);
 
         String secondaryTitle = parser.title;
         String text = parser.text.trim();
@@ -144,7 +144,7 @@ public class NotificationHandler {
 
     public static void parseWearGroupData(Notification notification, PebbleNotification pebbleNotification)
     {
-        Bundle extras = NotificationParser.getExtras(notification);
+        Bundle extras = NotificationTextParser.getExtras(notification);
         if (extras == null)
             return;
 
@@ -198,7 +198,7 @@ public class NotificationHandler {
         }
 
         //Try getting color from Wearable and Car extensions
-        Bundle extras = NotificationParser.getExtras(notification);
+        Bundle extras = NotificationTextParser.getExtras(notification);
         if (extras != null)
         {
             if (extras.containsKey("android.wearable.EXTENSIONS"))
@@ -269,7 +269,7 @@ public class NotificationHandler {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static Bitmap getImage(Notification notification)
     {
-        Bundle extras = NotificationParser.getExtras(notification);
+        Bundle extras = NotificationTextParser.getExtras(notification);
         if (extras != null)
         {
             //Extract image from BigPictureStyle notification style

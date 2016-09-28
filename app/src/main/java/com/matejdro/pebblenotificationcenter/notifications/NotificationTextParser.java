@@ -20,11 +20,11 @@ import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStor
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-public class NotificationParser {
+public class NotificationTextParser {
 	public String title;
 	public String text;
 
-	public NotificationParser(Context context, PebbleNotification pebbleNotification, Notification notification)
+	public NotificationTextParser(Context context, PebbleNotification pebbleNotification, Notification notification)
 	{
 		this.title = null;
 		this.text = "";
