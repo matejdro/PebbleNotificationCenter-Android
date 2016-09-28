@@ -590,7 +590,7 @@ public class NotificationSendingModule extends CommModule
         curSendingNotification.nextChunkToSend++;
     }
 
-    private void sendWatchappIcon()
+    private boolean sendWatchappIcon()
     {
         Timber.d("Sending icon");
 
@@ -599,14 +599,20 @@ public class NotificationSendingModule extends CommModule
         data.addUint8(1, (byte) 2);
         data.addInt32(2, curSendingNotification.id);
 
+        curSendingNotification.needsIconSending = false;
+
         // Only send icon if it can fit into one Appmessage
         if (curSendingNotification.iconData.length <= PebbleUtil.getBytesLeft(new PebbleDictionary(), getService().getPebbleCommunication().getConnectedWatchCapabilities()))
         {
             data.addBytes(3, curSendingNotification.iconData);
             getService().getPebbleCommunication().sendToPebble(data);
+            return true;
         }
-
-        curSendingNotification.needsIconSending = false;
+        else
+        {
+            Timber.d("Sending failed! Icon cannot fit into AppMessage.");
+            return sendNextMessage(); //Icon sending failed, send next message in a row.
+        }
     }
 
     @Override
@@ -624,7 +630,7 @@ public class NotificationSendingModule extends CommModule
         }
         else if (curSendingNotification.needsIconSending)
         {
-            sendWatchappIcon();
+            return sendWatchappIcon();
         }
         else if (curSendingNotification.nextChunkToSend < curSendingNotification.textChunks.size())
         {
