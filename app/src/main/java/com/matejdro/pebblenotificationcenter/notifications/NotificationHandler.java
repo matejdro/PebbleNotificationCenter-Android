@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import com.matejdro.pebblecommons.notification.NotificationCenterExtender;
+import com.matejdro.pebblecommons.util.BitmapUtils;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
@@ -117,7 +118,7 @@ public class NotificationHandler {
             pebbleNotification.setNativeNotificationIcon(NativeNotificationIcon.getIconForApplication(key.getPackage(), title));
 
         if (settingStorage.getBoolean(AppSetting.SHOW_IMAGE))
-            pebbleNotification.setPebbleImage(ImageSendingModule.prepareImage(getImage(notification)));
+            pebbleNotification.setPebbleImage(ImageSendingModule.prepareImage(getImage(context, notification)));
 
         if (settingStorage.getBoolean(AppSetting.USE_PROVIDED_VIBRATION))
             pebbleNotification.setForcedVibrationPattern(notification.vibrate);
@@ -267,13 +268,13 @@ public class NotificationHandler {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static Bitmap getImage(Notification notification)
+    public static Bitmap getImage(Context context, Notification notification)
     {
         Bundle extras = NotificationTextParser.getExtras(notification);
         if (extras != null)
         {
             //Extract image from BigPictureStyle notification style
-            Bitmap bitmap = extras.getParcelable(Notification.EXTRA_PICTURE);
+            Bitmap bitmap = BitmapUtils.getBitmap(context, extras.getParcelable(Notification.EXTRA_PICTURE));
             if (bitmap != null)
                 return bitmap;
 
@@ -290,17 +291,17 @@ public class NotificationHandler {
             if (extras.containsKey("android.car.EXTENSIONS"))
             {
                 Bundle carExtensions = extras.getBundle("android.car.EXTENSIONS");
-                bitmap = carExtensions.getParcelable("large_icon");
+                bitmap = BitmapUtils.getBitmap(context, carExtensions.getParcelable("large_icon"));
                 if (bitmap != null)
                     return bitmap;
             }
 
             //Extract image from large icon on android notification
-            bitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG);
+            bitmap = BitmapUtils.getBitmap(context, extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG));
             if (bitmap != null)
                 return bitmap;
 
-            bitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON);
+            bitmap = BitmapUtils.getBitmap(context, extras.getParcelable(Notification.EXTRA_LARGE_ICON));
             if (bitmap != null)
                 return bitmap;
         }
@@ -344,8 +345,8 @@ public class NotificationHandler {
             }
         }
 
-        if (iconDrawable != null && iconDrawable instanceof BitmapDrawable)
-            return ((BitmapDrawable) iconDrawable).getBitmap();
+        if (iconDrawable != null)
+            return BitmapUtils.getBitmap(iconDrawable);
 
         return null;
     }
