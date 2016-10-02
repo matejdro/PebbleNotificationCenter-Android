@@ -12,4 +12,5 @@ import timber.log.Timber;
 public interface NotificationListAdapter {
 	public PebbleNotification getNotificationAt(int index);
 	public int getNumOfNotifications();
+	public void forceRefresh();
 }

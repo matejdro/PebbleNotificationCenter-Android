@@ -17,9 +17,11 @@ import android.graphics.BitmapFactory;
 public class NotificationHistoryAdapter implements NotificationListAdapter {
 	private List<PebbleNotification> notifications;
 	private NotificationHistoryStorage storage;
-	
+	private Context context;
+
 	public NotificationHistoryAdapter(Context context, NotificationHistoryStorage storage) {
 		this.storage = storage;
+		this.context = context;
 		
 		loadNotifications(context);
 	}
@@ -61,5 +63,10 @@ public class NotificationHistoryAdapter implements NotificationListAdapter {
 	@Override
 	public int getNumOfNotifications() {
 		return notifications.size();
+	}
+
+	@Override
+	public void forceRefresh() {
+		loadNotifications(context);
 	}
 }

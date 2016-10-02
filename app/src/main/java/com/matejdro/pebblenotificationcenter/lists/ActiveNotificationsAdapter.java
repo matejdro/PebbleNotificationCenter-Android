@@ -18,8 +18,11 @@ import java.util.List;
 @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class ActiveNotificationsAdapter implements NotificationListAdapter {
 	private List<PebbleNotification> pebbleNotifications;
+	private Context context;
 	
 	public ActiveNotificationsAdapter(Context context) {
+		this.context = context;
+
 		loadNotifications(context);
 	}
 	
@@ -57,6 +60,11 @@ public class ActiveNotificationsAdapter implements NotificationListAdapter {
 	@Override
 	public int getNumOfNotifications() {
 		return pebbleNotifications.size();
+	}
+
+	@Override
+	public void forceRefresh() {
+		loadNotifications(context);
 	}
 
 	private static class NotificationComparable implements Comparator<PebbleNotification>

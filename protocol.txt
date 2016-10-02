@@ -40,6 +40,7 @@ Pebble --> Phone
 		Packet 0 - Request notification data at list index
 		Additional data:
 			2 = list position of entry - uint16
+			3 = Is this first request after the list was displayed (0 = No, 1 = Yes) - uint8
 
 		Packet 1 - Send notification at
 		Used when user double presses UP/DOWN on list notification

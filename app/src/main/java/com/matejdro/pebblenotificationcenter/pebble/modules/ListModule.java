@@ -76,6 +76,10 @@ public class ListModule extends CommModule
         int id = data.getUnsignedIntegerAsLong(2).intValue();
         nextListItemToSend = id;
 
+        boolean forceListRefresh = data.getUnsignedIntegerAsLong(3).intValue() == 1;
+        if (forceListRefresh && listAdapter != null)
+            listAdapter.forceRefresh();
+
         PebbleCommunication communication = getService().getPebbleCommunication();
         communication.queueModulePriority(this);
         communication.sendNext();
