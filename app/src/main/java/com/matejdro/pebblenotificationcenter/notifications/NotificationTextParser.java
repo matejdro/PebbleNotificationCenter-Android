@@ -6,7 +6,9 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.widget.RemoteViews;
 
@@ -19,6 +21,9 @@ import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStor
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class NotificationTextParser {
 	public String title;
@@ -51,6 +56,9 @@ public class NotificationTextParser {
 		Bundle extras = getExtras(notification);
 		if (extras == null)
 			return false;
+
+        if (parseMessageStyleNotification(context, pkg, notification, extras))
+            return true;
 
         if (extras.get(Notification.EXTRA_TEXT_LINES) != null && extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES).length > 0)
         {
@@ -100,6 +108,43 @@ public class NotificationTextParser {
 
         return true;
 	}
+
+    public boolean parseMessageStyleNotification(Context context, String pkg, Notification notification, Bundle extras)
+    {
+        NotificationCompat.MessagingStyle messagingStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(notification);
+        if (messagingStyle == null)
+            return false;
+
+        title = formatCharSequence(messagingStyle.getConversationTitle());
+        if (TextUtils.isEmpty(title))
+            title = formatCharSequence(extras.getCharSequence(Notification.EXTRA_TITLE_BIG));
+        if (TextUtils.isEmpty(title))
+            title = formatCharSequence(extras.getCharSequence(Notification.EXTRA_TITLE));
+        if (title == null)
+            title  = "";
+
+        List<NotificationCompat.MessagingStyle.Message> messagesDescending = new ArrayList<>(messagingStyle.getMessages());
+        Collections.sort(messagesDescending, new Comparator<NotificationCompat.MessagingStyle.Message>() {
+            @Override
+            public int compare(NotificationCompat.MessagingStyle.Message m1, NotificationCompat.MessagingStyle.Message m2) {
+                return (int) (m2.getTimestamp() - m1.getTimestamp());
+            }
+        });
+
+        text = "";
+        for (NotificationCompat.MessagingStyle.Message message : messagesDescending)
+        {
+            String sender;
+            if (message.getSender() == null)
+                sender = formatCharSequence(messagingStyle.getUserDisplayName());
+            else
+                sender = formatCharSequence(message.getSender());
+
+            text += sender + ": " + message.getText() + "\n";
+        }
+
+        return true;
+    }
 
     @TargetApi(value = Build.VERSION_CODES.JELLY_BEAN)
     public boolean parseInboxNotification(Context context, String pkg, Bundle extras)
