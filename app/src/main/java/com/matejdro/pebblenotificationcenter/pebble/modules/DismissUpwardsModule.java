@@ -145,7 +145,7 @@ public class DismissUpwardsModule extends CommModule
 
             Timber.d("OtherNotify: %b %s %d", notification.source.isListNotification(), notification.source.getKey(), notification.source.getWearGroupType());
 
-            if (!notification.source.isListNotification() && notification.source.isSameNotification(key))
+            if (notification.source.isSameNotification(key))
             {
                 prevNotification = notification.id;
 
@@ -216,7 +216,7 @@ public class DismissUpwardsModule extends CommModule
         {
             ProcessedNotification notification = sentNotifications.valueAt(i);
 
-            if (!notification.source.isListNotification() && notification.source.getKey().getPackage().equals(pkg))
+            if (notification.source.getKey().getPackage().equals(pkg))
             {
                 dismissUpwards(notification);
                 i--;
