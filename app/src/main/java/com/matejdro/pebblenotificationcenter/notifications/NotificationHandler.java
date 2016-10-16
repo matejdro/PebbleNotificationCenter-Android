@@ -19,6 +19,8 @@ import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.Target;
 
 import com.matejdro.pebblecommons.notification.NotificationCenterExtender;
 import com.matejdro.pebblecommons.util.BitmapUtils;
@@ -188,14 +190,6 @@ public class NotificationHandler {
 
     public static int getColor(Notification notification, String appPackage, Context context)
     {
-        //Try getting color from Notification#color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            int color = notification.color;
-            if (color != Notification.COLOR_DEFAULT)
-                return color;
-        }
-
         //Try getting color from Wearable and Car extensions
         Bundle extras = NotificationTextParser.getExtras(notification);
         if (extras != null)
@@ -215,52 +209,18 @@ public class NotificationHandler {
             }
         }
 
-        //Try getting color from app theme (material design primary color)
-        if (appPackage != null)
-        {
-            PackageManager packageManager = context.getPackageManager();
-            try
+        //Try getting color from notification icon color
+        try {
+            Drawable appIcon = context.getPackageManager().getApplicationIcon(appPackage);
+            Bitmap iconBitmap = BitmapUtils.getBitmap(appIcon);
+            if (iconBitmap != null)
             {
-                Resources otherAppResources = packageManager.getResourcesForApplication(appPackage);
-                Resources.Theme theme = otherAppResources.newTheme();
-
-                int themeResId = packageManager.getApplicationInfo(appPackage, 0).theme;
-                if (themeResId == 0)
-                {
-                    Intent launchIntent =  packageManager.getLaunchIntentForPackage(appPackage);
-                    themeResId = launchIntent != null ? packageManager.getActivityInfo(launchIntent.getComponent(), 0).theme : 0;
-                }
-
-                if (themeResId != 0)
-                {
-                    theme.applyStyle(themeResId, false);
-
-                    //AppCompat theme color
-                    TypedArray typedArray = theme.obtainStyledAttributes(new int[] {otherAppResources.getIdentifier("colorPrimary", "attr", appPackage)});
-                    int color = typedArray.getColor(0, Color.TRANSPARENT);
-                    typedArray.recycle();
-
-                    if (color == Color.TRANSPARENT && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    {
-                        //Native Lollipop theme color
-                        typedArray = theme.obtainStyledAttributes(new int[] {android.R.attr.colorPrimary});
-                        color = typedArray.getColor(0, Color.TRANSPARENT);
-                        typedArray.recycle();
-                    }
-
-                    if (color != Color.TRANSPARENT)
-                        return color;
-                }
+                Palette palette = Palette.from(iconBitmap).addTarget(Target.VIBRANT).generate();
+                return palette.getColorForTarget(Target.VIBRANT, Color.TRANSPARENT);
             }
-            catch (NameNotFoundException ignored)
-            {
-            }
+        } catch (NameNotFoundException ignored) {
         }
 
-        //Try getting color from notification LED color
-        int ledColor = notification.ledARGB;
-        if (ledColor != Notification.COLOR_DEFAULT)
-            return ledColor;
 
         return Color.TRANSPARENT;
     }
