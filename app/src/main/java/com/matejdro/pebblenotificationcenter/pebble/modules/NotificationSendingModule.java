@@ -58,6 +58,8 @@ public class NotificationSendingModule extends CommModule
 
     public static final int DEFAULT_TEXT_LIMIT = 2000;
 
+    private static Queue<PebbleNotification> processingQueue = new LinkedList<>();
+
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
     private HashMap<String, Long> temporaryMutes = new HashMap<String, Long>();
@@ -656,7 +658,7 @@ public class NotificationSendingModule extends CommModule
     {
         if (intent.getAction().equals(INTENT_NOTIFICATION))
         {
-            final PebbleNotification notification = intent.getParcelableExtra("notification");
+            final PebbleNotification notification = processingQueue.poll();
             if (notification == null)
                 return;
 
@@ -805,10 +807,10 @@ public class NotificationSendingModule extends CommModule
 
     public static void notify(PebbleNotification notification, Context context)
     {
+        processingQueue.add(notification);
+
         Intent intent = new Intent(context, NCTalkerService.class);
         intent.setAction(INTENT_NOTIFICATION);
-        intent.putExtra("notification", notification);
-
         context.startService(intent);
     }
 
