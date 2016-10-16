@@ -17,6 +17,7 @@ public class ProcessedNotification implements Parcelable
 
     public boolean needsIconSending = false;
     public byte[] iconData;
+    public byte[] backgroundImageData;
 
     public boolean vibrated = false;
     public int nextChunkToSend = -1;

@@ -524,15 +524,16 @@ public class NotificationSendingModule extends CommModule
             configBytes[10] = PebbleImageToolkit.getGColor8FromRGBColor(color);
         }
 
+        curSendingNotification.backgroundImageData = ImageSendingModule.prepareImage(curSendingNotification.source.getBigNotificationImage());
         boolean queueImage = false;
-        if (curSendingNotification.source.getPebbleImage() == null)
+        if (curSendingNotification.backgroundImageData == null)
         {
             configBytes[11] = 0;
             configBytes[12] = 0;
         }
         else
         {
-            int size = curSendingNotification.source.getPebbleImage().length;
+            int size = curSendingNotification.backgroundImageData.length;
 
             configBytes[11] = (byte) (size >>> 8);
             configBytes[12] = (byte) size;

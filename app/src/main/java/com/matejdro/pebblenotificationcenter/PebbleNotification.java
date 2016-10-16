@@ -37,7 +37,7 @@ public class PebbleNotification implements Parcelable
     private boolean hidingTextDisallowed;
     private String wearGroupKey;
     private int color;
-    private byte[] pebbleImage;
+    private Bitmap bigNotificationImage;
     private Bitmap notificationIcon;
     private NativeNotificationIcon nativeNotificationIcon;
     private long[] forcedVibrationPattern;
@@ -248,14 +248,14 @@ public class PebbleNotification implements Parcelable
         this.color = color;
     }
 
-    public @Nullable byte[] getPebbleImage()
+    public @Nullable Bitmap getBigNotificationImage()
     {
-        return pebbleImage;
+        return bigNotificationImage;
     }
 
-    public void setPebbleImage(@Nullable byte[] pebbleImage)
+    public void setBigNotificationImage(@Nullable Bitmap bigNotificationImage)
     {
-        this.pebbleImage = pebbleImage;
+        this.bigNotificationImage = bigNotificationImage;
     }
 
     public Bitmap getNotificationIcon()
@@ -333,7 +333,7 @@ public class PebbleNotification implements Parcelable
         parcel.writeValue(wearGroupKey);
         parcel.writeInt(wearGroupType);
         parcel.writeInt(color);
-        parcel.writeValue(pebbleImage);
+        parcel.writeValue(bigNotificationImage);
         parcel.writeValue(notificationIcon);
         parcel.writeValue(nativeNotificationIcon);
         parcel.writeValue(forcedVibrationPattern);
@@ -363,7 +363,7 @@ public class PebbleNotification implements Parcelable
             notification.wearGroupKey = (String) parcel.readValue(((Object) this).getClass().getClassLoader());
             notification.wearGroupType = parcel.readInt();
             notification.color = parcel.readInt();
-            notification.pebbleImage = (byte[]) parcel.readValue(getClass().getClassLoader());
+            notification.bigNotificationImage = (Bitmap) parcel.readValue(getClass().getClassLoader());
             notification.notificationIcon = (Bitmap) parcel.readValue(getClass().getClassLoader());
             notification.nativeNotificationIcon = (NativeNotificationIcon) parcel.readValue(getClass().getClassLoader());
             notification.forcedVibrationPattern = (long[]) parcel.readValue(getClass().getClassLoader());

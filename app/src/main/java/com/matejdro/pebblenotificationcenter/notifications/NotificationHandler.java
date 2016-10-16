@@ -11,7 +11,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -31,7 +30,6 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.appsetting.SharedPreferencesAppStorage;
 import com.matejdro.pebblenotificationcenter.notifications.actions.ActionParser;
 import com.matejdro.pebblenotificationcenter.pebble.NativeNotificationIcon;
-import com.matejdro.pebblenotificationcenter.pebble.modules.ImageSendingModule;
 import com.matejdro.pebblenotificationcenter.pebble.modules.NotificationSendingModule;
 import com.matejdro.pebblenotificationcenter.util.SettingsMemoryStorage;
 
@@ -118,7 +116,7 @@ public class NotificationHandler {
             pebbleNotification.setNativeNotificationIcon(NativeNotificationIcon.getIconForApplication(key.getPackage(), title));
 
         if (settingStorage.getBoolean(AppSetting.SHOW_IMAGE))
-            pebbleNotification.setPebbleImage(ImageSendingModule.prepareImage(getImage(context, notification)));
+            pebbleNotification.setBigNotificationImage(getImage(context, notification));
 
         if (settingStorage.getBoolean(AppSetting.USE_PROVIDED_VIBRATION))
             pebbleNotification.setForcedVibrationPattern(notification.vibrate);

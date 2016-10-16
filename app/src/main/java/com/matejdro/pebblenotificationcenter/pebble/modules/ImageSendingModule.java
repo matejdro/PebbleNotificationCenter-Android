@@ -92,7 +92,7 @@ public class ImageSendingModule extends CommModule
             return;
         }
 
-        imageData = notification.source.getPebbleImage();
+        imageData = notification.backgroundImageData;
         if (imageData == null)
         {
             Timber.w("Notification has no image!");
