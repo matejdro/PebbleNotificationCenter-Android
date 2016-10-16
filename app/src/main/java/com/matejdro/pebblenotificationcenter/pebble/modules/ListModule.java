@@ -2,11 +2,13 @@ package com.matejdro.pebblenotificationcenter.pebble.modules;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
 import com.matejdro.pebblecommons.pebble.PebbleCapabilities;
 import com.matejdro.pebblecommons.pebble.PebbleCommunication;
+import com.matejdro.pebblecommons.pebble.PebbleImageToolkit;
 import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblecommons.pebble.PebbleUtil;
 import com.matejdro.pebblecommons.util.TextUtil;
@@ -164,7 +166,17 @@ public class ListModule extends CommModule
         if (icon != null)
         {
             PebbleCapabilities connectedWatchCapabilities = getService().getPebbleCommunication().getConnectedWatchCapabilities();
-            byte[] iconData = ImageSendingModule.prepareIcon(icon, getService(), connectedWatchCapabilities);
+            int iconColor = Color.BLACK;
+            int notificationColor = notification.getColor();
+
+            if (connectedWatchCapabilities.hasColorScreen() && notificationColor != Color.TRANSPARENT)
+            {
+                iconColor = notificationColor;
+                //Make sure icon contrasts with white list background
+                if (PebbleImageToolkit.getLuminance(iconColor) > 255 * 3 / 2)
+                    iconColor = PebbleImageToolkit.multiplyBrightness(iconColor, 0.5f);
+            }
+            byte[] iconData = ImageSendingModule.prepareTintedIcon(icon, getService(), connectedWatchCapabilities, iconColor, false);
 
             // This feature requires lots of memory on the watch to contain lots of icons for every list item
             // To weed out low memory devices, a device must be able to afford to receive at least 2048 bytes of the appmessage.

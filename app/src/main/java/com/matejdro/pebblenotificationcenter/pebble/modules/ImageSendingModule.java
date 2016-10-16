@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
 
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.matejdro.pebblecommons.pebble.CommModule;
@@ -137,7 +138,7 @@ public class ImageSendingModule extends CommModule
         return imageData;
     }
 
-    public static byte[] prepareIcon(Bitmap originalImage, Context context, PebbleCapabilities capabilities)
+    public static byte[] prepareTintedIcon(Bitmap originalImage, Context context, PebbleCapabilities capabilities, @ColorInt int iconTint, boolean blackBackground)
     {
         if (originalImage == null)
             return null;
@@ -145,35 +146,32 @@ public class ImageSendingModule extends CommModule
         boolean colorScreen = capabilities.hasColorScreen();
 
         Bitmap image = PebbleImageToolkit.resizePreservingRatio(originalImage, ICON_SIZE, ICON_SIZE, colorScreen);
-        image = PebbleImageToolkit.createGrayscaleFromAlphaMask(image);
-
-        boolean whiteImage = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PebbleNotificationCenter.WHITE_NOTIFICATION_TEXT, false);
-        int transparentColor;
-        if (whiteImage)
-        {
-            transparentColor = Color.BLACK;
-        }
-        else
-        {
-            image = PebbleImageToolkit.invertImage(image);
-            transparentColor = Color.WHITE;
-        }
+        image = PebbleImageToolkit.createMaskFromAlpha(image, iconTint, blackBackground);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         if (colorScreen)
         {
             image = PebbleImageToolkit.ditherToPebbleTimeColors(image);
-            PebbleImageToolkit.writeIndexedPebblePNG(image, outputStream, transparentColor);
+            PebbleImageToolkit.writeIndexedPebblePNG(image, outputStream, blackBackground ? Color.BLACK : Color.WHITE);
         }
         else
         {
             image = PebbleImageToolkit.reduceGrayscaleToBlackWhite(image);
-            PebbleImageToolkit.writeMaskedTwoBitPng(image, outputStream, whiteImage);
+            PebbleImageToolkit.writeMaskedTwoBitPng(image, outputStream, blackBackground);
 
         }
 
         return outputStream.toByteArray();
+    }
+
+    public static byte[] prepareIcon(Bitmap originalImage, Context context, PebbleCapabilities capabilities)
+    {
+        if (originalImage == null)
+            return null;
+
+        boolean whiteImage = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PebbleNotificationCenter.WHITE_NOTIFICATION_TEXT, false);
+        return prepareTintedIcon(originalImage, context, capabilities, whiteImage ? Color.WHITE : Color.BLACK, whiteImage);
     }
 
     @Override
