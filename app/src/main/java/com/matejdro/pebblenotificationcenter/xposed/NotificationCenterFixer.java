@@ -108,7 +108,7 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 
 				// Kickstart developer connection on startup
 				Object pebbleFrameworkObject = XposedHelpers.getObjectField(param.thisObject, "g");
-				XposedHelpers.callMethod(pebbleFrameworkObject, "f");
+				XposedHelpers.callMethod(pebbleFrameworkObject, "d");
 			}
 		});
 
