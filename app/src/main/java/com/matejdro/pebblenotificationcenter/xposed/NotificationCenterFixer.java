@@ -57,8 +57,8 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 		xSharedPreferences = new XSharedPreferences(PebbleNotificationCenter.PACKAGE, XposedSettingsActivity.SHARED_PREFERENCES_NAME);
 
 		//Failed error fix
-		Class asClass = findClass("com.getpebble.android.framework.l.a.as", lpparam.classLoader);
-		findAndHookMethod("com.getpebble.android.framework.g.cs", lpparam.classLoader, "a", asClass, new XC_MethodHook()
+		Class wClass = findClass("com.getpebble.android.framework.l.a.w", lpparam.classLoader);
+		findAndHookMethod("com.getpebble.android.framework.g.ag", lpparam.classLoader, "a", wClass, new XC_MethodHook()
 		{
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable
@@ -87,7 +87,7 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 		});
 
 		// Developer connection fix
-		findAndHookMethod("com.getpebble.android.framework.e.s", lpparam.classLoader, "f", new XC_MethodHook() {
+		findAndHookMethod("com.getpebble.android.framework.e.b", lpparam.classLoader, "d", new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 				xSharedPreferences.reload();
@@ -107,14 +107,14 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 					return;
 
 				// Kickstart developer connection on startup
-				Object pebbleFrameworkObject = XposedHelpers.getObjectField(param.thisObject, "g");
+				Object pebbleFrameworkObject = XposedHelpers.getStaticObjectField(findClass("com.getpebble.android.PebbleApplication", lpparam.classLoader), "g");
 				XposedHelpers.callMethod(pebbleFrameworkObject, "d");
 			}
 		});
 
 		// Disable all native notifications
-		Class notificationClass = XposedHelpers.findClass("com.getpebble.android.notifications.a.o", lpparam.classLoader);
-		findAndHookMethod("com.getpebble.android.framework.i.e", lpparam.classLoader, "a", notificationClass, new XC_MethodHook() {
+		Class notificationClass = XposedHelpers.findClass("com.getpebble.android.notifications.a.b", lpparam.classLoader);
+		findAndHookMethod("com.getpebble.android.framework.i.b", lpparam.classLoader, "a", notificationClass, new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 				xSharedPreferences.reload();
@@ -134,7 +134,7 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 
 		// Disable native music app
 		Class pebbleDeviceClass = XposedHelpers.findClass("com.getpebble.android.bluetooth.PebbleDevice", lpparam.classLoader);
-		findAndHookMethod("com.getpebble.android.framework.g.bu", lpparam.classLoader, "a", pebbleDeviceClass, new XC_MethodHook() {
+		findAndHookMethod("com.getpebble.android.framework.g.t", lpparam.classLoader, "a", pebbleDeviceClass, new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 				xSharedPreferences.reload();
