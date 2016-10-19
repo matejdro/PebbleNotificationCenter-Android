@@ -21,11 +21,12 @@ public class DialogVibrationPatternPicker extends DialogFragment
     private SharedPreferences sharedPreferences;
 
     @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        sharedPreferences = ((PreferenceActivity) getActivity()).getPreferenceManager().getSharedPreferences();
 
-        sharedPreferences = ((PreferenceActivity) context).getPreferenceManager().getSharedPreferences();
+        String currentPattern = sharedPreferences.getString(PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN, "100");
+        vibrationPatternPicker.setCurrentPattern(currentPattern);
     }
 
     @Nullable
@@ -38,11 +39,8 @@ public class DialogVibrationPatternPicker extends DialogFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        String currentPattern = sharedPreferences.getString(PebbleNotificationCenter.PERIODIC_VIBRATION_PATTERN, "100");
 
         vibrationPatternPicker = (VibrationPatternPicker) view.findViewById(R.id.vibration_pattern_picker);
-        vibrationPatternPicker.setCurrentPattern(currentPattern);
-        vibrationPatternPicker.setAddedPause(1000);
 
         view.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener()
         {
