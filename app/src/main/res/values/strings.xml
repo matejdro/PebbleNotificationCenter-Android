@@ -242,7 +242,7 @@
     <string name="replacement">Replacement:</string>
     <string name="enterChracter">You need to enter one character or unicode code for it!</string>
     <string name="importNoFiles">No dictionary files found.\n\nPlace your replacement dictionary .txt files into NotificationCenter folder on your phone\'s storage and try again.</string>
-    <string name="pebbleAppsDescription">NC is like any other app on Pebble - when notification comes, it will close whatever app was active. This is fine most of the time, but for some apps you might not want this (for example you wouldn\'t want to interrupt running stopwatch). \n\nThis view allows you to set NC to produce native Pebble notifications or simply turn off notifications if specific app is open on Pebble. \n\nFor this feature to work, you need to enable Developer Connection inside Pebble (Time) app (under Settings -> Developer). After that press + button above to add apps.</string>
+    <string name="pebbleAppsDescription">NC is like any other app on Pebble - when notification comes, it will close whatever app was active. This is fine most of the time, but for some apps you might not want this (for example you wouldn\'t want to interrupt running stopwatch). \n\nThis view allows you to set NC to produce native Pebble notifications or simply turn off notifications if specific app is open on Pebble. \n\nFor this feature to work, you need to enable Developer Connection (instructions are in the FAQ accessible from the 3-dot menu in the top right corner). After that press + button above to add apps.</string>
     <string name="clearHistory">Clear History</string>
     <string name="deleteHistoryConfirm">Do you really want to clear whole notification history?</string>
     <string name="yes">Yes</string>
