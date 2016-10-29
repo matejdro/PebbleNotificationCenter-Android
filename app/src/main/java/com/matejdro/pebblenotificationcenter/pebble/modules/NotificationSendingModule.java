@@ -667,7 +667,7 @@ public class NotificationSendingModule extends CommModule
             // any non-summary notifications can get processed first
             if (notification.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
             {
-                getService().runOnMainThreadDelayed(new Runnable()
+                getService().runOnPebbleThreadDelayed(new Runnable()
                 {
                     @Override
                     public void run()

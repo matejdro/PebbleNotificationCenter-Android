@@ -193,7 +193,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
 
     public void showVoicePrompt(final NCTalkerService service)
     {
-        service.runOnMainThread(new Runnable()
+        service.runOnPebbleThread(new Runnable()
         {
             @Override
             public void run()

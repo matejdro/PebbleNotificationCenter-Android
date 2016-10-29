@@ -111,7 +111,7 @@ public class NativeNotificationActionHandler
 
         final NotificationAction action = notification.source.getActions().get(actionId);
 
-        service.getHandler().post(new Runnable()
+        service.runOnPebbleThread(new Runnable()
         {
             @Override
             public void run()
