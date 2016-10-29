@@ -136,7 +136,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
 
         if (!nativeMode && notification.source.getSettingStorage(service).getBoolean(AppSetting.ENABLE_TIME_VOICE_REPLY) && lastUsedService.getPebbleCommunication().getConnectedWatchCapabilities().hasMicrophone())
         {
-            allReplyOptions.add("Time Voice");
+            allReplyOptions.add("Watch Voice");
             timeVoiceItemIndex = allReplyOptions.size() - 1;
         }
 

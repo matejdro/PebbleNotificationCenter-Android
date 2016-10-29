@@ -398,7 +398,7 @@
     <string name="settingEnableVoiceReplyDescription">When this setting is enabled, you can dictate reply on android
         wear actions using microphone on the phone or one connected to the phone (BT headset for example).
     </string>
-    <string name="settingEnableTimeVoiceReply">Enable Time voice reply</string>
+    <string name="settingEnableTimeVoiceReply">Enable Watch voice reply</string>
 
     <string name="settingEnableTimeVoiceReplyDescription">When this setting is enabled, you can dictate reply on android
         wear actions using microphone on the Pebble Time (does not work on classic Pebble obviously). You need to enable Notification Center in Pebble Time notification settings for this to work.
