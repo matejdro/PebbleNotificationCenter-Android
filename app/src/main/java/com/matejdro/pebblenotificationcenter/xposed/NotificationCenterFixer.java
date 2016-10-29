@@ -87,7 +87,7 @@ public class NotificationCenterFixer implements IXposedHookLoadPackage {
 		});
 
 		// Developer connection fix
-		findAndHookMethod("com.getpebble.android.framework.e.b", lpparam.classLoader, "d", new XC_MethodHook() {
+		findAndHookMethod("com.getpebble.android.framework.e.d", lpparam.classLoader, "f", new XC_MethodHook() {
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 				xSharedPreferences.reload();
