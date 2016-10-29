@@ -358,7 +358,11 @@ public class SystemModule extends CommModule
     {
         UUID newApp = getService().getDeveloperConnection().getCurrentRunningApp();
 
-        if (newApp != null && (!newApp.equals(PebbleNotificationCenter.WATCHAPP_UUID) || currentRunningApp == null) && !newApp.equals(UNKNOWN_UUID))
+        if (newApp == null)
+        {
+            currentRunningApp = null;
+        }
+        else if ((!newApp.equals(PebbleNotificationCenter.WATCHAPP_UUID) || currentRunningApp == null) && !newApp.equals(UNKNOWN_UUID))
         {
             currentRunningApp = newApp;
         }
