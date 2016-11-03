@@ -16,10 +16,10 @@ import com.matejdro.pebblenotificationcenter.R;
 
 public class WatchappHandler extends BroadcastReceiver
 {
-    public static final int SUPPORTED_PROTOCOL = 40;
+    public static final int SUPPORTED_PROTOCOL = 41;
     public static final String INTENT_UPDATE_WATCHAPP = "com.matejdro.pebblenotificationcenter.UPDATE_WATCHAPP";
 
-    public static final boolean BETA = true;
+    public static final boolean BETA = false;
 
     public static final String WATCHAPP_URL_STABLE = "https://dl.dropboxusercontent.com/u/6999250/dialer/Center/notificationcenter.pbw";
     public static final String WATCHAPP_URL_BETA = "https://plus.google.com/communities/116982109550451242571";
