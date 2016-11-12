@@ -200,7 +200,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
     private void addToCategory(List<BaseSettingItem> category, BaseSettingItem settingItem)
     {
         AppSetting associatedSetting = settingItem.getAssociatedSetting();
-        if (associatedSetting != null && (expertMode || !associatedSetting.isAdvanced()))
+        if (associatedSetting == null || expertMode || !associatedSetting.isAdvanced())
             category.add(settingItem);
     }
 
