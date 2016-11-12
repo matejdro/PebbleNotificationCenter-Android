@@ -30,6 +30,7 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
     public static final String DONT_VIBRATE_WHEN_CHARGING = "noVibrateCharge";
     public static final String SHAKE_ACTION = "shakeAction";
     public static final String WHITE_NOTIFICATION_TEXT = "whiteNotificationText";
+    public static final String SKEW_NOTIFICATION_IMAGE_COLORS = "skewBackgroundImageColors";
     public static final String NO_NOTIFY_VIBRATE = "noNotificationsSilent";
     public static final String NOTIFICATIONS_DISABLED = "noNotifications";
     public static final String VIBRATION_DISABLED = "noVibration";

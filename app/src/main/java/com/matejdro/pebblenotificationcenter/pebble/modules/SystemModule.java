@@ -147,6 +147,8 @@ public class SystemModule extends CommModule
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.SCROLL_BY_PAGE, false) ? 0x02 : 0);
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.DISPLAY_DISCONNECTED_NOTIFICATION, true) ? 0x04 : 0);
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.ENABLE_GESTURES, false) ? 0x08 : 0);
+        secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.SKEW_NOTIFICATION_IMAGE_COLORS, false) ? 0x10 : 0);
+
         configBytes[13] = secondFlags;
 
         configBytes[14] = (byte) vibrationPattern.size();

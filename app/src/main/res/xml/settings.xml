@@ -66,6 +66,11 @@
             android:title="White notification text"
             android:summary="Display white notification text with black background"/>
         <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="skewBackgroundImageColors"
+            android:title="Skew background image colors"
+            android:summary="Skew colors of the notification image when it is displayed in background behind text. This will make an image in background a bit less washed out, but will make the colors a bit skewed."/>
+        <CheckBoxPreference
             android:key="showMenuInstantly"
             android:title="Show actions menu instantly"
             android:summary="When this is checked, blank actions menu will be displayed instantly after pressing the button with text delayed. This allows you to pick action even before text arrives from phone if you know where it is (for example if you know dismiss is first option, you can just quickly double tap). When unchecked, menu will appear when text arrives."
