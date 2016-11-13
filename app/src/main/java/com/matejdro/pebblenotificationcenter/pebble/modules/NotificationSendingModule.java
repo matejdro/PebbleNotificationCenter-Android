@@ -448,13 +448,7 @@ public class NotificationSendingModule extends CommModule
 
         SystemModule.get(getService()).openApp();
 
-        if (curSendingNotification != null && !curSendingNotification.source.isListNotification())
-        {
-            sendingQueue.add(notification);
-            return;
-        }
-
-        curSendingNotification = notification;
+        sendingQueue.add(notification);
 
         PebbleCommunication communication = getService().getPebbleCommunication();
         communication.queueModulePriority(this);
@@ -463,11 +457,13 @@ public class NotificationSendingModule extends CommModule
 
     private void sendInitialNotificationPacket()
     {
-        Timber.d("Initial notify packet %d", curSendingNotification.id);
+        ProcessedNotification notificationToSend = sendingQueue.peek();
 
-        curSendingNotification.nextChunkToSend = 0;
+        Timber.d("Initial notify packet %d", notificationToSend.id);
 
-        AppSettingStorage settingStorage = curSendingNotification.source.getSettingStorage(getService());
+        notificationToSend.nextChunkToSend = 0;
+
+        AppSettingStorage settingStorage = notificationToSend.source.getSettingStorage(getService());
 
         int periodicVibrationInterval = 0;
         try
@@ -478,22 +474,22 @@ public class NotificationSendingModule extends CommModule
         }
 
         PebbleDictionary data = new PebbleDictionary();
-        List<Byte> vibrationPattern = getVibrationPattern(curSendingNotification, settingStorage);
+        List<Byte> vibrationPattern = getVibrationPattern(notificationToSend, settingStorage);
 
         int amountOfActions = 0;
-        if (curSendingNotification.source.getActions() != null)
-            amountOfActions = curSendingNotification.source.getActions().size();
+        if (notificationToSend.source.getActions() != null)
+            amountOfActions = notificationToSend.source.getActions().size();
 
         boolean showMenuInstantly = getService().getGlobalSettings().getBoolean("showMenuInstantly", true);
 
         byte flags = 0;
-        flags |= (byte) (curSendingNotification.source.isListNotification() ? 0x2 : 0);
-        flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || curSendingNotification.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
-        flags |= (byte) (curSendingNotification.source.shouldScrollToEnd() ? 0x8 : 0);
+        flags |= (byte) (notificationToSend.source.isListNotification() ? 0x2 : 0);
+        flags |= (byte) ((settingStorage.getBoolean(AppSetting.SWITCH_TO_MOST_RECENT_NOTIFICATION) || notificationToSend.source.shouldNCForceSwitchToThisNotification()) ? 0x4 : 0);
+        flags |= (byte) (notificationToSend.source.shouldScrollToEnd() ? 0x8 : 0);
 
         if (amountOfActions > 0 && showMenuInstantly)
         {
-            flags |= (byte) ((curSendingNotification.source.shouldForceActionMenu() || settingStorage.getInt(AppSetting.SELECT_PRESS_ACTION) == 2) ? 0x10 : 0);
+            flags |= (byte) ((notificationToSend.source.shouldForceActionMenu() || settingStorage.getInt(AppSetting.SELECT_PRESS_ACTION) == 2) ? 0x10 : 0);
             flags |= (byte) (settingStorage.getInt(AppSetting.SELECT_HOLD_ACTION) == 2 ? 0x20 : 0);
         }
 
@@ -502,8 +498,8 @@ public class NotificationSendingModule extends CommModule
         configBytes[1] = (byte) (periodicVibrationInterval >>> 0x08);
         configBytes[2] = (byte) periodicVibrationInterval;
         configBytes[3] = (byte) amountOfActions;
-        configBytes[4] = (byte) (curSendingNotification.textLength >>> 0x08);
-        configBytes[5] = (byte) curSendingNotification.textLength;
+        configBytes[4] = (byte) (notificationToSend.textLength >>> 0x08);
+        configBytes[5] = (byte) notificationToSend.textLength;
 
         int shakeAction = settingStorage.getInt(AppSetting.SHAKE_ACTION);
         if (shakeAction == 2 && !showMenuInstantly )
@@ -517,34 +513,31 @@ public class NotificationSendingModule extends CommModule
 
         if (getService().getPebbleCommunication().getConnectedWatchCapabilities().hasColorScreen())
         {
-            int color = curSendingNotification.source.getColor();
+            int color = notificationToSend.source.getColor();
             if (color == Color.TRANSPARENT)
                 color = Color.BLACK;
 
             configBytes[10] = PebbleImageToolkit.getGColor8FromRGBColor(color);
         }
 
-        curSendingNotification.backgroundImageData = ImageSendingModule.prepareImage(curSendingNotification.source.getBigNotificationImage());
-        boolean queueImage = false;
-        if (curSendingNotification.backgroundImageData == null || !getService().getPebbleCommunication().getConnectedWatchCapabilities().hasColorScreen())
+        notificationToSend.backgroundImageData = ImageSendingModule.prepareImage(notificationToSend.source.getBigNotificationImage());
+        if (notificationToSend.backgroundImageData == null || !getService().getPebbleCommunication().getConnectedWatchCapabilities().hasColorScreen())
         {
             configBytes[11] = 0;
             configBytes[12] = 0;
         }
         else
         {
-            int size = curSendingNotification.backgroundImageData.length;
+            int size = notificationToSend.backgroundImageData.length;
 
             configBytes[11] = (byte) (size >>> 8);
             configBytes[12] = (byte) size;
-
-            queueImage = true;
         }
 
-        configBytes[13] = (byte) (curSendingNotification.firstSubtitleIndex >>> 0x08);
-        configBytes[14] = (byte) curSendingNotification.firstSubtitleIndex;
-        configBytes[15] = (byte) (curSendingNotification.firstTextIndex >>> 0x08);
-        configBytes[16] = (byte) curSendingNotification.firstTextIndex;
+        configBytes[13] = (byte) (notificationToSend.firstSubtitleIndex >>> 0x08);
+        configBytes[14] = (byte) notificationToSend.firstSubtitleIndex;
+        configBytes[15] = (byte) (notificationToSend.firstTextIndex >>> 0x08);
+        configBytes[16] = (byte) notificationToSend.firstTextIndex;
 
         configBytes[17] = (byte) vibrationPattern.size();
 
@@ -553,29 +546,26 @@ public class NotificationSendingModule extends CommModule
 
         data.addUint8(0, (byte) 1);
         data.addUint8(1, (byte) 0);
-        data.addInt32(2, curSendingNotification.id);
+        data.addInt32(2, notificationToSend.id);
         data.addBytes(3, configBytes);
-        data.addInt32(4, curSendingNotification.prevId);
+        data.addInt32(4, notificationToSend.prevId);
         data.addUint8(999, (byte) 1);
 
         data.addUint16(5, (short) 0); //Placeholder
 
         int iconSize = 0;
-        Bitmap icon = curSendingNotification.source.getNotificationIcon();
+        Bitmap icon = notificationToSend.source.getNotificationIcon();
         if (icon != null)
         {
             PebbleCapabilities watchCapabilities = getService().getPebbleCommunication().getConnectedWatchCapabilities();
             byte[] iconData = ImageSendingModule.prepareIcon(icon, getService(), watchCapabilities);
-            curSendingNotification.iconData = iconData;
+            notificationToSend.iconData = iconData;
             iconSize = iconData.length;
-            curSendingNotification.needsIconSending = true;
+            notificationToSend.needsIconSending = true;
         }
         data.addUint16(5, (short) iconSize);
 
         getService().getPebbleCommunication().sendToPebble(data);
-
-        if (queueImage)
-            ImageSendingModule.get(getService()).startSendingImage(curSendingNotification);
     }
 
     private void sendMoreText()
@@ -617,16 +607,41 @@ public class NotificationSendingModule extends CommModule
         }
     }
 
+    private void onNotificationSendConfirmed(int notificationId)
+    {
+        ProcessedNotification notification = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications.get(notificationId);
+        if (notification == null)
+        {
+            Timber.w("Received confirmation for inexistent notification: %d", notificationId);
+            return;
+        }
+
+        sendingQueue.remove(notification);
+        curSendingNotification = notification;
+
+        PebbleCommunication communication = getService().getPebbleCommunication();
+        communication.queueModulePriority(this);
+        communication.sendNext();
+
+        boolean queueImage = notification.backgroundImageData != null && getService().getPebbleCommunication().getConnectedWatchCapabilities().hasColorScreen();
+        if (queueImage)
+            ImageSendingModule.get(getService()).startSendingImage(notification);
+
+    }
+
     @Override
     public boolean sendNextMessage()
     {
-        if (curSendingNotification == null && !sendingQueue.isEmpty())
-            curSendingNotification = sendingQueue.poll();
-
         if (curSendingNotification == null)
-            return false;
+        {
+            if (!sendingQueue.isEmpty())
+            {
+                sendInitialNotificationPacket();
+            }
 
-        if (curSendingNotification.nextChunkToSend == -1)
+            return false;
+        }
+        else if (curSendingNotification.nextChunkToSend < 0)
         {
             sendInitialNotificationPacket();
         }
@@ -651,6 +666,13 @@ public class NotificationSendingModule extends CommModule
     @Override
     public void gotMessageFromPebble(PebbleDictionary message)
     {
+        int id = message.getUnsignedIntegerAsLong(1).intValue();
+        switch (id)
+        {
+            case 0:
+                onNotificationSendConfirmed(message.getInteger(2).intValue());
+                break;
+        }
     }
 
     @Override
@@ -694,12 +716,14 @@ public class NotificationSendingModule extends CommModule
     }
 
     @Override
-    public void pebbleAppOpened()
-    {
-        if (curSendingNotification != null)
-        {
-            curSendingNotification.nextChunkToSend = -1;
+    public void pebbleAppOpened() {
+        if (curSendingNotification != null) {
+            sendingQueue.add(curSendingNotification);
+            curSendingNotification = null;
+        }
 
+        if (!sendingQueue.isEmpty())
+        {
             getService().getPebbleCommunication().queueModulePriority(this);
         }
     }

@@ -34,6 +34,11 @@ Pebble --> Phone
 		Informs android app that it should close watchapp or switch to previous app depending on settings.
 		No additional data
 
+    MODULE 1 - NOTIFICATION SENDING
+
+        Packet 0 - Confirm notification received
+        Sent when Pebble has received new notification packet and wants text and other notification data.
+                2 = Unique notification id (int32)
 
 	MODULE 2 - NOTIFICATION LIST
 
