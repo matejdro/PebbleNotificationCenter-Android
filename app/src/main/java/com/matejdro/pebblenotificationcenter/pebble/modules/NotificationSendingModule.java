@@ -526,7 +526,7 @@ public class NotificationSendingModule extends CommModule
 
         curSendingNotification.backgroundImageData = ImageSendingModule.prepareImage(curSendingNotification.source.getBigNotificationImage());
         boolean queueImage = false;
-        if (curSendingNotification.backgroundImageData == null)
+        if (curSendingNotification.backgroundImageData == null || !getService().getPebbleCommunication().getConnectedWatchCapabilities().hasColorScreen())
         {
             configBytes[11] = 0;
             configBytes[12] = 0;
@@ -575,8 +575,7 @@ public class NotificationSendingModule extends CommModule
         getService().getPebbleCommunication().sendToPebble(data);
 
         if (queueImage)
-        ImageSendingModule.get(getService()).startSendingImage(curSendingNotification);
-
+            ImageSendingModule.get(getService()).startSendingImage(curSendingNotification);
     }
 
     private void sendMoreText()
