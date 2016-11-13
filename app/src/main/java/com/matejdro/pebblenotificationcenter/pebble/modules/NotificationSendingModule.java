@@ -296,11 +296,16 @@ public class NotificationSendingModule extends CommModule
             return;
         }
 
-        int lastDismissedID = DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey(), false);
-        if (settingStorage.getBoolean(AppSetting.NO_UPDATE_VIBRATION))
-            notification.prevId = lastDismissedID;
+        //Notification replacing should not be performed for any list notifications
+        if (!notification.source.isListNotification())
+        {
+            int lastDismissedID = DismissUpwardsModule.get(getService()).processDismissUpwards(notificationSource.getKey(), false);
+            if (settingStorage.getBoolean(AppSetting.NO_UPDATE_VIBRATION))
+                notification.prevId = lastDismissedID;
 
-        DismissUpwardsModule.get(getService()).dismissSimilarWearNotifications(notification, false);
+            DismissUpwardsModule.get(getService()).dismissSimilarWearNotifications(notification, false);
+        }
+
 
         notification.wasSentToWatch = true;
         if (settingStorage.getBoolean(AppSetting.HIDE_NOTIFICATION_TEXT) && !notificationSource.isListNotification() && !notificationSource.isHidingTextDisallowed())
