@@ -254,7 +254,7 @@ public class NotificationSendingModule extends CommModule
             filteringResult = shouldFilterNotification(notificationSource);
 
         if ((filteringResult == FilteringResult.SEND || filteringResult == FilteringResult.ONLY_SAVE_TO_HISTORY) &&
-                !notificationSource.isHistoryDisabled() &&
+                !notificationSource.isHistoryDisabled() && !notificationSource.isListNotification() &&
                 settingStorage.getBoolean(AppSetting.SAVE_TO_HISTORY))
         {
             NCTalkerService.fromPebbleTalkerService(getService()).getHistoryDatabase().storeNotification(notificationSource.getRawPostTime(),
