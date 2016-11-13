@@ -193,7 +193,7 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
 
     public void showVoicePrompt(final NCTalkerService service)
     {
-        service.runOnPebbleThread(new Runnable()
+        service.runOnMainThread(new Runnable()
         {
             @Override
             public void run()
@@ -314,9 +314,14 @@ public class WearVoiceAction extends NotificationAction implements MessageTextPr
     }
 
     @Override
-    public void gotText(String text)
+    public void gotText(final String text)
     {
-        sendReply(text, lastUsedService);
+        lastUsedService.runOnPebbleThread(new Runnable() {
+            @Override
+            public void run() {
+                sendReply(text, lastUsedService);
+            }
+        });
     }
 
     public class WearCannedResponseList extends ActionList
