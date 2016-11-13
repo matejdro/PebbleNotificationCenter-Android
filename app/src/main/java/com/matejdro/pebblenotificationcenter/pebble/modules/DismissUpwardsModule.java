@@ -175,6 +175,11 @@ public class DismissUpwardsModule extends CommModule
 
         SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 
+        boolean syncDismissUp = notification.source.getSettingStorage(getService()).getBoolean(AppSetting.DISMISS_UPWARDS);
+        Timber.d("SyncDismissUp: %b", syncDismissUp);
+        if (!syncDismissUp)
+            return;
+
         for (int i = 0; i < sentNotifications.size(); i++)
         {
             ProcessedNotification compare = sentNotifications.valueAt(i);
