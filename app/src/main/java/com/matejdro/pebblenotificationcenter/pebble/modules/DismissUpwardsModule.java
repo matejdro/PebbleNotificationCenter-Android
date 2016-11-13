@@ -12,6 +12,7 @@ import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblecommons.pebble.PebbleUtil;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.NotificationKey;
+import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.ProcessedNotification;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
@@ -172,6 +173,8 @@ public class DismissUpwardsModule extends CommModule
     public void dismissSimilarWearNotifications(ProcessedNotification notification, boolean dismissImmediately)
     {
         Timber.d("DismissSimilarWear %s %s %s", notification.source.getKey(), notification.source.getWearGroupType(), notification.source.getWearGroupKey());
+        if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_DISABLED)
+            return;
 
         SparseArray<ProcessedNotification> sentNotifications = NCTalkerService.fromPebbleTalkerService(getService()).sentNotifications;
 
@@ -189,14 +192,23 @@ public class DismissUpwardsModule extends CommModule
             //Group message should not dismiss other group messages, but summary can dismiss all group messages
             if (notification.source.isInSameGroup(compare.source))
             {
-                Timber.d("Dismissing %b", dismissImmediately);
-                if (dismissImmediately)
+                //Summary dismisses all related group notifications
+                if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY)
                 {
-                    dismissNotification(getService(), compare.source.getKey());
+                    Timber.d("Dismissing %b", dismissImmediately);
+                    if (dismissImmediately)
+                    {
+                        dismissNotification(getService(), compare.source.getKey());
+                    }
+                    else
+                    {
+                        dismissProcessedNotification(getService(), compare.id);
+                    }
                 }
-                else
+                // Message notifications can only dismiss group summaries from the watch to prevent duplication
+                else if (notification.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_MESSAGE && compare.source.getWearGroupType() == PebbleNotification.WEAR_GROUP_TYPE_GROUP_SUMMARY && compare.wasSentToWatch)
                 {
-                    dismissProcessedNotification(getService(), compare.id);
+                    dismissPebbleID(getService(), compare.id);
                 }
 
             }

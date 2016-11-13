@@ -302,6 +302,7 @@ public class NotificationSendingModule extends CommModule
 
         DismissUpwardsModule.get(getService()).dismissSimilarWearNotifications(notification, false);
 
+        notification.wasSentToWatch = true;
         if (settingStorage.getBoolean(AppSetting.HIDE_NOTIFICATION_TEXT) && !notificationSource.isListNotification() && !notificationSource.isHidingTextDisallowed())
             sendNotificationAsPrivate(notification);
         else
