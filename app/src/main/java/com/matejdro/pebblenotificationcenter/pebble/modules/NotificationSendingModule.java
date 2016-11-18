@@ -36,6 +36,7 @@ import com.matejdro.pebblenotificationcenter.pebble.NotificationCenterDeveloperC
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import timber.log.Timber;
 
@@ -64,7 +66,7 @@ public class NotificationSendingModule extends CommModule
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
     private HashMap<String, Long> temporaryMutes = new HashMap<String, Long>();
     private ProcessedNotification curSendingNotification;
-    private Queue<ProcessedNotification> sendingQueue = new LinkedList<ProcessedNotification>();
+    private Queue<ProcessedNotification> sendingQueue = new ConcurrentLinkedQueue<>();
 
     public NotificationSendingModule(PebbleTalkerService service)
     {
