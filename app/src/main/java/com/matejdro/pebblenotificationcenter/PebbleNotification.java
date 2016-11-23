@@ -290,6 +290,9 @@ public class PebbleNotification implements Parcelable
 
     public boolean isInSameGroup(PebbleNotification comparing)
     {
+        if (getKey().getPackage() == null || !getKey().getPackage().equals(comparing.getKey().getPackage()))
+            return false;
+
         if (getWearGroupType() == WEAR_GROUP_TYPE_DISABLED || comparing.getWearGroupType() == WEAR_GROUP_TYPE_DISABLED)
             return false;
 
