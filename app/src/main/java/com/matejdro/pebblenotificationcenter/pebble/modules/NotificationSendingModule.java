@@ -652,7 +652,7 @@ public class NotificationSendingModule extends CommModule
                 sendInitialNotificationPacket();
             }
 
-            return false;
+            return true;
         }
         else if (curSendingNotification.nextChunkToSend < 0)
         {
