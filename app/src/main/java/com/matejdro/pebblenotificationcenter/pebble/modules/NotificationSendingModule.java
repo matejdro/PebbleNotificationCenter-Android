@@ -621,6 +621,11 @@ public class NotificationSendingModule extends CommModule
         if (notification == null)
         {
             Timber.w("Received confirmation for inexistent notification: %d", notificationId);
+
+            //Looks like notification we tried to send got deleted before we could send it further. Lets retry with another.
+            if (!sendingQueue.isEmpty())
+                sendInitialNotificationPacket();
+
             return;
         }
 
@@ -829,6 +834,11 @@ public class NotificationSendingModule extends CommModule
             {
                 iterator.remove();
             }
+        }
+
+        if (curSendingNotification != null && curSendingNotification.id == id)
+        {
+            notificationTransferCompleted();
         }
     }
 
