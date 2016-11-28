@@ -602,7 +602,7 @@ public class NotificationSendingModule extends CommModule
         curSendingNotification.needsIconSending = false;
 
         // Only send icon if it can fit into one Appmessage
-        if (curSendingNotification.iconData.length <= PebbleUtil.getBytesLeft(new PebbleDictionary(), getService().getPebbleCommunication().getConnectedWatchCapabilities()))
+        if (curSendingNotification.iconData.length <= PebbleUtil.getBytesLeft(data, getService().getPebbleCommunication().getConnectedWatchCapabilities()))
         {
             data.addBytes(3, curSendingNotification.iconData);
             getService().getPebbleCommunication().sendToPebble(data);
@@ -650,9 +650,11 @@ public class NotificationSendingModule extends CommModule
             if (!sendingQueue.isEmpty())
             {
                 sendInitialNotificationPacket();
+
+                return true;
             }
 
-            return true;
+            return false;
         }
         else if (curSendingNotification.nextChunkToSend < 0)
         {
