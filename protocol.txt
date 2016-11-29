@@ -32,7 +32,8 @@ Pebble --> Phone
 
     	Packet 3 - Close app
 		Informs android app that it should close watchapp or switch to previous app depending on settings.
-		No additional data
+	    Additional data:
+	        2 = Whether NC app rejected the notifications because of the Quiet Time mode (uint8, 1 = yes, 0 = no)
 
     MODULE 1 - NOTIFICATION SENDING
 
@@ -121,6 +122,7 @@ Phone --> Pebble
                         Third bit (0x04) = Display disconnected notification
                         Fourth bit (0x08) = Enable gestures
                         Fifth bit (0x10) = Skew background image colors
+						Sixth bit (0x20) = Close yourself when quiet time is enabled
 					[14] = Number of bytes in vibration pattern
 					[15,16,...] = Vibration pattern (up to 40 bytes, two bytes make uint16)
 

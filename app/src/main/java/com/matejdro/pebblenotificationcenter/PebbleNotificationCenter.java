@@ -28,6 +28,7 @@ public class PebbleNotificationCenter extends PebbleCompanionApplication
     public static final String LIGHT_SCREEN_ON_NOTIFICATIONS = "lightScreenNotifications";
     public static final String CLOSE_TO_LAST_APP = "closeToLastApp";
     public static final String DONT_VIBRATE_WHEN_CHARGING = "noVibrateCharge";
+    public static final String RESPECT_ON_WATCH_QUIET_TIME = "respectWatchQuietTime";
     public static final String SHAKE_ACTION = "shakeAction";
     public static final String WHITE_NOTIFICATION_TEXT = "whiteNotificationText";
     public static final String SKEW_NOTIFICATION_IMAGE_COLORS = "skewBackgroundImageColors";

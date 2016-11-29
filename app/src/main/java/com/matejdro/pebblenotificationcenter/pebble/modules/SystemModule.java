@@ -148,7 +148,7 @@ public class SystemModule extends CommModule
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.DISPLAY_DISCONNECTED_NOTIFICATION, true) ? 0x04 : 0);
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.ENABLE_GESTURES, false) ? 0x08 : 0);
         secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.SKEW_NOTIFICATION_IMAGE_COLORS, false) ? 0x10 : 0);
-
+        secondFlags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.RESPECT_ON_WATCH_QUIET_TIME, true) ? 0x20 : 0);
         configBytes[13] = secondFlags;
 
         configBytes[14] = (byte) vibrationPattern.size();
@@ -308,6 +308,18 @@ public class SystemModule extends CommModule
         ListModule.get(getService()).showList(id);
     }
 
+    private void gotCloseMessage(PebbleDictionary message)
+    {
+        boolean removePendingNotifications = message.getUnsignedIntegerAsLong(2).intValue() == 1;
+        if (removePendingNotifications)
+        {
+            Timber.d("Quiet time on the watch: clearing notify queue.");
+            NotificationSendingModule.get(getService()).clearSendingQueue();
+        }
+
+        closeApp();
+    }
+
     @Override
     public void gotIntent(Intent intent)
     {
@@ -349,7 +361,7 @@ public class SystemModule extends CommModule
                 gotMessageConfigChange(message);
                 break;
             case 3: //Close me
-                closeApp();
+                gotCloseMessage(message);
                 break;
 
 

@@ -844,6 +844,12 @@ public class NotificationSendingModule extends CommModule
         }
     }
 
+    public void clearSendingQueue()
+    {
+        sendingQueue.clear();
+        curSendingNotification = null;
+    }
+
     public ProcessedNotification getCurrrentSendingNotification()
     {
         return curSendingNotification;

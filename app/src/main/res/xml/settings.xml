@@ -19,6 +19,11 @@
             android:summary="Disable new notifications popping up when phone is in vibrate or in silent mode"
             android:title="Disable notify when in silent mode" />
         <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="respectWatchQuietTime"
+            android:summary="Do not send notifications when Quiet Time is enabled on the watch"
+            android:title="Respect watch's Quiet Time" />
+        <CheckBoxPreference
             android:key="openAfterReconnect"
             android:summary="When pebble reconnects to the phone, immediately display all missed notifications. Only works on watchapp notifications."
             android:title="Display notifications after reconnect"
