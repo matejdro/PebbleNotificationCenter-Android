@@ -470,6 +470,7 @@ public class NotificationSendingModule extends CommModule
         Timber.d("Initial notify packet %d", notificationToSend.id);
 
         notificationToSend.nextChunkToSend = 0;
+        notificationToSend.waitingForConfirmation = true;
 
         AppSettingStorage settingStorage = notificationToSend.source.getSettingStorage(getService());
 
@@ -624,7 +625,11 @@ public class NotificationSendingModule extends CommModule
 
             //Looks like notification we tried to send got deleted before we could send it further. Lets retry with another.
             if (!sendingQueue.isEmpty())
-                sendInitialNotificationPacket();
+            {
+                resetSendingQueue();
+                getService().getPebbleCommunication().queueModulePriority(this);
+                getService().getPebbleCommunication().sendNext();
+            }
 
             return;
         }
@@ -647,7 +652,7 @@ public class NotificationSendingModule extends CommModule
     {
         if (curSendingNotification == null)
         {
-            if (!sendingQueue.isEmpty())
+            if (!sendingQueue.isEmpty() && !sendingQueue.peek().waitingForConfirmation)
             {
                 sendInitialNotificationPacket();
 
@@ -732,6 +737,8 @@ public class NotificationSendingModule extends CommModule
 
     @Override
     public void pebbleAppOpened() {
+        resetSendingQueue();
+
         if (curSendingNotification != null) {
             sendingQueue.add(curSendingNotification);
             curSendingNotification = null;
@@ -848,6 +855,19 @@ public class NotificationSendingModule extends CommModule
     {
         sendingQueue.clear();
         curSendingNotification = null;
+    }
+
+    public void resetSendingQueue()
+    {
+        for (ProcessedNotification notification : sendingQueue)
+        {
+            notification.waitingForConfirmation = false;
+        }
+
+        if (curSendingNotification != null)
+        {
+            curSendingNotification.waitingForConfirmation = false;
+        }
     }
 
     public ProcessedNotification getCurrrentSendingNotification()

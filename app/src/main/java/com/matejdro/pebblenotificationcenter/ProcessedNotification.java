@@ -25,6 +25,7 @@ public class ProcessedNotification implements Parcelable
 
     public PebbleNotification source;
     public boolean wasSentToWatch = false;
+    public boolean waitingForConfirmation = false;
 
     @Override
     public int describeContents()
