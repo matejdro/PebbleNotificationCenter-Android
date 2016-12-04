@@ -60,13 +60,13 @@ public class NotificationSendingModule extends CommModule
 
     public static final int DEFAULT_TEXT_LIMIT = 2000;
 
-    private static Queue<PebbleNotification> processingQueue = new LinkedList<>();
+    private static Queue<PebbleNotification> processingQueue = new ConcurrentLinkedQueue<>();
 
     private HashMap<String, Long> lastAppVibration = new HashMap<String, Long>();
     private HashMap<String, Long> lastAppNotification = new HashMap<String, Long>();
     private HashMap<String, Long> temporaryMutes = new HashMap<String, Long>();
     private ProcessedNotification curSendingNotification;
-    private Queue<ProcessedNotification> sendingQueue = new ConcurrentLinkedQueue<>();
+    private Queue<ProcessedNotification> sendingQueue = new LinkedList<>();
 
     public NotificationSendingModule(PebbleTalkerService service)
     {
