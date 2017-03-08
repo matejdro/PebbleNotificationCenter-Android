@@ -21,7 +21,7 @@ public class WatchappHandler extends BroadcastReceiver
 
     public static final boolean BETA = false;
 
-    public static final String WATCHAPP_URL_STABLE = "https://dl.dropboxusercontent.com/u/6999250/dialer/Center/notificationcenter.pbw";
+    public static final String WATCHAPP_URL_STABLE = "https://github.com/matejdro/PebbleNotificationCenter-Watchapp/releases/latest";
     public static final String WATCHAPP_URL_BETA = "https://plus.google.com/communities/116982109550451242571";
 
 

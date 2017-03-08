@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="watchappUpdateTitle">Notification Center watchapp update</string>
-    <string name="watchappUpdateBody">Click on this notiifcation to update Notification Center watchapp on Pebble</string>
+    <string name="watchappUpdateBody">Click on this notiifcation to open link to the download</string>
     <string name="betaWatchappUpdateTitle">Notification Center beta watchapp update</string>
     <string name="betaWatchappUpdateBody">Click to get release info and update link</string>
 </resources>
