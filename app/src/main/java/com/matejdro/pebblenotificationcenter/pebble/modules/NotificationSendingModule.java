@@ -180,7 +180,7 @@ public class NotificationSendingModule extends CommModule
             }
             else
             {
-                lastAppNotification.remove(notificationSource.getKey().getPackage());
+                temporaryMutes.remove(notificationSource.getKey().getPackage());
             }
         }
 
