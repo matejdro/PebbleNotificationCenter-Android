@@ -24,6 +24,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.matejdro.pebblecommons.util.BitmapUtils;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
@@ -309,7 +311,7 @@ public class AppListFragment extends Fragment {
 				if (!(icon instanceof BitmapDrawable))
 					icon = getResources().getDrawable(android.R.drawable.sym_def_app_icon);
 				
-				iconCache.put((String) params[0], ((BitmapDrawable) icon).getBitmap());					
+				iconCache.put((String) params[0], BitmapUtils.getBitmap(icon));
 			} catch (NameNotFoundException e) {
 			}
 			
