@@ -48,7 +48,6 @@ public class DismissOnPhoneAction extends NotificationAction
         }
 
         JellybeanNotificationListener.dismissNotification(notification.source.getKey());
-        service.sentNotifications.remove(notification.id);
     }
 
 
