@@ -46,6 +46,10 @@ public class JellybeanNotificationListener extends NotificationListenerService {
 
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
+        if (sbn == null) {
+            return;
+        }
+
         NotificationKey key = NotificationHandler.getKeyFromSbn(sbn);
         Timber.d("Got jellybean dismiss %s", key);
 
