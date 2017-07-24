@@ -46,7 +46,7 @@ public class NCTalkerService extends PebbleTalkerService
         if (PebbleNotificationCenter.isXposedModuleRunning())
         {
             @SuppressLint("WorldReadableFiles")
-            SharedPreferences xposedPreferences = getSharedPreferences(XposedSettingsActivity.SHARED_PREFERENCES_NAME, Context.MODE_WORLD_READABLE);
+            SharedPreferences xposedPreferences = getSharedPreferences(XposedSettingsActivity.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             setEnableDeveloperConnectionRefreshing(!xposedPreferences.getBoolean(XposedSettingsActivity.SETTING_FIX_DEVELOPER_CONNECTION, false));
         }
     }
