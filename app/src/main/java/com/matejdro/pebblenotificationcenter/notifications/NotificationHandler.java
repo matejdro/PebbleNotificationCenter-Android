@@ -190,23 +190,27 @@ public class NotificationHandler {
 
     public static int getColor(Notification notification, String appPackage, Context context)
     {
-        //Try getting color from Wearable and Car extensions
-        Bundle extras = NotificationTextParser.getExtras(notification);
-        if (extras != null)
-        {
-            if (extras.containsKey("android.wearable.EXTENSIONS"))
+        try {
+            //Try getting color from Wearable and Car extensions
+            Bundle extras = NotificationTextParser.getExtras(notification);
+            if (extras != null)
             {
-                Bundle wearableExtension = extras.getBundle("android.wearable.EXTENSIONS");
-                if (wearableExtension.containsKey("app_color"))
-                    return wearableExtension.getInt("app_color");
-            }
+                if (extras.containsKey("android.wearable.EXTENSIONS"))
+                {
+                    Bundle wearableExtension = extras.getBundle("android.wearable.EXTENSIONS");
+                    if (wearableExtension.containsKey("app_color"))
+                        return wearableExtension.getInt("app_color");
+                }
 
-            if (extras.containsKey("android.car.EXTENSIONS"))
-            {
-                Bundle carExtension = extras.getBundle("android.car.EXTENSIONS");
-                if (carExtension.containsKey("app_color"))
-                    return carExtension.getInt("app_color");
+                if (extras.containsKey("android.car.EXTENSIONS"))
+                {
+                    Bundle carExtension = extras.getBundle("android.car.EXTENSIONS");
+                    if (carExtension.containsKey("app_color"))
+                        return carExtension.getInt("app_color");
+                }
             }
+        } catch (RuntimeException e) {
+            // Unpacking the bundle may cause crashes on some devices.
         }
 
         //Try getting color from notification icon color
