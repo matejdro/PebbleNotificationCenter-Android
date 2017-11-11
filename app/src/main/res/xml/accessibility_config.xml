@@ -2,4 +2,5 @@
     android:accessibilityEventTypes="typeNotificationStateChanged"
     android:accessibilityFlags="flagDefault"
     android:accessibilityFeedbackType="feedbackHaptic"
+    android:description="@string/accessibility_description"
 />

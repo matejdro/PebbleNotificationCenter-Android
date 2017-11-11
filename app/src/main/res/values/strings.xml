@@ -553,4 +553,5 @@
     <string name="action_mute_app_temporarily_minutes">Mute for %1$d min</string>
     <string name="clear_temporary_mutes">Clear temporary mutes</string>
     <string name="mutes_cleared">Mutes cleared</string>
+    <string name="accessibility_description">Accessibility service is required for Notification Center to get notification information.</string>
 </resources>

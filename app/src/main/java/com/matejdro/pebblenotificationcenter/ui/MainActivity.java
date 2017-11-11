@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            builder.setMessage("Accesibility service is not running. You must enable it to get this app to work!");
+            builder.setMessage("Accesibility service is not running. You must enable it to for app to know when you get new notifications!");
             builder.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
