@@ -29,7 +29,6 @@ public class XposedSettingsActivity extends AppCompatActivity
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_NAME);
             //noinspection deprecation
-            getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
 
             addPreferencesFromResource(R.xml.settings_xposed);
         }
