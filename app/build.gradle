@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId "com.matejdro.pebblenotificationcenter"
-        minSdkVersion 14
+        minSdkVersion 18
         targetSdkVersion 25
     }}
 

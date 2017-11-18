@@ -3,12 +3,10 @@ package com.matejdro.pebblenotificationcenter.notifications;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -325,10 +323,5 @@ public class NotificationHandler {
 		final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "Notification");
 		return applicationName;
 
-	}
-
-	public static boolean isNotificationListenerSupported()
-	{
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
 	}
 }

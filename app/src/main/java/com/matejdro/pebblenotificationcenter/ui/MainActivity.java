@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -151,27 +150,13 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Service not running").setNegativeButton("Cancel", null);
-
-        if (NotificationHandler.isNotificationListenerSupported())
-        {
-            builder.setMessage("Notification service is not running. You must enable it to get this app to work!");
-            builder.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-                }
-            });
-        }
-        else
-        {
-            builder.setMessage("Accesibility service is not running. You must enable it to for app to know when you get new notifications!");
-            builder.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                }
-            });
-        }
+        builder.setMessage("Notification service is not running. You must enable it to get this app to work!");
+        builder.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+            }
+        });
 
         AlertDialog dialog = builder.create();
 

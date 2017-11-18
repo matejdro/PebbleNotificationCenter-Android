@@ -13,7 +13,6 @@ import com.matejdro.pebblecommons.pebble.PebbleTalkerService;
 import com.matejdro.pebblecommons.vibration.PebbleVibrationPattern;
 import com.matejdro.pebblenotificationcenter.NCTalkerService;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
-import com.matejdro.pebblenotificationcenter.notifications.NotificationHandler;
 import com.matejdro.pebblenotificationcenter.pebble.WatchappHandler;
 
 import java.util.List;
@@ -127,7 +126,8 @@ public class SystemModule extends CommModule
 
         byte flags = 0;
         flags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) ? 0x02 : 0);
-        flags |= (byte) (NotificationHandler.isNotificationListenerSupported() ? 0x04 : 0);
+        //noinspection ConstantConditionalExpression
+        flags |= (byte) (true ? 0x04 : 0); //Dismissing is always supported - accessibility stuff has been removed
         flags |= (byte) (NotificationSendingModule.get(getService()).isAnyNotificationWaiting() ? 0x08 : 0);
         flags |= (byte) (backlight ? 0x10 : 0);
         flags |= (byte) (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.DONT_VIBRATE_WHEN_CHARGING, true) ? 0x20 : 0);
