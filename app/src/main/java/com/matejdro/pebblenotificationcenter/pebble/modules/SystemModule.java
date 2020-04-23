@@ -400,10 +400,11 @@ public class SystemModule extends CommModule
         if (notificationSendingModule.isAnyNotificationWaiting())
             return;
 
-        if (getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false) && canCloseToApp(currentRunningApp) && closeTries < 2)
+        boolean closeToLastApp = getService().getGlobalSettings().getBoolean(PebbleNotificationCenter.CLOSE_TO_LAST_APP, false);
+        if (closeToLastApp && canCloseToApp(currentRunningApp) && closeTries < 2)
             PebbleKit.startAppOnPebble(getService(), currentRunningApp);
         else
-            PebbleKit.closeAppOnPebble(getService(), PebbleNotificationCenter.WATCHAPP_UUID);
+            PebbleKit.closeAppOnPebble(getService(), PebbleNotificationCenter.WATCHAPP_UUID, closeToLastApp);
 
         SharedPreferences.Editor editor = getService().getGlobalSettings().edit();
         editor.putLong("lastClose", System.currentTimeMillis());

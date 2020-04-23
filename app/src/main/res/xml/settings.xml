@@ -47,7 +47,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="closeToLastApp"
-            android:summary="You need to ENABLE DEVELOPER CONNECTION to get this to work (please read instructions in the FAQ on how to do this). It is also a bit buggy (sometimes app won't close), use on your own risk."
+            android:summary="Return to last used app after notification closed. Works with Gadgetbridge and official app. You need to ENABLE DEVELOPER CONNECTION to get this to work on official Pebble app (please read instructions in the FAQ on how to do this). It is also a bit buggy (sometimes app won't close), use on your own risk."
             android:title="Close to previously running app" />
          <ListPreference
             android:key="lightScreenNotifications"
