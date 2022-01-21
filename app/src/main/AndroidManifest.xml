@@ -117,6 +117,12 @@
         <meta-data
             android:name="xposedminversion"
             android:value="54" />
+        <meta-data
+            android:name="xposedsharedprefs"
+            android:value="true" />
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/module_scope" />
         <meta-data android:name="com.crashlytics.ApiKey" android:value="048e0255b748bd3c0abc33c75a2601ff67b550c8"/>
     </application>
 
