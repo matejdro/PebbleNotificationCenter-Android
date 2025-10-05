@@ -1,3 +1,4 @@
+/*
 package com.matejdro.pebblenotificationcenter.ui.perapp.settingitems;
 
 import android.app.Activity;
@@ -14,9 +15,11 @@ import com.matejdro.pebblenotificationcenter.appsetting.AppSetting;
 import com.matejdro.pebblenotificationcenter.appsetting.AppSettingStorage;
 import com.matejdro.pebblenotificationcenter.ui.perapp.PerAppActivity;
 
+*/
 /**
  * Created by Matej on 19.10.2014.
- */
+ *//*
+
 public class ColorPickerItem extends BaseSettingItem implements ColorPickerDialogFragment.ColorPickerDialogListener
 {
     private static final int DIALOG_ID = 1;
@@ -148,3 +151,4 @@ public class ColorPickerItem extends BaseSettingItem implements ColorPickerDialo
     {
     }
 }
+*/

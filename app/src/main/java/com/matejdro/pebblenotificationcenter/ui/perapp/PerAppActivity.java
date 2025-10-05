@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.danielnilsson9.colorpickerview.dialog.ColorPickerDialogFragment;
 import com.matejdro.pebblenotificationcenter.PebbleNotification;
 import com.matejdro.pebblenotificationcenter.PebbleNotificationCenter;
 import com.matejdro.pebblenotificationcenter.R;
@@ -28,7 +27,6 @@ import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.AppEnabledCh
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.BaseSettingItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CannedResponsesItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.CheckBoxItem;
-import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.ColorPickerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.EditTextItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.IconPickerItem;
 import com.matejdro.pebblenotificationcenter.ui.perapp.settingitems.IntentActionsItem;
@@ -47,7 +45,7 @@ import java.util.List;
 /**
  * Created by Matej on 16.9.2014.
  */
-public class PerAppActivity extends Activity implements ColorPickerDialogFragment.ColorPickerDialogListener
+public class PerAppActivity extends Activity// implements ColorPickerDialogFragment.ColorPickerDialogListener
 {
     protected AppSettingStorage settingsStorage;
     protected String appPackage;
@@ -142,7 +140,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         addToCategory(category, new SpinnerItem(settingsStorage, AppSetting.BOCY_FONT, R.array.pebbleFonts, R.string.settingFontBody, R.string.settingDescriptionWatchappOnly, R.array.fontValues));
         addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.ALWAYS_PARSE_STATUSBAR_NOTIFICATION, R.string.settingAlwaysParseStatusbarNotification, R.string.settingAlwaysParseStatusbarNotificationDescription));
         addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.HIDE_NOTIFICATION_TEXT, R.string.settingHideNotificationText, R.string.settingHideNotificationTextDescription));
-        if (version(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)) addToCategory(category, new ColorPickerItem(settingsStorage, AppSetting.STATUSBAR_COLOR, R.string.settingStatusbarColor, R.string.settingStatusbarColorDescription));
+//        if (version(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)) addToCategory(category, new ColorPickerItem(settingsStorage, AppSetting.STATUSBAR_COLOR, R.string.settingStatusbarColor, R.string.settingStatusbarColorDescription));
         addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.SHOW_IMAGE, R.string.settingShowImage, R.string.settingShowImageDescription));
         addToCategory(category, new IconPickerItem(settingsStorage, R.string.settingNotificationIcon, R.string.settingNotificationIconDescription));
         addToCategory(category, new CheckBoxItem(settingsStorage, AppSetting.WATCHAPP_NOTIFICATION_ICON, R.string.settingWatchappNotificationIcon, R.string.settingWatchappNotificationIconDescription));
@@ -278,7 +276,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
         }
     }
 
-    @Override
+    /*@Override
     public void onColorSelected(int i, int i1)
     {
         for (SettingsCategory category : settings)
@@ -304,7 +302,7 @@ public class PerAppActivity extends Activity implements ColorPickerDialogFragmen
             }
         }
     }
-
+*/
     public class SettingsCategory
     {
         public SettingsCategory(Integer categoryNameResource, List<BaseSettingItem> settings)
