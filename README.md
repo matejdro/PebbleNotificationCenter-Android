@@ -1,3 +1,7 @@
+# Outdated
+
+This project is old and unmaintained. Maybe you are looking for the [PebbleNotificationCenter2](https://github.com/matejdro/PebbleNotificationCenter2)?
+
 PebbleNotificationCenter-Android
 ================================
 
